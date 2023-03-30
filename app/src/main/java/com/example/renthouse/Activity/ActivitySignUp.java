@@ -28,7 +28,7 @@ public class ActivitySignUp extends AppCompatActivity {
                 finish();
             }
         });
-        signUpBtn = findViewById(R.id.sentBtn);
+        signUpBtn = findViewById(R.id.signUpBtn);
 
         tv_backToLoginBtn = findViewById(R.id.tv_backToLoginBtn);
         tv_backToLoginBtn.setOnClickListener(new View.OnClickListener() {

@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.example.renthouse.R;
@@ -13,7 +14,7 @@ public class ActivityLogIn extends AppCompatActivity {
     private static final int REQUEST_CODE = 1;
     private TextView forgotPasswordBtn;
     private TextView signUpBtn;
-
+    private Button loginWithGoogleBtn;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -34,6 +35,13 @@ public class ActivityLogIn extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(getApplicationContext(), ActivitySignUp.class);
                 startActivityForResult(intent, REQUEST_CODE);
+            }
+        });
+        loginWithGoogleBtn = findViewById(R.id.loginWithGoogleBtn);
+        loginWithGoogleBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(getApplicationContext(), ActivitySearch.class));
             }
         });
     }
