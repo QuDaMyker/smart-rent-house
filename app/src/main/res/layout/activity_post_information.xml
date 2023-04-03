@@ -225,7 +225,7 @@
                     android:textSize="16sp"
                     android:textStyle="bold"
                     app:thumbTint="@color/white"
-                    app:trackTint="@drawable/switch_track_selector"/>
+                    app:trackTint="@color/switch_track_selector"/>
 
             </LinearLayout>
 
@@ -264,7 +264,7 @@
                     android:textSize="16sp"
                     android:textStyle="bold"
                     app:thumbTint="@color/white"
-                    app:trackTint="@drawable/switch_track_selector"/>
+                    app:trackTint="@color/switch_track_selector"/>
 
             </LinearLayout>
 
@@ -302,7 +302,7 @@
                     android:textSize="16sp"
                     android:textStyle="bold"
                     app:thumbTint="@color/white"
-                    app:trackTint="@drawable/switch_track_selector"/>
+                    app:trackTint="@color/switch_track_selector"/>
 
             </LinearLayout>
 
@@ -348,7 +348,7 @@
                     android:textSize="16sp"
                     android:textStyle="bold"
                     app:thumbTint="@color/white"
-                    app:trackTint="@drawable/switch_track_selector"/>
+                    app:trackTint="@color/switch_track_selector"/>
 
             </LinearLayout>
 
