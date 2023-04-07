@@ -1,3 +1,10 @@
 <resources>
     <string name="app_name">RentHouse</string>
+    <string name="sample_location_text">Đặng Văn Bi, Quận Thủ Đức</string>
+    <string-array name="rangeSlider">
+        <item>0</item>
+        <item>100</item>
+    </string-array>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

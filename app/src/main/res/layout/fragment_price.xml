@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".Activity.FragmentFilter.FragmentPrice">
+
+    <LinearLayout
+        android:id="@+id/linearLayoutPrice"
+        android:fillViewport="true"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toTopOf="@+id/linearLayoutRangeSlider"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="20dp"
+        tools:ignore="MissingConstraints" >
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:orientation="vertical"
+            android:layout_weight="1"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Từ"
+                android:textColor="@color/Secondary_20"
+                android:textSize="14dp"
+                tools:ignore="TextSizeCheck" />
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="160dp"
+                android:id="@+id/textInputPriceFrom"
+                android:hint="Nhập giá"
+                android:layout_height="40dp">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:drawableEnd="@drawable/unit_price"
+                    android:padding="0dp"
+                    android:textSize="14dp"
+                    tools:ignore="TouchTargetSizeCheck,TextSizeCheck" />
+            </com.google.android.material.textfield.TextInputLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:orientation="vertical"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Đến"
+                android:textColor="@color/Secondary_20"
+                android:textSize="14dp"
+                tools:ignore="TextSizeCheck" />
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="160dp"
+                android:id="@+id/textInputPriceTo"
+                android:hint="Nhập giá"
+                android:layout_height="40dp">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:drawableEnd="@drawable/unit_price"
+                    android:padding="0dp"
+                    android:textSize="14dp"
+                    tools:ignore="TouchTargetSizeCheck,TextSizeCheck" />
+            </com.google.android.material.textfield.TextInputLayout>
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:orientation="vertical"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="40dp"
+        android:layout_marginEnd="20dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/linearLayoutPrice"
+        android:id="@+id/linearLayoutRangeSlider"
+        android:layout_height="wrap_content">
+
+        <com.google.android.material.slider.RangeSlider
+            android:id="@+id/rangeSlider"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:valueFrom="0"
+            android:valueTo="100"
+            app:thumbRadius="10dp"
+            app:thumbColor="@color/Primary_40"
+            app:values="@array/rangeSlider"
+            app:haloRadius="12dp"
+            app:trackColorActive="@color/Primary_40"
+            app:trackColorInactive="@color/Primary_90" />
+    </LinearLayout>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
