@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    tools:context=".Activity.ActivityPost">
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/top_app_bar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/Primary_98"
+        app:navigationIcon="@drawable/baseline_arrow_back_24"
+        app:navigationIconTint="@color/Primary_40">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Đăng phòng"
+            android:textColor="@color/Primary_40"
+            android:textSize="22sp"
+            android:textStyle="bold" />
+    </com.google.android.material.appbar.MaterialToolbar>
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:layout_margin="25dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:text="Thông tin hình ảnh và tiện ích"
+                android:textColor="@color/Primary_40"
+                android:layout_marginBottom="20dp"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:text="HÌNH ẢNH"
+                android:textColor="@color/Secondary_40"
+                android:layout_marginBottom="10dp"/>
+
+            <com.google.android.material.button.MaterialButton
+                android:layout_width="match_parent"
+                android:layout_height="150dp"
+                app:cornerRadius="10dp"
+                android:background="@drawable/dashed_border"
+                android:textColor="@color/Primary_60"
+                android:text="Bấm vào đây để đăng hình ảnh từ thư viện nhé!"
+                app:icon="@drawable/ic_add_image"
+                app:iconTint="@color/Primary_60"
+                app:iconSize="60dp"
+                app:iconGravity="textTop"
+                android:gravity="center"
+                android:paddingHorizontal="50dp"
+                android:layout_marginBottom="10dp"/>
+            <com.google.android.material.button.MaterialButton
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                android:layout_width="wrap_content"
+                android:layout_height="70dp"
+                android:layout_gravity="center"
+                android:text="Chụp hình"
+                android:textSize="18sp"
+                android:textColor="@color/Primary_60"
+                android:layout_marginBottom="20dp"
+                android:backgroundTint="@color/white"
+                app:strokeColor="@color/Primary_60"
+                app:strokeWidth="2dp"
+                android:textAllCaps="false"
+                app:cornerRadius="100dp"
+                app:iconPadding="10dp"
+                app:icon="@drawable/ic_take_photo"
+                app:iconGravity="textStart"
+                app:iconSize="24dp"
+                android:paddingHorizontal="30dp"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:text="TIỆN ÍCH"
+                android:textColor="@color/Secondary_40"
+                android:layout_marginBottom="10dp"/>
+
+            <GridLayout
+                android:id="@+id/grid_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:columnCount="2"
+                android:useDefaultMargins="true"
+                android:layout_marginBottom="20dp">
+            </GridLayout>
+
+            <com.google.android.material.button.MaterialButton
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                android:layout_width="match_parent"
+                android:layout_height="70dp"
+                android:layout_gravity="center"
+                android:text="Tiếp theo"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:textColor="@color/Primary_60"
+                android:layout_marginBottom="50dp"
+                android:backgroundTint="@color/white"
+                app:strokeColor="@color/Primary_60"
+                app:strokeWidth="2dp"
+                android:textAllCaps="false"
+                app:cornerRadius="100dp"
+                app:icon="@drawable/ic_arrow_right"
+                app:iconGravity="textEnd"
+                app:iconSize="28dp"/>
+
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>
