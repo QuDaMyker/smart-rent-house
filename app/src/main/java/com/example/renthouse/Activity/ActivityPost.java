@@ -52,8 +52,8 @@ public class ActivityPost extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_post_utilities);
-        createButtons();
+        setContentView(R.layout.activity_post_confirm);
+        //createButtons();
     }
 
     private void createButtons() {
