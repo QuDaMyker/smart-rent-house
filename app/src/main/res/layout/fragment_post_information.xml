@@ -6,11 +6,7 @@
     android:layout_height="match_parent"
     tools:context=".Activity.FragmentPost.FragmentInformation"
     android:orientation="vertical">
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-        <LinearLayout
+    <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_margin="25dp"
@@ -367,25 +363,24 @@
                     android:layout_height="wrap_content" />
             </com.google.android.material.textfield.TextInputLayout>
 
-            <com.google.android.material.button.MaterialButton
-                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-                android:layout_width="match_parent"
-                android:layout_height="70dp"
-                android:layout_gravity="center"
-                android:layout_marginBottom="50dp"
-                android:backgroundTint="@color/white"
-                android:text="Tiếp theo"
-                android:textAllCaps="false"
-                android:textColor="@color/Primary_60"
-                android:textSize="18sp"
-                android:textStyle="bold"
-                app:cornerRadius="100dp"
-                app:icon="@drawable/ic_arrow_right"
-                app:iconGravity="textEnd"
-                app:iconSize="28dp"
-                app:strokeColor="@color/Primary_60"
-                app:strokeWidth="2dp" />
+<!--            <com.google.android.material.button.MaterialButton-->
+<!--                style="@style/Widget.MaterialComponents.Button.OutlinedButton"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="70dp"-->
+<!--                android:layout_gravity="center"-->
+<!--                android:layout_marginBottom="50dp"-->
+<!--                android:backgroundTint="@color/white"-->
+<!--                android:text="Tiếp theo"-->
+<!--                android:textAllCaps="false"-->
+<!--                android:textColor="@color/Primary_60"-->
+<!--                android:textSize="18sp"-->
+<!--                android:textStyle="bold"-->
+<!--                app:cornerRadius="100dp"-->
+<!--                app:icon="@drawable/ic_arrow_right"-->
+<!--                app:iconGravity="textEnd"-->
+<!--                app:iconSize="28dp"-->
+<!--                app:strokeColor="@color/Primary_60"-->
+<!--                app:strokeWidth="2dp" />-->
 
         </LinearLayout>
-    </ScrollView>
 </LinearLayout>
