@@ -4,95 +4,89 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Activity.ActivityPost"
+    tools:context=".Activity.FragmentPost.FragmentInformation"
     android:orientation="vertical">
-    <com.google.android.material.appbar.MaterialToolbar
-        android:id="@+id/top_app_bar"
-        android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:background="@color/Primary_98"
-        app:navigationIcon="@drawable/baseline_arrow_back_24"
-        app:navigationIconTint="@color/Primary_40">
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Đăng phòng"
-            android:textColor="@color/Primary_40"
-            android:textSize="22sp"
-            android:textStyle="bold" />
-    </com.google.android.material.appbar.MaterialToolbar>
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical"
             android:layout_margin="25dp"
-            >
+            android:orientation="vertical">
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="16sp"
-                android:textStyle="bold"
+                android:layout_marginBottom="20dp"
                 android:text="Thông tin phòng"
                 android:textColor="@color/Primary_40"
-                android:layout_marginBottom="20dp"/>
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="14sp"
-                android:textStyle="bold"
+                android:layout_marginBottom="10dp"
                 android:text="LOẠI PHÒNG"
                 android:textColor="@color/Secondary_40"
-                android:layout_marginBottom="10dp"/>
+                android:textSize="14sp"
+                android:textStyle="bold" />
+
             <RadioGroup
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="20dp"
                 android:divider="?android:attr/dividerHorizontal"
-                android:showDividers="middle"
-                android:layout_marginBottom="20dp">
+                android:showDividers="middle">
+
                 <RadioButton
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Kí túc xá/Homestay"
-                    android:textSize="14sp"
-                    android:textColor="@color/Secondary_20"/>
+                    android:textColor="@color/Secondary_20"
+                    android:textSize="14sp" />
+
                 <RadioButton
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Phòng cho thuê"
-                    android:textSize="14sp"
-                    android:textColor="@color/Secondary_20"/>
+                    android:textColor="@color/Secondary_20"
+                    android:textSize="14sp" />
+
                 <RadioButton
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Nhà nguyên căn"
-                    android:textSize="14sp"
-                    android:textColor="@color/Secondary_20"/>
+                    android:textColor="@color/Secondary_20"
+                    android:textSize="14sp" />
+
                 <RadioButton
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Căn hộ"
-                    android:textSize="14sp"
-                    android:textColor="@color/Secondary_20"/>
+                    android:textColor="@color/Secondary_20"
+                    android:textSize="14sp" />
 
             </RadioGroup>
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="14sp"
-                android:textStyle="bold"
+                android:layout_marginBottom="10dp"
                 android:text="SỨC CHỨA"
                 android:textColor="@color/Secondary_40"
-                android:layout_marginBottom="10dp"/>
+                android:textSize="14sp"
+                android:textStyle="bold" />
 
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:suffixText="người/phòng"
+                android:layout_marginBottom="20dp"
                 android:hint="Nhập số người/phòng"
-                android:layout_marginBottom="20dp">
+                app:suffixText="người/phòng">
+
                 <com.google.android.material.textfield.TextInputEditText
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
@@ -101,52 +95,57 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="14sp"
-                android:textStyle="bold"
+                android:layout_marginBottom="10dp"
                 android:text="GIỚI TÍNH"
                 android:textColor="@color/Secondary_40"
-                android:layout_marginBottom="10dp"/>
+                android:textSize="14sp"
+                android:textStyle="bold" />
+
             <RadioGroup
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="20dp"
                 android:divider="?android:attr/dividerHorizontal"
-                android:showDividers="middle"
-                android:layout_marginBottom="20dp">
+                android:showDividers="middle">
+
                 <RadioButton
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Tất cả"
-                    android:textSize="14sp"
-                    android:textColor="@color/Secondary_20"/>
+                    android:textColor="@color/Secondary_20"
+                    android:textSize="14sp" />
+
                 <RadioButton
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Nam"
-                    android:textSize="14sp"
-                    android:textColor="@color/Secondary_20"/>
+                    android:textColor="@color/Secondary_20"
+                    android:textSize="14sp" />
+
                 <RadioButton
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Nữ"
-                    android:textSize="14sp"
-                    android:textColor="@color/Secondary_20"/>
+                    android:textColor="@color/Secondary_20"
+                    android:textSize="14sp" />
             </RadioGroup>
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="14sp"
-                android:textStyle="bold"
+                android:layout_marginBottom="10dp"
                 android:text="DIỆN TÍCH"
                 android:textColor="@color/Secondary_40"
-                android:layout_marginBottom="10dp"/>
+                android:textSize="14sp"
+                android:textStyle="bold" />
 
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:suffixText="m2"
+                android:layout_marginBottom="30dp"
                 android:hint="Nhập diện tích"
-                android:layout_marginBottom="30dp">
+                app:suffixText="m2">
+
                 <com.google.android.material.textfield.TextInputEditText
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
@@ -155,27 +154,28 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="16sp"
-                android:textStyle="bold"
+                android:layout_marginBottom="20dp"
                 android:text="Chi phí"
                 android:textColor="@color/Primary_40"
-                android:layout_marginBottom="20dp"/>
+                android:textSize="16sp"
+                android:textStyle="bold" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="14sp"
-                android:textStyle="bold"
+                android:layout_marginBottom="10dp"
                 android:text="GIÁ CHO THUÊ"
                 android:textColor="@color/Secondary_40"
-                android:layout_marginBottom="10dp"/>
+                android:textSize="14sp"
+                android:textStyle="bold" />
 
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:suffixText="₫/phòng"
+                android:layout_marginBottom="20dp"
                 android:hint="Nhập giá cho thuê"
-                android:layout_marginBottom="20dp">
+                app:suffixText="₫/phòng">
+
                 <com.google.android.material.textfield.TextInputEditText
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
@@ -184,17 +184,18 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="14sp"
-                android:textStyle="bold"
+                android:layout_marginBottom="10dp"
                 android:text="ĐẶT CỌC"
                 android:textColor="@color/Secondary_40"
-                android:layout_marginBottom="10dp"/>
+                android:textSize="14sp"
+                android:textStyle="bold" />
 
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Nhập số tháng hoặc số tiền"
-                android:layout_marginBottom="20dp">
+                android:layout_marginBottom="20dp"
+                android:hint="Nhập số tháng hoặc số tiền">
+
                 <com.google.android.material.textfield.TextInputEditText
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
@@ -208,32 +209,33 @@
                 <TextView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
                     android:layout_weight="1"
-                    android:textSize="14sp"
-                    android:textStyle="bold"
                     android:text="TIỀN ĐIỆN"
-                    android:layout_gravity="center_vertical"
-                    android:textColor="@color/Secondary_40"/>
+                    android:textColor="@color/Secondary_40"
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
 
                 <com.google.android.material.materialswitch.MaterialSwitch
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="end"
                     android:checked="true"
                     android:text="Miễn phí"
-                    android:layout_gravity="end"
                     android:textColor="@color/Primary_40"
                     android:textSize="16sp"
                     android:textStyle="bold"
                     app:thumbTint="@color/white"
-                    app:trackTint="@color/switch_track_selector"/>
+                    app:trackTint="@color/switch_track_selector" />
 
             </LinearLayout>
 
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Nhập số tiền"
-                android:layout_marginBottom="20dp">
+                android:layout_marginBottom="20dp"
+                android:hint="Nhập số tiền">
+
                 <com.google.android.material.textfield.TextInputEditText
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
@@ -247,32 +249,33 @@
                 <TextView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
                     android:layout_weight="1"
-                    android:textSize="14sp"
-                    android:textStyle="bold"
                     android:text="TIỀN NƯỚC"
-                    android:layout_gravity="center_vertical"
-                    android:textColor="@color/Secondary_40"/>
+                    android:textColor="@color/Secondary_40"
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
 
                 <com.google.android.material.materialswitch.MaterialSwitch
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="end"
                     android:checked="true"
                     android:text="Miễn phí"
-                    android:layout_gravity="end"
                     android:textColor="@color/Primary_40"
                     android:textSize="16sp"
                     android:textStyle="bold"
                     app:thumbTint="@color/white"
-                    app:trackTint="@color/switch_track_selector"/>
+                    app:trackTint="@color/switch_track_selector" />
 
             </LinearLayout>
 
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Nhập số tiền"
-                android:layout_marginBottom="20dp">
+                android:layout_marginBottom="20dp"
+                android:hint="Nhập số tiền">
+
                 <com.google.android.material.textfield.TextInputEditText
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
@@ -286,31 +289,32 @@
                 <TextView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:textSize="14sp"
-                    android:textStyle="bold"
-                    android:text="TIỀN INTERNET/WIFI"
                     android:layout_gravity="center_vertical"
-                    android:textColor="@color/Secondary_40"/>
+                    android:layout_weight="1"
+                    android:text="TIỀN INTERNET/WIFI"
+                    android:textColor="@color/Secondary_40"
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
 
                 <com.google.android.material.materialswitch.MaterialSwitch
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Miễn phí"
                     android:layout_gravity="end"
+                    android:text="Miễn phí"
                     android:textColor="@color/Primary_40"
                     android:textSize="16sp"
                     android:textStyle="bold"
                     app:thumbTint="@color/white"
-                    app:trackTint="@color/switch_track_selector"/>
+                    app:trackTint="@color/switch_track_selector" />
 
             </LinearLayout>
 
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Nhập số tiền"
-                android:layout_marginBottom="20dp">
+                android:layout_marginBottom="20dp"
+                android:hint="Nhập số tiền">
+
                 <com.google.android.material.textfield.TextInputEditText
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
@@ -319,10 +323,10 @@
             <com.google.android.material.checkbox.MaterialCheckBox
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:checked="true"
                 android:text="Có chỗ để xe"
                 android:textColor="@color/Secondary_20"
-                android:checked="true"
-                android:textSize="16sp"/>
+                android:textSize="16sp" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -332,31 +336,32 @@
                 <TextView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:textSize="14sp"
-                    android:textStyle="bold"
-                    android:text="PHÍ GIỮ XE"
                     android:layout_gravity="center_vertical"
-                    android:textColor="@color/Secondary_40"/>
+                    android:layout_weight="1"
+                    android:text="PHÍ GIỮ XE"
+                    android:textColor="@color/Secondary_40"
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
 
                 <com.google.android.material.materialswitch.MaterialSwitch
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Miễn phí"
                     android:layout_gravity="end"
+                    android:text="Miễn phí"
                     android:textColor="@color/Primary_40"
                     android:textSize="16sp"
                     android:textStyle="bold"
                     app:thumbTint="@color/white"
-                    app:trackTint="@color/switch_track_selector"/>
+                    app:trackTint="@color/switch_track_selector" />
 
             </LinearLayout>
 
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Nhập số tiền"
-                android:layout_marginBottom="30dp">
+                android:layout_marginBottom="30dp"
+                android:hint="Nhập số tiền">
+
                 <com.google.android.material.textfield.TextInputEditText
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
@@ -367,19 +372,19 @@
                 android:layout_width="match_parent"
                 android:layout_height="70dp"
                 android:layout_gravity="center"
-                android:text="Tiếp theo"
-                android:textSize="18sp"
-                android:textStyle="bold"
-                android:textColor="@color/Primary_60"
                 android:layout_marginBottom="50dp"
                 android:backgroundTint="@color/white"
-                app:strokeColor="@color/Primary_60"
-                app:strokeWidth="2dp"
+                android:text="Tiếp theo"
                 android:textAllCaps="false"
+                android:textColor="@color/Primary_60"
+                android:textSize="18sp"
+                android:textStyle="bold"
                 app:cornerRadius="100dp"
                 app:icon="@drawable/ic_arrow_right"
                 app:iconGravity="textEnd"
-                app:iconSize="28dp"/>
+                app:iconSize="28dp"
+                app:strokeColor="@color/Primary_60"
+                app:strokeWidth="2dp" />
 
         </LinearLayout>
     </ScrollView>
