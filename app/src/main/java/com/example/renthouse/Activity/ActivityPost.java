@@ -56,7 +56,7 @@ public class ActivityPost extends AppCompatActivity {
         createButtons();
     }
 
-    private void createButtons() {
+    public void createButtons() {
         GridLayout gridLayout = findViewById(R.id.grid_layout);
 
         for (int i = 0; i < buttonTitles.length; i++) {

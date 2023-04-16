@@ -1,37 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     tools:context=".Activity.FragmentFilter.FragmentType">
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:orientation="vertical"
+
+    <!-- TODO: Update blank fragment layout -->
+    <RadioGroup
+        android:layout_width="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
         android:layout_height="wrap_content">
         <com.google.android.material.radiobutton.MaterialRadioButton
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/radioButtonHomeStay"
-            android:text="Kí túc xá/Homestay" />
+            android:layout_width="wrap_content"
+            android:buttonTint="@color/button_text_selector"
+            android:text="Kí túc xá/Homestay"
+            android:textSize="15dp"
+            android:layout_height="wrap_content"/>
         <com.google.android.material.radiobutton.MaterialRadioButton
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/radioButtonHiredRoom"
-            android:text="Kí túc xá/Homestay" />
+            android:layout_width="wrap_content"
+            android:buttonTint="@color/button_text_selector"
+            android:text="Phòng cho thuê"
+            android:textSize="15dp"
+            android:layout_height="wrap_content"/>
         <com.google.android.material.radiobutton.MaterialRadioButton
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/radioButtonHouse"
-            android:text="Kí túc xá/Homestay" />
+            android:layout_width="wrap_content"
+            android:text="Nhà nguyên căn"
+            android:buttonTint="@color/button_text_selector"
+            android:textSize="15dp"
+            android:layout_height="wrap_content"/>
         <com.google.android.material.radiobutton.MaterialRadioButton
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/radioButtonFlat"
-            android:text="Kí túc xá/Homestay" />
-    </LinearLayout>
-
-
+            android:layout_width="wrap_content"
+            android:text="Căn hộ"
+            android:textSize="15dp"
+            android:buttonTint="@color/button_text_selector"
+            android:layout_height="wrap_content"/>
+    </RadioGroup>
 
 </FrameLayout>

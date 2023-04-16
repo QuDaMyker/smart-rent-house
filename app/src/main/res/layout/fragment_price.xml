@@ -2,6 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
+    android:layout_marginTop="20dp"
     android:layout_height="match_parent"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".Activity.FragmentFilter.FragmentPrice">
@@ -41,6 +42,7 @@
                 <com.google.android.material.textfield.TextInputEditText
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
+                    android:inputType="numberDecimal"
                     android:drawableEnd="@drawable/unit_price"
                     android:padding="0dp"
                     android:textSize="14dp"
@@ -72,6 +74,7 @@
                     android:drawableEnd="@drawable/unit_price"
                     android:padding="0dp"
                     android:textSize="14dp"
+                    android:inputType="numberDecimal"
                     tools:ignore="TouchTargetSizeCheck,TextSizeCheck" />
             </com.google.android.material.textfield.TextInputLayout>
         </LinearLayout>
@@ -100,7 +103,7 @@
             app:values="@array/rangeSlider"
             app:haloRadius="12dp"
             app:trackColorActive="@color/Primary_40"
-            app:trackColorInactive="@color/Primary_90" />
+            app:trackColorInactive="@color/Primary_95" />
     </LinearLayout>
 
 

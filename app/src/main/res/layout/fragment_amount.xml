@@ -3,12 +3,90 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Activity.FragmentFilter.FragmentAmount">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    tools:context=".Activity.FragmentFilter.FragmentAmount">
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+        android:orientation="vertical"
+        android:layout_marginTop="20dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
+        android:layout_height="wrap_content">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:orientation="horizontal"
+
+            android:weightSum="2"
+            android:layout_height="wrap_content">
+            <TextView
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_gravity="center_vertical"
+                android:text="Số người"
+                android:textSize="15dp"
+                android:layout_height="wrap_content"/>
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:weightSum="7"
+                android:layout_height="wrap_content">
+                <androidx.appcompat.widget.AppCompatImageButton
+                    android:id="@+id/buttonDescreasePeople"
+                    android:layout_width="0dp"
+                    android:layout_weight="2"
+                    android:src="@drawable/descrease"
+                    android:background="@drawable/custom_edttext"
+                    android:layout_height="40dp"/>
+                <EditText
+                    android:id="@+id/editTextAmountPeople"
+                    android:layout_width="0dp"
+                    android:layout_weight="3"
+                    android:layout_marginEnd="10dp"
+                    android:layout_marginStart="10dp"
+                    android:textSize="20dp"
+                    android:textColor="@color/black"
+                    android:hint="2"
+                    android:textAlignment="center"
+                    android:background="@drawable/custom_edittext_1"
+                    android:layout_height="40dp"/>
+                <androidx.appcompat.widget.AppCompatImageButton
+                    android:id="@+id/buttonIncreasePeople"
+                    android:layout_width="0dp"
+                    android:layout_weight="2"
+                    android:src="@drawable/inscrease"
+                    android:background="@drawable/custom_edttext"
+                    android:layout_height="40dp"/>
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_marginTop="20dp"
+            android:orientation="horizontal"
+            android:layout_weight="10"
+            android:layout_height="wrap_content">
+            <TextView
+                android:layout_width="0dp"
+                android:layout_weight="4"
+                android:text="Giới tính"
+                android:layout_gravity="center"
+                android:textSize="15dp"
+                android:textColor="@color/black"
+                android:layout_height="wrap_content"/>
+            <com.google.android.material.tabs.TabLayout
+                android:layout_width="0dp"
+                android:layout_weight="6"
+                android:id="@+id/tabLayoutGender"
+                app:tabSelectedTextColor="@color/Primary_40"
+                app:tabTextColor="@color/Secondary_40"
+                android:backgroundTint="@color/tablayout_gender"
+                android:layout_height="35dp">
+
+            </com.google.android.material.tabs.TabLayout>
+        </LinearLayout>
+    </LinearLayout>
+
 
 </FrameLayout>

@@ -64,70 +64,84 @@
             android:layout_height="match_parent"
             android:orientation="horizontal">
 
-            <androidx.appcompat.widget.AppCompatButton
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/buttonPrice"
                 android:layout_width="wrap_content"
-                android:layout_height="29dp"
+                android:layout_height="35dp"
                 android:layout_gravity="center"
                 android:layout_marginEnd="12dp"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:background="@drawable/button_option_in_filtter"
+                android:padding="0dp"
+                android:textColor="@color/text_selector_filter"
+                app:icon="@drawable/button_expand_icon"
+                app:iconGravity="textStart"
+                app:iconSize="12dp"
+                app:iconTint="@color/text_selector_filter"
+                android:checkable="true"
+                android:backgroundTint="@drawable/button_option_in_filtter"
                 android:text="Giá cả"
-                android:textColor="@color/white"
-                android:drawableLeft="@drawable/button_collapse_icon_when_selecting"
-                android:paddingLeft="15dp"
-                android:paddingRight="15dp"
                 android:textSize="11dp"
+                app:cornerRadius="4dp"
                 android:textAllCaps="false"
                 tools:ignore="TouchTargetSizeCheck,TextSizeCheck" />
 
-            <androidx.appcompat.widget.AppCompatButton
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/buttonUtilities"
                 android:layout_width="wrap_content"
-                android:layout_height="29dp"
+                android:layout_height="35dp"
+                android:layout_gravity="center"
                 android:layout_marginEnd="12dp"
-                android:layout_weight="1"
-                android:id="@+id/buttonTool"
+                android:padding="0dp"
+                android:textColor="@color/text_selector_filter"
+                app:icon="@drawable/button_expand_icon"
+                app:iconGravity="textStart"
+                app:iconSize="12dp"
+                app:iconTint="@color/text_selector_filter"
+                android:checkable="true"
+                android:backgroundTint="@drawable/button_option_in_filtter"
                 android:text="Tiện ích"
                 android:textSize="11dp"
-                android:drawableLeft="@drawable/button_expand_icon"
-                android:paddingLeft="10dp"
-                android:paddingRight="10dp"
+                app:cornerRadius="4dp"
                 android:textAllCaps="false"
-                android:textColor="@color/Secondary_40"
-                android:background="@drawable/button_option_in_filter_not_selected"
                 tools:ignore="TextSizeCheck,TouchTargetSizeCheck" />
 
-            <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/buttonKindOfRoom"
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/buttonType"
                 android:layout_width="wrap_content"
-                android:layout_height="29dp"
+                android:layout_height="35dp"
+                android:layout_gravity="center"
                 android:layout_marginEnd="12dp"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:background="@drawable/button_option_in_filter_not_selected"
-                android:drawableLeft="@drawable/button_expand_icon"
-                android:paddingLeft="12dp"
-                android:paddingRight="2dp"
+                android:padding="0dp"
+                android:textColor="@color/text_selector_filter"
+                app:icon="@drawable/button_expand_icon"
+                app:iconGravity="textStart"
+                app:iconSize="12dp"
+                app:iconTint="@color/text_selector_filter"
+                android:checkable="true"
+                android:backgroundTint="@drawable/button_option_in_filtter"
                 android:text="Loại phòng"
-                android:textAllCaps="false"
-                android:textColor="@color/Secondary_40"
                 android:textSize="11dp"
+                app:cornerRadius="4dp"
+                android:textAllCaps="false"
                 tools:ignore="TouchTargetSizeCheck,TextSizeCheck" />
 
-            <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/buttonNumberOfRoom"
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/buttonAmount"
                 android:layout_width="wrap_content"
-                android:layout_height="29dp"
-                android:layout_weight="1"
-                android:background="@drawable/button_option_in_filter_not_selected"
-                android:drawableLeft="@drawable/button_expand_icon"
-                android:paddingLeft="12dp"
-                android:paddingRight="2dp"
+                android:layout_height="35dp"
+                android:layout_gravity="center"
+                android:layout_marginEnd="12dp"
+                android:padding="0dp"
+                android:textColor="@color/text_selector_filter"
+                app:icon="@drawable/button_expand_icon"
+                app:iconGravity="textStart"
+                app:iconSize="12dp"
+                app:iconTint="@color/text_selector_filter"
+                android:checkable="true"
+                android:backgroundTint="@drawable/button_option_in_filtter"
                 android:text="Số phòng"
-                android:textAllCaps="false"
-                android:textColor="@color/Secondary_40"
                 android:textSize="11dp"
+                app:cornerRadius="4dp"
+                android:textAllCaps="false"
                 tools:ignore="TouchTargetSizeCheck,TextSizeCheck,TextSizeCheck" />
         </LinearLayout>
 
@@ -138,25 +152,38 @@
         android:id="@+id/horizontalDisplayResult"
         app:layout_constraintTop_toBottomOf="@id/horizontalScrollView"
         app:layout_constraintStart_toStartOf="parent"
-        android:background="@color/Secondary_80"
+        android:background="@color/Secondary_90"
         android:layout_marginTop="20dp"
         app:layout_constraintBottom_toTopOf="@id/viewPager"
         android:layout_height="50dp">
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
-
+            <TextView
+                android:gravity="center_vertical"
+                android:layout_width="wrap_content"
+                android:text="Bộ lọc"
+                android:textSize="16dp"
+                android:padding="0dp"
+                android:layout_gravity="center_vertical"
+                android:textStyle="bold"
+                android:layout_height="match_parent"/>
         </LinearLayout>
     </HorizontalScrollView>
 
-
-    <androidx.viewpager.widget.ViewPager
-        android:layout_width="match_parent"
+    <com.example.renthouse.Activity.CustomViewPager
         android:id="@+id/viewPager"
+        android:layout_marginStart="20dp"
+        android:layout_width="wrap_content"
+        android:layout_marginEnd="20dp"
+        android:layout_height="140dp"
+        android:minHeight="45dp"
+        android:maxHeight="100dp"
         android:layout_marginTop="20dp"
         app:layout_constraintBottom_toTopOf="@id/linearLayoutControlFilter"
-        app:layout_constraintTop_toBottomOf="@+id/horizontalDisplayResult"
-        android:layout_height="100dp"/>
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/horizontalDisplayResult" />
 
     <LinearLayout
         android:id="@+id/linearLayoutControlFilter"
