@@ -55,7 +55,7 @@
         app:srcCompat="@drawable/sentlogo" />
 
     <Button
-        android:id="@+id/loginBtn"
+        android:id="@+id/sent_loginBtn"
         android:layout_width="311dp"
         android:layout_height="56dp"
         android:layout_gravity="center"
