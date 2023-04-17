@@ -76,14 +76,25 @@
                 android:textColor="@color/black"
                 android:layout_height="wrap_content"/>
             <com.google.android.material.tabs.TabLayout
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:layout_weight="6"
                 android:id="@+id/tabLayoutGender"
                 app:tabSelectedTextColor="@color/Primary_40"
                 app:tabTextColor="@color/Secondary_40"
-                android:backgroundTint="@color/tablayout_gender"
-                android:layout_height="35dp">
-
+                app:tabBackground="@drawable/tablayout_gender"
+                android:layout_height="wrap_content">
+                <com.google.android.material.tabs.TabItem
+                    android:layout_width="wrap_content"
+                    android:text="Nữ"
+                    android:layout_height="wrap_content"/>
+                <com.google.android.material.tabs.TabItem
+                    android:layout_width="wrap_content"
+                    android:text="Nam"
+                    android:layout_height="wrap_content"/>
+                <com.google.android.material.tabs.TabItem
+                    android:layout_width="wrap_content"
+                    android:text="Khác"
+                    android:layout_height="wrap_content"/>
             </com.google.android.material.tabs.TabLayout>
         </LinearLayout>
     </LinearLayout>

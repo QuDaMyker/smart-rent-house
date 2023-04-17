@@ -6,6 +6,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentStatePagerAdapter;
 
 import com.example.renthouse.Activity.FragmentFilter.FragmentAmount;
+import com.example.renthouse.Activity.FragmentFilter.FragmentOptionOther;
 import com.example.renthouse.Activity.FragmentFilter.FragmentPrice;
 import com.example.renthouse.Activity.FragmentFilter.FragmentType;
 import com.example.renthouse.Activity.FragmentFilter.FragmentUtilities;
@@ -28,6 +29,8 @@ public class ViewPagerAdapter extends FragmentStatePagerAdapter {
                 return new FragmentType();
             case 3:
                 return new FragmentAmount();
+            case 4:
+                return new FragmentOptionOther();
             default:
                 return new FragmentPrice();
         }
@@ -35,6 +38,6 @@ public class ViewPagerAdapter extends FragmentStatePagerAdapter {
 
     @Override
     public int getCount() {
-        return 4;
+        return 5;
     }
 }

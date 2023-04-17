@@ -26,6 +26,7 @@
         <com.google.android.material.textfield.TextInputEditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:id="@+id/textInputEditTextSearchAddress"
             android:drawableLeft="@drawable/current_location"
             app:boxStrokeColor="@color/Primary_60"
             android:textColor="@color/Primary_60" />
@@ -143,6 +144,25 @@
                 app:cornerRadius="4dp"
                 android:textAllCaps="false"
                 tools:ignore="TouchTargetSizeCheck,TextSizeCheck,TextSizeCheck" />
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/buttonOptionOther"
+                android:layout_width="wrap_content"
+                android:layout_height="35dp"
+                android:layout_gravity="center"
+                android:layout_marginEnd="12dp"
+                android:padding="0dp"
+                android:textColor="@color/text_selector_filter"
+                app:icon="@drawable/button_expand_icon"
+                app:iconGravity="textStart"
+                app:iconSize="12dp"
+                app:iconTint="@color/text_selector_filter"
+                android:checkable="true"
+                android:backgroundTint="@drawable/button_option_in_filtter"
+                android:text="Tùy chọn khác"
+                android:textSize="11dp"
+                app:cornerRadius="4dp"
+                android:textAllCaps="false"
+                tools:ignore="TouchTargetSizeCheck,TextSizeCheck" />
         </LinearLayout>
 
     </HorizontalScrollView>
@@ -158,16 +178,16 @@
         android:layout_height="50dp">
         <LinearLayout
             android:layout_width="match_parent"
+            android:layout_gravity="center_vertical"
             android:layout_height="wrap_content">
             <TextView
-                android:gravity="center_vertical"
                 android:layout_width="wrap_content"
                 android:text="Bộ lọc"
                 android:textSize="16dp"
                 android:padding="0dp"
                 android:layout_gravity="center_vertical"
                 android:textStyle="bold"
-                android:layout_height="match_parent"/>
+                android:layout_height="wrap_content"/>
         </LinearLayout>
     </HorizontalScrollView>
 

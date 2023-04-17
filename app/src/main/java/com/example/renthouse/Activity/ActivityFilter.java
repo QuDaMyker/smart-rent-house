@@ -11,12 +11,15 @@ import androidx.viewpager.widget.ViewPager;
 import androidx.viewpager2.widget.ViewPager2;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
+import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Adapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -30,17 +33,13 @@ import com.example.renthouse.R;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.radiobutton.MaterialRadioButton;
 import com.google.android.material.tabs.TabLayout;
+import com.google.android.material.textfield.TextInputEditText;
 
 import java.util.ArrayList;
 
 
 public class ActivityFilter extends AppCompatActivity {
-    String[] buttonOption = {
-            "Kí túc xá/Homestay",
-            "Phòng cho thuê",
-            "Nhà nguyên căn",
-            "Căn hộ"
-    };
+
     String[] buttonTitles = {
             "WC riêng",
             "Cửa sổ",
@@ -81,7 +80,8 @@ public class ActivityFilter extends AppCompatActivity {
     ViewPagerAdapter viewPagerAdapter;
     ViewGroup.LayoutParams params;
 
-    MaterialButton[] materialButtonFilter = new MaterialButton[4];
+    MaterialButton[] materialButtonFilter = new MaterialButton[5];
+    TextInputEditText textInputEditTextSearchAddress;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -95,6 +95,10 @@ public class ActivityFilter extends AppCompatActivity {
         materialButtonFilter[1] = findViewById(R.id.buttonUtilities); // buttonUtilities
         materialButtonFilter[2] = findViewById(R.id.buttonType); // buttonType
         materialButtonFilter[3] = findViewById(R.id.buttonAmount); // buttonAmount
+        materialButtonFilter[4] = findViewById(R.id.buttonOptionOther); // buttonOptionOther
+
+        textInputEditTextSearchAddress = findViewById(R.id.textInputEditTextSearchAddress);
+
 
         params = viewPager.getLayoutParams();
         params.height = 400;
@@ -103,11 +107,31 @@ public class ActivityFilter extends AppCompatActivity {
 
         HorizontalScrollView horizontalScrollViewResult = findViewById(R.id.horizontalDisplayResult);
         horizontalScrollViewResult.setVisibility(View.GONE);
-
+        _initSetButtonPrice();
         handleButtonnFilter();
-
     }
-
+    public boolean hasButtonChecked() {
+        for (int i = 0; i < materialButtonFilter.length; i++) {
+            if (materialButtonFilter[i].isChecked() == true) {
+                return true;
+            }
+        }
+        return false;
+    }
+    public void _initSetButtonPrice(){
+        materialButtonFilter[0].setChecked(true);
+    }
+    public void unChekedButton(int position) {
+        for (int i = 0; i < materialButtonFilter.length; i++) {
+            if (i == position)
+                continue;
+            else {
+                materialButtonFilter[i].setChecked(false);
+                materialButtonFilter[i].setTextColor(getColor(R.color.Secondary_40));
+                materialButtonFilter[i].setIcon(getDrawable(R.drawable.ic_expand_unchecked));                 // materialButtonFilter[i].setIconTint(getColorStateList(R.color.text_selector_filter));
+            }
+        }
+    }
     public void handleButtonnFilter() {
         for (int i = 0; i < materialButtonFilter.length; i ++) {
             int finalI = i;
@@ -115,42 +139,62 @@ public class ActivityFilter extends AppCompatActivity {
                 @Override
                 public void onClick(View v) {
                     if (!materialButtonFilter[finalI].isChecked()) {
+                        materialButtonFilter[finalI].setTextColor(getColor(R.color.Secondary_40));
                         materialButtonFilter[finalI].setIcon(getDrawable(R.drawable.button_expand_icon));
                         materialButtonFilter[finalI].setIconTint(getColorStateList(R.color.text_selector_filter));
+
                         viewPager.setVisibility(View.GONE);
                     }
                     else {
                         materialButtonFilter[finalI].setIcon(getDrawable(R.drawable.button_collapse_icon_when_selecting));
                         materialButtonFilter[finalI].setIconTint(getColorStateList(R.color.text_selector_filter));
+                        materialButtonFilter[finalI].setTextColor(getColor(R.color.white));
                         viewPager.setVisibility(View.VISIBLE);
+
+                        unChekedButton(finalI);
+
                         params.width = ViewGroup.LayoutParams.WRAP_CONTENT;    //500px
                         viewPager.setLayoutParams(params);
 
-                        switch (finalI) {
-                            case 0:
-                                params.height = 400;
-                                viewPager.setCurrentItem(0);
-                                break;
-                            case 1:
-                                params.height = 750;
-                                viewPager.setCurrentItem(1);
-                                break;
-                            case 2:
-                                params.height = 500;
-                                viewPager.setCurrentItem(2);
-                                break;
-                            case 3:
-                                params.height = 300;
-                                viewPager.setCurrentItem(3);
-                                break;
-                            default:
-                                params.height = 400;
-                                viewPager.setCurrentItem(0);
-                        }
+                        setPageViewerControl(finalI);
                     }
                 }
             });
         }
     }
-
+    public void setPageViewerControl(int position){
+        switch (position) {
+            case 0:
+                params.height = 400;
+                viewPager.setCurrentItem(0);
+                break;
+            case 1:
+                params.height = 750;
+                viewPager.setCurrentItem(1);
+                break;
+            case 2:
+                params.height = 500;
+                viewPager.setCurrentItem(2);
+                break;
+            case 3:
+                params.height = 300;
+                viewPager.setCurrentItem(3);
+                break;
+            case 4:
+                params.height = 500;
+                viewPager.setCurrentItem(4);
+                break;
+            default:
+                params.height = 400;
+                viewPager.setCurrentItem(0);
+        }
+    }
+    private void closeKeyBoard(){
+        View view = this.getCurrentFocus();
+        if (view != null){
+            InputMethodManager imm = (InputMethodManager)
+                    getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        }
+    }
 }

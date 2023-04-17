@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Activity.FragmentFilter.FragmentType">
+    tools:context=".Activity.FragmentFilter.FragmentOptionOther">
 
     <!-- TODO: Update blank fragment layout -->
     <RadioGroup
@@ -14,24 +14,24 @@
         <com.google.android.material.radiobutton.MaterialRadioButton
             android:layout_width="wrap_content"
             android:buttonTint="@color/Primary_40"
-            android:text="Kí túc xá/Homestay"
+            android:text="Liên quan nhất"
             android:textSize="15dp"
             android:layout_height="wrap_content"/>
         <com.google.android.material.radiobutton.MaterialRadioButton
             android:layout_width="wrap_content"
             android:buttonTint="@color/Primary_40"
-            android:text="Phòng cho thuê"
+            android:text="Mới nhất"
             android:textSize="15dp"
             android:layout_height="wrap_content"/>
         <com.google.android.material.radiobutton.MaterialRadioButton
             android:layout_width="wrap_content"
-            android:text="Nhà nguyên căn"
+            android:text="Giá thấp đến cao"
             android:buttonTint="@color/Primary_40"
             android:textSize="15dp"
             android:layout_height="wrap_content"/>
         <com.google.android.material.radiobutton.MaterialRadioButton
             android:layout_width="wrap_content"
-            android:text="Căn hộ"
+            android:text="Giá cao xuống thấp"
             android:textSize="15dp"
             android:buttonTint="@color/Primary_40"
             android:layout_height="wrap_content"/>
