@@ -3,17 +3,33 @@ package com.example.renthouse.Activity;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 
+import android.Manifest;
+import android.app.AlertDialog;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.renthouse.OOP.AccountClass;
 import com.example.renthouse.R;
 import com.google.android.gms.auth.api.identity.BeginSignInRequest;
 import com.google.android.gms.auth.api.identity.Identity;
@@ -26,15 +42,25 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.auth.UserProfileChangeRequest;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.TreeMap;
 
 public class ActivityLogIn extends AppCompatActivity {
@@ -48,11 +74,18 @@ public class ActivityLogIn extends AppCompatActivity {
     private TextInputEditText login_email, login_password;
     GoogleSignInOptions gso;
     GoogleSignInClient gsc;
+    FirebaseDatabase database;
+    DatabaseReference reference;
+    String imageURL;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_log_in);
+
+        database = FirebaseDatabase.getInstance();
+        reference = database.getReference("Accounts");
+        //
 
         forgotPasswordBtn = findViewById(R.id.forgotPasswordBtn);
         signUpBtn = findViewById(R.id.login_signUpBtn);
@@ -87,6 +120,7 @@ public class ActivityLogIn extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
+                            pushNotification();
                             Toast.makeText(getApplicationContext(), "Login Successful", Toast.LENGTH_SHORT).show();
                             Intent intent = new Intent(getApplicationContext(), ActivityChat.class);
                             startActivity(intent);
@@ -128,6 +162,54 @@ public class ActivityLogIn extends AppCompatActivity {
 
             }
         });
+
+
+        login_password.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (actionId == EditorInfo.IME_ACTION_DONE || actionId == EditorInfo.IME_ACTION_GO) {
+                    login_logInBtn.performClick();
+                    return true;
+                }
+                return false;
+            }
+        });
+
+        login_password.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                // Trước khi text thay đổi
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                // Trong quá trình text thay đổi
+                TextInputLayout pw = findViewById(R.id.textInputPassword);
+                pw.setPasswordVisibilityToggleEnabled(true);
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                // Sau khi text đã thay đổi
+                if (login_password.getText().toString().isEmpty()) {
+                    TextInputLayout pw = findViewById(R.id.textInputPassword);
+                    pw.setPasswordVisibilityToggleEnabled(false);
+                } else {
+                    TextInputLayout pw = findViewById(R.id.textInputPassword);
+                    pw.setPasswordVisibilityToggleEnabled(true);
+                }
+            }
+        });
+
+
+
+
+
+
+
+
+
     }
 
     private void signInWithGoogle() {
@@ -150,10 +232,28 @@ public class ActivityLogIn extends AppCompatActivity {
                     String personId = account.getId();
                     Uri personPhoto = account.getPhotoUrl();
 
-                    Toast.makeText(getApplicationContext(), personName, Toast.LENGTH_SHORT).show();
-                    Toast.makeText(getApplicationContext(), personEmail, Toast.LENGTH_SHORT).show();
-                    Toast.makeText(getApplicationContext(), personId, Toast.LENGTH_SHORT).show();
-                    Toast.makeText(getApplicationContext(), personPhoto.toString(), Toast.LENGTH_SHORT).show();
+
+                    if(personPhoto != null) {
+                        Toast.makeText(getApplicationContext(), "Having photo ", Toast.LENGTH_SHORT).show();
+                    }
+
+                    String submail = personEmail;
+                    int atIndex = personEmail.indexOf("@");
+                    String username = personEmail.substring(0, atIndex);
+
+
+                    Date now = new Date();
+                    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                    String formattedDate = dateFormat.format(now);
+
+                    AccountClass accountClass = new AccountClass(personName, personEmail, "null", "null", personPhoto.toString(), formattedDate);
+                    reference.child(username).setValue(accountClass);
+
+//                    Toast.makeText(getApplicationContext(), personName, Toast.LENGTH_SHORT).show();
+//                    Toast.makeText(getApplicationContext(), personEmail, Toast.LENGTH_SHORT).show();
+//                    Toast.makeText(getApplicationContext(), personId, Toast.LENGTH_SHORT).show();
+//                    Toast.makeText(getApplicationContext(), personPhoto.toString(), Toast.LENGTH_SHORT).show();
+                    pushSuccessFullNotification();
                 }
                 //
                 //
@@ -175,10 +275,12 @@ public class ActivityLogIn extends AppCompatActivity {
                             FirebaseUser user = mAuth.getCurrentUser();
                             updateUserInfo(user);
                             // Đăng nhập thành công
-                            Toast.makeText(getApplicationContext(), "Dang Nhap Thanh Cong", Toast.LENGTH_SHORT).show();
+                            pushSuccessFullNotification();
+                            Toast.makeText(getApplicationContext(), "Đăng nhập thành công", Toast.LENGTH_SHORT).show();
                         } else {
                             // Đăng nhập thất bại
-                            Toast.makeText(getApplicationContext(), "That bai", Toast.LENGTH_SHORT).show();
+                            pushFailerNotification();
+                            Toast.makeText(getApplicationContext(), "Thất bại", Toast.LENGTH_SHORT).show();
 
                         }
                     }
@@ -201,5 +303,100 @@ public class ActivityLogIn extends AppCompatActivity {
     public boolean isValidEmail(CharSequence email) {
         return android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches();
     }
+    private void pushNotification() {
+        Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher);
 
+        // Tạo notification channel nếu ứng dụng chạy trên Android 8.0 trở lên
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            NotificationChannel channel = new NotificationChannel("my_channel_id", "My Channel", NotificationManager.IMPORTANCE_DEFAULT);
+            channel.setDescription("My Channel Description");
+            NotificationManager notificationManager = getSystemService(NotificationManager.class);
+            if (notificationManager != null) {
+                notificationManager.createNotificationChannel(channel);
+            }
+        }
+
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(getApplicationContext(), "my_channel_id")
+                .setContentTitle("Đăng nhập thành công")
+                .setContentText("Cảm ơn bạn đã sử dụng sản phẩm")
+                .setSmallIcon(R.drawable.notification_flat)
+                .setLargeIcon(bitmap);
+
+        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(getApplicationContext());
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
+        }
+        notificationManager.notify(0, builder.build());
+    }
+    private void pushSuccessFullNotification() {
+        Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher);
+
+        // Tạo notification channel nếu ứng dụng chạy trên Android 8.0 trở lên
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            NotificationChannel channel = new NotificationChannel("my_channel_id", "My Channel", NotificationManager.IMPORTANCE_DEFAULT);
+            channel.setDescription("My Channel Description");
+            NotificationManager notificationManager = getSystemService(NotificationManager.class);
+            if (notificationManager != null) {
+                notificationManager.createNotificationChannel(channel);
+            }
+        }
+
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(getApplicationContext(), "my_channel_id")
+                .setContentTitle("Đăng nhập bằng tài khoản Google thành công")
+                .setContentText("Cảm ơn bạn đã sử dụng sản phẩm")
+                .setSmallIcon(R.drawable.notification_flat)
+                .setLargeIcon(bitmap);
+
+        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(getApplicationContext());
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
+        }
+        notificationManager.notify(0, builder.build());
+    }
+    private void pushFailerNotification() {
+        Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher);
+
+        // Tạo notification channel nếu ứng dụng chạy trên Android 8.0 trở lên
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            NotificationChannel channel = new NotificationChannel("my_channel_id", "My Channel", NotificationManager.IMPORTANCE_DEFAULT);
+            channel.setDescription("My Channel Description");
+            NotificationManager notificationManager = getSystemService(NotificationManager.class);
+            if (notificationManager != null) {
+                notificationManager.createNotificationChannel(channel);
+            }
+        }
+
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(getApplicationContext(), "my_channel_id")
+                .setContentTitle("Đăng nhập thất bại")
+                .setContentText("Hãy kiểm tra lại tài khoản của bạn")
+                .setSmallIcon(R.drawable.notification_flat)
+                .setLargeIcon(bitmap);
+
+        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(getApplicationContext());
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
+        }
+        notificationManager.notify(0, builder.build());
+    }
 }

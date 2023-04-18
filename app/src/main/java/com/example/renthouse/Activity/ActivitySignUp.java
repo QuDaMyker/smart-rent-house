@@ -9,7 +9,9 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.KeyEvent;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -59,29 +61,29 @@ public class ActivitySignUp extends AppCompatActivity {
         backToLoginBtn = findViewById(R.id.backToLoginBtn);
         signUpBtn = findViewById(R.id.signup_signUpBtn);
         tv_backToLoginBtn = findViewById(R.id.tv_backToLoginBtn);
-
         signup_fullName = findViewById(R.id.signup_fullName);
         signup_email = findViewById(R.id.signup_email);
         signup_phoneNumber = findViewById(R.id.signup_phoneNumber);
         signup_password = findViewById(R.id.signup_password);
+
+        // Ẩn hiện toggle
         if (signup_password.getText().toString().isEmpty()) {
             TextInputLayout pw = findViewById(R.id.tiploPassword);
             pw.setPasswordVisibilityToggleEnabled(false);
         }
+
         signup_password.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
                 // Trước khi text thay đổi
 
             }
-
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 // Trong quá trình text thay đổi
                 TextInputLayout pw = findViewById(R.id.tiploPassword);
                 pw.setPasswordVisibilityToggleEnabled(true);
             }
-
             @Override
             public void afterTextChanged(Editable s) {
                 // Sau khi text đã thay đổi
@@ -118,9 +120,20 @@ public class ActivitySignUp extends AppCompatActivity {
         });
         //
         //
-    }
+        signup_password.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (actionId == EditorInfo.IME_ACTION_DONE || actionId == EditorInfo.IME_ACTION_GO) {
+                    signUpBtn.performClick();
+                    return true;
+                }
+                return false;
+            }
+        });
 
-    private void saveData() {
+
+    }
+    private void checkTrueCondition() {
         if (signup_fullName.getText().toString().isEmpty()) {
             signup_fullName.setError("Vui lòng điền họ và tên");
             return;
@@ -170,11 +183,14 @@ public class ActivitySignUp extends AppCompatActivity {
         } else {
             signup_password.setError(null);
         }
-
+    }
+    private void saveData() {
+        checkTrueCondition();
 
         String submail = signup_email.getText().toString().trim();
         int atIndex = signup_email.getText().toString().trim().indexOf("@");
         String username = signup_email.getText().toString().trim().substring(0, atIndex);
+
         int resourceId = R.drawable.chatlogo;
         Uri uriImage = Uri.parse("android.resource://" + getPackageName() + "/" + resourceId);
 
@@ -200,6 +216,8 @@ public class ActivitySignUp extends AppCompatActivity {
                 dialog.dismiss();
             }
         });
+
+
     }
 
     private void loadAccountToDataBase() {
@@ -207,10 +225,8 @@ public class ActivitySignUp extends AppCompatActivity {
         reference = database.getReference("Accounts");
 
         Date now = new Date();
-
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         String formattedDate = dateFormat.format(now);
-
 
         String name = signup_fullName.getText().toString().trim();
         String email = signup_email.getText().toString().trim();
@@ -228,7 +244,11 @@ public class ActivitySignUp extends AppCompatActivity {
             int atIndex = email.indexOf("@");
             String username = email.substring(0, atIndex);
             reference.child(username).setValue(accountClass);
+
+            // add to Authentical firebase
             createAccount(email, password);
+            //
+
             Toast.makeText(getApplicationContext(), "Đăng kí thành công", Toast.LENGTH_SHORT).show();
             Toast.makeText(getApplicationContext(), "Mời Bạn Đăng Nhập", Toast.LENGTH_SHORT).show();
             Intent intent = new Intent(getApplicationContext(), ActivityLogIn.class);
@@ -236,6 +256,25 @@ public class ActivitySignUp extends AppCompatActivity {
         } else {
             Toast.makeText(getApplicationContext(), "That Bai", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    public void createAccount(String email, String password) {
+        mAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+            @Override
+            public void onComplete(@NonNull Task<AuthResult> task) {
+                if (task.isSuccessful()) {
+                    Toast.makeText(ActivitySignUp.this, "Account Created",
+                            Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(getApplicationContext(), ActivityLogIn.class);
+                    startActivity(intent);
+                    finish();
+                } else {
+                    // If sign in fails, display a message to the user.
+                    Toast.makeText(ActivitySignUp.this, "Authentication failed.",
+                            Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
     }
 
     public boolean isValidEmail(CharSequence email) {
@@ -254,24 +293,6 @@ public class ActivitySignUp extends AppCompatActivity {
         matcher = pattern.matcher(password);
         return matcher.matches();
     }
-    public void createAccount(String email, String password) {
-        mAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-            @Override
-            public void onComplete(@NonNull Task<AuthResult> task) {
-                if(task.isSuccessful()) {
-                    Toast.makeText(ActivitySignUp.this, "Account Created",
-                            Toast.LENGTH_SHORT).show();
-                    Intent intent = new Intent(getApplicationContext(), ActivityLogIn.class);
-                    startActivity(intent);
-                    finish();
-                }else {
-                    // If sign in fails, display a message to the user.
-                    Toast.makeText(ActivitySignUp.this, "Authentication failed.",
-                            Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
 
-    }
 
 }

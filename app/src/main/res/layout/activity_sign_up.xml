@@ -64,6 +64,7 @@
             android:drawableLeft="@drawable/outline_person_24"
             android:drawablePadding="10dp"
             android:hint="Họ và Tên"
+            android:singleLine="true"
             android:textColor="@color/black" />
     </com.google.android.material.textfield.TextInputLayout>
 
@@ -82,11 +83,12 @@
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/signup_email"
-            android:inputType="textEmailAddress"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:drawableLeft="@drawable/outline_email_24"
             android:drawablePadding="10dp"
+            android:inputType="textEmailAddress"
+            android:singleLine="true"
             android:textColor="@color/black" />
     </com.google.android.material.textfield.TextInputLayout>
 
@@ -109,6 +111,7 @@
             android:layout_height="wrap_content"
             android:drawableLeft="@drawable/baseline_local_phone_24"
             android:drawablePadding="10dp"
+            android:singleLine="true"
             android:textColor="@color/black" />
     </com.google.android.material.textfield.TextInputLayout>
 
@@ -134,6 +137,7 @@
             android:drawableStart="@drawable/outline_lock_24"
             android:drawablePadding="10dp"
             android:inputType="textPassword"
+            android:singleLine="true"
             android:textColor="@color/black" />
     </com.google.android.material.textfield.TextInputLayout>
 
