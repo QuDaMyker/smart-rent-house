@@ -191,7 +191,7 @@ public class ActivitySignUp extends AppCompatActivity {
                 while (!uriTask.isComplete()) ;
                 Uri urlImage = uriTask.getResult();
                 imageURL = urlImage.toString();
-                loadAccoutToDataBase();
+                loadAccountToDataBase();
                 dialog.dismiss();
             }
         }).addOnFailureListener(new OnFailureListener() {
@@ -202,7 +202,7 @@ public class ActivitySignUp extends AppCompatActivity {
         });
     }
 
-    private void loadAccoutToDataBase() {
+    private void loadAccountToDataBase() {
         database = FirebaseDatabase.getInstance();
         reference = database.getReference("Accounts");
 

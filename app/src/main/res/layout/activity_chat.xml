@@ -39,6 +39,12 @@
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:text="Bạn chưa có tin nhắn" />
+
+            <Button
+                android:id="@+id/logoutButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="logout" />
         </LinearLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
