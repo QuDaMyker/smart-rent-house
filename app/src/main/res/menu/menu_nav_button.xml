@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item android:title="Trang chủ"
+        android:id="@+id/btnHome"
+        android:icon="@drawable/ic_home_foreground"
+        />
+    <item android:title="Yêu thích"
+        android:id="@+id/btnLiked"
+        android:icon="@drawable/ic_favorite_foreground"
+        />
+    <item android:title="Trò chuyện"
+        android:id="@+id/btnChat"
+        android:icon="@drawable/ic_chat_foreground"
+        />
+    <item android:title="Tài khoản"
+        android:id="@+id/btnAccount"
+        android:icon="@drawable/ic_account_foreground"
+        />
+</menu>
