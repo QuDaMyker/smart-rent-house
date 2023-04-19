@@ -2,4 +2,27 @@
     <string name="app_name">RentHouse</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="sample_location_text">Đặng Văn Bi, Quận Thủ Đức</string>
+    <string-array name="rangeSlider">
+        <item>0</item>
+        <item>100</item>
+    </string-array>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string-array name="cities">
+        <item>Hồ Chí Minh</item>
+        <item>Hà Nội</item>
+        <item>Đà Nẵng</item>
+    </string-array>
+    <string-array name="districts">
+        <item>Quận 1</item>
+        <item>Quận 2</item>
+        <item>Quận 3</item>
+    </string-array>
+    <string-array name="wards">
+        <item>Phường Bến Nghé</item>
+        <item>Phường Bến Thành</item>
+        <item>Phường Đa Kao</item>
+    </string-array>
+
 </resources>
