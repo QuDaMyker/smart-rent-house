@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools" >
+    package="com.example.renthouse"
+    xmlns:tools="http://schemas.android.com/tools">
 
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <uses-permission android:name="android.permission.INTERNET"/>
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -12,8 +15,26 @@
         android:theme="@style/Theme.RentHouse"
         tools:targetApi="31" >
         <activity
-            android:name=".Activity.ActivityLiked"
-            android:exported="true" >
+            android:name=".Activity.ActivityChat"
+            android:exported="false" />
+        <activity
+            android:name=".Activity.ActivitySearch"
+            android:exported="false" />
+        <activity
+            android:name=".Activity.ActivitySignUp"
+            android:exported="false" />
+        <activity
+            android:name=".Activity.ActivitySent"
+            android:exported="false" />
+        <activity
+            android:name=".Activity.ActivityForgotPassword"
+            android:exported="false" />
+        <activity
+            android:name=".Activity.ActivityLogIn"
+            android:exported="false" />
+        <activity
+            android:name=".Activity.ActivitySplash"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
