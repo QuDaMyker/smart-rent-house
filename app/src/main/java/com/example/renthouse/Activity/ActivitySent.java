@@ -2,6 +2,7 @@ package com.example.renthouse.Activity;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -11,7 +12,7 @@ import com.example.renthouse.R;
 
 public class ActivitySent extends AppCompatActivity {
     private ImageButton backToLoginBtn;
-    private Button loginBtn;
+    private Button sent_loginBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,6 +27,14 @@ public class ActivitySent extends AppCompatActivity {
             }
         });
 
-        loginBtn = findViewById(R.id.loginBtn);
+        sent_loginBtn = findViewById(R.id.sent_loginBtn);
+        sent_loginBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(ActivitySent.this, ActivityLogIn.class);
+                startActivity(intent);
+                finish();
+            }
+        });
     }
 }
