@@ -13,6 +13,7 @@ import com.example.renthouse.databinding.ActivityLikedBinding;
 public class ActivityLiked extends AppCompatActivity {
 
     ActivityLikedBinding binding;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
