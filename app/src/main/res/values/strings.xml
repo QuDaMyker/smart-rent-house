@@ -23,4 +23,11 @@
         <item>Phường Đa Kao</item>
     </string-array>
 
+    <array name="stepperText">
+        <item>Thông tin</item>
+        <item>Địa chỉ</item>
+        <item>Tiện ích</item>
+        <item>Xác nhận</item>
+    </array>
+
 </resources>

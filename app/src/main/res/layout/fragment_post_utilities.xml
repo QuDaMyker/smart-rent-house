@@ -5,25 +5,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
-    tools:context=".Activity.ActivityPost">
-    <com.google.android.material.appbar.MaterialToolbar
-        android:id="@+id/top_app_bar"
-        android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:background="@color/Primary_98"
-        app:navigationIcon="@drawable/baseline_arrow_back_24"
-        app:navigationIconTint="@color/Primary_40">
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Đăng phòng"
-            android:textColor="@color/Primary_40"
-            android:textSize="22sp"
-            android:textStyle="bold" />
-    </com.google.android.material.appbar.MaterialToolbar>
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+    tools:context=".Activity.FragmentPost.FragmentUtilities">
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -98,25 +80,24 @@
                 android:layout_marginBottom="20dp">
             </GridLayout>
 
-            <com.google.android.material.button.MaterialButton
-                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-                android:layout_width="match_parent"
-                android:layout_height="70dp"
-                android:layout_gravity="center"
-                android:text="Tiếp theo"
-                android:textSize="18sp"
-                android:textStyle="bold"
-                android:textColor="@color/Primary_60"
-                android:layout_marginBottom="50dp"
-                android:backgroundTint="@color/white"
-                app:strokeColor="@color/Primary_60"
-                app:strokeWidth="2dp"
-                android:textAllCaps="false"
-                app:cornerRadius="100dp"
-                app:icon="@drawable/ic_arrow_right"
-                app:iconGravity="textEnd"
-                app:iconSize="28dp"/>
+<!--            <com.google.android.material.button.MaterialButton-->
+<!--                style="@style/Widget.MaterialComponents.Button.OutlinedButton"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="70dp"-->
+<!--                android:layout_gravity="center"-->
+<!--                android:text="Tiếp theo"-->
+<!--                android:textSize="18sp"-->
+<!--                android:textStyle="bold"-->
+<!--                android:textColor="@color/Primary_60"-->
+<!--                android:layout_marginBottom="50dp"-->
+<!--                android:backgroundTint="@color/white"-->
+<!--                app:strokeColor="@color/Primary_60"-->
+<!--                app:strokeWidth="2dp"-->
+<!--                android:textAllCaps="false"-->
+<!--                app:cornerRadius="100dp"-->
+<!--                app:icon="@drawable/ic_arrow_right"-->
+<!--                app:iconGravity="textEnd"-->
+<!--                app:iconSize="28dp"/>-->
 
         </LinearLayout>
-    </ScrollView>
 </LinearLayout>
