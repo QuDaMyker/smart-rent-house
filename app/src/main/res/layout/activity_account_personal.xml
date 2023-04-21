@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:orientation="vertical"
+    tools:context=".Activity.ActivityAccount">
+
+
+    <FrameLayout
+        android:id="@+id/frameLayout2"
+        android:layout_width="match_parent"
+        android:layout_height="148dp"
+        android:background="@drawable/home_bg"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/textView19"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="24dp"
+            android:layout_marginTop="45dp"
+            android:gravity="center"
+            android:text="Tài khoản"
+            android:textColor="@color/white"
+            android:textSize="30sp"
+            android:textStyle="bold" />
+
+        <com.google.android.material.bottomnavigation.BottomNavigationView
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:layout_gravity="bottom"
+            android:background="@drawable/white_bg_account"
+            android:isScrollContainer="false"
+            app:itemHorizontalTranslationEnabled="true"
+            app:itemPaddingBottom="12dp"
+            app:itemTextColor="@color/black"
+            app:menu="@menu/account_nav_button" />
+    </FrameLayout>
+
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/navigation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/Primary_90"
+        app:elevation="3dp"
+        app:itemIconSize="18dp"
+        app:itemIconTint="@color/black"
+        app:labelVisibilityMode="labeled"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:menu="@menu/menu_nav_button" />
+
+    <FrameLayout
+        android:id="@+id/frameLayout3"
+        android:layout_width="match_parent"
+        android:layout_height="230dp"
+        android:background="@color/white"
+        android:orientation="vertical"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/frameLayout2">
+
+        <ImageView
+            android:id="@+id/imageView16"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="20dp"
+            tools:src="@tools:sample/avatars" />
+
+        <TextView
+            android:id="@+id/textView21"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="65dp"
+            android:text="Name"
+            android:textAlignment="center"
+            android:textColor="@color/Primary_40"
+            android:textSize="30sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <TextView
+            android:id="@+id/textView22"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="95dp"
+            android:text="Email"
+            android:textSize="18sp" />
+
+        <ImageView
+            android:id="@+id/imageView14"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginStart="60dp"
+            android:layout_marginTop="25dp"
+            android:src="@drawable/ic_avatar_account" />
+
+    </FrameLayout>
+
+    <LinearLayout
+        android:id="@+id/linearLayout"
+        android:layout_width="410dp"
+        android:layout_height="299dp"
+        android:layout_marginTop="10dp"
+        android:background="@color/white"
+        android:orientation="vertical"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/frameLayout3">
+
+        <Button
+            android:id="@+id/button"
+            android:layout_width="350dp"
+            android:layout_height="70dp"
+            android:layout_marginStart="30dp"
+            android:backgroundTint="@color/Primary_90"
+            android:text="Thông tin cá nhân"
+            android:textAlignment="viewStart"
+            android:textColor="@color/Primary_40"
+            android:textSize="20sp"
+            app:cornerRadius="12dp"
+            app:icon="@drawable/outline_person_24"
+            app:iconPadding="15dp"
+            app:iconSize="35dp"
+            app:iconTint="@color/Primary_40" />
+
+        <Button
+            android:id="@+id/button2"
+            android:layout_width="350dp"
+            android:layout_height="70dp"
+            android:layout_marginStart="30dp"
+            android:backgroundTint="@color/Primary_90"
+            android:text="Điều khoản và chính sách"
+            android:textAlignment="viewStart"
+            android:textColor="@color/Primary_40"
+            android:textSize="20sp"
+            app:cornerRadius="12dp"
+            app:icon="@drawable/ic_policy_account"
+            app:iconPadding="20dp"
+            app:iconSize="25dp"
+            app:iconTint="@color/Primary_40" />
+
+        <Button
+            android:id="@+id/button3"
+            android:layout_width="350dp"
+            android:layout_height="70dp"
+            android:layout_marginStart="30dp"
+            android:backgroundTint="@color/Primary_90"
+            android:text="Thông báo"
+            android:textAlignment="viewStart"
+            android:textColor="@color/Primary_40"
+            android:textSize="20sp"
+            app:cornerRadius="12dp"
+            app:icon="@drawable/ic_annouce_account"
+            app:iconPadding="20dp"
+            app:iconSize="25dp"
+            app:iconTint="@color/Primary_40" />
+
+        <Button
+            android:id="@+id/button4"
+            android:layout_width="350dp"
+            android:layout_height="70dp"
+            android:layout_marginStart="30dp"
+            android:backgroundTint="@color/Primary_90"
+            android:text="Báo cáo sự cố"
+            android:textAlignment="viewStart"
+            android:textColor="@color/Primary_40"
+            android:textSize="20sp"
+            app:cornerRadius="12dp"
+            app:icon="@drawable/ic_problem_account"
+            app:iconPadding="20dp"
+            app:iconSize="25dp"
+            app:iconTint="@color/Primary_40" />
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/button5"
+        android:layout_width="340dp"
+        android:layout_height="70dp"
+        android:layout_marginTop="30dp"
+        android:text="Đăng xuất"
+        android:textSize="20sp"
+        app:icon="@drawable/ic_logout_account"
+        app:iconGravity="textStart"
+        app:iconPadding="10dp"
+        app:iconSize="25dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

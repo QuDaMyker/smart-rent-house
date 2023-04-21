@@ -39,7 +39,7 @@
         android:id="@+id/navigation"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/Primary_90"
+        android:background="@color/Primary_98"
         app:elevation="3dp"
         app:itemIconSize="18dp"
         app:itemIconTint="@color/black"
