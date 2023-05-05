@@ -1,19 +1,19 @@
-package com.example.renthouse.Activity;
+package com.example.renthouse.Test;
 
 public class Room {
     private String name;
     private String address;
-    private Integer price;
-    private String sourceImage;
+    private int price;
+    private int sourceImage;
 
-    public Room(String name, String address, Integer price, String sourceImage) {
+    public Room(String name, String address, int price, int sourceImage) {
         this.name = name;
         this.address = address;
         this.price = price;
         this.sourceImage = sourceImage;
     }
 
-    public Integer getPrice() {
+    public int getPrice() {
         return price;
     }
 
@@ -37,11 +37,11 @@ public class Room {
         this.name = name;
     }
 
-    public String getSourceImage() {
+    public int getSourceImage() {
         return sourceImage;
     }
 
-    public void setSourceImage(String sourceImage) {
+    public void setSourceImage(int sourceImage) {
         this.sourceImage = sourceImage;
     }
 }

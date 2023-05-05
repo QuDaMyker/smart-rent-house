@@ -18,6 +18,12 @@
         <activity
             android:name=".Activity.DetailsActivity"
             android:exported="true" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+
 
         </activity>
         <activity
@@ -47,11 +53,11 @@
         <activity
             android:name=".Activity.ActivityFilter"
             android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+        </activity>
+        <activity android:name=".Activity.ActivityLiked"
+            android:exported="true">
+
         </activity>
     </application>
 
