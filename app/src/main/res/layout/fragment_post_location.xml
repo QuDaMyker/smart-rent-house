@@ -28,16 +28,17 @@
                 android:textColor="@color/Secondary_40"
                 android:layout_marginBottom="10dp"/>
             <com.google.android.material.textfield.TextInputLayout
+
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
                 android:layout_marginBottom="20dp">
-                <AutoCompleteTextView
+                <com.google.android.material.textfield.TextInputEditText
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="none"
-                    android:hint="Bấm để chọn Thành Phố"
-                    app:simpleItems="@array/cities" />
+                    android:id="@+id/cityEdt"
+                    android:focusable="false"
+                    android:hint="Bấm để chọn Thành Phố"/>
             </com.google.android.material.textfield.TextInputLayout>
 
             <TextView
@@ -51,14 +52,14 @@
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
                 android:layout_marginBottom="20dp">
-                <AutoCompleteTextView
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/districtEdt"
+                    android:focusable="false"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="none"
-                    android:hint="Bấm để chọn Quận / Huyện"
-                    app:simpleItems="@array/districts" />
+                    android:hint="Bấm để chọn Quận / Huyện"/>
             </com.google.android.material.textfield.TextInputLayout>
 
             <TextView
@@ -72,14 +73,14 @@
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
                 android:layout_marginBottom="20dp">
-                <AutoCompleteTextView
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/wardEdt"
+                    android:focusable="false"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="none"
-                    android:hint="Bấm để chọn Phường / Xã"
-                    app:simpleItems="@array/wards" />
+                    android:hint="Bấm để chọn Phường / Xã"/>
             </com.google.android.material.textfield.TextInputLayout>
 
             <TextView
@@ -121,24 +122,6 @@
                     android:layout_height="wrap_content"
                     android:hint="Ví dụ: 41/1A" />
             </com.google.android.material.textfield.TextInputLayout>
-<!--            <com.google.android.material.button.MaterialButton-->
-<!--                style="@style/Widget.MaterialComponents.Button.OutlinedButton"-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="70dp"-->
-<!--                android:layout_gravity="center"-->
-<!--                android:text="Tiếp theo"-->
-<!--                android:textSize="18sp"-->
-<!--                android:textStyle="bold"-->
-<!--                android:textColor="@color/Primary_60"-->
-<!--                android:layout_marginBottom="50dp"-->
-<!--                android:backgroundTint="@color/white"-->
-<!--                app:strokeColor="@color/Primary_60"-->
-<!--                app:strokeWidth="2dp"-->
-<!--                android:textAllCaps="false"-->
-<!--                app:cornerRadius="100dp"-->
-<!--                app:icon="@drawable/ic_arrow_right"-->
-<!--                app:iconGravity="textEnd"-->
-<!--                app:iconSize="28dp"/>-->
 
         </LinearLayout>
 </LinearLayout>
