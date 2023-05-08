@@ -1,19 +1,42 @@
 package com.example.renthouse.Activity.FragmentPost;
 
+import android.Manifest;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.GridLayout;
+import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.renthouse.Adapter.PhotoAdapter;
 import com.example.renthouse.R;
 import com.google.android.material.button.MaterialButton;
+import com.gun0912.tedpermission.PermissionListener;
+import com.gun0912.tedpermission.normal.TedPermission;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import gun0912.tedbottompicker.TedBottomPicker;
+import gun0912.tedbottompicker.TedBottomSheetDialogFragment;
 
 public class FragmentUtilities  extends Fragment {
+
+    private LinearLayout addImg;
+    private LinearLayout imgLayout;
+    private MaterialButton addImgBtn;
+    private RecyclerView rcvPhoto;
+    private PhotoAdapter photoAdapter;
+    private List<Uri> uriListImg = new ArrayList<>();
+    
     String[] buttonTitles = {
             "WC riêng",
             "Cửa sổ",
@@ -54,8 +77,81 @@ public class FragmentUtilities  extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_post_utilities, container, false);
         createButtons(v);
+        
+        addImg = (LinearLayout) v.findViewById(R.id.addImg);
+        imgLayout = (LinearLayout) v.findViewById(R.id.imgLayout);
+        addImgBtn = (MaterialButton) v.findViewById(R.id.addImgBtn);
+        rcvPhoto = (RecyclerView) v.findViewById(R.id.rcvPhoto);
+        photoAdapter = new PhotoAdapter(getActivity());
+
+        GridLayoutManager gridLayoutManager = new GridLayoutManager(getActivity(), 4);
+        rcvPhoto.setLayoutManager(gridLayoutManager);
+        rcvPhoto.setAdapter(photoAdapter);
+
+        photoAdapter.setOnButtonClickListener(new PhotoAdapter.OnButtonClickListener() {
+            @Override
+            public void onButtonClick(int position) {
+                uriListImg.remove(position);
+                photoAdapter.setData(uriListImg);
+                if(uriListImg.isEmpty()){
+                    addImgBtn.setVisibility(View.VISIBLE);
+                    imgLayout.setVisibility(View.GONE);
+                }
+            }
+        });
+        addImg.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                requestPermission();
+            }
+        });
+        addImgBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                requestPermission();
+            }
+        });
         return v;
     }
+
+    private void requestPermission() {
+        PermissionListener permissionlistener = new PermissionListener() {
+            @Override
+            public void onPermissionGranted() {
+                selectImagesFromGallery();
+            }
+
+            @Override
+            public void onPermissionDenied(List<String> deniedPermissions) {
+                Toast.makeText(getActivity(), "Permission Denied\n" + deniedPermissions.toString(), Toast.LENGTH_SHORT).show();
+            }
+        };
+        TedPermission.create()
+                .setPermissionListener(permissionlistener)
+                .setDeniedMessage("If you reject permission,you can not use this service\n\nPlease turn on permissions at [Setting] > [Permission]")
+                .setPermissions(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.CAMERA)
+                .check();
+    }
+
+    private void selectImagesFromGallery() {
+        TedBottomPicker.with(getActivity())
+                .setPeekHeight(1600)
+                .showTitle(false)
+                .setCompleteButtonText("Done")
+                .setEmptySelectionText("No Select")
+                .showMultiImage(new TedBottomSheetDialogFragment.OnMultiImageSelectedListener() {
+                    @Override
+                    public void onImagesSelected(List<Uri> uriList) {
+                        if(uriList != null && !uriList.isEmpty()){
+                            uriListImg.addAll(uriList);
+                            photoAdapter.setData(uriListImg);
+                            addImgBtn.setVisibility(View.GONE);
+                            imgLayout.setVisibility(View.VISIBLE);
+                        }
+                    }
+                });
+    }
+
     private void createButtons(View v) {
         GridLayout gridLayout = v.findViewById(R.id.grid_layout);
 

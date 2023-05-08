@@ -1,5 +1,7 @@
 package com.example.renthouse.OOP;
 
+import java.util.List;
+
 public class Room {
     private int id;
     private String title;
@@ -15,13 +17,15 @@ public class Room {
     private boolean parking;
     private int parkingFee;
     private LocationTemp location;
-    private String[] images;
-    private String[] videos;
-    private String[] utilities;
+    private List<String> images;
+    private List<String> utilities;
     private AccountClass createdBy;
     private String phoneNumber;
 
-    public Room(int id, String title, String description, String roomType, int capacity, float area, int price, int deposit, int electricityCost, int waterCost, int internetCost, boolean parking, int parkingFee, LocationTemp location, String[] images, String[] videos, String[] utilities, AccountClass createdBy, String phoneNumber) {
+    public Room() {
+    }
+
+    public Room(int id, String title, String description, String roomType, int capacity, float area, int price, int deposit, int electricityCost, int waterCost, int internetCost, boolean parking, int parkingFee, LocationTemp location, List<String> images, List<String> utilities, AccountClass createdBy, String phoneNumber) {
         this.id = id;
         this.title = title;
         this.description = description;
@@ -37,7 +41,6 @@ public class Room {
         this.parkingFee = parkingFee;
         this.location = location;
         this.images = images;
-        this.videos = videos;
         this.utilities = utilities;
         this.createdBy = createdBy;
         this.phoneNumber = phoneNumber;
@@ -155,27 +158,19 @@ public class Room {
         this.location = location;
     }
 
-    public String[] getImages() {
+    public List<String> getImages() {
         return images;
     }
 
-    public void setImages(String[] images) {
+    public void setImages(List<String> images) {
         this.images = images;
     }
 
-    public String[] getVideos() {
-        return videos;
-    }
-
-    public void setVideos(String[] videos) {
-        this.videos = videos;
-    }
-
-    public String[] getUtilities() {
+    public List<String> getUtilities() {
         return utilities;
     }
 
-    public void setUtilities(String[] utilities) {
+    public void setUtilities(List<String> utilities) {
         this.utilities = utilities;
     }
 
