@@ -3,9 +3,11 @@ package com.example.renthouse.Activity.FragmentPost;
 import android.Manifest;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.GridLayout;
 import android.widget.LinearLayout;
 import android.widget.Toast;
@@ -35,7 +37,9 @@ public class FragmentUtilities  extends Fragment {
     private MaterialButton addImgBtn;
     private RecyclerView rcvPhoto;
     private PhotoAdapter photoAdapter;
+
     private List<Uri> uriListImg = new ArrayList<>();
+    GridLayout gridLayout;
     
     String[] buttonTitles = {
             "WC riêng",
@@ -76,6 +80,7 @@ public class FragmentUtilities  extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_post_utilities, container, false);
+        gridLayout = v.findViewById(R.id.grid_layout);
         createButtons(v);
         
         addImg = (LinearLayout) v.findViewById(R.id.addImg);
@@ -112,6 +117,45 @@ public class FragmentUtilities  extends Fragment {
             }
         });
         return v;
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        Bundle bundle = new Bundle();
+        bundle.putIntegerArrayList("utilIdx", getUtilitiesIdx());
+        setArguments(bundle);
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        Bundle bundle = getArguments();
+        if (bundle != null) {
+            ArrayList<Integer> utilIdx = bundle.getIntegerArrayList("utilIdx");
+            for (int i = 0; i < utilIdx.size(); i++) {
+                int idx = utilIdx.get(i);
+                View child = gridLayout.getChildAt(idx);
+                if (child instanceof MaterialButton) {
+                    MaterialButton button = (MaterialButton) child;
+                    button.setChecked(true);
+                }
+            }
+        }
+        if(uriListImg != null && !uriListImg.isEmpty()){
+            photoAdapter.setData(uriListImg);
+            addImgBtn.setVisibility(View.GONE);
+            imgLayout.setVisibility(View.VISIBLE);
+        }
+        else{
+            addImgBtn.setVisibility(View.VISIBLE);
+            imgLayout.setVisibility(View.GONE);
+        }
     }
 
     private void requestPermission() {
@@ -153,7 +197,6 @@ public class FragmentUtilities  extends Fragment {
     }
 
     private void createButtons(View v) {
-        GridLayout gridLayout = v.findViewById(R.id.grid_layout);
 
         for (int i = 0; i < buttonTitles.length; i++) {
             MaterialButton button = new MaterialButton(v.getContext());
@@ -173,5 +216,44 @@ public class FragmentUtilities  extends Fragment {
             ));
             gridLayout.addView(button);
         }
+    }
+
+    public ArrayList<String> getUtilities(){
+        ArrayList<String> listUtilities = new ArrayList<>();
+        int childCount = gridLayout.getChildCount();
+        for (int i = 0; i < childCount; i++) {
+            View child = gridLayout.getChildAt(i);
+            if (child instanceof MaterialButton) {
+                MaterialButton button = (MaterialButton) child;
+                if(button.isChecked()){
+                    listUtilities.add(button.getText().toString());
+                }
+            }
+        }
+        return listUtilities;
+    }
+
+    public ArrayList<Integer> getUtilitiesIdx(){
+        ArrayList<Integer> listIdx = new ArrayList<>();
+        int childCount = gridLayout.getChildCount();
+        for (int i = 0; i < childCount; i++) {
+            View child = gridLayout.getChildAt(i);
+            if (child instanceof MaterialButton) {
+                MaterialButton button = (MaterialButton) child;
+                if(button.isChecked()){
+                    listIdx.add(i);
+                }
+            }
+        }
+        return listIdx;
+    }
+
+    public List<String> getUriListImg() {
+        List<String> stringList = new ArrayList<>();
+
+        for (Uri uri : uriListImg) {
+            stringList.add(uri.toString());
+        }
+        return stringList;
     }
 }

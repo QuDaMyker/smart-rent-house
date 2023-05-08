@@ -15,6 +15,7 @@ import androidx.fragment.app.Fragment;
 
 import com.example.renthouse.OOP.City;
 import com.example.renthouse.OOP.District;
+import com.example.renthouse.OOP.LocationTemp;
 import com.example.renthouse.OOP.Ward;
 import com.example.renthouse.R;
 import com.google.android.material.textfield.TextInputEditText;
@@ -33,8 +34,11 @@ public class FragmentLocation extends Fragment {
     TextInputEditText cityEdt;
     TextInputEditText districtEdt;
     TextInputEditText wardEdt;
+    TextInputEditText edtStreet;
+    TextInputEditText edtAddress;
     City selectedCity;
     District selectedDistrict;
+    Ward selectedWard;
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
@@ -42,6 +46,9 @@ public class FragmentLocation extends Fragment {
         cityEdt = (TextInputEditText) v.findViewById(R.id.cityEdt);
         districtEdt = (TextInputEditText) v.findViewById(R.id.districtEdt);
         wardEdt = (TextInputEditText) v.findViewById(R.id.wardEdt);
+        edtStreet = (TextInputEditText) v.findViewById(R.id.edtStreet);
+        edtAddress = (TextInputEditText) v.findViewById(R.id.edtAddress);
+
         String cityJson = loadJSONFromAsset("cities.json");
         String districtJson = loadJSONFromAsset("districts.json");
         String wardJson = loadJSONFromAsset("wards.json");
@@ -126,7 +133,7 @@ public class FragmentLocation extends Fragment {
                 builder.setAdapter(adapter, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        Ward selectedWard = list.get(which);
+                        selectedWard = list.get(which);
                         wardEdt.setText(selectedWard.getName());
                     }
                 });
@@ -150,5 +157,14 @@ public class FragmentLocation extends Fragment {
             return null;
         }
         return json;
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+    }
+
+    public LocationTemp getLocation(){
+        return new LocationTemp(edtStreet.getText().toString(), edtAddress.getText().toString(), selectedCity, selectedDistrict, selectedWard);
     }
 }

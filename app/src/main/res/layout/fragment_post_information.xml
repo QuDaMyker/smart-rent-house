@@ -31,6 +31,7 @@
                 android:textStyle="bold" />
 
             <RadioGroup
+                android:id="@+id/radioBtnType"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="20dp"
@@ -38,6 +39,7 @@
                 android:showDividers="middle">
 
                 <RadioButton
+                    android:id="@+id/typeOption1"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Kí túc xá/Homestay"
@@ -45,6 +47,7 @@
                     android:textSize="14sp" />
 
                 <RadioButton
+                    android:id="@+id/typeOption2"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Phòng cho thuê"
@@ -52,6 +55,7 @@
                     android:textSize="14sp" />
 
                 <RadioButton
+                    android:id="@+id/typeOption3"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Nhà nguyên căn"
@@ -59,6 +63,7 @@
                     android:textSize="14sp" />
 
                 <RadioButton
+                    android:id="@+id/typeOption4"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Căn hộ"
@@ -84,6 +89,7 @@
                 app:suffixText="người/phòng">
 
                 <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/edtCapacity"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
             </com.google.android.material.textfield.TextInputLayout>
@@ -98,6 +104,7 @@
                 android:textStyle="bold" />
 
             <RadioGroup
+                android:id="@+id/radioBtnGender"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="20dp"
@@ -105,6 +112,7 @@
                 android:showDividers="middle">
 
                 <RadioButton
+                    android:id="@+id/genderOption1"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Tất cả"
@@ -112,6 +120,7 @@
                     android:textSize="14sp" />
 
                 <RadioButton
+                    android:id="@+id/genderOption2"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Nam"
@@ -119,6 +128,7 @@
                     android:textSize="14sp" />
 
                 <RadioButton
+                    android:id="@+id/genderOption3"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Nữ"
@@ -143,6 +153,7 @@
                 app:suffixText="m2">
 
                 <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/edtArea"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
             </com.google.android.material.textfield.TextInputLayout>
@@ -173,6 +184,7 @@
                 app:suffixText="₫/phòng">
 
                 <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/edtPrice"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
             </com.google.android.material.textfield.TextInputLayout>
@@ -193,6 +205,7 @@
                 android:hint="Nhập số tháng hoặc số tiền">
 
                 <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/edtDeposit"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
             </com.google.android.material.textfield.TextInputLayout>
@@ -213,6 +226,7 @@
                     android:textStyle="bold" />
 
                 <com.google.android.material.materialswitch.MaterialSwitch
+                    android:id="@+id/switchFreeElectricity"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="end"
@@ -233,6 +247,7 @@
                 android:hint="Nhập số tiền">
 
                 <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/edtElectricityCost"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
             </com.google.android.material.textfield.TextInputLayout>
@@ -253,6 +268,7 @@
                     android:textStyle="bold" />
 
                 <com.google.android.material.materialswitch.MaterialSwitch
+                    android:id="@+id/switchFreeWater"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="end"
@@ -273,6 +289,7 @@
                 android:hint="Nhập số tiền">
 
                 <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/edtWaterCost"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
             </com.google.android.material.textfield.TextInputLayout>
@@ -293,6 +310,7 @@
                     android:textStyle="bold" />
 
                 <com.google.android.material.materialswitch.MaterialSwitch
+                    android:id="@+id/switchFreeInternet"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="end"
@@ -312,6 +330,7 @@
                 android:hint="Nhập số tiền">
 
                 <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/edtInternetCost"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
             </com.google.android.material.textfield.TextInputLayout>
@@ -347,6 +366,7 @@
                         android:textStyle="bold" />
 
                     <com.google.android.material.materialswitch.MaterialSwitch
+                        android:id="@+id/switchFreeParking"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="end"
@@ -366,6 +386,7 @@
                     android:hint="Nhập số tiền">
 
                     <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/edtParkingFee"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content" />
                 </com.google.android.material.textfield.TextInputLayout>

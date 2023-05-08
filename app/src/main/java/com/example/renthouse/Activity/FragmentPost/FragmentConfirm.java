@@ -10,12 +10,21 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.example.renthouse.R;
+import com.google.android.material.textfield.TextInputEditText;
 
 public class FragmentConfirm extends Fragment {
+
+    TextInputEditText edtPhoneNumber;
+    TextInputEditText edtTitle;
+    TextInputEditText edtDescription;
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_post_confirm, container, false);
+        View v = inflater.inflate(R.layout.fragment_post_confirm, container, false);
+        edtPhoneNumber = v.findViewById(R.id.edtPhoneNumber);
+        edtTitle = v.findViewById(R.id.edtTitle);
+        edtDescription = v.findViewById(R.id.edtDescription);
+        return v;
     }
 
     @Override
@@ -23,25 +32,15 @@ public class FragmentConfirm extends Fragment {
         super.onCreate(savedInstanceState);
     }
 
-//    @Override
-//    public void onPause() {
-//        super.onPause();
-//
-//        Bundle bundle = new Bundle();
-//        bundle.putString("key", myStringVariable);
-//
-//        setArguments(bundle);
-//    }
-//
-//    @Override
-//    public void onStart() {
-//        super.onStart();
-//
-//        Bundle bundle = getArguments();
-//        if (bundle != null) {
-//            String myString = bundle.getString("myStringKey");
-//            int myInt = bundle.getInt("myIntKey");
-//            // Do something with the data
-//        }
-//    }
+    public String getPhoneNumber(){
+        return edtPhoneNumber.getText().toString();
+    }
+
+    public String getTitle(){
+        return edtTitle.getText().toString();
+    }
+
+    public String getDescription(){
+        return edtDescription.getText().toString();
+    }
 }

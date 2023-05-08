@@ -98,6 +98,7 @@
                 app:hintEnabled="false"
                 android:layout_marginBottom="20dp">
                 <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/edtStreet"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="Ví dụ: Huỳnh Văn Bánh"/>
@@ -118,6 +119,7 @@
                 app:hintEnabled="false"
                 android:layout_marginBottom="20dp">
                 <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/edtAddress"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="Ví dụ: 41/1A" />

@@ -34,6 +34,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="20dp">
                 <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/edtPhoneNumber"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="Nhập số điện thoại của bạn"/>
@@ -54,6 +55,7 @@
                 app:counterEnabled="true"
                 app:counterMaxLength="60">
                 <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/edtTitle"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="Nhập tiêu đề bài đăng" />
@@ -74,6 +76,7 @@
                 android:layout_marginBottom="20dp"
                 app:hintEnabled="false">
                 <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/edtDescription"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:hint="Môi trường sống sạch, khu phố an ninh..."

@@ -8,6 +8,7 @@ public class Room {
     private String description;
     private String roomType;
     private int capacity;
+    private String gender;
     private float area;
     private int price;
     private int deposit;
@@ -25,12 +26,13 @@ public class Room {
     public Room() {
     }
 
-    public Room(int id, String title, String description, String roomType, int capacity, float area, int price, int deposit, int electricityCost, int waterCost, int internetCost, boolean parking, int parkingFee, LocationTemp location, List<String> images, List<String> utilities, AccountClass createdBy, String phoneNumber) {
+    public Room(int id, String title, String description, String roomType, int capacity, String gender, float area, int price, int deposit, int electricityCost, int waterCost, int internetCost, boolean parking, int parkingFee, LocationTemp location, List<String> images, List<String> utilities, AccountClass createdBy, String phoneNumber) {
         this.id = id;
         this.title = title;
         this.description = description;
         this.roomType = roomType;
         this.capacity = capacity;
+        this.gender = gender;
         this.area = area;
         this.price = price;
         this.deposit = deposit;
@@ -84,6 +86,14 @@ public class Room {
 
     public void setCapacity(int capacity) {
         this.capacity = capacity;
+    }
+
+    public String getGender() {
+        return gender;
+    }
+
+    public void setGender(String gender) {
+        this.gender = gender;
     }
 
     public float getArea() {
