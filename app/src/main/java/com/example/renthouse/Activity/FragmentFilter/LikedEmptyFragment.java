@@ -1,4 +1,4 @@
-package com.example.renthouse.Activity;
+package com.example.renthouse.Activity.FragmentFilter;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
