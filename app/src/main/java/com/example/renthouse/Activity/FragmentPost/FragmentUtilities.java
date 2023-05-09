@@ -248,12 +248,7 @@ public class FragmentUtilities  extends Fragment {
         return listIdx;
     }
 
-    public List<String> getUriListImg() {
-        List<String> stringList = new ArrayList<>();
-
-        for (Uri uri : uriListImg) {
-            stringList.add(uri.toString());
-        }
-        return stringList;
+    public List<Uri> getUriListImg() {
+        return uriListImg;
     }
 }

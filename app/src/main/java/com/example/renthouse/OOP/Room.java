@@ -1,5 +1,6 @@
 package com.example.renthouse.OOP;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Room {
@@ -26,7 +27,7 @@ public class Room {
     public Room() {
     }
 
-    public Room(int id, String title, String description, String roomType, int capacity, String gender, float area, int price, int deposit, int electricityCost, int waterCost, int internetCost, boolean parking, int parkingFee, LocationTemp location, List<String> images, List<String> utilities, AccountClass createdBy, String phoneNumber) {
+    public Room(int id, String title, String description, String roomType, int capacity, String gender, float area, int price, int deposit, int electricityCost, int waterCost, int internetCost, boolean parking, int parkingFee, LocationTemp location, List<String> utilities, AccountClass createdBy, String phoneNumber) {
         this.id = id;
         this.title = title;
         this.description = description;
@@ -42,7 +43,6 @@ public class Room {
         this.parking = parking;
         this.parkingFee = parkingFee;
         this.location = location;
-        this.images = images;
         this.utilities = utilities;
         this.createdBy = createdBy;
         this.phoneNumber = phoneNumber;

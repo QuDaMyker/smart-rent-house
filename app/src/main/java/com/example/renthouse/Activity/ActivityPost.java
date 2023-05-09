@@ -1,20 +1,27 @@
 package com.example.renthouse.Activity;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.res.ColorStateList;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.GridLayout;
 import android.widget.ScrollView;
+import android.widget.Toast;
 
 import com.example.renthouse.Activity.FragmentPost.FragmentConfirm;
 import com.example.renthouse.Activity.FragmentPost.FragmentInformation;
@@ -27,14 +34,26 @@ import com.example.renthouse.OOP.LocationTemp;
 import com.example.renthouse.OOP.Room;
 import com.example.renthouse.OOP.Ward;
 import com.example.renthouse.R;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.button.MaterialButton;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 import com.shuhart.stepview.StepView;
 
+import java.io.File;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
+
+import id.zelory.compressor.Compressor;
 
 public class ActivityPost extends AppCompatActivity {
     StepView stepView;
@@ -45,6 +64,11 @@ public class ActivityPost extends AppCompatActivity {
     FragmentInformation fragmentInformation;
     FragmentLocation fragmentLocation;
     FragmentUtilities fragmentUtilities;
+    StorageReference storageReference;
+
+    public interface OnUploadImageCompleteListener {
+        void onUploadImageComplete();
+    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -204,7 +228,7 @@ public class ActivityPost extends AppCompatActivity {
                                 "12344",
                                 "wdad",
                                 "12-12-2023");
-                        Room room = new Room(2,
+                        Room room = new Room(3,
                                 fragmentConfirm.getTitle(),
                                 fragmentConfirm.getDescription(),
                                 fragmentInformation.getRoomType(),
@@ -219,12 +243,13 @@ public class ActivityPost extends AppCompatActivity {
                                 fragmentInformation.hasParking(),
                                 fragmentInformation.getParkingFee(),
                                 fragmentLocation.getLocation(),
-                                fragmentUtilities.getUriListImg(),
                                 fragmentUtilities.getUtilities(),
                                 user,
                                 fragmentConfirm.getPhoneNumber());
+
                         String pathObject = String.valueOf(room.getId());
                         myRef.child(pathObject).setValue(room);
+                        updateImage(room);
                         break;
                     }
                 }
@@ -247,7 +272,70 @@ public class ActivityPost extends AppCompatActivity {
             ft.commit();
 
         }
+    }
 
+    private void updateImage(Room room){
+        List<String> uriImageStringList = new ArrayList<>();
+        ProgressDialog progressDialog = new ProgressDialog(this);
+        progressDialog.setTitle("Đang tải lên...");
+        progressDialog.show();
+        OnUploadImageCompleteListener listener = new OnUploadImageCompleteListener() {
+            @Override
+            public void onUploadImageComplete() {
+                room.setImages(uriImageStringList);
+                FirebaseDatabase database = FirebaseDatabase.getInstance();
+                DatabaseReference myRef = database.getReference("rooms/" + room.getId() + "/images");
+                myRef.setValue(uriImageStringList);
+                if(progressDialog.isShowing()){
+                    progressDialog.dismiss();
+                }
+            }
+        };
+        storageReference = FirebaseStorage.getInstance().getReference();
+        List<Uri> uriList = fragmentUtilities.getUriListImg();
+        int totalItems = uriList.size();
+        final int[] successCount = {0};
+        for(Uri u : uriList){
+            Uri compressedImageUri;
+            File actualImage = new File(u.getPath());
+            try {
+                File compressedImageBitmap = new Compressor(this).compressToFile(actualImage);
+                compressedImageUri = Uri.fromFile(compressedImageBitmap);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+            if(compressedImageUri == null){
+                continue;
+            }
+            SimpleDateFormat formatter = new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss_SSS", Locale.ENGLISH);
+            Date now = new Date();
+            String fileName = formatter.format(now);
+            StorageReference roomImageRef = storageReference.child("Room Images/" + fileName);
+            roomImageRef.putFile(compressedImageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                    roomImageRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                        @Override
+                        public void onSuccess(Uri uri) {
+                            uriImageStringList.add(uri.toString());
+                            successCount[0]++;
+                            if(successCount[0] == totalItems){
+                                listener.onUploadImageComplete();
+                            }
+                        }
+                    });
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    Toast.makeText(ActivityPost.this, "Đã xảy ra lỗi, vui lòng thử lại", Toast.LENGTH_SHORT).show();
+                    if(progressDialog.isShowing()){
+                        progressDialog.dismiss();
+                    }
+                    return;
+                }
+            });
+        }
     }
 }
 
