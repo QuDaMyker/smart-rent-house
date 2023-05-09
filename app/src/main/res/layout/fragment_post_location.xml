@@ -28,7 +28,7 @@
                 android:textColor="@color/Secondary_40"
                 android:layout_marginBottom="10dp"/>
             <com.google.android.material.textfield.TextInputLayout
-
+                android:id="@+id/cityLayoutEdt"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="20dp">
@@ -50,6 +50,7 @@
                 android:textColor="@color/Secondary_40"
                 android:layout_marginBottom="10dp"/>
             <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/districtLayoutEdt"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="20dp">
@@ -71,6 +72,7 @@
                 android:textColor="@color/Secondary_40"
                 android:layout_marginBottom="10dp"/>
             <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/wardLayoutEdt"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="20dp">
@@ -93,6 +95,7 @@
                 android:layout_marginBottom="10dp"/>
 
             <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/edtLayoutStreet"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:hintEnabled="false"
@@ -114,6 +117,7 @@
                 android:layout_marginBottom="10dp"/>
 
             <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/edtLayoutAddress"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:hintEnabled="false"

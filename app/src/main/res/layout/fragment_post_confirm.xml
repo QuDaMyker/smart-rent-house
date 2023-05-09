@@ -30,6 +30,7 @@
                 android:layout_marginBottom="10dp"/>
 
             <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/edtLayoutPhoneNumber"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="20dp">
@@ -49,6 +50,7 @@
                 android:layout_marginBottom="10dp"/>
 
             <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/edtLayoutTitle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="20dp"
@@ -71,6 +73,7 @@
                 android:layout_marginBottom="10dp"/>
 
             <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/edtLayoutDescription"
                 android:layout_width="match_parent"
                 android:layout_height="150dp"
                 android:layout_marginBottom="20dp"

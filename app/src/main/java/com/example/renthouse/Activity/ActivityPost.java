@@ -37,6 +37,8 @@ import com.example.renthouse.R;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.button.MaterialButton;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
@@ -60,6 +62,7 @@ public class ActivityPost extends AppCompatActivity {
     ScrollView scrollView;
     int position;
     MaterialButton nextBtn;
+    MaterialButton prevBtn;
     FragmentConfirm fragmentConfirm;
     FragmentInformation fragmentInformation;
     FragmentLocation fragmentLocation;
@@ -82,174 +85,90 @@ public class ActivityPost extends AppCompatActivity {
         stepView = (StepView) findViewById(R.id.step_view);
         stepView.done(false);
         nextBtn = (MaterialButton) findViewById(R.id.nextBtn);
+        prevBtn = (MaterialButton) findViewById(R.id.prevBtn);
         scrollView = (ScrollView) findViewById(R.id.scrollView);
         position = 0;
-        stepView.setOnStepClickListener(new StepView.OnStepClickListener() {
-            @Override
-            public void onStepClick(int step) {
-                switch (step){
-                    case 0: {
-                        replaceFragmentContent(fragmentInformation);
-                        position = 0;
-                        stepView.done(false);
-                        stepView.go(position, true);
 
-                        nextBtn.setBackgroundColor(getColor(R.color.white));
-                        nextBtn.setIcon(getDrawable(R.drawable.ic_arrow_right));
-                        nextBtn.setIconGravity(MaterialButton.ICON_GRAVITY_TEXT_END);
-                        nextBtn.setIconSize(40);
-                        nextBtn.setIconPadding(10);
-                        nextBtn.setIconTint(getColorStateList(R.color.Primary_60));
-                        nextBtn.setTextColor(getColor(R.color.Primary_60));
-                        nextBtn.setText("Tiếp theo");
-                        break;
-                    }
-                    case 1: {
+        nextBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                switch (position){
+                    case 0: {
+                        if(fragmentInformation.validateData() == false){
+                            break;
+                        }
+                        prevBtn.setVisibility(View.VISIBLE);
                         replaceFragmentContent(fragmentLocation);
                         position = 1;
                         stepView.done(false);
                         stepView.go(position, true);
-
-                        nextBtn.setBackgroundColor(getColor(R.color.white));
-                        nextBtn.setIcon(getDrawable(R.drawable.ic_arrow_right));
-                        nextBtn.setIconGravity(MaterialButton.ICON_GRAVITY_TEXT_END);
-                        nextBtn.setIconSize(40);
-                        nextBtn.setIconPadding(10);
-                        nextBtn.setIconTint(getColorStateList(R.color.Primary_60));
-                        nextBtn.setTextColor(getColor(R.color.Primary_60));
-                        nextBtn.setText("Tiếp theo");
                         break;
                     }
-                    case 2: {
+                    case 1: {
+                        if(fragmentLocation.validateData() == false){
+                            break;
+                        }
                         replaceFragmentContent(fragmentUtilities);
                         position = 2;
                         stepView.done(false);
                         stepView.go(position, true);
-
-                        nextBtn.setBackgroundColor(getColor(R.color.white));
-                        nextBtn.setIcon(getDrawable(R.drawable.ic_arrow_right));
-                        nextBtn.setIconGravity(MaterialButton.ICON_GRAVITY_TEXT_END);
-                        nextBtn.setIconSize(40);
-                        nextBtn.setIconPadding(10);
-                        nextBtn.setIconTint(getColorStateList(R.color.Primary_60));
-                        nextBtn.setTextColor(getColor(R.color.Primary_60));
-                        nextBtn.setText("Tiếp theo");
                         break;
                     }
-                    case 3: {
+                    case 2: {
+                        if(fragmentUtilities.validateData() == false){
+                            break;
+                        }
                         replaceFragmentContent(fragmentConfirm);
                         position = 3;
                         stepView.done(false);
                         stepView.go(position, true);
-                        nextBtn.setBackgroundColor(getColor(R.color.Primary_60));
+
                         nextBtn.setIcon(getDrawable(R.drawable.ic_add));
                         nextBtn.setIconGravity(MaterialButton.ICON_GRAVITY_TEXT_START);
-                        nextBtn.setIconSize(40);
-                        nextBtn.setIconPadding(10);
-                        nextBtn.setIconTint(getColorStateList(R.color.white));
-                        nextBtn.setTextColor(getColor(R.color.white));
                         nextBtn.setText("Đăng bài");
                         break;
                     }
                     default:{
-                        position = 0;
-                        stepView.done(true);
-
-                        nextBtn.setBackgroundColor(getColor(R.color.white));
-                        nextBtn.setIcon(getDrawable(R.drawable.ic_arrow_right));
-                        nextBtn.setIconGravity(MaterialButton.ICON_GRAVITY_TEXT_END);
-                        nextBtn.setIconSize(40);
-                        nextBtn.setIconPadding(10);
-                        nextBtn.setIconTint(getColorStateList(R.color.Primary_60));
-                        nextBtn.setTextColor(getColor(R.color.Primary_60));
-                        nextBtn.setText("Tiếp theo");
+                        if(fragmentConfirm.validateData() == false){
+                            break;
+                        }
+                        pushRoomData();
                         break;
                     }
                 }
                 scrollView.setScrollY(0);
             }
         });
-        nextBtn.setOnClickListener(new View.OnClickListener() {
+        prevBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 switch (position){
-                    case 0: {
-                        replaceFragmentContent(fragmentLocation);
-                        position = 1;
-                        stepView.done(false);
-                        stepView.go(position, true);
-                        nextBtn.setBackgroundColor(getColor(R.color.white));
-                        nextBtn.setIcon(getDrawable(R.drawable.ic_arrow_right));
-                        nextBtn.setIconGravity(MaterialButton.ICON_GRAVITY_TEXT_END);
-                        nextBtn.setIconSize(40);
-                        nextBtn.setIconPadding(10);
-                        nextBtn.setIconTint(getColorStateList(R.color.Primary_60));
-                        nextBtn.setTextColor(getColor(R.color.Primary_60));
-                        nextBtn.setText("Tiếp theo");
-                        break;
-                    }
-                    case 1: {
+                    case 3: {
                         replaceFragmentContent(fragmentUtilities);
                         position = 2;
                         stepView.done(false);
                         stepView.go(position, true);
-
-                        nextBtn.setBackgroundColor(getColor(R.color.white));
+                        nextBtn.setText("Tiếp theo");
                         nextBtn.setIcon(getDrawable(R.drawable.ic_arrow_right));
                         nextBtn.setIconGravity(MaterialButton.ICON_GRAVITY_TEXT_END);
-                        nextBtn.setIconSize(40);
-                        nextBtn.setIconPadding(10);
-                        nextBtn.setIconTint(getColorStateList(R.color.Primary_60));
-                        nextBtn.setTextColor(getColor(R.color.Primary_60));
-                        nextBtn.setText("Tiếp theo");
                         break;
                     }
                     case 2: {
-                        replaceFragmentContent(fragmentConfirm);
-                        position = 3;
+                        replaceFragmentContent(fragmentLocation);
+                        position = 1;
                         stepView.done(false);
                         stepView.go(position, true);
-                        nextBtn.setBackgroundColor(getColor(R.color.Primary_60));
-                        nextBtn.setIcon(getDrawable(R.drawable.ic_add));
-                        nextBtn.setIconGravity(MaterialButton.ICON_GRAVITY_TEXT_START);
-                        nextBtn.setIconSize(40);
-                        nextBtn.setIconPadding(10);
-                        nextBtn.setIconTint(getColorStateList(R.color.white));
-                        nextBtn.setTextColor(getColor(R.color.white));
-                        nextBtn.setText("Đăng bài");
+                        break;
+                    }
+                    case 1: {
+                        replaceFragmentContent(fragmentInformation);
+                        position = 0;
+                        stepView.done(false);
+                        stepView.go(position, true);
+                        prevBtn.setVisibility(View.GONE);
                         break;
                     }
                     default:{
-                        FirebaseDatabase database = FirebaseDatabase.getInstance();
-                        DatabaseReference myRef = database.getReference("rooms");
-                        AccountClass user = new AccountClass("ABC",
-                                "abc@gmail.com",
-                                "0987654321",
-                                "12344",
-                                "wdad",
-                                "12-12-2023");
-                        Room room = new Room(3,
-                                fragmentConfirm.getTitle(),
-                                fragmentConfirm.getDescription(),
-                                fragmentInformation.getRoomType(),
-                                fragmentInformation.getCapacity(),
-                                fragmentInformation.getGender(),
-                                fragmentInformation.getArea(),
-                                fragmentInformation.getPrice(),
-                                fragmentInformation.getDeposit(),
-                                fragmentInformation.getElectricityCost(),
-                                fragmentInformation.getWaterCost(),
-                                fragmentInformation.getInternetCost(),
-                                fragmentInformation.hasParking(),
-                                fragmentInformation.getParkingFee(),
-                                fragmentLocation.getLocation(),
-                                fragmentUtilities.getUtilities(),
-                                user,
-                                fragmentConfirm.getPhoneNumber());
-
-                        String pathObject = String.valueOf(room.getId());
-                        myRef.child(pathObject).setValue(room);
-                        updateImage(room);
                         break;
                     }
                 }
@@ -257,6 +176,44 @@ public class ActivityPost extends AppCompatActivity {
             }
         });
         replaceFragmentContent(fragmentInformation);
+    }
+
+    private void pushRoomData() {
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference myRef = database.getReference("Rooms");
+        FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+
+        //HARDCODE, TODO: retrieve current user
+        AccountClass user = new AccountClass("ABC",
+                "abc@gmail.com",
+                "0987654321",
+                "12344",
+                "a",
+                "12-12-2023");
+
+        String key = myRef.child("Rooms").push().getKey();
+        Room room = new Room(key,
+                fragmentConfirm.getTitle(),
+                fragmentConfirm.getDescription(),
+                fragmentInformation.getRoomType(),
+                fragmentInformation.getCapacity(),
+                fragmentInformation.getGender(),
+                fragmentInformation.getArea(),
+                fragmentInformation.getPrice(),
+                fragmentInformation.getDeposit(),
+                fragmentInformation.getElectricityCost(),
+                fragmentInformation.getWaterCost(),
+                fragmentInformation.getInternetCost(),
+                fragmentInformation.hasParking(),
+                fragmentInformation.getParkingFee(),
+                fragmentLocation.getLocation(),
+                fragmentUtilities.getUtilities(),
+                user,
+                fragmentConfirm.getPhoneNumber());
+
+        String pathObject = String.valueOf(room.getId());
+        myRef.child(pathObject).setValue(room);
+        updateImage(room);
     }
 
     protected void replaceFragmentContent(Fragment fragment) {
@@ -284,16 +241,24 @@ public class ActivityPost extends AppCompatActivity {
             public void onUploadImageComplete() {
                 room.setImages(uriImageStringList);
                 FirebaseDatabase database = FirebaseDatabase.getInstance();
-                DatabaseReference myRef = database.getReference("rooms/" + room.getId() + "/images");
+                DatabaseReference myRef = database.getReference("Rooms/" + room.getId() + "/images");
                 myRef.setValue(uriImageStringList);
                 if(progressDialog.isShowing()){
                     progressDialog.dismiss();
                 }
+                Toast.makeText(ActivityPost.this, "Tải lên thành công!", Toast.LENGTH_SHORT).show();
             }
         };
         storageReference = FirebaseStorage.getInstance().getReference();
         List<Uri> uriList = fragmentUtilities.getUriListImg();
         int totalItems = uriList.size();
+        if(totalItems == 0){
+            if(progressDialog.isShowing()){
+                progressDialog.dismiss();
+            }
+            Toast.makeText(ActivityPost.this, "Tải lên thành công!", Toast.LENGTH_SHORT).show();
+            return;
+        }
         final int[] successCount = {0};
         for(Uri u : uriList){
             Uri compressedImageUri;

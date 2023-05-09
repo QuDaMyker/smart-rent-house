@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Room {
-    private int id;
+    private String id;
     private String title;
     private String description;
     private String roomType;
@@ -27,7 +27,7 @@ public class Room {
     public Room() {
     }
 
-    public Room(int id, String title, String description, String roomType, int capacity, String gender, float area, int price, int deposit, int electricityCost, int waterCost, int internetCost, boolean parking, int parkingFee, LocationTemp location, List<String> utilities, AccountClass createdBy, String phoneNumber) {
+    public Room(String id, String title, String description, String roomType, int capacity, String gender, float area, int price, int deposit, int electricityCost, int waterCost, int internetCost, boolean parking, int parkingFee, LocationTemp location, List<String> utilities, AccountClass createdBy, String phoneNumber) {
         this.id = id;
         this.title = title;
         this.description = description;
@@ -48,11 +48,11 @@ public class Room {
         this.phoneNumber = phoneNumber;
     }
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 

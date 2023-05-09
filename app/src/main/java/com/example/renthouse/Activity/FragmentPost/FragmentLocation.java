@@ -2,6 +2,9 @@ package com.example.renthouse.Activity.FragmentPost;
 
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -36,6 +39,12 @@ public class FragmentLocation extends Fragment {
     TextInputEditText wardEdt;
     TextInputEditText edtStreet;
     TextInputEditText edtAddress;
+
+    TextInputLayout cityLayoutEdt;
+    TextInputLayout districtLayoutEdt;
+    TextInputLayout wardLayoutEdt;
+    TextInputLayout edtLayoutStreet;
+    TextInputLayout edtLayoutAddress;
     City selectedCity;
     District selectedDistrict;
     Ward selectedWard;
@@ -48,6 +57,12 @@ public class FragmentLocation extends Fragment {
         wardEdt = (TextInputEditText) v.findViewById(R.id.wardEdt);
         edtStreet = (TextInputEditText) v.findViewById(R.id.edtStreet);
         edtAddress = (TextInputEditText) v.findViewById(R.id.edtAddress);
+
+        cityLayoutEdt = v.findViewById(R.id.cityLayoutEdt);
+        districtLayoutEdt =  v.findViewById(R.id.districtLayoutEdt);
+        wardLayoutEdt = v.findViewById(R.id.wardLayoutEdt);
+        edtLayoutStreet = v.findViewById(R.id.edtLayoutStreet);
+        edtLayoutAddress =  v.findViewById(R.id.edtLayoutAddress);
 
         String cityJson = loadJSONFromAsset("cities.json");
         String districtJson = loadJSONFromAsset("districts.json");
@@ -140,6 +155,86 @@ public class FragmentLocation extends Fragment {
                 builder.show();
             }
         });
+        cityEdt.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                cityLayoutEdt.setError(null);
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
+        districtEdt.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                districtLayoutEdt.setError(null);
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
+        wardEdt.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                wardLayoutEdt.setError(null);
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
+        edtStreet.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                edtLayoutStreet.setError(null);
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
+        edtAddress.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                edtLayoutAddress.setError(null);
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
         return v;
     }
 
@@ -166,5 +261,30 @@ public class FragmentLocation extends Fragment {
 
     public LocationTemp getLocation(){
         return new LocationTemp(edtStreet.getText().toString(), edtAddress.getText().toString(), selectedCity, selectedDistrict, selectedWard);
+    }
+
+    public boolean validateData(){
+        boolean flag = true;
+        if(TextUtils.isEmpty(cityEdt.getText().toString().trim())){
+            cityLayoutEdt.setError("Vui lòng chọn Thành phố");
+            flag = false;
+        }
+        if(TextUtils.isEmpty(districtEdt.getText().toString().trim())){
+            districtLayoutEdt.setError("Vui lòng chọn Quận / Huyện");
+            flag = false;
+        }
+        if(TextUtils.isEmpty(wardEdt.getText().toString().trim())){
+            wardLayoutEdt.setError("Vui lòng chọn Phường / Xã");
+            flag = false;
+        }
+        if(TextUtils.isEmpty(edtStreet.getText().toString().trim())){
+            edtLayoutStreet.setError("Vui lòng nhập tên đường");
+            flag = false;
+        }
+        if(TextUtils.isEmpty(edtAddress.getText().toString().trim())){
+            edtLayoutAddress.setError("Vui lòng nhập số nhà");
+            flag = false;
+        }
+        return flag;
     }
 }

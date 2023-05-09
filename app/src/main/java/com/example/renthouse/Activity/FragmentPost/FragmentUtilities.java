@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.GridLayout;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
@@ -39,6 +40,8 @@ public class FragmentUtilities  extends Fragment {
     private PhotoAdapter photoAdapter;
 
     private List<Uri> uriListImg = new ArrayList<>();
+
+    TextView warningTxt;
     GridLayout gridLayout;
     
     String[] buttonTitles = {
@@ -87,6 +90,7 @@ public class FragmentUtilities  extends Fragment {
         imgLayout = (LinearLayout) v.findViewById(R.id.imgLayout);
         addImgBtn = (MaterialButton) v.findViewById(R.id.addImgBtn);
         rcvPhoto = (RecyclerView) v.findViewById(R.id.rcvPhoto);
+        warningTxt = v.findViewById(R.id.warningTxt);
         photoAdapter = new PhotoAdapter(getActivity());
 
         GridLayoutManager gridLayoutManager = new GridLayoutManager(getActivity(), 4);
@@ -101,6 +105,10 @@ public class FragmentUtilities  extends Fragment {
                 if(uriListImg.isEmpty()){
                     addImgBtn.setVisibility(View.VISIBLE);
                     imgLayout.setVisibility(View.GONE);
+                    addImgBtn.setText("Bấm vào đây để đăng hình ảnh từ thư viện nhé!");
+                    addImgBtn.setTextColor(ContextCompat.getColor(getContext(), R.color.Primary_60));
+                    warningTxt.setText("(Tối thiểu 4 ảnh, tối đa 20 ảnh)");
+                    warningTxt.setTextColor(ContextCompat.getColor(getContext(), R.color.Secondary_60));
                 }
             }
         });
@@ -191,6 +199,10 @@ public class FragmentUtilities  extends Fragment {
                             photoAdapter.setData(uriListImg);
                             addImgBtn.setVisibility(View.GONE);
                             imgLayout.setVisibility(View.VISIBLE);
+                            addImgBtn.setText("Bấm vào đây để đăng hình ảnh từ thư viện nhé!");
+                            addImgBtn.setTextColor(ContextCompat.getColor(getContext(), R.color.Primary_60));
+                            warningTxt.setText("(Tối thiểu 4 ảnh, tối đa 20 ảnh)");
+                            warningTxt.setTextColor(ContextCompat.getColor(getContext(), R.color.Secondary_60));
                         }
                     }
                 });
@@ -220,13 +232,15 @@ public class FragmentUtilities  extends Fragment {
 
     public ArrayList<String> getUtilities(){
         ArrayList<String> listUtilities = new ArrayList<>();
-        int childCount = gridLayout.getChildCount();
-        for (int i = 0; i < childCount; i++) {
-            View child = gridLayout.getChildAt(i);
-            if (child instanceof MaterialButton) {
-                MaterialButton button = (MaterialButton) child;
-                if(button.isChecked()){
-                    listUtilities.add(button.getText().toString());
+        if(gridLayout != null){
+            int childCount = gridLayout.getChildCount();
+            for (int i = 0; i < childCount; i++) {
+                View child = gridLayout.getChildAt(i);
+                if (child instanceof MaterialButton) {
+                    MaterialButton button = (MaterialButton) child;
+                    if(button.isChecked()){
+                        listUtilities.add(button.getText().toString());
+                    }
                 }
             }
         }
@@ -250,5 +264,23 @@ public class FragmentUtilities  extends Fragment {
 
     public List<Uri> getUriListImg() {
         return uriListImg;
+    }
+    public boolean validateData(){
+        boolean flag = true;
+        if(uriListImg.size() < 4){
+            addImgBtn.setText("Vui lòng chọn tối thiểu 4 ảnh");
+            addImgBtn.setTextColor(ContextCompat.getColor(getContext(), R.color.Red_50));
+            warningTxt.setText("Vui lòng chọn tối thiểu 4 ảnh");
+            warningTxt.setTextColor(ContextCompat.getColor(getContext(), R.color.Red_50));
+            flag = false;
+        }
+        if(uriListImg.size() > 20){
+            addImgBtn.setText("Vui lòng chọn tối đa 20 ảnh");
+            addImgBtn.setTextColor(ContextCompat.getColor(getContext(), R.color.Red_50));
+            warningTxt.setText("Vui lòng chọn tối đa 20 ảnh");
+            warningTxt.setTextColor(ContextCompat.getColor(getContext(), R.color.Red_50));
+            flag = false;
+        }
+        return flag;
     }
 }
