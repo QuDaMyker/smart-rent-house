@@ -6,15 +6,9 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.renthouse.R;
-import com.example.renthouse.Test.Room;
-import com.example.renthouse.Test.RoomAdapter;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -70,19 +64,19 @@ public class FragmentLikedRooms extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_liked_rooms, container, false);
-        recyclerView = (RecyclerView) view.findViewById(R.id.rcv_LikedRooms);
-        GridLayoutManager grid = new GridLayoutManager(getActivity(), 2);
-        recyclerView.setLayoutManager(grid);
-        RoomAdapter roomAdapter = new RoomAdapter(getListRoom());
-        recyclerView.setAdapter(roomAdapter);
+//        recyclerView = (RecyclerView) view.findViewById(R.id.rcv_LikedRooms);
+//        GridLayoutManager grid = new GridLayoutManager(getActivity(), 2);
+//        recyclerView.setLayoutManager(grid);
+//        RoomAdapter roomAdapter = new RoomAdapter(getListRoom());
+//        recyclerView.setAdapter(roomAdapter);
         return view;
     }
 
-    private List<Room> getListRoom() {
-       List<Room> room = new ArrayList<>();
-       room.add( new Room("HOMESTAY DOOM MẶT TIỀN HÀNG XANH", "Đường Nguyễn Huy Tự", 12000000, R.drawable.p1));
-        room.add( new Room("p2", "q2", 12000000, R.drawable.p1));
-        room.add( new Room("p3", "q3", 12000000, R.drawable.p1));
-        return room;
-    }
+//    private List<Room> getListRoom() {
+//       List<Room> room = new ArrayList<>();
+//       room.add( new Room("HOMESTAY DOOM MẶT TIỀN HÀNG XANH", "Đường Nguyễn Huy Tự", 12000000, R.drawable.p1));
+//        room.add( new Room("p2", "q2", 12000000, R.drawable.p1));
+//        room.add( new Room("p3", "q3", 12000000, R.drawable.p1));
+//        return room;
+//    }
 }
