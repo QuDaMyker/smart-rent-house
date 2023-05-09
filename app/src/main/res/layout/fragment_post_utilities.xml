@@ -28,40 +28,74 @@
                 android:text="HÌNH ẢNH"
                 android:textColor="@color/Secondary_40"
                 android:layout_marginBottom="10dp"/>
-
-            <com.google.android.material.button.MaterialButton
+            <FrameLayout
                 android:layout_width="match_parent"
-                android:layout_height="150dp"
-                app:cornerRadius="10dp"
+                android:layout_height="wrap_content"
                 android:background="@drawable/dashed_border"
-                android:textColor="@color/Primary_60"
-                android:text="Bấm vào đây để đăng hình ảnh từ thư viện nhé!"
-                app:icon="@drawable/ic_add_image"
-                app:iconTint="@color/Primary_60"
-                app:iconSize="60dp"
-                app:iconGravity="textTop"
-                android:gravity="center"
-                android:paddingHorizontal="50dp"
-                android:layout_marginBottom="10dp"/>
-            <com.google.android.material.button.MaterialButton
-                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-                android:layout_width="wrap_content"
-                android:layout_height="70dp"
-                android:layout_gravity="center"
-                android:text="Chụp hình"
-                android:textSize="18sp"
-                android:textColor="@color/Primary_60"
-                android:layout_marginBottom="20dp"
-                android:backgroundTint="@color/white"
-                app:strokeColor="@color/Primary_60"
-                app:strokeWidth="2dp"
-                android:textAllCaps="false"
-                app:cornerRadius="100dp"
-                app:iconPadding="10dp"
-                app:icon="@drawable/ic_take_photo"
-                app:iconGravity="textStart"
-                app:iconSize="24dp"
-                android:paddingHorizontal="30dp"/>
+                android:layout_marginBottom="20dp">
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/addImgBtn"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:cornerRadius="10dp"
+                    android:backgroundTint="@android:color/transparent"
+                    android:textColor="@color/Primary_60"
+                    android:text="Bấm vào đây để đăng hình ảnh từ thư viện nhé!"
+                    app:icon="@drawable/ic_add_image"
+                    app:iconTint="@color/Primary_60"
+                    app:iconSize="60dp"
+                    app:iconGravity="textTop"
+                    android:gravity="center"
+                    android:paddingHorizontal="50dp"
+                    android:paddingVertical="20dp"
+                    android:visibility="visible"/>
+                <LinearLayout
+                    android:id="@+id/imgLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:paddingVertical="20dp"
+                    android:paddingHorizontal="10dp"
+                    android:visibility="gone">
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/rcvPhoto"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="10dp">
+
+                    </androidx.recyclerview.widget.RecyclerView>
+                    <LinearLayout
+                        android:id="@+id/addImg"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:backgroundTint="@android:color/transparent"
+                        android:gravity="center"
+                        android:paddingHorizontal="10dp"
+                        android:paddingVertical="10dp"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:orientation="vertical">
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Đăng thêm hình ảnh"
+                            android:textColor="@color/Primary_40"
+                            android:textStyle="bold"
+                            android:textSize="20sp"
+                            android:layout_marginBottom="10dp"/>
+                        <TextView
+                            android:id="@+id/warningTxt"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="(Tối thiểu 4 ảnh, tối đa 20 ảnh)"
+                            android:textColor="@color/Secondary_60"
+                            android:textSize="14sp"
+                            android:layout_marginBottom="10dp"/>
+
+                    </LinearLayout>
+                </LinearLayout>
+
+            </FrameLayout>
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
