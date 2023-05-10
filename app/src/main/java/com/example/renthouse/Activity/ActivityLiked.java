@@ -6,13 +6,16 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.renthouse.Activity.FragmentFilter.FragmentLikedRooms;
 import com.example.renthouse.R;
 import com.example.renthouse.databinding.ActivityLikedBinding;
 
 public class ActivityLiked extends AppCompatActivity {
 
     ActivityLikedBinding binding;
+    private RecyclerView recyclerView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,8 +27,7 @@ public class ActivityLiked extends AppCompatActivity {
 
            switch (item.getItemId()){
                case R.id.btnLiked:
-                   replaceFragment(new LikedEmptyFragment());
-
+                   replaceFragment(new FragmentLikedRooms());
                    break;
            }
 

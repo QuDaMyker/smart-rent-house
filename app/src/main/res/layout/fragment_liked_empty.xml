@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Activity.LikedEmptyFragment"
+    tools:context=".Activity.FragmentFilter.LikedEmptyFragment"
     android:background="@drawable/layout_bg">
 
     <!-- TODO: Update blank fragment layout -->
