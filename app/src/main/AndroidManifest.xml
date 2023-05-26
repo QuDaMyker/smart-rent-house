@@ -35,7 +35,7 @@
             android:name=".Activity.ActivitySearch"
             android:exported="false" />
         <activity
-            android:name=".Activity.ActivityPost"
+            android:name=".Activity.ActivityLogIn"
             android:exported="true" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -53,11 +53,8 @@
             android:name=".Activity.ActivityForgotPassword"
             android:exported="false" />
         <activity
-            android:name=".Activity.ActivityLogIn"
+            android:name=".Activity.ActivityPost"
             android:exported="false" />
-        <activity
-            android:name=".Activity.ActivityLiked"
-            android:exported="false"/>
         <activity
             android:name=".Activity.ActivitySplash"
             android:exported="true"/>
@@ -66,6 +63,9 @@
             android:exported="true"/>
         <activity
             android:name=".Activity.ActivityLiked"
+            android:exported="true"/>
+        <activity
+            android:name=".Activity.ActivityAccount"
             android:exported="true"/>
     </application>
 

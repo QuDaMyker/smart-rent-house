@@ -296,7 +296,7 @@ public class ActivityLogIn extends AppCompatActivity {
     }
     private void HomeActivity() {
         finish();
-        Intent intent = new Intent(getApplicationContext(), ActivityChat.class);
+        Intent intent = new Intent(this.getApplicationContext(), ActivityAccount.class);
         startActivity(intent);
     }
 

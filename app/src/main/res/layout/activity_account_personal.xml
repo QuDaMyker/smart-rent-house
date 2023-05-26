@@ -65,15 +65,15 @@
         app:layout_constraintTop_toBottomOf="@+id/frameLayout2">
 
         <ImageView
-            android:id="@+id/imageView16"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:id="@+id/account_personal_imageProfile"
+            android:layout_width="127dp"
+            android:layout_height="126dp"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="20dp"
             tools:src="@tools:sample/avatars" />
 
         <TextView
-            android:id="@+id/textView21"
+            android:id="@+id/account_personal_nameProfile"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
@@ -87,7 +87,7 @@
             app:layout_constraintStart_toStartOf="parent" />
 
         <TextView
-            android:id="@+id/textView22"
+            android:id="@+id/account_personal_emailProfile"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
@@ -117,7 +117,7 @@
         app:layout_constraintTop_toBottomOf="@+id/frameLayout3">
 
         <Button
-            android:id="@+id/button"
+            android:id="@+id/account_personal_infomationButtonProfile"
             android:layout_width="350dp"
             android:layout_height="70dp"
             android:layout_marginStart="30dp"
@@ -133,7 +133,7 @@
             app:iconTint="@color/Primary_40" />
 
         <Button
-            android:id="@+id/button2"
+            android:id="@+id/account_personal_policyButtonProfile"
             android:layout_width="350dp"
             android:layout_height="70dp"
             android:layout_marginStart="30dp"
@@ -149,7 +149,7 @@
             app:iconTint="@color/Primary_40" />
 
         <Button
-            android:id="@+id/button3"
+            android:id="@+id/account_personal_notificationButtonProfile"
             android:layout_width="350dp"
             android:layout_height="70dp"
             android:layout_marginStart="30dp"
@@ -165,7 +165,7 @@
             app:iconTint="@color/Primary_40" />
 
         <Button
-            android:id="@+id/button4"
+            android:id="@+id/account_personal_reportErrorButtonProfile"
             android:layout_width="350dp"
             android:layout_height="70dp"
             android:layout_marginStart="30dp"
@@ -182,7 +182,7 @@
     </LinearLayout>
 
     <Button
-        android:id="@+id/button5"
+        android:id="@+id/account_personal_logoutButtonProfile"
         android:layout_width="340dp"
         android:layout_height="70dp"
         android:layout_marginTop="30dp"
