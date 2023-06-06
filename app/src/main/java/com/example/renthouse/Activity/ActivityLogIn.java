@@ -2,15 +2,17 @@ package com.example.renthouse.Activity;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 
 import android.Manifest;
-import android.app.AlertDialog;
+import android.app.ActivityManager;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -53,23 +55,28 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.auth.UserProfileChangeRequest;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
+import java.net.IDN;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.TreeMap;
 
 public class ActivityLogIn extends AppCompatActivity {
     private static final int REQUEST_CODE = 1;
-    private static final int REQ_ONE_TAP = 2;  // Can be any integer unique to the Activity.
     private boolean showOneTapUI = true;
     private TextView forgotPasswordBtn;
     private TextView signUpBtn;
     private Button loginWithGoogleBtn, login_logInBtn;
+    private FirebaseStorage storage;
     FirebaseAuth mAuth;
     private TextInputEditText login_email, login_password;
     GoogleSignInOptions gso;
@@ -84,7 +91,8 @@ public class ActivityLogIn extends AppCompatActivity {
         setContentView(R.layout.activity_log_in);
 
         database = FirebaseDatabase.getInstance();
-        reference = database.getReference("Accounts");
+        reference = database.getReference();
+        storage = FirebaseStorage.getInstance();
         //
 
         forgotPasswordBtn = findViewById(R.id.forgotPasswordBtn);
@@ -94,6 +102,8 @@ public class ActivityLogIn extends AppCompatActivity {
         login_password = findViewById(R.id.login_password);
         login_logInBtn = findViewById(R.id.login_logInBtn);
         mAuth = FirebaseAuth.getInstance();
+
+
 
         login_logInBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -122,7 +132,7 @@ public class ActivityLogIn extends AppCompatActivity {
                         if (task.isSuccessful()) {
                             pushNotification();
                             Toast.makeText(getApplicationContext(), "Login Successful", Toast.LENGTH_SHORT).show();
-                            Intent intent = new Intent(getApplicationContext(), ActivityChat.class);
+                            Intent intent = new Intent(getApplicationContext(), ActivityMain.class);
                             startActivity(intent);
                             finish();
                         } else {
@@ -201,15 +211,6 @@ public class ActivityLogIn extends AppCompatActivity {
                 }
             }
         });
-
-
-
-
-
-
-
-
-
     }
 
     private void signInWithGoogle() {
@@ -227,37 +228,57 @@ public class ActivityLogIn extends AppCompatActivity {
                 GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(getApplicationContext());
                 firebaseAuthWithGoogle(account.getIdToken());
                 if (account != null) {
+                    String personalID = account.getId();
                     String personName = account.getDisplayName();
                     String personEmail = account.getEmail();
-                    String personId = account.getId();
                     Uri personPhoto = account.getPhotoUrl();
-
-
-                    if(personPhoto != null) {
-                        Toast.makeText(getApplicationContext(), "Having photo ", Toast.LENGTH_SHORT).show();
-                    }
-
-                    String submail = personEmail;
-                    int atIndex = personEmail.indexOf("@");
-                    String username = personEmail.substring(0, atIndex);
-
 
                     Date now = new Date();
                     SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                     String formattedDate = dateFormat.format(now);
+                    AccountClass accountClass = new AccountClass(personName, personEmail, "+84", "********", personPhoto.toString(), formattedDate);
 
-                    AccountClass accountClass = new AccountClass(personName, personEmail, "null", "null", personPhoto.toString(), formattedDate);
-                    reference.child(username).setValue(accountClass);
+                 /*   reference.child("Accounts").addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            for(DataSnapshot data: dataSnapshot.getChildren()){
+                                if (data.child(personalID).exists()) {
+                                    //do ur stuff
+                                } else {
+                                    reference.child("Accounts").child(personalID).setValue(accountClass);
+                                }
+                            }
+                        }
 
-//                    Toast.makeText(getApplicationContext(), personName, Toast.LENGTH_SHORT).show();
-//                    Toast.makeText(getApplicationContext(), personEmail, Toast.LENGTH_SHORT).show();
-//                    Toast.makeText(getApplicationContext(), personId, Toast.LENGTH_SHORT).show();
-//                    Toast.makeText(getApplicationContext(), personPhoto.toString(), Toast.LENGTH_SHORT).show();
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
+
+                        }
+
+
+                    });*/
+                    reference.child("Accounts").child(personalID).addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            if (!dataSnapshot.exists()) {
+                                reference.child("Accounts").child(personalID).setValue(accountClass);
+
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+                            // Handle the error here
+                        }
+                    });
                     pushSuccessFullNotification();
+                    startActivity(new Intent(ActivityLogIn.this, ActivityMain.class));
+
+
                 }
                 //
                 //
-                HomeActivity();
+
             } catch (ApiException e) {
                 Toast.makeText(ActivityLogIn.this, "Error", Toast.LENGTH_SHORT).show();
             }
@@ -293,11 +314,6 @@ public class ActivityLogIn extends AppCompatActivity {
                 .setPhotoUri(user.getPhotoUrl())
                 .build();
         user.updateProfile(profileUpdates);
-    }
-    private void HomeActivity() {
-        finish();
-        Intent intent = new Intent(this.getApplicationContext(), ActivityAccount.class);
-        startActivity(intent);
     }
 
     public boolean isValidEmail(CharSequence email) {

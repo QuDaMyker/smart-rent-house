@@ -1,0 +1,266 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:orientation="vertical"
+    tools:context=".Fragment.FragmentFilter">
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/textInputSearch"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="30dp"
+        android:layout_marginEnd="46dp"
+        android:hint="Địa chỉ"
+        android:textColorHint="@color/Primary_60"
+        app:boxStrokeColor="@color/Primary_60"
+        app:layout_constraintBottom_toTopOf="@+id/horizontalScrollView"
+        app:layout_constraintEnd_toEndOf="@id/textViewCancel"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/textInputEditTextSearchAddress"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:drawableLeft="@drawable/current_location"
+            android:textColor="@color/Primary_60"
+            app:boxStrokeColor="@color/Primary_60" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+
+    <TextView
+        android:id="@+id/textViewCancel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="52dp"
+        android:layout_marginEnd="16dp"
+        android:text="Hủy"
+        android:textColor="@color/Primary_60"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintLeft_toRightOf="@+id/textInputSearch"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="MissingConstraints" />
+
+    <HorizontalScrollView
+        android:id="@+id/horizontalScrollView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="10dp"
+        android:fillViewport="true"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toTopOf="@id/horizontalDisplayResult"
+        app:layout_constraintStart_toStartOf="parent"
+
+        app:layout_constraintTop_toBottomOf="@+id/textInputSearch">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/buttonPrice"
+                android:layout_width="wrap_content"
+                android:layout_height="35dp"
+                android:layout_gravity="center"
+                android:layout_marginEnd="12dp"
+                android:backgroundTint="@drawable/button_option_in_filtter"
+                android:checkable="true"
+                android:padding="0dp"
+                android:text="Giá cả"
+                android:textAllCaps="false"
+                android:textColor="@color/text_selector_filter"
+                android:textSize="11dp"
+                app:cornerRadius="4dp"
+                app:icon="@drawable/button_expand_icon"
+                app:iconGravity="textStart"
+                app:iconSize="12dp"
+                app:iconTint="@color/text_selector_filter"
+                tools:ignore="TouchTargetSizeCheck,TextSizeCheck" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/buttonUtilities"
+                android:layout_width="wrap_content"
+                android:layout_height="35dp"
+                android:layout_gravity="center"
+                android:layout_marginEnd="12dp"
+                android:backgroundTint="@drawable/button_option_in_filtter"
+                android:checkable="true"
+                android:padding="0dp"
+                android:text="Tiện ích"
+                android:textAllCaps="false"
+                android:textColor="@color/text_selector_filter"
+                android:textSize="11dp"
+                app:cornerRadius="4dp"
+                app:icon="@drawable/button_expand_icon"
+                app:iconGravity="textStart"
+                app:iconSize="12dp"
+                app:iconTint="@color/text_selector_filter"
+                tools:ignore="TextSizeCheck,TouchTargetSizeCheck" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/buttonType"
+                android:layout_width="wrap_content"
+                android:layout_height="35dp"
+                android:layout_gravity="center"
+                android:layout_marginEnd="12dp"
+                android:backgroundTint="@drawable/button_option_in_filtter"
+                android:checkable="true"
+                android:padding="0dp"
+                android:text="Loại phòng"
+                android:textAllCaps="false"
+                android:textColor="@color/text_selector_filter"
+                android:textSize="11dp"
+                app:cornerRadius="4dp"
+                app:icon="@drawable/button_expand_icon"
+                app:iconGravity="textStart"
+                app:iconSize="12dp"
+                app:iconTint="@color/text_selector_filter"
+                tools:ignore="TouchTargetSizeCheck,TextSizeCheck" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/buttonAmount"
+                android:layout_width="wrap_content"
+                android:layout_height="35dp"
+                android:layout_gravity="center"
+                android:layout_marginEnd="12dp"
+                android:backgroundTint="@drawable/button_option_in_filtter"
+                android:checkable="true"
+                android:padding="0dp"
+                android:text="Số phòng"
+                android:textAllCaps="false"
+                android:textColor="@color/text_selector_filter"
+                android:textSize="11dp"
+                app:cornerRadius="4dp"
+                app:icon="@drawable/button_expand_icon"
+                app:iconGravity="textStart"
+                app:iconSize="12dp"
+                app:iconTint="@color/text_selector_filter"
+                tools:ignore="TouchTargetSizeCheck,TextSizeCheck,TextSizeCheck" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/buttonOptionOther"
+                android:layout_width="wrap_content"
+                android:layout_height="35dp"
+                android:layout_gravity="center"
+                android:layout_marginEnd="12dp"
+                android:backgroundTint="@drawable/button_option_in_filtter"
+                android:checkable="true"
+                android:padding="0dp"
+                android:text="Tùy chọn khác"
+                android:textAllCaps="false"
+                android:textColor="@color/text_selector_filter"
+                android:textSize="11dp"
+                app:cornerRadius="4dp"
+                app:icon="@drawable/button_expand_icon"
+                app:iconGravity="textStart"
+                app:iconSize="12dp"
+                app:iconTint="@color/text_selector_filter"
+                tools:ignore="TouchTargetSizeCheck,TextSizeCheck" />
+        </LinearLayout>
+
+    </HorizontalScrollView>
+
+    <HorizontalScrollView
+        android:id="@+id/horizontalDisplayResult"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginTop="20dp"
+        android:background="@color/Secondary_90"
+        app:layout_constraintBottom_toTopOf="@id/viewPager"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/horizontalScrollView">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:padding="0dp"
+                android:text="Bộ lọc"
+                android:textSize="16dp"
+                android:textStyle="bold" />
+        </LinearLayout>
+    </HorizontalScrollView>
+
+    <com.example.renthouse.Activity.CustomViewPager
+        android:id="@+id/viewPager"
+        android:layout_width="wrap_content"
+        android:layout_height="140dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="20dp"
+        android:maxHeight="100dp"
+        android:minHeight="45dp"
+        app:layout_constraintBottom_toTopOf="@id/linearLayoutControlFilter"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/horizontalDisplayResult" />
+
+    <LinearLayout
+        android:id="@+id/linearLayoutControlFilter"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="20dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/viewPager"
+        tools:ignore="MissingConstraints"
+        tools:layout_editor_absoluteY="255dp">
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/buttonDeleteFilterTool"
+            android:layout_width="145dp"
+            android:layout_height="33dp"
+            android:layout_marginStart="20dp"
+            android:background="@drawable/custom_button_filter"
+            android:gravity="center"
+            android:text="Xóa bộ lọc"
+            android:textAllCaps="false"
+            android:textColor="@color/Primary_60"
+            android:textSize="14dp"
+            tools:ignore="TextSizeCheck,TouchTargetSizeCheck" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/buttonApply"
+            android:layout_width="145dp"
+            android:layout_height="33dp"
+            android:layout_marginStart="40dp"
+            android:background="@drawable/custom_button_filter2"
+            android:gravity="center"
+            android:text="Áp dụng"
+            android:textAllCaps="false"
+            android:textColor="@color/white"
+            android:textSize="14dp"
+            tools:ignore="TextSizeCheck,TouchTargetSizeCheck" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/textViewGuide"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="40dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="40dp"
+        android:gravity="center"
+        android:text="Vui lòng chọn yêu cầu, sau đó bấm áp dụng để tìm kiếm!"
+        android:textColor="@color/Secondary_20"
+        android:textSize="14dp"
+        android:textStyle="bold"
+        app:layout_constraintTop_toBottomOf="@id/linearLayoutControlFilter"
+        tools:ignore="MissingConstraints,TextSizeCheck" />
+</androidx.constraintlayout.widget.ConstraintLayout>

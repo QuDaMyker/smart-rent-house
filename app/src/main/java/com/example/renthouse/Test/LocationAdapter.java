@@ -14,7 +14,6 @@ import com.example.renthouse.R;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.LocationViewHolder> implements Filterable {
     private List<Location> mListLocation;
@@ -29,7 +28,7 @@ public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.Locati
     @Override
     public LocationViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         // dua layout vao listView
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.activity_search_item, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.fragment_search_item, parent, false);
         return new LocationViewHolder(view);
     }
 

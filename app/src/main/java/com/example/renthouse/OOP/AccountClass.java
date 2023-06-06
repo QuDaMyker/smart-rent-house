@@ -1,6 +1,8 @@
 package com.example.renthouse.OOP;
 
-public class AccountClass {
+import java.io.Serializable;
+
+public class AccountClass implements Serializable {
     private String fullname;
     private String email;
     private String phoneNumber;
