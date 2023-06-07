@@ -19,12 +19,13 @@ public class FragmentAccount extends Fragment {
     private FragmentAccountBinding binding;
     private FirebaseAuth firebaseAuth;
     private FirebaseUser currentUser;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_account, container, false);
         // Inflate the layout for this fragment
-
+        binding = FragmentAccountBinding.inflate(inflater, container, false);
+        View view = binding.getRoot();
 
         firebaseAuth = FirebaseAuth.getInstance();
         currentUser = firebaseAuth.getCurrentUser();
@@ -34,7 +35,7 @@ public class FragmentAccount extends Fragment {
         binding.accountPersonalInfomationButtonProfile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                // Handle button click event
             }
         });
 
