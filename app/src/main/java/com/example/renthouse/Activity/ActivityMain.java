@@ -1,6 +1,5 @@
 package com.example.renthouse.Activity;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -22,6 +21,13 @@ import com.example.renthouse.R;
 import com.example.renthouse.databinding.ActivityMainBinding;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
+import io.reactivex.annotations.NonNull;
 
 public class ActivityMain extends AppCompatActivity {
     private ActivityMainBinding binding;
@@ -47,6 +53,11 @@ public class ActivityMain extends AppCompatActivity {
             }
             return true;
         });
+
+
+
+
+
     }
 
 

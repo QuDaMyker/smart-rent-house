@@ -25,59 +25,82 @@ public class ActivitySplash extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
 
-        ProgressBar progressBar = findViewById(R.id.progressBar);
-        int totalProgressTime = 10000; // thời gian tối đa (ms)
-        int intervalTime = 10; // thời gian giữa mỗi lần cập nhật (ms)
-        int increment = 1; // giá trị tăng của ProgressBar
 
-        final Handler handler = new Handler();
         getPermission();
-        Runnable runnable = new Runnable() {
-            int progress = 0;
 
+    }
 
+    private void runningSplash() {
+        ProgressBar progressBar = findViewById(R.id.progressBar);
+        int totalProgressTime = 10000; // Total progress time in milliseconds
+        int intervalTime = 1; // Interval time for each update in milliseconds
+        int increment = 10; // Increment value of the progress bar
+
+        final int maxProgress = totalProgressTime / intervalTime; // Calculate the maximum progress value
+        progressBar.setMax(maxProgress);
+
+        new Thread(new Runnable() {
             public void run() {
-                progressBar.setProgress(progress);
-                if (progress == progressBar.getMax()) {
-                    FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
-                    FirebaseUser currentUser = firebaseAuth.getCurrentUser();
+                int progress = 0;
 
-                    if (currentUser != null) {
-                        // User is already logged in, navigate to MainActivity
-                        startActivity(new Intent(ActivitySplash.this, ActivityMain.class));
-                        finish(); // Optional: Close the current activity
-                    } else {
-                        // User is not logged in, navigate to LoginActivity
-                        startActivity(new Intent(ActivitySplash.this, ActivityLogIn.class));
+                while (progress < maxProgress) {
+                    try {
+                        Thread.sleep(intervalTime);
+                        progress += increment;
+
+                        // Update the progress bar on the UI thread
+                        int finalProgress = progress;
+                        runOnUiThread(new Runnable() {
+                            public void run() {
+                                progressBar.setProgress(finalProgress);
+                            }
+                        });
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                // After the progress is complete, check the user authentication status
+                FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
+                FirebaseUser currentUser = firebaseAuth.getCurrentUser();
+
+                // Start the appropriate activity based on the user's authentication status
+                runOnUiThread(new Runnable() {
+                    public void run() {
+                        if (currentUser != null) {
+                            // User is already logged in, navigate to MainActivity
+                            startActivity(new Intent(ActivitySplash.this, ActivityMain.class));
+                        } else {
+                            // User is not logged in, navigate to LoginActivity
+                            startActivity(new Intent(ActivitySplash.this, ActivityLogIn.class));
+                        }
+
                         finish(); // Optional: Close the current activity
                     }
-                } else {
-                    progress += increment;
-                    handler.postDelayed(this, intervalTime);
-                }
+                });
             }
-        };
-        handler.postDelayed(runnable, intervalTime);
+        }).start();
     }
+
+
     private void getPermission() {
         if(ContextCompat.checkSelfPermission(ActivitySplash.this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-
+            runningSplash();
         }else {
-            askPermission();
+            String[] permissons = {Manifest.permission.ACCESS_FINE_LOCATION};
+            requestPermissions(permissons, REQUEST_CODE);
         }
     }
-    private void askPermission() {
-        ActivityCompat.requestPermissions(ActivitySplash.this , new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_CODE);
-    }
+
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == REQUEST_CODE) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-
+                runningSplash();
             } else {
-                Toast.makeText(ActivitySplash.this, "Please provide the required permission", Toast.LENGTH_SHORT).show();
+                finish();
             }
         }
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 }

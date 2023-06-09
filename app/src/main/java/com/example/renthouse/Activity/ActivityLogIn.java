@@ -237,35 +237,37 @@ public class ActivityLogIn extends AppCompatActivity {
                     SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                     String formattedDate = dateFormat.format(now);
                     AccountClass accountClass = new AccountClass(personName, personEmail, "+84", "********", personPhoto.toString(), formattedDate);
-
-                 /*   reference.child("Accounts").addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(DataSnapshot dataSnapshot) {
-                            for(DataSnapshot data: dataSnapshot.getChildren()){
-                                if (data.child(personalID).exists()) {
-                                    //do ur stuff
-                                } else {
-                                    reference.child("Accounts").child(personalID).setValue(accountClass);
-                                }
-                            }
-                        }
-
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError error) {
-
-                        }
+                    String emailToCheck = personEmail;
 
 
-                    });*/
-                    reference.child("Accounts").child(personalID).addListenerForSingleValueEvent(new ValueEventListener() {
+
+                    DatabaseReference accountsRef = reference.child("Accounts");
+                    Query emailQuery = accountsRef.orderByChild("email").equalTo(emailToCheck);
+
+                    emailQuery.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                            if (!dataSnapshot.exists()) {
-                                reference.child("Accounts").child(personalID).setValue(accountClass);
+                            if (dataSnapshot.exists()) {
+                                // Account with the given email already exists
+                                // You can handle this case here
+                            } else {
+                                DatabaseReference newChildRef = reference.child("Accounts").push();
+                                String generatedKey = newChildRef.getKey();
 
+                                // Set the data for the new child node
+                                newChildRef.setValue(accountClass)
+                                        .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                            @Override
+                                            public void onComplete(@NonNull Task<Void> task) {
+                                                if (task.isSuccessful()) {
+                                                    // Data successfully saved
+                                                } else {
+                                                    // Handle the error here
+                                                }
+                                            }
+                                        });
                             }
                         }
-
                         @Override
                         public void onCancelled(@NonNull DatabaseError databaseError) {
                             // Handle the error here
@@ -274,10 +276,7 @@ public class ActivityLogIn extends AppCompatActivity {
                     pushSuccessFullNotification();
                     startActivity(new Intent(ActivityLogIn.this, ActivityMain.class));
 
-
                 }
-                //
-                //
 
             } catch (ApiException e) {
                 Toast.makeText(ActivityLogIn.this, "Error", Toast.LENGTH_SHORT).show();
