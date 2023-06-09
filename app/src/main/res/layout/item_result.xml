@@ -1,13 +1,81 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="horizontal"
-    android:layout_width="match_parent"
-    android:padding="20dp"
-    android:layout_height="match_parent">
-    <com.google.android.material.imageview.ShapeableImageView
-        android:layout_width="100dp"
-        android:layout_height="100dp"/>
-    <TextView
+    android:layout_width="wrap_content"
+    android:layout_margin="20dp"
+    android:background="@drawable/rounded_background_item_result"
+    android:layout_height="wrap_content">
+    <LinearLayout
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
+        android:layout_margin="15dp"
+        android:layout_height="wrap_content">
+        <FrameLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+            <androidx.cardview.widget.CardView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:elevation="8dp"
+                app:cardCornerRadius="20dp">
+                <ImageView
+                    android:id="@+id/imageViewImageRoom"
+                    android:layout_width="120dp"
+                    android:layout_height="120dp"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/image_room_result"/>
+            </androidx.cardview.widget.CardView>
+
+
+            <CheckBox
+                android:id="@+id/likedCheckBox"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:elevation="10dp"
+                android:layout_gravity="top|end"
+                android:button="@drawable/heart_checkbox_selector"
+                android:layout_margin="0dp" />
+        </FrameLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:layout_marginStart="15dp"
+            android:layout_height="wrap_content">
+            <TextView
+                android:layout_width="wrap_content"
+                android:id="@+id/textViewAmountPeople"
+                android:textColor="@color/Secondary_40"
+                android:textSize="14dp"
+                android:text="Số người"
+                android:layout_height="wrap_content"/>
+            <TextView
+                android:maxLines="2"
+                android:textColor="@color/Secondary_20"
+                android:textSize="18dp"
+                android:id="@+id/textViewRoomName"
+                android:textStyle="bold"
+                android:text="Tên phòng trọ được hiển thị tối đa 2 dòng"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:text="Địa chỉ trọ được hiển thị tối đa 2 dòng"
+                android:id="@+id/textViewAddress"
+                android:textColor="@color/Secondary_20"
+                android:textSize="14dp"
+                android:layout_height="wrap_content"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:id="@+id/textViewPrice"
+                android:textColor="@color/Primary_60"
+                android:textSize="14dp"
+                android:textStyle="bold"
+                android:text="2.000.000 đ/phòng"
+                android:layout_height="wrap_content"/>
+        </LinearLayout>
+
+    </LinearLayout>
+
 </LinearLayout>
