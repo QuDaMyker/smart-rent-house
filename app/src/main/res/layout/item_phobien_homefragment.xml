@@ -1,25 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="wrap_content"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:id="@+id/cardView"
+    app:cardCornerRadius="15dp"
+    android:layout_marginEnd="8dp">
 
-    <com.google.android.material.imageview.ShapeableImageView
-        android:id="@+id/image"
-        android:layout_width="112dp"
-        android:layout_height="145dp"
-        android:scaleType="centerCrop"
-        android:src="@drawable/ic_phobien_1"
-        app:shapeAppearanceOverlay="@style/circular_15" />
-
-    <TextView
-        android:id="@+id/location"
+    <FrameLayout
+        android:background="@android:color/transparent"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center|bottom"
-        android:layout_marginBottom="10dp"
-        android:gravity="center"
-        android:text="Bình Thạnh"
-        android:textColor="@color/white"
-        android:textSize="12sp" />
-</FrameLayout>
+        android:layout_height="wrap_content">
+
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/image"
+            android:layout_width="112dp"
+            android:layout_height="145dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/ic_phobien_1"
+            app:shapeAppearanceOverlay="@style/circular_15" />
+
+        <TextView
+            android:id="@+id/location"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center|bottom"
+            android:layout_marginBottom="10dp"
+            android:gravity="center"
+            android:text="Bình Thạnh"
+            android:textColor="@color/white"
+            android:textSize="12sp" />
+    </FrameLayout>
+
+</androidx.cardview.widget.CardView>

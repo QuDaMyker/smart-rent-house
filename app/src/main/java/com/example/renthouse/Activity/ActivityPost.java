@@ -20,7 +20,6 @@ import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.GridLayout;
-import android.widget.ImageButton;
 import android.widget.ScrollView;
 import android.widget.Toast;
 
@@ -69,12 +68,10 @@ public class ActivityPost extends AppCompatActivity {
     FragmentLocation fragmentLocation;
     FragmentUtilities fragmentUtilities;
     StorageReference storageReference;
-    ImageButton btnBack;
 
     public interface OnUploadImageCompleteListener {
         void onUploadImageComplete();
     }
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -85,7 +82,6 @@ public class ActivityPost extends AppCompatActivity {
         fragmentLocation = new FragmentLocation();
         fragmentUtilities = new FragmentUtilities();
 
-        btnBack = findViewById(R.id.btn_Back);
         stepView = (StepView) findViewById(R.id.step_view);
         stepView.done(false);
         nextBtn = (MaterialButton) findViewById(R.id.nextBtn);
@@ -93,18 +89,12 @@ public class ActivityPost extends AppCompatActivity {
         scrollView = (ScrollView) findViewById(R.id.scrollView);
         position = 0;
 
-        btnBack.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
         nextBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                switch (position) {
+                switch (position){
                     case 0: {
-                        if (fragmentInformation.validateData() == false) {
+                        if(fragmentInformation.validateData() == false){
                             break;
                         }
                         prevBtn.setVisibility(View.VISIBLE);
@@ -115,7 +105,7 @@ public class ActivityPost extends AppCompatActivity {
                         break;
                     }
                     case 1: {
-                        if (fragmentLocation.validateData() == false) {
+                        if(fragmentLocation.validateData() == false){
                             break;
                         }
                         replaceFragmentContent(fragmentUtilities);
@@ -125,7 +115,7 @@ public class ActivityPost extends AppCompatActivity {
                         break;
                     }
                     case 2: {
-                        if (fragmentUtilities.validateData() == false) {
+                        if(fragmentUtilities.validateData() == false){
                             break;
                         }
                         replaceFragmentContent(fragmentConfirm);
@@ -138,8 +128,8 @@ public class ActivityPost extends AppCompatActivity {
                         nextBtn.setText("Đăng bài");
                         break;
                     }
-                    default: {
-                        if (fragmentConfirm.validateData() == false) {
+                    default:{
+                        if(fragmentConfirm.validateData() == false){
                             break;
                         }
                         pushRoomData();
@@ -152,7 +142,7 @@ public class ActivityPost extends AppCompatActivity {
         prevBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                switch (position) {
+                switch (position){
                     case 3: {
                         replaceFragmentContent(fragmentUtilities);
                         position = 2;
@@ -178,7 +168,7 @@ public class ActivityPost extends AppCompatActivity {
                         prevBtn.setVisibility(View.GONE);
                         break;
                     }
-                    default: {
+                    default:{
                         break;
                     }
                 }
@@ -241,7 +231,7 @@ public class ActivityPost extends AppCompatActivity {
         }
     }
 
-    private void updateImage(Room room) {
+    private void updateImage(Room room){
         List<String> uriImageStringList = new ArrayList<>();
         ProgressDialog progressDialog = new ProgressDialog(this);
         progressDialog.setTitle("Đang tải lên...");
@@ -253,7 +243,7 @@ public class ActivityPost extends AppCompatActivity {
                 FirebaseDatabase database = FirebaseDatabase.getInstance();
                 DatabaseReference myRef = database.getReference("Rooms/" + room.getId() + "/images");
                 myRef.setValue(uriImageStringList);
-                if (progressDialog.isShowing()) {
+                if(progressDialog.isShowing()){
                     progressDialog.dismiss();
                 }
                 Toast.makeText(ActivityPost.this, "Tải lên thành công!", Toast.LENGTH_SHORT).show();
@@ -262,15 +252,15 @@ public class ActivityPost extends AppCompatActivity {
         storageReference = FirebaseStorage.getInstance().getReference();
         List<Uri> uriList = fragmentUtilities.getUriListImg();
         int totalItems = uriList.size();
-        if (totalItems == 0) {
-            if (progressDialog.isShowing()) {
+        if(totalItems == 0){
+            if(progressDialog.isShowing()){
                 progressDialog.dismiss();
             }
             Toast.makeText(ActivityPost.this, "Tải lên thành công!", Toast.LENGTH_SHORT).show();
             return;
         }
         final int[] successCount = {0};
-        for (Uri u : uriList) {
+        for(Uri u : uriList){
             Uri compressedImageUri;
             File actualImage = new File(u.getPath());
             try {
@@ -279,7 +269,7 @@ public class ActivityPost extends AppCompatActivity {
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
-            if (compressedImageUri == null) {
+            if(compressedImageUri == null){
                 continue;
             }
             SimpleDateFormat formatter = new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss_SSS", Locale.ENGLISH);
@@ -294,7 +284,7 @@ public class ActivityPost extends AppCompatActivity {
                         public void onSuccess(Uri uri) {
                             uriImageStringList.add(uri.toString());
                             successCount[0]++;
-                            if (successCount[0] == totalItems) {
+                            if(successCount[0] == totalItems){
                                 listener.onUploadImageComplete();
                             }
                         }
@@ -304,7 +294,7 @@ public class ActivityPost extends AppCompatActivity {
                 @Override
                 public void onFailure(@NonNull Exception e) {
                     Toast.makeText(ActivityPost.this, "Đã xảy ra lỗi, vui lòng thử lại", Toast.LENGTH_SHORT).show();
-                    if (progressDialog.isShowing()) {
+                    if(progressDialog.isShowing()){
                         progressDialog.dismiss();
                     }
                     return;

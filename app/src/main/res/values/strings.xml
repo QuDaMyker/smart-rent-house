@@ -29,5 +29,6 @@
         <item>Tiện ích</item>
         <item>Xác nhận</item>
     </array>
+    <string name="title_activity_maps">MapsActivity</string>
 
 </resources>
