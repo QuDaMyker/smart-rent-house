@@ -1,5 +1,8 @@
 package com.example.renthouse.Test;
 
+import static com.gun0912.tedpermission.provider.TedPermissionProvider.context;
+
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,7 +26,6 @@ public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.Locati
         this.mListLocation = mListLocation;
         this.filteredLocation = mListLocation;
     }
-
     @NonNull
     @Override
     public LocationViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -31,7 +33,6 @@ public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.Locati
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.fragment_search_item, parent, false);
         return new LocationViewHolder(view);
     }
-
     @Override
     public void onBindViewHolder(@NonNull LocationViewHolder holder, int position) {
         // set du lieu len
@@ -40,8 +41,12 @@ public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.Locati
             return;
         }
         holder.diachi.setText(location.getAddress());
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+            }
+        });
     }
-
     @Override
     public int getItemCount() {
         if (mListLocation != null) {
@@ -49,7 +54,6 @@ public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.Locati
         }
         return 0;
     }
-
     @Override
     public Filter getFilter() {
         return new Filter() {
@@ -72,7 +76,6 @@ public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.Locati
 
                 return filterResults;
             }
-
             @Override
             protected void publishResults(CharSequence constraint, FilterResults results) {
                 mListLocation = (List<Location>) results.values;
@@ -80,11 +83,8 @@ public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.Locati
             }
         };
     }
-
     public class LocationViewHolder extends RecyclerView.ViewHolder {
-
         private TextView diachi;
-
         public LocationViewHolder(@NonNull View itemView) {
             super(itemView);
             diachi = itemView.findViewById(R.id.diachi);

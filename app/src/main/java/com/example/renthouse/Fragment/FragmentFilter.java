@@ -93,7 +93,6 @@ public class FragmentFilter extends Fragment {
         materialButtonFilter[3] = view.findViewById(R.id.buttonAmount); // buttonAmount
         materialButtonFilter[4] = view.findViewById(R.id.buttonOptionOther); // buttonOptionOther
 
-        textInputEditTextSearchAddress = view.findViewById(R.id.textInputEditTextSearchAddress);
 
 
         params = viewPager.getLayoutParams();

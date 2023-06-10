@@ -53,6 +53,7 @@
                     android:background="@drawable/custom_edittext_1"
                     android:hint="2"
                     android:textAlignment="center"
+                    android:inputType="none"
                     android:textColor="@color/black"
                     android:textSize="20dp" />
 

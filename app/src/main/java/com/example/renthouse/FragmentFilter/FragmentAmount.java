@@ -2,11 +2,14 @@ package com.example.renthouse.FragmentFilter;
 
 import android.os.Bundle;
 
+import androidx.appcompat.widget.AppCompatImageButton;
+import androidx.appcompat.widget.AppCompatImageView;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 
 import com.example.renthouse.R;
 
@@ -25,7 +28,9 @@ public class FragmentAmount extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
-
+    private AppCompatImageButton btnDescreasePeople;
+    private AppCompatImageButton btnIncreasePeople;
+    private EditText editTextAmount;
     public FragmentAmount() {
         // Required empty public constructor
     }
@@ -62,7 +67,34 @@ public class FragmentAmount extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_amount, container, false);
+        btnDescreasePeople = view.findViewById(R.id.buttonDescreasePeople);
+        btnIncreasePeople = view.findViewById(R.id.buttonIncreasePeople);
+        editTextAmount = view.findViewById(R.id.editTextAmountPeople);
 
+        btnDescreasePeople.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int amount = Integer.parseInt(String.valueOf(editTextAmount.getText()));
+                if (amount <= 1) {
+                    return;
+                } else {
+                    amount = amount - 1;
+                    editTextAmount.setText(String.valueOf(amount));
+                }
+            }
+        });
+        btnIncreasePeople.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int amount = Integer.parseInt(String.valueOf(editTextAmount.getText()));
+                if (amount > 8) {
+                    return;
+                } else {
+                    amount = amount + 1;
+                    editTextAmount.setText(String.valueOf(amount));
+                }
+            }
+        });
         return view;
     }
 }

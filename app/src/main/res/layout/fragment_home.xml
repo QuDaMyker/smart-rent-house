@@ -71,6 +71,7 @@
             android:layout_width="350dp"
             android:layout_height="65dp"
             android:layout_marginTop="18dp"
+            android:id="@+id/textInputLayoutFind"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textView2">
@@ -78,8 +79,10 @@
             <com.google.android.material.textfield.TextInputEditText
                 android:layout_width="350dp"
                 android:layout_height="55dp"
+                android:id="@+id/textInputEditTextFind"
                 android:background="@drawable/white_bg_home"
                 android:drawableLeft="@drawable/ic_search_home"
+                android:focusableInTouchMode="false"
                 android:drawablePadding="10dp"
                 android:hint="Tìm theo quận, tên đường, địa chỉ" />
 
