@@ -27,7 +27,7 @@
             android:queryHint="Tìm theo quận, tên đường, địa điểm" />
 
         <TextView
-            android:id="@+id/huyBtn"
+            android:id="@+id/textViewHuy"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
@@ -49,16 +49,24 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
-            android:layout_marginBottom="10dp"
-            android:paddingLeft="25dp"
+            android:layout_marginLeft="10dp"
             android:text="Tìm kiếm gần đây"
             android:textColor="@color/Secondary_20"
             android:textSize="15sp"
             android:textStyle="bold" />
 
+        <TextView
+            android:text="Không tìm thấy kết quả"
+            android:textColor="@color/Secondary_20"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="10dp"
+            android:visibility="gone"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recycleViewHistorySearch"
             android:layout_width="match_parent"
+            android:layout_margin="10dp"
             android:layout_height="match_parent"
             android:layout_marginTop="10dp" />
     </LinearLayout>

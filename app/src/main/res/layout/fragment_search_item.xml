@@ -30,7 +30,7 @@
             android:padding="10dp"
             android:text="Đặng Văn Bi, Quận Thủ Đức"
             android:textColor="@color/Secondary_20"
-            android:textSize="18sp" />
+            android:textSize="16sp" />
 
         <TextView
             android:id="@+id/xoaBtn"

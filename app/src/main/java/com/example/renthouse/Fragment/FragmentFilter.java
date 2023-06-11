@@ -96,7 +96,7 @@ public class FragmentFilter extends Fragment {
 
 
         params = viewPager.getLayoutParams();
-        params.height = 400;
+        params.height = 500;
         params.width = ViewGroup.LayoutParams.WRAP_CONTENT;    //500px
         viewPager.setLayoutParams(params);
 
@@ -166,27 +166,27 @@ public class FragmentFilter extends Fragment {
     public void setPageViewerControl(int position) {
         switch (position) {
             case 0:
-                params.height = 400;
+                params.height = 500;
                 viewPager.setCurrentItem(0);
                 break;
             case 1:
-                params.height = 750;
+                params.height = 950;
                 viewPager.setCurrentItem(1);
                 break;
             case 2:
-                params.height = 500;
+                params.height = 600;
                 viewPager.setCurrentItem(2);
                 break;
             case 3:
-                params.height = 300;
+                params.height = 400;
                 viewPager.setCurrentItem(3);
                 break;
             case 4:
-                params.height = 500;
+                params.height = 600;
                 viewPager.setCurrentItem(4);
                 break;
             default:
-                params.height = 400;
+                params.height = 500;
                 viewPager.setCurrentItem(0);
         }
     }
