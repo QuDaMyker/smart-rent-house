@@ -13,6 +13,7 @@ import android.content.ContentResolver;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ScrollView;
 import android.widget.Toast;
@@ -29,8 +30,12 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.button.MaterialButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
@@ -50,6 +55,8 @@ import java.util.Locale;
 import id.zelory.compressor.Compressor;
 
 public class ActivityPost extends AppCompatActivity {
+    private FirebaseAuth firebaseAuth;
+    private FirebaseUser currentUser;
     StepView stepView;
     ScrollView scrollView;
     int position;
@@ -60,6 +67,7 @@ public class ActivityPost extends AppCompatActivity {
     FragmentLocation fragmentLocation;
     FragmentUtilities fragmentUtilities;
     StorageReference storageReference;
+    AccountClass user;
 
     public interface OnUploadImageCompleteListener {
         void onUploadImageComplete();
@@ -174,38 +182,47 @@ public class ActivityPost extends AppCompatActivity {
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference myRef = database.getReference("Rooms");
         FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+        DatabaseReference accRef = database.getReference("Accounts");
 
-        //HARDCODE, TODO: retrieve current user
-        AccountClass user = new AccountClass("ABC",
-                "abc@gmail.com",
-                "0987654321",
-                "12344",
-                "a",
-                "12-12-2023");
+        firebaseAuth = FirebaseAuth.getInstance();
+        currentUser = firebaseAuth.getCurrentUser();
+        Query query = accRef.orderByChild("email").equalTo(currentUser.getEmail());
 
-        String key = myRef.child("Rooms").push().getKey();
-        Room room = new Room(key,
-                fragmentConfirm.getTitle(),
-                fragmentConfirm.getDescription(),
-                fragmentInformation.getRoomType(),
-                fragmentInformation.getCapacity(),
-                fragmentInformation.getGender(),
-                fragmentInformation.getArea(),
-                fragmentInformation.getPrice(),
-                fragmentInformation.getDeposit(),
-                fragmentInformation.getElectricityCost(),
-                fragmentInformation.getWaterCost(),
-                fragmentInformation.getInternetCost(),
-                fragmentInformation.hasParking(),
-                fragmentInformation.getParkingFee(),
-                fragmentLocation.getLocation(),
-                fragmentUtilities.getUtilities(),
-                user,
-                fragmentConfirm.getPhoneNumber());
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    user = snapshot.getValue(AccountClass.class);
+                    String key = myRef.child("Rooms").push().getKey();
+                    Room room = new Room(key,
+                            fragmentConfirm.getTitle(),
+                            fragmentConfirm.getDescription(),
+                            fragmentInformation.getRoomType(),
+                            fragmentInformation.getCapacity(),
+                            fragmentInformation.getGender(),
+                            fragmentInformation.getArea(),
+                            fragmentInformation.getPrice(),
+                            fragmentInformation.getDeposit(),
+                            fragmentInformation.getElectricityCost(),
+                            fragmentInformation.getWaterCost(),
+                            fragmentInformation.getInternetCost(),
+                            fragmentInformation.hasParking(),
+                            fragmentInformation.getParkingFee(),
+                            fragmentLocation.getLocation(),
+                            fragmentUtilities.getUtilities(),
+                            user,
+                            fragmentConfirm.getPhoneNumber());
 
-        String pathObject = String.valueOf(room.getId());
-        myRef.child(pathObject).setValue(room);
-        updateImage(room);
+                    String pathObject = String.valueOf(room.getId());
+                    myRef.child(pathObject).setValue(room);
+                    updateImage(room);
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+            }
+        });
     }
 
     protected void replaceFragmentContent(Fragment fragment) {
