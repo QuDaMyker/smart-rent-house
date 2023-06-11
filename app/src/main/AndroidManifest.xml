@@ -31,10 +31,10 @@
             android:name=".Activity.ActivityDetailAccount"
             android:exported="false" />
 
-        <service
-            android:name=".Async.getCurrentLocationService"
-            android:enabled="true"
-            android:exported="true" />
+<!--        <service-->
+<!--            android:name=".Async.getCurrentLocationService"-->
+<!--            android:enabled="true"-->
+<!--            android:exported="true" />-->
         <!--
              TODO: Before you run your application, you need a Google Maps API key.
 
