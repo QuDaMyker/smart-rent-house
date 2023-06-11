@@ -17,10 +17,10 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.example.renthouse.Activity.ActivityDetailAccount;
+import com.example.renthouse.Activity.ActivityReportError;
 import com.example.renthouse.Activity.ActivitySplash;
 import com.example.renthouse.OOP.AccountClass;
 import com.example.renthouse.R;
-import com.example.renthouse.databinding.FragmentAccountTabAccountBinding;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -93,12 +93,7 @@ public class FragmentAccountTabAccount extends Fragment {
                 public void onCancelled(@NonNull DatabaseError error) {
 
                 }
-
             });
-
-
-
-
         }
         btnThongTinCanhan.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -106,6 +101,14 @@ public class FragmentAccountTabAccount extends Fragment {
                 Intent intent = new Intent(getActivity(), ActivityDetailAccount.class);
                 intent.putExtra("ACCOUNT", account);
                 intent.putExtra("KEY", key);
+                startActivity(intent);
+            }
+        });
+
+        btnBaoCaoSuCo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(), ActivityReportError.class);
                 startActivity(intent);
             }
         });
@@ -123,6 +126,8 @@ public class FragmentAccountTabAccount extends Fragment {
 
             }
         });
+
+
         return view;
     }
 }

@@ -67,6 +67,7 @@
         android:orientation="vertical"
         android:paddingLeft="20dp"
         android:paddingRight="20dp"
+        android:gravity="center"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/frameLayout3">
@@ -138,31 +139,26 @@
             app:iconPadding="20dp"
             app:iconSize="25dp"
             app:iconTint="@color/Primary_40" />
-    </androidx.appcompat.widget.LinearLayoutCompat>
 
-    <Button
-        android:id="@+id/account_personal_logoutButtonProfile"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="30dp"
-        android:layout_marginEnd="30dp"
-        android:padding="10dp"
-        android:layout_marginBottom="10dp"
-        android:text="Đăng xuất"
-        android:textSize="20sp"
-        app:icon="@drawable/ic_logout_account"
-        app:iconGravity="textStart"
-        app:iconPadding="10dp"
-        app:iconSize="25dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/linearLayoutCompat" />
+
+    </androidx.appcompat.widget.LinearLayoutCompat>
     <ProgressBar
         android:id="@+id/progressBar"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/Secondary_40"
         android:layout_gravity="center_vertical"
+        android:background="@color/Secondary_40"
         android:indeterminateTint="@color/Primary_60"
         android:visibility="invisible" />
+    <Button
+        android:id="@+id/account_personal_logoutButtonProfile"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
+        android:text="Đăng xuất"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayoutCompat" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -23,6 +23,7 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.example.renthouse.OOP.AccountClass;
+import com.example.renthouse.Other.CommonUtils;
 import com.example.renthouse.R;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -113,8 +114,18 @@ public class ActivityDetailAccount extends AppCompatActivity {
                 reference.child(key).setValue(account).addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
-                        Toast.makeText(getApplicationContext(), "Cập nhật thông tin thành công", Toast.LENGTH_SHORT).show();
-                        finish();
+                    }
+                });
+
+                currentUser.updatePassword(TIETMatKhau.getText().toString().trim()).addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if(task.isSuccessful()) {
+                            CommonUtils.showNotification(ActivityDetailAccount.this, "Cập nhật mật khẩu", "Cập nhật mật khẩu thành công", R.drawable.ic_phobien_1);
+                            finish();
+                        }else {
+                            CommonUtils.showNotification(ActivityDetailAccount.this, "Cập nhật mật khẩu", "Cập nhật mật khẩu thất bại", R.drawable.ic_phobien_1);
+                        }
                     }
                 });
             }
