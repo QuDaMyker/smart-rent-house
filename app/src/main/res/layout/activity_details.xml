@@ -114,36 +114,13 @@
                 android:orientation="horizontal"
                 android:gravity="center_horizontal"
                 >
-                <ImageView
-                    android:layout_width="wrap_content"
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rcvImageP"
+                    android:layout_width= "match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/p2"
-                    />
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/p2"
-                    />
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/p2"
-                    />
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/p2"
-                    />
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/p2"
-                    />
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/p2"
-                    />
+                    >
+
+                </androidx.recyclerview.widget.RecyclerView>
 
             </LinearLayout>
 
@@ -351,7 +328,7 @@
                     </ImageView>
 
                     <TextView
-                        android:id="@+id/tvDien"
+                        android:id="@+id/tvGiaDien"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="3.8k"
@@ -374,7 +351,7 @@
                     </ImageView>
 
                     <TextView
-                        android:id="@+id/tvNuoc"
+                        android:id="@+id/tvGiaNuoc"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="25k"
@@ -397,7 +374,7 @@
                     </ImageView>
 
                     <TextView
-                        android:id="@+id/tvXe"
+                        android:id="@+id/tvGiaXe"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="100k"
@@ -419,7 +396,7 @@
                     </ImageView>
 
                     <TextView
-                        android:id="@+id/tvWifi"
+                        android:id="@+id/tvGiaWifi"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Miễn phí"
@@ -515,7 +492,7 @@
                         />
 
                     <TextView
-                        android:id="@+id/tvNgay"
+                        android:id="@+id/tvNgayDang"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="10dp"
@@ -546,22 +523,12 @@
                     android:layout_gravity="top"
                     android:gravity="center_vertical"
                     android:layout_marginBottom="5dp"/>
-                <ScrollView
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    >
-                    <GridLayout
-                        android:id="@+id/gridTienIch"
-                        android:layout_marginStart="20dp"
-                        android:layout_marginEnd="20dp"
-                        android:layout_width="360dp"
-                        android:layout_height="wrap_content"
-                        android:columnCount="3"
-                        android:rowCount="5"
-                        android:useDefaultMargins="true"
-                        android:layout_marginBottom="20dp"/>
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rcvTienIch"
+                    android:layout_width="360dp"
+                    android:layout_height="wrap_content"
 
-                </ScrollView>
+                    />
                 <TextView
                     android:id="@+id/tvMoreTI"
                     android:layout_width="wrap_content"
