@@ -15,14 +15,19 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.example.renthouse.R;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptor;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.maps.DirectionsApi;
 import com.google.maps.GeoApiContext;
 import com.google.maps.PendingResult;
@@ -39,11 +44,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private final int REQUEST_CODE = 299;
     private boolean locationPermissionGranted = false;
     private GoogleMap mMap;
-    private LatLng location = new LatLng(10.823099, 106.629662);
-    private LatLng currentLocation = new LatLng(21.027763, 105.834160);
     private MarkerOptions place1, place2;
     private Polyline currentPolyline;
     private GeoApiContext geoApiContext;
+
+    private FusedLocationProviderClient fusedLocationProviderClient;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,16 +58,33 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
-        mapFragment.getMapAsync(this);
+        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            //ask permission
+        }
+        else{
+            fusedLocationProviderClient.getLastLocation().addOnSuccessListener(new OnSuccessListener<Location>() {
+                @Override
+                public void onSuccess(Location location) {
+                    if (location != null) {
+                        double curLatitude = location.getLatitude();
+                        double curLongitude = location.getLongitude();
+                        BitmapDescriptor markerIcon = BitmapDescriptorFactory.fromResource(R.drawable.marker_person);
+
+                        place1 = new MarkerOptions().position(new LatLng(curLatitude, curLongitude)).icon(markerIcon);
+
+
+                        mapFragment.getMapAsync(MapsActivity.this);
+                    }
+                }
+            });
+        }
 
         // Initialize GeoApiContext
         geoApiContext = new GeoApiContext.Builder()
                 .apiKey("AIzaSyDQjIt9yAJVT7qEIJ7-epCSAy7Wn0PmGgQ")
                 .build();
 
-        // Set up the locations
-        place1 = new MarkerOptions().position(new LatLng(21.027763, 105.834160)).title("Location 1");
-        place2 = new MarkerOptions().position(new LatLng(10.823099, 106.629662)).title("Location 2");
     }
 
     @Override
@@ -71,48 +93,51 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         // Add markers for location 1 and location 2
         mMap.addMarker(place1);
-        mMap.addMarker(place2);
+
+        List<String> locationStrings = new ArrayList<>();
+        locationStrings.add("201 Đặng Văn Bi, Bình Thọ, Thủ Đức, Thành phố Hồ Chí Minh, Vietnam");
+        locationStrings.add("190 Đặng Văn Bi, Bình Thọ, Thủ Đức, Thành phố Hồ Chí Minh, Vietnam");
+
+        for (String locationString : locationStrings) {
+            // Use Geocoder to convert the location string to coordinates
+            Geocoder geocoder = new Geocoder(MapsActivity.this);
+            try {
+                List<Address> addresses = geocoder.getFromLocationName(locationString, 1);
+                if (addresses != null && addresses.size() > 0) {
+                    Address address = addresses.get(0);
+                    double latitude = address.getLatitude();
+                    double longitude = address.getLongitude();
+                    LatLng locationLatLng = new LatLng(latitude, longitude);
+
+                    // Calculate the distance between current location and geocoded location
+                    float[] results = new float[1];
+                    Location.distanceBetween(place1.getPosition().latitude, place1.getPosition().longitude, latitude, longitude, results);
+                    float distance = results[0];
+                    BitmapDescriptor markerIcon = BitmapDescriptorFactory.fromResource(R.drawable.marker_home);
+
+                    // Define the maximum distance for a location to be considered "nearby"
+                    float maxDistance = 1000; // in meters
+
+                    // Check if the location is within the desired range
+                    if (distance <= maxDistance) {
+                        // Create a marker for the nearby location
+                        MarkerOptions markerOptions = new MarkerOptions()
+                                .position(locationLatLng)
+                                .title(locationString)
+                                .icon(markerIcon);
+
+                        // Add the marker to the map
+                        mMap.addMarker(markerOptions);
+                    }
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
 
         // Move camera to the first location
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(place1.getPosition(), 15f));
 
-        // Fetch and draw the route between the two locations
-        fetchRoute(place1.getPosition(), place2.getPosition());
     }
 
-    private void fetchRoute(LatLng origin, LatLng destination) {
-        DirectionsApi.newRequest(geoApiContext)
-                .mode(TravelMode.DRIVING)
-                .origin(new com.google.maps.model.LatLng(origin.latitude, origin.longitude))
-                .destination(new com.google.maps.model.LatLng(destination.latitude, destination.longitude))
-                .setCallback(new PendingResult.Callback<DirectionsResult>() {
-                    @Override
-                    public void onResult(DirectionsResult result) {
-                        if (result.routes != null && result.routes.length > 0) {
-                            DirectionsRoute route = result.routes[0];
-                            List<LatLng> decodedPoints = PolyUtil.decode(route.overviewPolyline.getEncodedPath());
-
-                            runOnUiThread(() -> drawPolyline(decodedPoints));
-                        }
-                    }
-
-                    @Override
-                    public void onFailure(Throwable e) {
-                        runOnUiThread(() -> Toast.makeText(MapsActivity.this, "Failed to fetch directions", Toast.LENGTH_SHORT).show());
-                    }
-                });
-    }
-
-    private void drawPolyline(List<LatLng> points) {
-        if (currentPolyline != null) {
-            currentPolyline.remove();
-        }
-
-        PolylineOptions polylineOptions = new PolylineOptions()
-                .addAll(points)
-                .color(ContextCompat.getColor(this, R.color.purple_200))
-                .width(10f);
-
-        currentPolyline = mMap.addPolyline(polylineOptions);
-    }
 }

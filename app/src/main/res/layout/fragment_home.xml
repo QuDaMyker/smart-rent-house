@@ -90,7 +90,7 @@
             app:layout_constraintTop_toBottomOf="@+id/linearLayout1">
 
             <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/linearLayout3"
+                android:id="@+id/btn_Maps"
                 android:layout_width="75dp"
                 android:layout_height="80dp"
                 android:layout_marginStart="17dp"
@@ -130,7 +130,7 @@
                 android:background="@drawable/blue_bg_home"
                 android:orientation="vertical"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="@+id/linearLayout3"
+                app:layout_constraintStart_toStartOf="@+id/btn_Maps"
                 app:layout_constraintTop_toTopOf="parent">
 
                 <ImageView
