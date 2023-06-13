@@ -25,6 +25,9 @@
         android:theme="@style/Theme.RentHouse"
         tools:targetApi="31">
         <activity
+            android:name=".Chat.Dashboard.ActivityChat"
+            android:exported="false" />
+        <activity
             android:name=".Activity.ActivityReportError"
             android:exported="false" />
         <activity
