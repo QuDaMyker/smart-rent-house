@@ -1,5 +1,6 @@
 package com.example.renthouse.Activity;
 
+import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
@@ -12,8 +13,10 @@ import android.location.Geocoder;
 import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.Toast;
 
+import com.example.renthouse.OOP.Room;
 import com.example.renthouse.R;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
@@ -24,10 +27,17 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.material.button.MaterialButton;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.maps.DirectionsApi;
 import com.google.maps.GeoApiContext;
 import com.google.maps.PendingResult;
@@ -44,9 +54,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private final int REQUEST_CODE = 299;
     private boolean locationPermissionGranted = false;
     private GoogleMap mMap;
-    private MarkerOptions place1, place2;
+    private List<Room> roomList = new ArrayList<>();
+    private MarkerOptions currPlace;
     private Polyline currentPolyline;
     private GeoApiContext geoApiContext;
+    MaterialButton locationButton;
 
     private FusedLocationProviderClient fusedLocationProviderClient;
 
@@ -71,10 +83,28 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         double curLongitude = location.getLongitude();
                         BitmapDescriptor markerIcon = BitmapDescriptorFactory.fromResource(R.drawable.marker_person);
 
-                        place1 = new MarkerOptions().position(new LatLng(curLatitude, curLongitude)).icon(markerIcon);
+                        currPlace = new MarkerOptions().position(new LatLng(curLatitude, curLongitude)).icon(markerIcon);
+                        roomList = new ArrayList<>();
+                        FirebaseDatabase database = FirebaseDatabase.getInstance();
+                        DatabaseReference ref = database.getReference("Rooms");
+                        ref.addValueEventListener(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                for(DataSnapshot dataSnapshot : snapshot.getChildren()){
+                                    Room room = dataSnapshot.getValue(Room.class);
+                                    roomList.add(room);
+                                }
+
+                                mapFragment.getMapAsync(MapsActivity.this);
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError error) {
+                                Toast.makeText(MapsActivity.this, "Lấy danh sách phòng thất bại!", Toast.LENGTH_SHORT).show();
+                            }
+                        });
 
 
-                        mapFragment.getMapAsync(MapsActivity.this);
                     }
                 }
             });
@@ -90,19 +120,37 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
+        locationButton = findViewById(R.id.locationButton);
+        locationButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(currPlace.getPosition(), 15f));
+            }
+        });
+        googleMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
 
-        // Add markers for location 1 and location 2
-        mMap.addMarker(place1);
+            @Override
+            public boolean onMarkerClick(@NonNull Marker marker) {
+                Room room = (Room) marker.getTag();
 
-        List<String> locationStrings = new ArrayList<>();
-        locationStrings.add("201 Đặng Văn Bi, Bình Thọ, Thủ Đức, Thành phố Hồ Chí Minh, Vietnam");
-        locationStrings.add("190 Đặng Văn Bi, Bình Thọ, Thủ Đức, Thành phố Hồ Chí Minh, Vietnam");
+                if (room != null) {
+                    //TODO: chuyển đến màn hình details
+                }
+                else{
+                    Log.e("E", "Không tồn tại phòng trọ");
+                }
 
-        for (String locationString : locationStrings) {
+                return true;
+            }
+        });
+
+        mMap.addMarker(currPlace);
+
+        for (Room room : roomList) {
             // Use Geocoder to convert the location string to coordinates
             Geocoder geocoder = new Geocoder(MapsActivity.this);
             try {
-                List<Address> addresses = geocoder.getFromLocationName(locationString, 1);
+                List<Address> addresses = geocoder.getFromLocationName(room.getLocation().LocationToString(), 1);
                 if (addresses != null && addresses.size() > 0) {
                     Address address = addresses.get(0);
                     double latitude = address.getLatitude();
@@ -111,32 +159,40 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
                     // Calculate the distance between current location and geocoded location
                     float[] results = new float[1];
-                    Location.distanceBetween(place1.getPosition().latitude, place1.getPosition().longitude, latitude, longitude, results);
+                    Location.distanceBetween(currPlace.getPosition().latitude, currPlace.getPosition().longitude, latitude, longitude, results);
                     float distance = results[0];
                     BitmapDescriptor markerIcon = BitmapDescriptorFactory.fromResource(R.drawable.marker_home);
 
-                    // Define the maximum distance for a location to be considered "nearby"
-                    float maxDistance = 1000; // in meters
+                    MarkerOptions markerOptions = new MarkerOptions()
+                            .position(locationLatLng)
+                            .title(room.getLocation().LocationToString())
+                            .icon(markerIcon);
 
-                    // Check if the location is within the desired range
-                    if (distance <= maxDistance) {
-                        // Create a marker for the nearby location
-                        MarkerOptions markerOptions = new MarkerOptions()
-                                .position(locationLatLng)
-                                .title(locationString)
-                                .icon(markerIcon);
+                    // Add the marker to the map
+                    Marker marker= mMap.addMarker(markerOptions);
+                    marker.setTag(room);
 
-                        // Add the marker to the map
-                        mMap.addMarker(markerOptions);
-                    }
+// Define the maximum distance for a location to be considered "nearby"
+//                    float maxDistance = 1000; // in meters
+//                    // Check if the location is within the desired range
+//                    if (distance <= maxDistance) {
+//                        // Create a marker for the nearby location
+//                        MarkerOptions markerOptions = new MarkerOptions()
+//                                .position(locationLatLng)
+//                                .title(room.getLocation().LocationToString())
+//                                .icon(markerIcon);
+//
+//                        // Add the marker to the map
+//                        mMap.addMarker(markerOptions);
+//                    }
                 }
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
 
-        // Move camera to the first location
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(place1.getPosition(), 15f));
+        // Move camera to the current location
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(currPlace.getPosition(), 15f));
 
     }
 
