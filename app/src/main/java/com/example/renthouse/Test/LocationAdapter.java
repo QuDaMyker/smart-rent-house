@@ -1,11 +1,7 @@
 package com.example.renthouse.Test;
 
-import static android.view.View.GONE;
-
-import static com.gun0912.tedpermission.provider.TedPermissionProvider.context;
-
 import android.content.Context;
-import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,12 +12,15 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.renthouse.Interface.IClickItemAddressListener;
 import com.example.renthouse.JSONReader.JSONReaderLocation;
 import com.example.renthouse.R;
+import com.example.renthouse.SharedPreferences.DataLocalManager;
 
 import java.text.Normalizer;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.LocationViewHolder> implements Filterable {
     private List<Location> listLocation;
@@ -29,9 +28,12 @@ public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.Locati
     private List<Location> listLocationDatabase;
     private boolean searchViewIsEmpty;
     private Context context;
-    public LocationAdapter(List<Location> mListLocation, Context context, String currentLocation) {
+    private IClickItemAddressListener mListener;
+
+    public LocationAdapter(List<Location> mListLocation, Context context, String currentLocation, IClickItemAddressListener listener) {
         this.listHistoryLocation = mListLocation;
         this.listLocation = mListLocation;
+        this.mListener = listener;
         this.context = context;
         JSONReaderLocation jsonReaderLocation = new JSONReaderLocation(this.context);
         jsonReaderLocation.readDatabaseLocation(currentLocation);
@@ -53,21 +55,18 @@ public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.Locati
             return;
         }
         if (searchViewIsEmpty) {
+            Set<String> list= DataLocalManager.getSearchHistory();
+            Log.d("Số lượng phần tử", String.valueOf(list.size()));
+            listHistoryLocation.clear();
+            for (String s : list) {
+                listHistoryLocation.add(new Location(s));
+            }
             holder.xoa.setVisibility(View.VISIBLE);
         } else {
             holder.xoa.setVisibility(View.INVISIBLE);
         }
         holder.diachi.setText(location.getAddress());
-
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-            }
-        });
     }
-
-
     @Override
     public int getItemCount() {
         if (listLocation != null) {
@@ -107,6 +106,9 @@ public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.Locati
             @Override
             protected void publishResults(CharSequence constraint, FilterResults results) {
                 listLocation = (List<Location>) results.values;
+                if (listLocation != null) {
+                    mListener.onFilterCount(listLocation.size());
+                }
                 notifyDataSetChanged();
             }
         };
@@ -118,7 +120,6 @@ public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.Locati
             super(itemView);
             diachi = itemView.findViewById(R.id.diachi);
             xoa = itemView.findViewById(R.id.xoaBtn);
-
             xoa.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -126,6 +127,18 @@ public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.Locati
                     if (position != RecyclerView.NO_POSITION) {
                         listHistoryLocation.remove(position);
                         notifyItemRemoved(position);
+                    }
+                }
+            });
+            diachi.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (mListener != null) {
+                        int position = getAdapterPosition();
+                        if (position != RecyclerView.NO_POSITION) {
+                            DataLocalManager.addSearchHistory(String.valueOf(diachi.getText()));
+                            mListener.onItemClick(String.valueOf(diachi.getText()));
+                        }
                     }
                 }
             });

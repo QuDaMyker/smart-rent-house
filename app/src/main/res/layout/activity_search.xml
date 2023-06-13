@@ -57,10 +57,10 @@
 
         <TextView
             android:text="Không tìm thấy kết quả"
+            android:id="@+id/textViewNoneResult"
             android:textColor="@color/Secondary_20"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="10dp"
-            android:visibility="gone"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
         <androidx.recyclerview.widget.RecyclerView
