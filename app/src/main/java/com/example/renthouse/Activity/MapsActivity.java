@@ -1,6 +1,7 @@
 package com.example.renthouse.Activity;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
@@ -14,10 +15,13 @@ import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
 import com.example.renthouse.OOP.Room;
 import com.example.renthouse.R;
+import com.google.android.gms.common.api.ApiException;
+import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -48,9 +52,11 @@ import com.google.maps.model.TravelMode;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
+    private static final int AUTOCOMPLETE_REQUEST_CODE = 71;
     private final int REQUEST_CODE = 299;
     private boolean locationPermissionGranted = false;
     private GoogleMap mMap;
@@ -59,63 +65,56 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private Polyline currentPolyline;
     private GeoApiContext geoApiContext;
     MaterialButton locationButton;
+    ImageButton btn_Back;
 
-    private FusedLocationProviderClient fusedLocationProviderClient;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
+        btn_Back = findViewById(R.id.btn_Back);
+        currPlace = getIntent().getParcelableExtra("currPlace");
+
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
-        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            //ask permission
-        }
-        else{
-            fusedLocationProviderClient.getLastLocation().addOnSuccessListener(new OnSuccessListener<Location>() {
-                @Override
-                public void onSuccess(Location location) {
-                    if (location != null) {
-                        double curLatitude = location.getLatitude();
-                        double curLongitude = location.getLongitude();
-                        BitmapDescriptor markerIcon = BitmapDescriptorFactory.fromResource(R.drawable.marker_person);
 
-                        currPlace = new MarkerOptions().position(new LatLng(curLatitude, curLongitude)).icon(markerIcon);
-                        roomList = new ArrayList<>();
-                        FirebaseDatabase database = FirebaseDatabase.getInstance();
-                        DatabaseReference ref = database.getReference("Rooms");
-                        ref.addValueEventListener(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                for(DataSnapshot dataSnapshot : snapshot.getChildren()){
-                                    Room room = dataSnapshot.getValue(Room.class);
-                                    roomList.add(room);
-                                }
-
-                                mapFragment.getMapAsync(MapsActivity.this);
-                            }
-
-                            @Override
-                            public void onCancelled(@NonNull DatabaseError error) {
-                                Toast.makeText(MapsActivity.this, "Lấy danh sách phòng thất bại!", Toast.LENGTH_SHORT).show();
-                            }
-                        });
-
-
-                    }
+        roomList = new ArrayList<>();
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference ref = database.getReference("Rooms");
+        ref.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for(DataSnapshot dataSnapshot : snapshot.getChildren()){
+                    Room room = dataSnapshot.getValue(Room.class);
+                    roomList.add(room);
                 }
-            });
-        }
+
+                mapFragment.getMapAsync(MapsActivity.this);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Toast.makeText(MapsActivity.this, "Lấy danh sách phòng thất bại!", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+
 
         // Initialize GeoApiContext
         geoApiContext = new GeoApiContext.Builder()
-                .apiKey("AIzaSyDQjIt9yAJVT7qEIJ7-epCSAy7Wn0PmGgQ")
+                .apiKey("AIzaSyAgsQYMfzZ7UlCUjlbw0orxxbiLfTsD9NI")
                 .build();
 
+        btn_Back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
     }
+
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
@@ -124,7 +123,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         locationButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(currPlace.getPosition(), 15f));
+                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(currPlace.getPosition(), 17f));
             }
         });
         googleMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
@@ -192,8 +191,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
 
         // Move camera to the current location
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(currPlace.getPosition(), 15f));
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(currPlace.getPosition(), 17f));
 
     }
-
 }

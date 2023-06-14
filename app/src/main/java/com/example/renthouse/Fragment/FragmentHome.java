@@ -18,6 +18,7 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.example.renthouse.Activity.ActivityPost;
+import com.example.renthouse.Activity.FindByMapsActivity;
 import com.example.renthouse.Activity.MapsActivity;
 import com.example.renthouse.Adapter.PhoBienAdapter;
 import com.example.renthouse.ITEM.itemPhoBien_HomeFragment;
@@ -84,7 +85,7 @@ public class FragmentHome extends Fragment {
         binding.btnMaps.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(getContext(), MapsActivity.class));
+                startActivity(new Intent(getContext(), FindByMapsActivity.class));
             }
         });
 
