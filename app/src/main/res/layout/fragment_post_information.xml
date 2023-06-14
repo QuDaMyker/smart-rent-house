@@ -4,428 +4,430 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Activity.FragmentPost.FragmentInformation"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    tools:context=".FragmentPost.FragmentInformation">
+
     <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="25dp"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"
+            android:text="Thông tin phòng"
+            android:textColor="@color/Primary_40"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:text="LOẠI PHÒNG"
+            android:textColor="@color/Secondary_40"
+            android:textSize="14sp"
+            android:textStyle="bold" />
+
+        <RadioGroup
+            android:id="@+id/radioBtnType"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_margin="25dp"
-            android:orientation="vertical">
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"
+            android:divider="?android:attr/dividerHorizontal"
+            android:showDividers="middle">
+
+            <RadioButton
+                android:id="@+id/typeOption1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:checked="true"
+                android:text="Kí túc xá/Homestay"
+                android:textColor="@color/Secondary_20"
+                android:textSize="14sp" />
+
+            <RadioButton
+                android:id="@+id/typeOption2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Phòng cho thuê"
+                android:textColor="@color/Secondary_20"
+                android:textSize="14sp" />
+
+            <RadioButton
+                android:id="@+id/typeOption3"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Nhà nguyên căn"
+                android:textColor="@color/Secondary_20"
+                android:textSize="14sp" />
+
+            <RadioButton
+                android:id="@+id/typeOption4"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Căn hộ"
+                android:textColor="@color/Secondary_20"
+                android:textSize="14sp" />
+
+        </RadioGroup>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:text="SỨC CHỨA"
+            android:textColor="@color/Secondary_40"
+            android:textSize="14sp"
+            android:textStyle="bold" />
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/edtLayoutCapacity"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"
+            android:hint="Nhập số người/phòng"
+            app:errorEnabled="true"
+            app:suffixText="người/phòng">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/edtCapacity"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:text="GIỚI TÍNH"
+            android:textColor="@color/Secondary_40"
+            android:textSize="14sp"
+            android:textStyle="bold" />
+
+        <RadioGroup
+            android:id="@+id/radioBtnGender"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"
+            android:divider="?android:attr/dividerHorizontal"
+            android:showDividers="middle">
+
+            <RadioButton
+                android:id="@+id/genderOption1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:checked="true"
+                android:text="Tất cả"
+                android:textColor="@color/Secondary_20"
+                android:textSize="14sp" />
+
+            <RadioButton
+                android:id="@+id/genderOption2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Nam"
+                android:textColor="@color/Secondary_20"
+                android:textSize="14sp" />
+
+            <RadioButton
+                android:id="@+id/genderOption3"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Nữ"
+                android:textColor="@color/Secondary_20"
+                android:textSize="14sp" />
+        </RadioGroup>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:text="DIỆN TÍCH"
+            android:textColor="@color/Secondary_40"
+            android:textSize="14sp"
+            android:textStyle="bold" />
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/edtLayoutArea"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="30dp"
+            android:hint="Nhập diện tích"
+            app:errorEnabled="true"
+            app:suffixText="m2">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/edtArea"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"
+            android:text="Chi phí"
+            android:textColor="@color/Primary_40"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:text="GIÁ CHO THUÊ"
+            android:textColor="@color/Secondary_40"
+            android:textSize="14sp"
+            android:textStyle="bold" />
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/edtLayoutPrice"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"
+            android:hint="Nhập giá cho thuê"
+            app:errorEnabled="true"
+            app:suffixText="₫/phòng">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/edtPrice"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:text="ĐẶT CỌC"
+            android:textColor="@color/Secondary_40"
+            android:textSize="14sp"
+            android:textStyle="bold" />
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/edtLayoutDeposit"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"
+            android:hint="Nhập số tháng hoặc số tiền"
+            app:errorEnabled="true">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/edtDeposit"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
 
             <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="1"
+                android:text="TIỀN ĐIỆN"
+                android:textColor="@color/Secondary_40"
+                android:textSize="14sp"
+                android:textStyle="bold" />
+
+            <com.google.android.material.materialswitch.MaterialSwitch
+                android:id="@+id/switchFreeElectricity"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="20dp"
-                android:text="Thông tin phòng"
+                android:layout_gravity="end"
+                android:text="Miễn phí"
                 android:textColor="@color/Primary_40"
                 android:textSize="16sp"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                app:thumbTint="@color/white"
+                app:trackTint="@color/switch_track_selector" />
+
+        </LinearLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/edtLayoutElectricityCost"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"
+            android:hint="Nhập số tiền"
+            app:errorEnabled="true">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/edtElectricityCost"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
 
             <TextView
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp"
-                android:text="LOẠI PHÒNG"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="1"
+                android:text="TIỀN NƯỚC"
                 android:textColor="@color/Secondary_40"
                 android:textSize="14sp"
                 android:textStyle="bold" />
 
-            <RadioGroup
-                android:id="@+id/radioBtnType"
+            <com.google.android.material.materialswitch.MaterialSwitch
+                android:id="@+id/switchFreeWater"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:text="Miễn phí"
+                android:textColor="@color/Primary_40"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                app:thumbTint="@color/white"
+                app:trackTint="@color/switch_track_selector" />
+
+        </LinearLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/edtLayoutWaterCost"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"
+            android:hint="Nhập số tiền"
+            app:errorEnabled="true">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/edtWaterCost"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="1"
+                android:text="TIỀN INTERNET/WIFI"
+                android:textColor="@color/Secondary_40"
+                android:textSize="14sp"
+                android:textStyle="bold" />
+
+            <com.google.android.material.materialswitch.MaterialSwitch
+                android:id="@+id/switchFreeInternet"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:text="Miễn phí"
+                android:textColor="@color/Primary_40"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                app:thumbTint="@color/white"
+                app:trackTint="@color/switch_track_selector" />
+
+        </LinearLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/edtLayoutInternetCost"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"
+            android:hint="Nhập số tiền"
+            app:errorEnabled="true">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/edtInternetCost"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.checkbox.MaterialCheckBox
+            android:id="@+id/cbParking"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:checked="false"
+            android:text="Có chỗ để xe"
+            android:textColor="@color/Secondary_20"
+            android:textSize="16sp" />
+
+        <LinearLayout
+            android:id="@+id/parkingInfo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="20dp"
-                android:divider="?android:attr/dividerHorizontal"
-                android:showDividers="middle">
+                android:orientation="horizontal">
 
-                <RadioButton
-                    android:id="@+id/typeOption1"
-                    android:layout_width="match_parent"
+                <TextView
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:text="Kí túc xá/Homestay"
-                    android:textColor="@color/Secondary_20"
+                    android:layout_gravity="center_vertical"
+                    android:layout_weight="1"
+                    android:text="PHÍ GIỮ XE"
+                    android:textColor="@color/Secondary_40"
                     android:textSize="14sp"
-                    android:checked="true"/>
+                    android:textStyle="bold" />
 
-                <RadioButton
-                    android:id="@+id/typeOption2"
-                    android:layout_width="match_parent"
+                <com.google.android.material.materialswitch.MaterialSwitch
+                    android:id="@+id/switchFreeParking"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Phòng cho thuê"
-                    android:textColor="@color/Secondary_20"
-                    android:textSize="14sp" />
+                    android:layout_gravity="end"
+                    android:text="Miễn phí"
+                    android:textColor="@color/Primary_40"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    app:thumbTint="@color/white"
+                    app:trackTint="@color/switch_track_selector" />
 
-                <RadioButton
-                    android:id="@+id/typeOption3"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Nhà nguyên căn"
-                    android:textColor="@color/Secondary_20"
-                    android:textSize="14sp" />
-
-                <RadioButton
-                    android:id="@+id/typeOption4"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Căn hộ"
-                    android:textColor="@color/Secondary_20"
-                    android:textSize="14sp" />
-
-            </RadioGroup>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp"
-                android:text="SỨC CHỨA"
-                android:textColor="@color/Secondary_40"
-                android:textSize="14sp"
-                android:textStyle="bold" />
+            </LinearLayout>
 
             <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/edtLayoutCapacity"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="20dp"
-                android:hint="Nhập số người/phòng"
-                app:suffixText="người/phòng"
-                app:errorEnabled="true">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/edtCapacity"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp"
-                android:text="GIỚI TÍNH"
-                android:textColor="@color/Secondary_40"
-                android:textSize="14sp"
-                android:textStyle="bold" />
-
-            <RadioGroup
-                android:id="@+id/radioBtnGender"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="20dp"
-                android:divider="?android:attr/dividerHorizontal"
-                android:showDividers="middle">
-
-                <RadioButton
-                    android:id="@+id/genderOption1"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Tất cả"
-                    android:textColor="@color/Secondary_20"
-                    android:textSize="14sp"
-                    android:checked="true"/>
-
-                <RadioButton
-                    android:id="@+id/genderOption2"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Nam"
-                    android:textColor="@color/Secondary_20"
-                    android:textSize="14sp" />
-
-                <RadioButton
-                    android:id="@+id/genderOption3"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Nữ"
-                    android:textColor="@color/Secondary_20"
-                    android:textSize="14sp" />
-            </RadioGroup>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp"
-                android:text="DIỆN TÍCH"
-                android:textColor="@color/Secondary_40"
-                android:textSize="14sp"
-                android:textStyle="bold" />
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/edtLayoutArea"
+                android:id="@+id/edtLayoutParkingFee"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="30dp"
-                android:hint="Nhập diện tích"
-                app:suffixText="m2"
-                app:errorEnabled="true">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/edtArea"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="20dp"
-                android:text="Chi phí"
-                android:textColor="@color/Primary_40"
-                android:textSize="16sp"
-                android:textStyle="bold" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp"
-                android:text="GIÁ CHO THUÊ"
-                android:textColor="@color/Secondary_40"
-                android:textSize="14sp"
-                android:textStyle="bold" />
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/edtLayoutPrice"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="20dp"
-                android:hint="Nhập giá cho thuê"
-                app:suffixText="₫/phòng"
-                app:errorEnabled="true">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/edtPrice"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp"
-                android:text="ĐẶT CỌC"
-                android:textColor="@color/Secondary_40"
-                android:textSize="14sp"
-                android:textStyle="bold" />
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/edtLayoutDeposit"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="20dp"
-                android:hint="Nhập số tháng hoặc số tiền"
-                app:errorEnabled="true">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/edtDeposit"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:layout_weight="1"
-                    android:text="TIỀN ĐIỆN"
-                    android:textColor="@color/Secondary_40"
-                    android:textSize="14sp"
-                    android:textStyle="bold" />
-
-                <com.google.android.material.materialswitch.MaterialSwitch
-                    android:id="@+id/switchFreeElectricity"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="end"
-                    android:text="Miễn phí"
-                    android:textColor="@color/Primary_40"
-                    android:textSize="16sp"
-                    android:textStyle="bold"
-                    app:thumbTint="@color/white"
-                    app:trackTint="@color/switch_track_selector" />
-
-            </LinearLayout>
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/edtLayoutElectricityCost"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="20dp"
                 android:hint="Nhập số tiền"
                 app:errorEnabled="true">
 
                 <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/edtElectricityCost"
+                    android:id="@+id/edtParkingFee"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
             </com.google.android.material.textfield.TextInputLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:layout_weight="1"
-                    android:text="TIỀN NƯỚC"
-                    android:textColor="@color/Secondary_40"
-                    android:textSize="14sp"
-                    android:textStyle="bold" />
-
-                <com.google.android.material.materialswitch.MaterialSwitch
-                    android:id="@+id/switchFreeWater"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="end"
-                    android:text="Miễn phí"
-                    android:textColor="@color/Primary_40"
-                    android:textSize="16sp"
-                    android:textStyle="bold"
-                    app:thumbTint="@color/white"
-                    app:trackTint="@color/switch_track_selector" />
-
-            </LinearLayout>
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/edtLayoutWaterCost"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="20dp"
-                android:hint="Nhập số tiền"
-                app:errorEnabled="true">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/edtWaterCost"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:layout_weight="1"
-                    android:text="TIỀN INTERNET/WIFI"
-                    android:textColor="@color/Secondary_40"
-                    android:textSize="14sp"
-                    android:textStyle="bold" />
-
-                <com.google.android.material.materialswitch.MaterialSwitch
-                    android:id="@+id/switchFreeInternet"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="end"
-                    android:text="Miễn phí"
-                    android:textColor="@color/Primary_40"
-                    android:textSize="16sp"
-                    android:textStyle="bold"
-                    app:thumbTint="@color/white"
-                    app:trackTint="@color/switch_track_selector" />
-
-            </LinearLayout>
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/edtLayoutInternetCost"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="20dp"
-                android:hint="Nhập số tiền"
-                app:errorEnabled="true">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/edtInternetCost"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <com.google.android.material.checkbox.MaterialCheckBox
-                android:id="@+id/cbParking"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:checked="false"
-                android:text="Có chỗ để xe"
-                android:textColor="@color/Secondary_20"
-                android:textSize="16sp" />
-
-            <LinearLayout
-                android:id="@+id/parkingInfo"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:visibility="gone">
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical"
-                        android:layout_weight="1"
-                        android:text="PHÍ GIỮ XE"
-                        android:textColor="@color/Secondary_40"
-                        android:textSize="14sp"
-                        android:textStyle="bold" />
-
-                    <com.google.android.material.materialswitch.MaterialSwitch
-                        android:id="@+id/switchFreeParking"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="end"
-                        android:text="Miễn phí"
-                        android:textColor="@color/Primary_40"
-                        android:textSize="16sp"
-                        android:textStyle="bold"
-                        app:thumbTint="@color/white"
-                        app:trackTint="@color/switch_track_selector" />
-
-                </LinearLayout>
-
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/edtLayoutParkingFee"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="30dp"
-                    android:hint="Nhập số tiền"
-                    app:errorEnabled="true">
-
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/edtParkingFee"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content" />
-                </com.google.android.material.textfield.TextInputLayout>
-            </LinearLayout>
-
-<!--            <com.google.android.material.button.MaterialButton-->
-<!--                style="@style/Widget.MaterialComponents.Button.OutlinedButton"-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="70dp"-->
-<!--                android:layout_gravity="center"-->
-<!--                android:layout_marginBottom="50dp"-->
-<!--                android:backgroundTint="@color/white"-->
-<!--                android:text="Tiếp theo"-->
-<!--                android:textAllCaps="false"-->
-<!--                android:textColor="@color/Primary_60"-->
-<!--                android:textSize="18sp"-->
-<!--                android:textStyle="bold"-->
-<!--                app:cornerRadius="100dp"-->
-<!--                app:icon="@drawable/ic_arrow_right"-->
-<!--                app:iconGravity="textEnd"-->
-<!--                app:iconSize="28dp"-->
-<!--                app:strokeColor="@color/Primary_60"-->
-<!--                app:strokeWidth="2dp" />-->
-
         </LinearLayout>
+
+        <!--            <com.google.android.material.button.MaterialButton-->
+        <!--                style="@style/Widget.MaterialComponents.Button.OutlinedButton"-->
+        <!--                android:layout_width="match_parent"-->
+        <!--                android:layout_height="70dp"-->
+        <!--                android:layout_gravity="center"-->
+        <!--                android:layout_marginBottom="50dp"-->
+        <!--                android:backgroundTint="@color/white"-->
+        <!--                android:text="Tiếp theo"-->
+        <!--                android:textAllCaps="false"-->
+        <!--                android:textColor="@color/Primary_60"-->
+        <!--                android:textSize="18sp"-->
+        <!--                android:textStyle="bold"-->
+        <!--                app:cornerRadius="100dp"-->
+        <!--                app:icon="@drawable/ic_arrow_right"-->
+        <!--                app:iconGravity="textEnd"-->
+        <!--                app:iconSize="28dp"-->
+        <!--                app:strokeColor="@color/Primary_60"-->
+        <!--                app:strokeWidth="2dp" />-->
+
+    </LinearLayout>
 </LinearLayout>

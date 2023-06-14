@@ -1,9 +1,9 @@
 package com.example.renthouse.Activity;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.app.AlertDialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -27,8 +27,12 @@ import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
@@ -50,6 +54,7 @@ public class ActivitySignUp extends AppCompatActivity {
     FirebaseDatabase database;
     DatabaseReference reference;
     FirebaseAuth mAuth;
+    ValueEventListener eventListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,6 +62,9 @@ public class ActivitySignUp extends AppCompatActivity {
         setContentView(R.layout.activity_sign_up);
 
         mAuth = FirebaseAuth.getInstance();
+
+        database = FirebaseDatabase.getInstance();
+        reference = database.getReference("Accounts");
 
         backToLoginBtn = findViewById(R.id.backToLoginBtn);
         signUpBtn = findViewById(R.id.signup_signUpBtn);
@@ -97,6 +105,7 @@ public class ActivitySignUp extends AppCompatActivity {
             }
         });
 
+        // nut bam dang ki
         signUpBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -158,13 +167,6 @@ public class ActivitySignUp extends AppCompatActivity {
         } else {
             signup_password.setError(null);
         }
-
-//        if (!isValidFullName(signup_fullName.getText().toString())) {
-//            signup_fullName.setError("Vui lòng đặt tên không chứa số, không chứa kí tự đặc biệt");
-//            return;
-//        } else {
-//            signup_fullName.setError(null);
-//        }
         if (!isValidEmail(signup_email.getText().toString())) {
             signup_email.setError("Vui lòng điền đúng định dạng email");
             return;
@@ -187,87 +189,71 @@ public class ActivitySignUp extends AppCompatActivity {
     private void saveData() {
         checkTrueCondition();
 
-        String submail = signup_email.getText().toString().trim();
-        int atIndex = signup_email.getText().toString().trim().indexOf("@");
-        String username = signup_email.getText().toString().trim().substring(0, atIndex);
+        String email = signup_email.getText().toString().trim();
+        String password = signup_password.getText().toString().trim();
 
-        int resourceId = R.drawable.chatlogo;
-        Uri uriImage = Uri.parse("android.resource://" + getPackageName() + "/" + resourceId);
-
-        StorageReference storageReference = FirebaseStorage.getInstance().getReference().child("Image Profiles").child(username);
-        AlertDialog.Builder builder = new AlertDialog.Builder(ActivitySignUp.this);
-        builder.setCancelable(false);
-        AlertDialog dialog = builder.create();
-        dialog.show();
-
-        storageReference.putFile(uriImage).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-            @Override
-            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                Task<Uri> uriTask = taskSnapshot.getStorage().getDownloadUrl();
-                while (!uriTask.isComplete()) ;
-                Uri urlImage = uriTask.getResult();
-                imageURL = urlImage.toString();
-                loadAccountToDataBase();
-                dialog.dismiss();
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                dialog.dismiss();
-            }
-        });
-
-
+        createAccount(email, password);
     }
 
     private void loadAccountToDataBase() {
         database = FirebaseDatabase.getInstance();
-        reference = database.getReference("Accounts");
+        reference = database.getReference();
 
-        Date now = new Date();
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        String formattedDate = dateFormat.format(now);
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+        if(currentUser != null) {
+            String id = currentUser.getUid();
+            String name = currentUser.getDisplayName();
+            String email = currentUser.getEmail();
+            String phonenumber = signup_phoneNumber.getText().toString().trim();
 
-        String name = signup_fullName.getText().toString().trim();
-        String email = signup_email.getText().toString().trim();
-        String phoneNumber = signup_phoneNumber.getText().toString().trim();
-        String password = signup_password.getText().toString().trim();
+            if(currentUser.getPhotoUrl() == null) {
+                Uri uriImage = Uri.parse("android.resource://" + getPackageName() + "/" + R.drawable.ic_default_profile);
 
-        if (name.isEmpty()) {
-            signup_email.setError("Vui Lòng Điền Email");
+
+                StorageReference storageReference = FirebaseStorage.getInstance().getReference().child("Image Profiles").child(id);
+                AlertDialog.Builder builder = new AlertDialog.Builder(ActivitySignUp.this);
+                builder.setCancelable(false);
+                AlertDialog dialog = builder.create();
+                dialog.show();
+                storageReference.putFile(uriImage).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                    @Override
+                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                        Task<Uri> uriTask = taskSnapshot.getStorage().getDownloadUrl();
+                        while (!uriTask.isComplete()) ;
+                        Uri urlImage = uriTask.getResult();
+                        imageURL = urlImage.toString();
+
+                        dialog.dismiss();
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        dialog.dismiss();
+                    }
+                });            }
+            else {
+                imageURL = currentUser.getPhotoUrl().toString();
+            }
+
+
+            Date now = new Date();
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            String formattedDate = dateFormat.format(now);
+
+            AccountClass accountCurrent = new AccountClass(name, email, "+84", "********", imageURL, formattedDate);
+            reference.child("Accounts").child(id).setValue(accountCurrent);
+
+
+
         }
-
-        if (!name.isEmpty() && !email.isEmpty() && !phoneNumber.isEmpty() && !password.isEmpty()) {
-            AccountClass accountClass = new AccountClass(name, email, phoneNumber, password, imageURL, formattedDate);
-
-            String submail = email;
-            int atIndex = email.indexOf("@");
-            String username = email.substring(0, atIndex);
-            reference.child(username).setValue(accountClass);
-
-            // add to Authentical firebase
-            createAccount(email, password);
-            //
-
-            Toast.makeText(getApplicationContext(), "Đăng kí thành công", Toast.LENGTH_SHORT).show();
-            Toast.makeText(getApplicationContext(), "Mời Bạn Đăng Nhập", Toast.LENGTH_SHORT).show();
-            Intent intent = new Intent(getApplicationContext(), ActivityLogIn.class);
-            finish();
-        } else {
-            Toast.makeText(getApplicationContext(), "That Bai", Toast.LENGTH_SHORT).show();
-        }
-    }
+}
 
     public void createAccount(String email, String password) {
         mAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if (task.isSuccessful()) {
-                    Toast.makeText(ActivitySignUp.this, "Account Created",
-                            Toast.LENGTH_SHORT).show();
-                    Intent intent = new Intent(getApplicationContext(), ActivityLogIn.class);
-                    startActivity(intent);
-                    finish();
+                    loadAccountToDataBase();
                 } else {
                     // If sign in fails, display a message to the user.
                     Toast.makeText(ActivitySignUp.this, "Authentication failed.",

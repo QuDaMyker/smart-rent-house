@@ -5,11 +5,11 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentStatePagerAdapter;
 
-import com.example.renthouse.Activity.FragmentFilter.FragmentAmount;
-import com.example.renthouse.Activity.FragmentFilter.FragmentOptionOther;
-import com.example.renthouse.Activity.FragmentFilter.FragmentPrice;
-import com.example.renthouse.Activity.FragmentFilter.FragmentType;
-import com.example.renthouse.Activity.FragmentFilter.FragmentUtilities;
+import com.example.renthouse.FragmentFilter.FragmentAmount;
+import com.example.renthouse.FragmentFilter.FragmentOptionOther;
+import com.example.renthouse.FragmentFilter.FragmentPrice;
+import com.example.renthouse.FragmentFilter.FragmentType;
+import com.example.renthouse.FragmentFilter.FragmentUtilities;
 
 public class ViewPagerAdapter extends FragmentStatePagerAdapter {
 
