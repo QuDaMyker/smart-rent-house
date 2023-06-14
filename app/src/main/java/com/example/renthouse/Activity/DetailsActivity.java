@@ -10,11 +10,17 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.renthouse.OOP.AccountClass;
 import com.example.renthouse.R;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class DetailsActivity extends AppCompatActivity {
+    private FirebaseDatabase db ;
+    private DatabaseReference ref;
     ImageButton btnPreScreen;
     ImageButton btnHeartLike;
     ImageButton btnNextImage;
@@ -23,7 +29,8 @@ public class DetailsActivity extends AppCompatActivity {
     RecyclerView rcvImage;
     TextView tvLoaiP;
     TextView tvSoNg;
-    List<ImageView> listImage;
+
+    List<String> listImages;
     TextView tvTinhTrang;
     TextView tvDienTich;
     TextView tvCoc;
@@ -38,7 +45,10 @@ public class DetailsActivity extends AppCompatActivity {
     TextView tvNgayDang;
     TextView tvXemThemMT;
     RecyclerView rcvTienIch;
+    List <String> listTI;
     TextView tvThemTI;
+
+    AccountClass Tg;
     ImageView igTacGia;
     TextView tvTenTG;
     TextView tvSoP;
@@ -49,14 +59,17 @@ public class DetailsActivity extends AppCompatActivity {
     ImageButton ibChat;
     ImageButton ibCall;
 
-
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_details);
 
+        db =  FirebaseDatabase.getInstance();
+        ref = db.getReference("Rooms");
+
+        listImages = new ArrayList<String>();
+        listTI = new ArrayList<String>();
+        //Tg = new AccountClass();
         //gán id
         btnPreScreen = findViewById(R.id.btnBack);
         btnHeartLike = findViewById(R.id.btnLike);
@@ -90,6 +103,58 @@ public class DetailsActivity extends AppCompatActivity {
         tvGiaP  = findViewById(R.id.tvGia);
         ibCall = findViewById(R.id.btnToCall);
         ibChat = findViewById(R.id.btnToChat);
+
+        //load thông tin p được chọn
+        //mã p được chọn
+        String selectedRoom ;
+//        ref.orderByChild("id").equalTo(selectedRoom).addListenerForSingleValueEvent(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(@NonNull DataSnapshot snapshot) {
+//                if (snapshot.exists()){
+//                    for  (DataSnapshot _snapshot : snapshot.getChildren()){
+//                        Room room = _snapshot.getValue(Room.class);
+//
+//                        //gán hình
+//                        listImages = room.getImages();
+//
+//                        //gán các thông tin
+//                        tvLoaiP.setText(room.getRoomType());
+//                        tvSoNg.setText(String.valueOf(room.getCapacity()));
+//                        tvTinhTrang.setText("Chưa fix");
+//                        tvDienTich.setText(String.valueOf(room.getArea()));
+//                        tvCoc.setText(String.valueOf(room.getDeposit()));
+//                        tvTenP.setText(room.getTitle());
+//                        tvDiaChi.setText("chưa fix");
+//                        tvSdt.setText(room.getPhoneNumber());
+//                        tvGiaDien.setText(String.valueOf(room.getElectricityCost()));
+//                        tvGiaNuoc.setText(String.valueOf(room.getWaterCost()));
+//                        tvGiaXe.setText(String.valueOf(room.getParkingFee()));
+//                        tvGiaWifi.setText(String.valueOf(room.getInternetCost()));
+//                        tvMota.setText(room.getDescription());
+//                        //tvNgayDang.setText(R.id.tvNgayDang);
+//                        listTI = room.getUtilities();
+//
+//                        //tác giả
+//                        Tg = room.getCreatedBy();
+//                        String sourceImage = Tg.getImage();
+//                        Picasso.get().load(sourceImage).into(igTacGia);
+//
+//
+//
+//
+//
+//
+//                    }
+//                }
+//            }
+//
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError error) {
+//
+//            }
+//        });
+
+
 
         btnPreScreen.setOnClickListener(new View.OnClickListener() {
             @Override
