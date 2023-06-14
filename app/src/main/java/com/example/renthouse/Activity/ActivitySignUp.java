@@ -242,7 +242,7 @@ public class ActivitySignUp extends AppCompatActivity {
             String formattedDate = dateFormat.format(now);
 
             if(imageURL == null) {
-                imageURL = "link";
+                imageURL = "https://cdn.pixabay.com/photo/2023/06/02/14/12/woman-8035772_1280.jpg";
             }
             AccountClass accountCurrent = new AccountClass(name, email, "+84", "********", imageURL, formattedDate);
             String emailToCheck = email;

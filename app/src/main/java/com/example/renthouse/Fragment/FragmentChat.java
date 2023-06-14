@@ -49,6 +49,7 @@ public class FragmentChat extends Fragment {
     String emailOthes = "";
     String userCurrent_Key ="";
     String userOtherCurrent_key = "";
+    ProgressDialog progressDialog;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -76,7 +77,7 @@ public class FragmentChat extends Fragment {
         messagesRecyclerView.setAdapter(messagesAdapter);
 
 
-        ProgressDialog progressDialog = new ProgressDialog(getContext());
+        progressDialog = new ProgressDialog(getContext());
         progressDialog.setCancelable(false);
         progressDialog.setMessage("Loading...");
         progressDialog.show();
@@ -110,79 +111,53 @@ public class FragmentChat extends Fragment {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 messagesLists.clear();
-                unseenMessages = 0;
-                lastMessages = "";
-                chatKey ="";
-                // tim userhienj tai
-                for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                List<String> userOtherCurrentKeys = new ArrayList<>();
 
-                    if(dataSnapshot.getKey().equals(userCurrent_Key)) {
-                        // chay vong lap tim cac user da nhan tin voi user hien tai
-                        for(DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()) {
-                            //Toast.makeText(getContext(), dataSnapshot1.getKey(), Toast.LENGTH_SHORT).show();
-                            userOtherCurrent_key = dataSnapshot1.getKey();
-
-                            // tim cac tin nhan giua 2 user
-                            String lastIndex = dataSnapshot1.getChildrenCount()+"";
-                            lastMessages = dataSnapshot1.child(lastIndex).child("msg").getValue(String.class);
-                            //Toast.makeText(getContext(), lastMessages, Toast.LENGTH_SHORT).show();
-                            databaseReference.child("Accounts").addListenerForSingleValueEvent(new ValueEventListener() {
-                                @Override
-                                public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                    nameOther = snapshot.child(userOtherCurrent_key).child("fullname").getValue(String.class);
-                                    emailOthes = snapshot.child(userOtherCurrent_key).child("email").getValue(String.class);
-                                    profileOther = snapshot.child(userOtherCurrent_key).child("image").getValue(String.class);
-
-                                    MessagesList messagesList = new MessagesList(userCurrent_Key,nameOther, emailOthes, lastMessages, profileOther, userOtherCurrent_key, 0);
-                                    messagesLists.add(messagesList);
-                                    messagesRecyclerView.setAdapter(new MessagesAdapter(messagesLists, getContext()));
-                                    messagesAdapter.updateData(messagesLists);
-                                }
-                                @Override
-                                public void onCancelled(@NonNull DatabaseError error) {
-
-                                }
-                            });
-                        }
-                        break;
-                    } else if(dataSnapshot.hasChild(userCurrent_Key+"")) {
-                        userOtherCurrent_key = dataSnapshot.getKey();
-                        for(DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()) {
-                            // tim cac tin nhan giua 2 user
-                            String lastIndex = dataSnapshot1.getChildrenCount()+"";
-                            lastMessages = dataSnapshot1.child(lastIndex).child("msg").getValue(String.class);
-                            Toast.makeText(getContext(), lastMessages, Toast.LENGTH_SHORT).show();
-                            databaseReference.child("Accounts").addListenerForSingleValueEvent(new ValueEventListener() {
-                                @Override
-                                public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                    nameOther = snapshot.child(userOtherCurrent_key).child("fullname").getValue(String.class);
-                                    emailOthes = snapshot.child(userOtherCurrent_key).child("email").getValue(String.class);
-                                    profileOther = snapshot.child(userOtherCurrent_key).child("image").getValue(String.class);
-
-                                    MessagesList messagesList = new MessagesList(userCurrent_Key,nameOther, emailOthes, lastMessages, profileOther, userOtherCurrent_key, 0);
-                                    messagesLists.add(messagesList);
-                                    messagesRecyclerView.setAdapter(new MessagesAdapter(messagesLists, getContext()));
-                                    messagesAdapter.updateData(messagesLists);
-                                }
-
-                                @Override
-                                public void onCancelled(@NonNull DatabaseError error) {
-
-                                }
-                            });
-                        }
-                        break;
-                    }
+                for (DataSnapshot dataSnapshot : snapshot.child(userCurrent_Key).getChildren()) {
+                    String userOtherCurrentKey = dataSnapshot.getKey();
+                    userOtherCurrentKeys.add(userOtherCurrentKey);
                 }
-                progressDialog.dismiss();
+
+                fetchAccountDetails(userOtherCurrentKeys, 0);
             }
+
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-                progressDialog.dismiss();
+
             }
         });
 
 
         return view;
+    }
+    private void fetchAccountDetails(final List<String> userOtherCurrentKeys, final int index) {
+        if (index >= userOtherCurrentKeys.size()) {
+            progressDialog.dismiss();
+            return;
+        }
+
+        final String userOtherCurrentKey = userOtherCurrentKeys.get(index);
+
+        databaseReference.child("Accounts").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot1) {
+                nameOther = snapshot1.child(userOtherCurrentKey).child("fullname").getValue(String.class);
+                profileOther = snapshot1.child(userOtherCurrentKey).child("image").getValue(String.class);
+                emailOthes = snapshot1.child(userOtherCurrentKey).child("email").getValue(String.class);
+
+                //Toast.makeText(getContext(), nameOther, Toast.LENGTH_SHORT).show();
+
+                MessagesList messagesList = new MessagesList(userCurrent_Key, nameOther, emailOthes, lastMessages, profileOther, userOtherCurrentKey, 0);
+                messagesLists.add(messagesList);
+                messagesRecyclerView.setAdapter(new MessagesAdapter(messagesLists, getContext()));
+
+                fetchAccountDetails(userOtherCurrentKeys, index + 1);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
     }
 }

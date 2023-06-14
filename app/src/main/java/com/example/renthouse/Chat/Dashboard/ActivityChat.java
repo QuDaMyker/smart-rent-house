@@ -22,6 +22,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
+import org.checkerframework.checker.units.qual.C;
+
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
@@ -77,81 +79,40 @@ public class ActivityChat extends AppCompatActivity {
         chatAdapter = new ChatAdapter(chatLists, ActivityChat.this);
         chattingRecycleView.setAdapter(chatAdapter);
 
-
         databaseReference.child("Chat").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                // lay list tin nhan cua user dang nhap va user dang nhan
+                lastIndex = Integer.valueOf((int) snapshot.child(currentKey).child(otherKey).getChildrenCount());
                 chatLists.clear();
-                for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
-                    if (dataSnapshot.getKey().equals(currentKey)) {
-                        for (DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()) {
-                            for(DataSnapshot dataSnapshot2 : dataSnapshot1.getChildren()) {
-                                if (dataSnapshot2.child("sender").getValue(String.class).equals(currentKey)) {
-                                    String msg = dataSnapshot2.child("msg").getValue(String.class);
+                //Toast.makeText(getApplicationContext(), snapshot.getKey(), Toast.LENGTH_SHORT).show();
+                for (DataSnapshot dataSnapshot : snapshot.child(currentKey).child(otherKey).getChildren()) {
+                   // Toast.makeText(ActivityChat.this, dataSnapshot.getKey(), Toast.LENGTH_SHORT).show();
 
-                                    Date data = new Date();
-                                    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault());
-                                    SimpleDateFormat simpleTimeFormat = new SimpleDateFormat("hh:mm aa", Locale.getDefault());
+                    if (dataSnapshot.child("sender").getValue(String.class).equals(currentKey)) {
+                        String msg = dataSnapshot.child("msg").getValue(String.class);
+                        String sendDate = dataSnapshot.child("send-date").getValue(String.class);
+                        String sendTime = dataSnapshot.child("send-time").getValue(String.class);
 
-                                    ChatList chatList = new ChatList(true, "nguoi dang nhap hien tai", "name", msg, simpleDateFormat.format(data), simpleTimeFormat.format(data));
-                                    chatLists.add(chatList);
-                                } else {
-                                    String msg = dataSnapshot2.child("msg").getValue(String.class);
+                        ChatList chatList = new ChatList(true, "nguoi dung hien tai", "name", msg, sendDate, sendTime);
+                        chatLists.add(chatList);
 
-                                    Date data = new Date();
-                                    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault());
-                                    SimpleDateFormat simpleTimeFormat = new SimpleDateFormat("hh:mm aa", Locale.getDefault());
+                    } else if (dataSnapshot.child("sender").getValue(String.class).equals(otherKey)) {
+                        String msg = dataSnapshot.child("msg").getValue(String.class);
+                        String sendDate = dataSnapshot.child("send-date").getValue(String.class);
+                        String sendTime = dataSnapshot.child("send-time").getValue(String.class);
 
-                                    ChatList chatList = new ChatList(false, "nguoi dang nhap hien tai", "name", msg, simpleDateFormat.format(data), simpleTimeFormat.format(data));
-                                    chatLists.add(chatList);
-                                }
-                                lastIndex = Integer.valueOf(dataSnapshot2.getKey());
-                            }
-                            break;
-                        }
-                    } else if (dataSnapshot.getKey().equals(otherKey)) {
-
-                        for (DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()) {
-                            if(dataSnapshot1.getKey().equals(currentKey)) {
-                                for(DataSnapshot dataSnapshot2 : dataSnapshot1.getChildren()) {
-                                    if (dataSnapshot2.child("sender").getValue(String.class).equals(currentKey)) {
-                                        String msg = dataSnapshot2.child("msg").getValue(String.class);
-
-                                        Date data = new Date();
-                                        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault());
-                                        SimpleDateFormat simpleTimeFormat = new SimpleDateFormat("hh:mm aa", Locale.getDefault());
-
-                                        ChatList chatList = new ChatList(true, "nguoi dang nhap hien tai", "name", msg, simpleDateFormat.format(data), simpleTimeFormat.format(data));
-                                        chatLists.add(chatList);
-                                    } else {
-                                        String msg = dataSnapshot2.child("msg").getValue(String.class);
-
-                                        Date data = new Date();
-                                        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault());
-                                        SimpleDateFormat simpleTimeFormat = new SimpleDateFormat("hh:mm aa", Locale.getDefault());
-
-                                        ChatList chatList = new ChatList(false, "nguoi dang nhap hien tai", "name", msg, simpleDateFormat.format(data), simpleTimeFormat.format(data));
-                                        chatLists.add(chatList);
-                                    }
-                                    lastIndex = Integer.valueOf(dataSnapshot2.getKey());
-                                }
-
-                            }
-
-
-
-
-                        }
-
+                        ChatList chatList = new ChatList(false, "nguoi dung hien tai", "name", msg, sendDate, sendTime);
+                        chatLists.add(chatList);
                     }
-
-
+                    //lastIndex = Integer.valueOf(dataSnapshot.getKey());
+                    chatAdapter.notifyDataSetChanged();
+                    chattingRecycleView.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            chattingRecycleView.smoothScrollToPosition(chatLists.size() - 1);
+                        }
+                    });
                 }
-                chatAdapter.updateChatList(chatLists);
-
-                chattingRecycleView.scrollToPosition(chatLists.size() - 1);
-
             }
 
             @Override
@@ -160,62 +121,35 @@ public class ActivityChat extends AppCompatActivity {
             }
         });
 
+
         sendBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (!messageEditText.getText().toString().isEmpty()) {
-
+                if (!messageEditText.getText().toString().trim().isEmpty()) {
                     Date data = new Date();
                     SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault());
                     SimpleDateFormat simpleTimeFormat = new SimpleDateFormat("hh:mm aa", Locale.getDefault());
 
                     final String getMessages = messageEditText.getText().toString().trim();
                     lastIndex++;
-                    databaseReference.child("Chat").addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@NonNull DataSnapshot snapshot) {
-                            if(snapshot.hasChild(currentKey)) {
-                                for(DataSnapshot dataSnapshot : snapshot.getChildren()) {
 
-                                    if (dataSnapshot.getKey().equals(currentKey)) {
-                                        Toast.makeText(ActivityChat.this, currentKey, Toast.LENGTH_SHORT).show();
-                                        databaseReference.child("Chat").child(currentKey).child(otherKey).child(lastIndex + "").child("sender").setValue(currentKey);
-                                        databaseReference.child("Chat").child(currentKey).child(otherKey).child(lastIndex + "").child("msg").setValue(getMessages);
-                                        messageEditText.setText("");
-                                        break;
-                                    }
-                                }
-                            } else {
-                                for(DataSnapshot dataSnapshot : snapshot.getChildren()) {
-                                    if(dataSnapshot.hasChild(currentKey)) {
+                    // Set value cho người gửi
+                    databaseReference.child("Chat").child(currentKey).child(otherKey).child(String.valueOf(lastIndex)).child("sender").setValue(currentKey);
+                    databaseReference.child("Chat").child(currentKey).child(otherKey).child(String.valueOf(lastIndex)).child("msg").setValue(getMessages);
+                    databaseReference.child("Chat").child(currentKey).child(otherKey).child(String.valueOf(lastIndex)).child("send-date").setValue(simpleDateFormat.format(data));
+                    databaseReference.child("Chat").child(currentKey).child(otherKey).child(String.valueOf(lastIndex)).child("send-time").setValue(simpleTimeFormat.format(data));
 
-                                    }
-                                }
-                            }
-                            for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
-                                if (dataSnapshot.getKey().equals(currentKey)) {
-                                    Toast.makeText(ActivityChat.this, currentKey, Toast.LENGTH_SHORT).show();
-                                    databaseReference.child("Chat").child(currentKey).child(otherKey).child(lastIndex + "").child("sender").setValue(currentKey);
-                                    databaseReference.child("Chat").child(currentKey).child(otherKey).child(lastIndex + "").child("msg").setValue(getMessages);
-                                    messageEditText.setText("");
-                                } else {
-                                    databaseReference.child("Chat").child(otherKey).child(currentKey).child(lastIndex + "").child("sender").setValue(currentKey);
-                                    databaseReference.child("Chat").child(otherKey).child(currentKey).child(lastIndex + "").child("msg").setValue(getMessages);
-                                    messageEditText.setText("");
-                                }
-                            }
+                    // Set value cho người nhận
+                    databaseReference.child("Chat").child(otherKey).child(currentKey).child(String.valueOf(lastIndex)).child("sender").setValue(currentKey);
+                    databaseReference.child("Chat").child(otherKey).child(currentKey).child(String.valueOf(lastIndex)).child("msg").setValue(getMessages);
+                    databaseReference.child("Chat").child(otherKey).child(currentKey).child(String.valueOf(lastIndex)).child("send-date").setValue(simpleDateFormat.format(data));
+                    databaseReference.child("Chat").child(otherKey).child(currentKey).child(String.valueOf(lastIndex)).child("send-time").setValue(simpleTimeFormat.format(data));
 
-                        }
-
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError error) {
-
-                        }
-                    });
-
+                    messageEditText.setText("");
                 }
             }
         });
+
 
         backBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -224,4 +158,6 @@ public class ActivityChat extends AppCompatActivity {
             }
         });
     }
+
+
 }
