@@ -44,10 +44,10 @@ public class FragmentChat extends Fragment {
     private MessagesAdapter messagesAdapter;
     FirebaseAuth mAuth;
     DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
-    String profileOther= "";
+    String profileOther = "";
     String nameOther = "";
     String emailOthes = "";
-    String userCurrent_Key ="";
+    String userCurrent_Key = "";
     String userOtherCurrent_key = "";
     ProgressDialog progressDialog;
 
@@ -130,6 +130,7 @@ public class FragmentChat extends Fragment {
 
         return view;
     }
+
     private void fetchAccountDetails(final List<String> userOtherCurrentKeys, final int index) {
         if (index >= userOtherCurrentKeys.size()) {
             progressDialog.dismiss();
@@ -159,5 +160,6 @@ public class FragmentChat extends Fragment {
 
             }
         });
+
     }
 }

@@ -16,10 +16,11 @@
             android:layout_height="35dp"
             android:layout_centerVertical="true"
             android:layout_marginStart="20dp"
-            android:layout_marginTop="40dp"
+            android:layout_marginTop="20dp"
             android:background="@drawable/round_back_light_10"
             android:padding="6dp"
-            android:src="@drawable/ic_search" />
+            android:src="@drawable/ic_search"
+            android:visibility="invisible" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -27,21 +28,21 @@
             android:layout_centerInParent="true"
             android:text="Messages"
             android:textColor="#424242"
-            android:textSize="18sp"
+            android:textSize="24sp"
             android:textStyle="bold" />
 
         <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/userProfilePic"
-            android:layout_width="35dp"
-            android:layout_height="35dp"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
-            android:layout_marginTop="40dp"
+            android:layout_marginTop="20dp"
             android:layout_marginEnd="20dp"
             android:padding="6dp"
             android:src="@drawable/baseline_person_pin_24"
-            app:civ_border_width="2dp"
-            app:civ_border_color="#FF000000" />
+            app:civ_border_color="#FF000000"
+            app:civ_border_width="2dp" />
     </RelativeLayout>
 
     <androidx.recyclerview.widget.RecyclerView

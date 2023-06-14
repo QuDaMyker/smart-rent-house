@@ -21,7 +21,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@drawable/opo_msg_back"
-                android:padding="20dp"
+                android:paddingLeft="15dp"
+                android:paddingTop="10dp"
+                android:paddingBottom="10dp"
+                android:paddingRight="15dp"
                 android:text="This is opponent message"
                 android:textColor="#424242" />
 
@@ -51,7 +54,10 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="end"
                 android:background="@drawable/my_msg_back"
-                android:padding="20dp"
+                android:paddingLeft="15dp"
+                android:paddingTop="10dp"
+                android:paddingBottom="10dp"
+                android:paddingRight="15dp"
                 android:text="This is my message"
                 android:textColor="#424242" />
 

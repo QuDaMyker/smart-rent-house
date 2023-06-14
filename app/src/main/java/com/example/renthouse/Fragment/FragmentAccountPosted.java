@@ -1,5 +1,6 @@
 package com.example.renthouse.Fragment;
 
+import android.app.ProgressDialog;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -13,6 +14,7 @@ import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.airbnb.lottie.LottieAnimationView;
 import com.example.renthouse.Adapter.PostedAdapter;
 import com.example.renthouse.OOP.LocationTemp;
 import com.example.renthouse.OOP.Room;
@@ -35,8 +37,9 @@ public class FragmentAccountPosted extends Fragment {
     private List<Room> listRoomPosted;
     private FirebaseAuth mAuth;
     private FirebaseUser currentUser;
-    private ProgressBar progressBar;
+    private ProgressDialog progressDialog;
     private PostedAdapter postedAdapter;
+    private LottieAnimationView lottieAnimationView;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -48,9 +51,12 @@ public class FragmentAccountPosted extends Fragment {
         currentUser = mAuth.getCurrentUser();
         recyclerView = view.findViewById(R.id.recycleView);
 
+        lottieAnimationView = view.findViewById(R.id.animationView);
 
-        progressBar = view.findViewById(R.id.progressBar);
-        progressBar.setVisibility(View.INVISIBLE);
+        progressDialog = new ProgressDialog(getContext());
+        progressDialog.setCancelable(false);
+        progressDialog.setMessage("Loading...");
+        progressDialog.show();
 
 
         listRoomPosted = new ArrayList<>();
@@ -61,7 +67,7 @@ public class FragmentAccountPosted extends Fragment {
 
 
         if (currentUser != null) {
-            progressBar.setVisibility(View.VISIBLE);
+            progressDialog.show();
             FirebaseDatabase database = FirebaseDatabase.getInstance();
             DatabaseReference reference = database.getReference("Rooms");
 
@@ -89,11 +95,16 @@ public class FragmentAccountPosted extends Fragment {
 
                             listRoomPosted.add(item);
                         }
-
-
                     }
                     postedAdapter.notifyDataSetChanged();
-                    progressBar.setVisibility(View.INVISIBLE);
+                    if(listRoomPosted.isEmpty()) {
+                        recyclerView.setVisibility(View.INVISIBLE);
+                        lottieAnimationView.setVisibility(View.VISIBLE);
+                    }else {
+                        recyclerView.setVisibility(View.VISIBLE);
+                        lottieAnimationView.setVisibility(View.INVISIBLE);
+                    }
+                    progressDialog.dismiss();
                 }
 
                 @Override

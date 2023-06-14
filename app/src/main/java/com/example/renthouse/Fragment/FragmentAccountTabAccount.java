@@ -1,5 +1,6 @@
 package com.example.renthouse.Fragment;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -44,7 +45,7 @@ public class FragmentAccountTabAccount extends Fragment {
     FirebaseUser currentUser;
     String key;
     AccountClass account;
-    private ProgressBar progressBar;
+    ProgressDialog progressDialog;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -61,14 +62,17 @@ public class FragmentAccountTabAccount extends Fragment {
         btnBaoCaoSuCo = view.findViewById(R.id.account_personal_reportErrorButtonProfile);
         btnDangXuat = view.findViewById(R.id.account_personal_logoutButtonProfile);
 
-        progressBar = view.findViewById(R.id.progressBar);
-        progressBar.setVisibility(View.INVISIBLE);
 
         mAuth = FirebaseAuth.getInstance();
         currentUser = mAuth.getCurrentUser();
 
+        progressDialog = new ProgressDialog(getContext());
+        progressDialog.setCancelable(false);
+        progressDialog.setMessage("Loading...");
+        progressDialog.show();
+
         if(currentUser != null) {
-            progressBar.setVisibility(View.VISIBLE);
+            progressDialog.show();
             FirebaseDatabase database = FirebaseDatabase.getInstance();
             DatabaseReference reference = database.getReference("Accounts");
 
@@ -86,7 +90,7 @@ public class FragmentAccountTabAccount extends Fragment {
                     nameProfile.setText(account.getFullname());
                     emailProfile.setText(account.getEmail());
                     Picasso.get().load(account.getImage()).into(imageProfile);
-                    progressBar.setVisibility(View.INVISIBLE);
+                    progressDialog.dismiss();
                 }
 
                 @Override
