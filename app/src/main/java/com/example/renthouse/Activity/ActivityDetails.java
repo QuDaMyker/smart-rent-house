@@ -74,7 +74,7 @@ public class ActivityDetails extends AppCompatActivity {
         //gán id
         //gán id
         btnPreScreen = findViewById(R.id.btnBack);
-        
+
         btnNextImage = findViewById(R.id.btnNextImage);
         btnPreImage = findViewById(R.id.btnPreImage);
         ivMainImage = findViewById(R.id.imagePhong);
