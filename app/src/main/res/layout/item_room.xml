@@ -5,7 +5,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     app:cardCornerRadius="6dp"
     android:id="@+id/itemRoom"
-    android:layout_marginLeft="10dp"
+    android:layout_marginLeft="5dp"
     android:layout_marginTop="10dp"
     >
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -28,7 +28,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="tên p"
-            android:textSize="23sp"
+            android:textSize="21sp"
             app:layout_constraintTop_toBottomOf="@+id/ivRoomImage"
             app:layout_constraintLeft_toLeftOf="parent"
 

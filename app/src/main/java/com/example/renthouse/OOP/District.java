@@ -15,8 +15,6 @@ public class District implements Serializable {
 
     }
 
-    public District() {
-    }
 
     public District(String name, String type, String slug, String name_with_type, String path, String path_with_type, String code, String parent_code) {
         this.name = name;

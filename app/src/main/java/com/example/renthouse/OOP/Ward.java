@@ -11,6 +11,9 @@ public class Ward implements Serializable  {
     private String path_with_type;
     private String code;
     private String parent_code;
+    public Ward () {
+
+    }
 
     public Ward(String name, String type, String slug, String name_with_type, String path, String path_with_type, String code, String parent_code) {
         this.name = name;
