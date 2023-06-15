@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="circular_10">
+        <item name="cornerSize">10%</item>
+    </style>
+
+    <style name="circular_15">
+        <item name="cornerSize">15%</item>
+    </style>
+
+    <style name="circular_20">
+        <item name="cornerSize">20%</item>
+    </style>
+
+    <style name="circular_30">
+        <item name="cornerSize">30%</item>
+    </style>
+
+    <style name="circular_40">
+        <item name="cornerSize">40%</item>
+    </style>
+
+    <style name="circular_50">
+        <item name="cornerSize">50%</item>
+    </style>
+
+</resources>

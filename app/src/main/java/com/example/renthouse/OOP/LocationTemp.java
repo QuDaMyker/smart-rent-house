@@ -9,7 +9,6 @@ public class LocationTemp implements Serializable {
     private District district;
     private Ward ward;
 
-    public LocationTemp()  {}
     public LocationTemp(String street, String address, City city, District district, Ward ward) {
         this.street = street;
         this.address = address;
@@ -56,5 +55,13 @@ public class LocationTemp implements Serializable {
 
     public void setWard(Ward ward) {
         this.ward = ward;
+    }
+
+    public String LocationToString(){
+        String res = address + " Đường " + street + ", "
+                + ward.getName_with_type() + ", "
+                + district.getName_with_type() + ", "
+                + city.getName_with_type() + ", Vietnam";
+        return res;
     }
 }
