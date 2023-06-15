@@ -34,7 +34,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/textLiked">
     </FrameLayout>
-
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/navigation"
         android:layout_width="match_parent"
@@ -49,4 +48,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:menu="@menu/menu_nav_button"
         />
+
+
 </androidx.constraintlayout.widget.ConstraintLayout>

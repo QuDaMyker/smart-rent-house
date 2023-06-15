@@ -4,11 +4,29 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.renthouse.Activity.ActivityDetails;
+import com.example.renthouse.Activity.ActivityMain;
+import com.example.renthouse.Adapter.RoomAdapter;
+import com.example.renthouse.OOP.Room;
 import com.example.renthouse.R;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.ktx.Firebase;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.PrimitiveIterator;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -26,6 +44,11 @@ public class FragmentLikedRooms extends Fragment {
     private String mParam1;
     private String mParam2;
     private RecyclerView recyclerView;
+    private RoomAdapter roomAdapter;
+    private List<Room> rooms;
+
+    FirebaseDatabase db;
+    DatabaseReference ref ;
 
 
     public FragmentLikedRooms() {
@@ -64,19 +87,48 @@ public class FragmentLikedRooms extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_liked_rooms, container, false);
-//        recyclerView = (RecyclerView) view.findViewById(R.id.rcv_LikedRooms);
-//        GridLayoutManager grid = new GridLayoutManager(getActivity(), 2);
-//        recyclerView.setLayoutManager(grid);
-//        RoomAdapter roomAdapter = new RoomAdapter(getListRoom());
-//        recyclerView.setAdapter(roomAdapter);
+        recyclerView = (RecyclerView) view.findViewById(R.id.rcv_LikedRooms);
+        GridLayoutManager grid = new GridLayoutManager(getActivity(), 2);
+        recyclerView.setLayoutManager(grid);
+
+        rooms = new ArrayList<>();
+        roomAdapter = new RoomAdapter(this.getContext(), rooms);
+
+        recyclerView.setAdapter(roomAdapter);
+
+        db = FirebaseDatabase.getInstance();
+        ref = db.getReference("Rooms");
+
+        getListRoomFromFB();
+
         return view;
     }
 
-//    private List<Room> getListRoom() {
-//       List<Room> room = new ArrayList<>();
-//       room.add( new Room("HOMESTAY DOOM MẶT TIỀN HÀNG XANH", "Đường Nguyễn Huy Tự", 12000000, R.drawable.p1));
-//        room.add( new Room("p2", "q2", 12000000, R.drawable.p1));
-//        room.add( new Room("p3", "q3", 12000000, R.drawable.p1));
-//        return room;
-//    }
+        private void getListRoomFromFB() {
+        FirebaseDatabase db = FirebaseDatabase.getInstance();
+        DatabaseReference ref = db.getReference("Rooms");
+
+        ref.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for (DataSnapshot dataSnapshot : snapshot.getChildren())
+                {
+                    Room r = dataSnapshot.getValue(Room.class);
+                    rooms.add(r);
+                }
+                roomAdapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
+
+
+    }
+
+
+
 }

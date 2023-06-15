@@ -27,17 +27,8 @@ public class FragmentLiked extends Fragment {
         binding = FragmentLikedBinding.inflate(inflater, container, false);
         View view = binding.getRoot();
         // Inflate the layout for this fragment
+        replaceFragment(new FragmentLikedRooms());
 
-        binding.navigation.setOnItemSelectedListener(item -> {
-
-            switch (item.getItemId()){
-                case R.id.btnLiked:
-                    replaceFragment(new FragmentLikedRooms());
-                    break;
-            }
-
-            return true;
-        });
         return view;
     }
     private void replaceFragment(Fragment f)

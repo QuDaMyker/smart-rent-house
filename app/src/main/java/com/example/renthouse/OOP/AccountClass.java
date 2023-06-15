@@ -10,6 +10,7 @@ public class AccountClass implements Serializable {
     private String image;
     private String ngayTaoTaiKhoan;
 
+    public AccountClass (){};
     public AccountClass(String fullname, String email, String phoneNumber, String password, String image, String ngayTaoTaiKhoan) {
         this.fullname = fullname;
         this.email = email;
