@@ -49,7 +49,7 @@ public class JSONReaderLocation {
             JSONArray jsonArray = new JSONArray(jsonString);
             for(int i = 0; i < jsonArray.length();i++){
                 JSONObject obj = jsonArray.getJSONObject(i);
-                String ward = obj.getString("path");
+                String ward = obj.getString("path_with_type");
 
                 Location location = new Location(ward);
                 String normalizedElement = Normalizer.normalize(ward, Normalizer.Form.NFC);

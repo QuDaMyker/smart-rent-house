@@ -10,8 +10,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.ImageButton;
 
 import com.example.renthouse.R;
+import com.google.android.material.tabs.TabLayout;
+
+import java.util.ArrayList;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -28,8 +32,9 @@ public class FragmentAmount extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
-    private AppCompatImageButton btnDescreasePeople;
-    private AppCompatImageButton btnIncreasePeople;
+    private ImageButton btnDescreasePeople;
+    private ImageButton btnIncreasePeople;
+    private TabLayout tabLayout;
     private EditText editTextAmount;
     public FragmentAmount() {
         // Required empty public constructor
@@ -70,7 +75,7 @@ public class FragmentAmount extends Fragment {
         btnDescreasePeople = view.findViewById(R.id.buttonDescreasePeople);
         btnIncreasePeople = view.findViewById(R.id.buttonIncreasePeople);
         editTextAmount = view.findViewById(R.id.editTextAmountPeople);
-
+        tabLayout = view.findViewById(R.id.tabLayoutGender);
         btnDescreasePeople.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -96,5 +101,44 @@ public class FragmentAmount extends Fragment {
             }
         });
         return view;
+    }
+    public boolean hasValue() {
+        return true;
+    }
+    public ArrayList<Integer> getValue(){
+        ArrayList<Integer> amountAndGender = new ArrayList<>();
+        int amount = Integer.parseInt(String.valueOf(editTextAmount.getText()));
+        final int[] gender = {0};
+        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                int position = tab.getPosition();
+                // Thực hiện các tác vụ tương ứng với tab đã chọn
+                switch (position) {
+                    case 0:
+                        gender[0] = 0; // Nữ
+                        break;
+                    case 1:
+                        gender[0] = 1; // Nam
+                        break;
+                    case 2:
+                        gender[0] = 2; // Khác
+                        break;
+                }
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+
+            }
+        });
+        amountAndGender.add(amount);
+        amountAndGender.add(gender[0]);
+        return amountAndGender;
     }
 }

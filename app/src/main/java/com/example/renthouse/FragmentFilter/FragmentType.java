@@ -7,6 +7,7 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RadioGroup;
 
 import com.example.renthouse.R;
 
@@ -25,7 +26,8 @@ public class FragmentType extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
-
+    private RadioGroup radioGroup;
+    private int selectedRadioButtonId = -1;
     public FragmentType() {
         // Required empty public constructor
     }
@@ -61,6 +63,20 @@ public class FragmentType extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_type, container, false);
+        View view = inflater.inflate(R.layout.fragment_type, container, false);
+        radioGroup = view.findViewById(R.id.radioButtonGroupType);
+
+        return view;
+    }
+    public boolean hasValue(){
+        boolean flag = true;
+        selectedRadioButtonId = radioGroup.getCheckedRadioButtonId();
+        if (selectedRadioButtonId == -1) {
+            flag = false;
+        }
+        return flag;
+    }
+    public int getValue(){
+        return  selectedRadioButtonId;
     }
 }

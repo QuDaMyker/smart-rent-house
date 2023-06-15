@@ -7,13 +7,17 @@ import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.GridLayout;
+import android.widget.Toast;
 
 import com.example.renthouse.R;
 import com.google.android.material.button.MaterialButton;
+
+import java.util.ArrayList;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -65,7 +69,7 @@ public class FragmentUtilities extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
-
+    private GridLayout gridLayout;
     public FragmentUtilities() {
         // Required empty public constructor
     }
@@ -104,28 +108,68 @@ public class FragmentUtilities extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_utilities, container, false);
 
-        GridLayout gridLayout = view.findViewById(R.id.grid_layout_fragment_utilities);
+        gridLayout = view.findViewById(R.id.grid_layout_fragment_utilities);
         for (int i = 0; i < buttonTitles.length; i++) {
             MaterialButton button = new MaterialButton(getContext());
             button.setPadding(15,0,15,0);
             button.setText(buttonTitles[i]);
             button.setIcon(getDrawable(getContext(), iconIds[i]));
             button.setCheckable(true);
+            button.setIconGravity(MaterialButton.ICON_GRAVITY_TEXT_START);
             button.setIconTint(getColorStateList(getContext(), R.color.button_text_selector));
             button.setTextColor(getColorStateList(getContext(), R.color.button_text_selector));
             button.setTextSize(11);
             button.setBackgroundTintList(getColorStateList(getContext(), R.color.button_background_selector));
-            button.setIconGravity(MaterialButton.ICON_GRAVITY_TEXT_START);
             button.setCornerRadius(4);
-
             button.setLayoutParams(new GridLayout.LayoutParams(
                     GridLayout.spec(GridLayout.UNDEFINED, GridLayout.FILL, 1f),
                     GridLayout.spec(GridLayout.UNDEFINED, GridLayout.FILL, 1f)
             ));
+            button.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (button.isChecked()) {
+                        button.setTextColor(getResources().getColor(R.color.Primary_40));
+                        button.setIcon
+                    }
+                }
+            });
             gridLayout.addView(button);
         }
         // Inflate the layout for this fragment
         return view;
     }
+    public ArrayList<Integer> getValue(){
+        ArrayList<Integer> listIdx = new ArrayList<>();
+        int childCount = gridLayout.getChildCount();
+        for (int i = 0; i < childCount; i++) {
+            View child = gridLayout.getChildAt(i);
+            if (child instanceof MaterialButton) {
+                MaterialButton button = (MaterialButton) child;
+                if(button.isChecked()){
+                    listIdx.add(i);
+                }
+            }
+        }
+        return listIdx;
+    }
+    public boolean hasValue() {
+        boolean flag = true;
+        if (getValue().isEmpty()) {
+            flag = false;
+        }
+        return flag;
+    }
+    public void setValue(ArrayList<Integer> listButtonChecked){
+        int count = listButtonChecked.size();
+        for (int i = 0; i < count; i++) {
+            View child = gridLayout.getChildAt(i);
+            if (child instanceof MaterialButton) {
+                MaterialButton button = (MaterialButton) child;
+                button.setChecked(true);
 
+
+            }
+        }
+    }
 }
