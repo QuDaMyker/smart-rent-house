@@ -7,6 +7,7 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
 
 import android.Manifest;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Address;
@@ -66,12 +67,18 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private GeoApiContext geoApiContext;
     MaterialButton locationButton;
     ImageButton btn_Back;
+    ProgressDialog progressDialog;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
+
+        progressDialog= new ProgressDialog(this);
+        progressDialog.setTitle("Đang xử lý dữ liệu, vui lòng đợi trong giây lát...");
+        progressDialog.show();
+
         btn_Back = findViewById(R.id.btn_Back);
         currPlace = getIntent().getParcelableExtra("currPlace");
 
@@ -118,6 +125,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
+
         mMap = googleMap;
         locationButton = findViewById(R.id.locationButton);
         locationButton.setOnClickListener(new View.OnClickListener() {
@@ -192,6 +200,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         // Move camera to the current location
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(currPlace.getPosition(), 17f));
-
+        if(progressDialog != null && progressDialog.isShowing()){
+            progressDialog.dismiss();
+        }
     }
 }

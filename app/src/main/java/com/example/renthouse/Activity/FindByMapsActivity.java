@@ -19,6 +19,7 @@ import android.widget.LinearLayout;
 import android.widget.SearchView;
 
 import com.example.renthouse.Adapter.UniAdapter;
+import com.example.renthouse.OOP.City;
 import com.example.renthouse.OOP.University;
 import com.example.renthouse.R;
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -29,8 +30,12 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -53,12 +58,10 @@ public class FindByMapsActivity extends AppCompatActivity {
         introView = findViewById(R.id.introView);
         locationBtn = findViewById(R.id.locationBtn);
         btn_Back = findViewById(R.id.btn_Back);
-
-
-        itemList.add(new University("UIT", "Đường Hàn Thuyên, khu phố 6 P, Thủ Đức, Thành phố Hồ Chí Minh, Vietnam"));
-        itemList.add(new University("HCMUS", "VQGX+6JW, Đ. Vào Đại Học Quốc Gia, Đông Hoà, Dĩ An, Bình Dương, Vietnam"));
-        itemList.add(new University("HCMUTE", "01 Võ Văn Ngân, Linh Chiểu, Thủ Đức, Thành phố Hồ Chí Minh, Vietnam"));
-        itemList.add(new University("USSH", "VRC2+QR9, Khu Phố 6, Thủ Đức, Thành phố Hồ Chí Minh, Vietnam"));
+        String uniJson = loadJSONFromAsset("universities.json");
+        Gson gson = new Gson();
+        Type listUniType = new TypeToken<List<University>>(){}.getType();
+        itemList = gson.fromJson(uniJson, listUniType);
 
         recyclerView = findViewById(R.id.recycleViewUniSearch);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -139,6 +142,22 @@ public class FindByMapsActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+    }
+
+    private String loadJSONFromAsset(String filename) {
+        String json = null;
+        try {
+            InputStream is = this.getAssets().open(filename);
+            int size = is.available();
+            byte[] buffer = new byte[size];
+            is.read(buffer);
+            is.close();
+            json = new String(buffer, "UTF-8");
+        } catch (IOException ex) {
+            ex.printStackTrace();
+            return null;
+        }
+        return json;
     }
 
     private MarkerOptions convertAddressToMarkerOptions(String address) {
