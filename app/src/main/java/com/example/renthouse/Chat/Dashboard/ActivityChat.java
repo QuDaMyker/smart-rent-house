@@ -1,20 +1,22 @@
 package com.example.renthouse.Chat.Dashboard;
 
+import android.os.Bundle;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.EditText;
+import android.widget.HorizontalScrollView;
+import android.widget.ImageView;
+import android.widget.TextView;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.os.Bundle;
-import android.view.View;
-import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.TextView;
-import android.widget.Toast;
-
 import com.example.renthouse.Chat.MemoryData;
 import com.example.renthouse.R;
-import com.google.firebase.auth.FirebaseAuth;
+import com.google.android.material.button.MaterialButton;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -22,13 +24,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
-import org.checkerframework.checker.units.qual.C;
-
-import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -56,7 +52,40 @@ public class ActivityChat extends AppCompatActivity {
         final TextView nameTV = findViewById(R.id.name);
         final EditText messageEditText = findViewById(R.id.messageEditTxt);
         final CircleImageView profilePic = findViewById(R.id.profilePic);
-        final ImageView sendBtn = findViewById(R.id.sendBtn);
+        final MaterialButton sendBtn = findViewById(R.id.sendBtn);
+        final MaterialButton mButton1 = findViewById(R.id.mButton1);
+        final MaterialButton mButton2 = findViewById(R.id.mButton2);
+        final MaterialButton mButton3 = findViewById(R.id.mButton3);
+        final MaterialButton mButton4 = findViewById(R.id.mButton4);
+        final HorizontalScrollView hintBar = findViewById(R.id.hintBar);
+        final View backView = findViewById(R.id.backView);
+
+        mButton1.setOnClickListener(v -> {
+            hintBar.setVisibility(View.INVISIBLE);
+
+
+            /*ConstraintLayout.LayoutParams layoutParams = (ConstraintLayout.LayoutParams) messageEditText.getLayoutParams();
+            layoutParams.topToTop = R.id.chattingRecycleView;
+            messageEditText.setLayoutParams(layoutParams);*/
+
+            ConstraintLayout.LayoutParams layoutParams1 = (ConstraintLayout.LayoutParams) backView.getLayoutParams();
+            layoutParams1.bottomToTop = R.id.messageEditTxt;
+            backView.setLayoutParams(layoutParams1);
+
+
+
+
+        });
+        mButton2.setOnClickListener(v -> {
+            messageEditText.setText(mButton2.getText());
+        });
+        mButton3.setOnClickListener(v -> {
+            messageEditText.setText(mButton3.getText());
+        });
+        mButton4.setOnClickListener(v -> {
+            messageEditText.setText(mButton4.getText());
+        });
+
 
         chattingRecycleView = findViewById(R.id.chattingRecycleView);
 
@@ -86,7 +115,7 @@ public class ActivityChat extends AppCompatActivity {
                 chatLists.clear();
                 //Toast.makeText(getApplicationContext(), snapshot.getKey(), Toast.LENGTH_SHORT).show();
                 for (DataSnapshot dataSnapshot : snapshot.child(currentKey).child(otherKey).getChildren()) {
-                   // Toast.makeText(ActivityChat.this, dataSnapshot.getKey(), Toast.LENGTH_SHORT).show();
+                    // Toast.makeText(ActivityChat.this, dataSnapshot.getKey(), Toast.LENGTH_SHORT).show();
 
                     if (dataSnapshot.child("sender").getValue(String.class).equals(currentKey)) {
                         String msg = dataSnapshot.child("msg").getValue(String.class);
