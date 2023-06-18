@@ -20,10 +20,13 @@ import android.widget.Toast;
 import com.example.renthouse.Activity.ActivityPost;
 import com.example.renthouse.Activity.FindByMapsActivity;
 import com.example.renthouse.Activity.MapsActivity;
+import com.example.renthouse.Activity.NoficationActivity;
+import com.example.renthouse.Adapter.NotificationAdapter;
 import com.example.renthouse.Adapter.PhoBienAdapter;
 import com.example.renthouse.ITEM.itemPhoBien_HomeFragment;
 import com.example.renthouse.OOP.City;
 import com.example.renthouse.OOP.District;
+import com.example.renthouse.OOP.Notification;
 import com.example.renthouse.OOP.Ward;
 import com.example.renthouse.databinding.FragmentHomeBinding;
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -31,6 +34,11 @@ import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -86,6 +94,46 @@ public class FragmentHome extends Fragment {
             @Override
             public void onClick(View view) {
                 startActivity(new Intent(getContext(), FindByMapsActivity.class));
+            }
+        });
+
+        binding.notificationBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(getContext(), NoficationActivity.class));
+                FirebaseDatabase database = FirebaseDatabase.getInstance();
+                DatabaseReference notificationsRef = database.getReference("Notifications");
+                DatabaseReference accountsRef = database.getReference("Accounts");
+                accountsRef.orderByChild("email").equalTo(FirebaseAuth.getInstance().getCurrentUser().getEmail()).addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        for (DataSnapshot accountSnapshot : dataSnapshot.getChildren()) {
+                            String accountKey = accountSnapshot.getKey();
+
+                            DatabaseReference userRef = notificationsRef.child(accountKey);
+                            userRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                    for (DataSnapshot notificationSnapshot : snapshot.getChildren()) {
+                                        Notification notification = notificationSnapshot.getValue(Notification.class);
+                                        notification.setRead(true);
+                                        notificationSnapshot.getRef().setValue(notification);
+                                    }
+                                }
+
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError error) {
+
+                                }
+                            });
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+                        // Xử lý khi có lỗi xảy ra
+                    }
+                });
             }
         });
 
