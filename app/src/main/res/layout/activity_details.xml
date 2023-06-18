@@ -12,15 +12,14 @@
         android:background="@color/Primary_40"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-
         app:layout_constraintTop_toTopOf="parent">
-
         <ImageButton
             android:id="@+id/btnBack"
             android:layout_width="35dp"
             android:layout_height="35dp"
             android:layout_marginLeft="10dp"
-            android:background="@drawable/baseline_arrow_back_24"
+            android:background="@color/Primary_40"
+            android:foreground="@drawable/baseline_arrow_back_24"
             app:layout_constraintBottom_toBottomOf="@id/detail_tool_bar"
             app:layout_constraintLeft_toLeftOf="@id/detail_tool_bar"
             app:layout_constraintTop_toTopOf="@id/detail_tool_bar" />
@@ -40,12 +39,13 @@
 
         <CheckBox
             android:id="@+id/cbLike"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
             android:layout_gravity="right"
             android:layout_marginRight="20dp"
             android:button="@drawable/custom_checkbox_like"
             android:checked="true"
+            android:foreground="@drawable/custom_checkbox_like"
 
             />
     </com.google.android.material.appbar.MaterialToolbar>
@@ -72,24 +72,26 @@
             >
 
             <ImageView
-                android:id="@+id/imagePhong"
+                android:id="@+id/ivImages"
                 android:layout_width="match_parent"
                 android:layout_height="250dp"
-                android:scaleType="centerCrop"
-                android:src="@drawable/p1"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="@id/linear2"></ImageView>
+                app:layout_constraintTop_toTopOf="@id/linear2"
+                android:scaleType="centerCrop"
+                >
 
+            </ImageView>
             <ImageButton
                 android:id="@+id/btnPreImage"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="20dp"
                 android:background="@drawable/btn_circle_previous"
-                app:layout_constraintBottom_toBottomOf="@id/imagePhong"
-                app:layout_constraintLeft_toLeftOf="@id/imagePhong"
-                app:layout_constraintTop_toTopOf="@id/imagePhong">
+                app:layout_constraintBottom_toBottomOf="@id/ivImages"
+                app:layout_constraintLeft_toLeftOf="@id/ivImages"
+                app:layout_constraintTop_toTopOf="@id/ivImages"
+                >
 
             </ImageButton>
 
@@ -99,49 +101,25 @@
                 android:layout_height="wrap_content"
                 android:layout_marginRight="20dp"
                 android:background="@drawable/btn_circle_next"
-                app:layout_constraintBottom_toBottomOf="@id/imagePhong"
-                app:layout_constraintRight_toRightOf="@id/imagePhong"
-                app:layout_constraintTop_toTopOf="@id/imagePhong"></ImageButton>
+                app:layout_constraintBottom_toBottomOf="@id/ivImages"
+                app:layout_constraintRight_toRightOf="@id/ivImages"
+                app:layout_constraintTop_toTopOf="@id/ivImages">
 
-            <LinearLayout
-                android:id="@+id/lnImageNho"
-                android:layout_width="match_parent"
+            </ImageButton>
+            <TextView
+                android:id="@+id/tvIndex"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:gravity="center_horizontal"
-                android:orientation="horizontal"
-                app:layout_constraintTop_toBottomOf="@id/imagePhong">
+                android:text="1/4"
+                app:layout_constraintBottom_toBottomOf="@id/ivImages"
+                app:layout_constraintLeft_toLeftOf="@id/ivImages"
+                app:layout_constraintRight_toRightOf="@id/ivImages"
+                android:textSize="15dp"
+                android:layout_marginBottom="20dp"
+                android:textColor="@color/white"
 
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/p2" />
+                />
 
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/p2" />
-
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/p2" />
-
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/p2" />
-
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/p2" />
-
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/p2" />
-
-            </LinearLayout>
 
             <TextView
                 android:id="@+id/tvLoaiPhong"
@@ -153,7 +131,7 @@
                 android:textColor="@color/Secondary_40"
                 android:textSize="15sp"
                 app:layout_constraintLeft_toLeftOf="@id/linear2"
-                app:layout_constraintTop_toBottomOf="@id/lnImageNho" />
+                app:layout_constraintTop_toBottomOf="@id/ivImages" />
 
             <TextView
                 android:id="@+id/tvSoNg"
@@ -165,7 +143,7 @@
                 android:textColor="@color/Secondary_40"
                 android:textSize="15sp"
                 app:layout_constraintRight_toRightOf="@id/linear2"
-                app:layout_constraintTop_toBottomOf="@id/lnImageNho" />
+                app:layout_constraintTop_toBottomOf="@id/ivImages" />
 
             <LinearLayout
                 android:id="@+id/lnTinhTrang"
@@ -272,8 +250,8 @@
                 app:layout_constraintTop_toBottomOf="@id/tvTen">
 
                 <ImageView
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
                     android:src="@drawable/outline_location_on_24" />
 
                 <TextView

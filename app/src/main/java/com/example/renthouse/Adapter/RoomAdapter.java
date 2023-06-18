@@ -47,8 +47,8 @@ public class RoomAdapter extends RecyclerView.Adapter<RoomAdapter.RoomViewHolder
         }
 
         holder.tvName.setText(room.getTitle());
-        holder.tvAddress.setText("chưa fixx");
-        holder.tvPrice.setText(String.valueOf(room.getPrice()));
+        holder.tvAddress.setText(room.getLocation().LocationToString());
+        holder.tvPrice.setText(String.valueOf(room.getPrice()/1000000) + " Tr");
         String image = room.getImages().get(0);
 
         Picasso.get()
@@ -69,6 +69,10 @@ public class RoomAdapter extends RecyclerView.Adapter<RoomAdapter.RoomViewHolder
         bundle.putSerializable("selectedRoom", r);
         intent.putExtras(bundle);
         context.startActivity(intent);
+    }
+
+    public void release (){
+        context = null;
     }
 
 

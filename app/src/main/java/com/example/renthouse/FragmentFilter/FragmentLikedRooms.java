@@ -9,6 +9,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -52,6 +53,7 @@ public class FragmentLikedRooms extends Fragment {
 
 
     public FragmentLikedRooms() {
+
     }
 
     /**
@@ -89,6 +91,7 @@ public class FragmentLikedRooms extends Fragment {
         View view = inflater.inflate(R.layout.fragment_liked_rooms, container, false);
         recyclerView = (RecyclerView) view.findViewById(R.id.rcv_LikedRooms);
         GridLayoutManager grid = new GridLayoutManager(getActivity(), 2);
+
         recyclerView.setLayoutManager(grid);
 
         rooms = new ArrayList<>();
@@ -125,10 +128,14 @@ public class FragmentLikedRooms extends Fragment {
             }
         });
 
-
-
     }
 
-
-
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (roomAdapter != null)
+        {
+            roomAdapter.release();
+        }
+    }
 }
