@@ -18,6 +18,7 @@ import android.view.View;
 import android.widget.ScrollView;
 import android.widget.Toast;
 
+import com.example.renthouse.FCM.SendNotificationTask;
 import com.example.renthouse.FragmentPost.FragmentConfirm;
 import com.example.renthouse.FragmentPost.FragmentInformation;
 import com.example.renthouse.FragmentPost.FragmentLocation;
@@ -252,21 +253,15 @@ public class ActivityPost extends AppCompatActivity {
                 FirebaseDatabase database = FirebaseDatabase.getInstance();
                 DatabaseReference myRef = database.getReference("Rooms/" + room.getId() + "/images");
                 myRef.setValue(uriImageStringList);
-                if(progressDialog.isShowing()){
-                    progressDialog.dismiss();
-                }
-                Toast.makeText(ActivityPost.this, "Tải lên thành công!", Toast.LENGTH_SHORT).show();
+                notificationOnSuccess(progressDialog);
+
             }
         };
         storageReference = FirebaseStorage.getInstance().getReference();
         List<Uri> uriList = fragmentUtilities.getUriListImg();
         int totalItems = uriList.size();
         if(totalItems == 0){
-            if(progressDialog.isShowing()){
-                progressDialog.dismiss();
-            }
-            Toast.makeText(ActivityPost.this, "Tải lên thành công!", Toast.LENGTH_SHORT).show();
-            return;
+            notificationOnSuccess(progressDialog);
         }
         final int[] successCount = {0};
         for(Uri u : uriList){
@@ -310,6 +305,15 @@ public class ActivityPost extends AppCompatActivity {
                 }
             });
         }
+    }
+
+    private void notificationOnSuccess(ProgressDialog progressDialog){
+        if(progressDialog.isShowing()){
+            progressDialog.dismiss();
+        }
+        Toast.makeText(ActivityPost.this, "Tải lên thành công!", Toast.LENGTH_SHORT).show();
+        SendNotificationTask task = new SendNotificationTask(ActivityPost.this);
+        task.execute();
     }
 
     private File getFileOfUri(Uri u) {

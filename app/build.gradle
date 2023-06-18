@@ -64,4 +64,7 @@ dependencies {
     implementation 'com.airbnb.android:lottie:6.0.0'
     implementation 'com.google.maps.android:android-maps-utils:2.2.5'
     implementation 'com.google.maps:google-maps-services:2.2.0'
+    implementation 'com.google.firebase:firebase-messaging'
+    implementation 'com.android.volley:volley:1.2.1'
+
 }
