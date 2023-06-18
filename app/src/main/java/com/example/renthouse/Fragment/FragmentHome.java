@@ -101,39 +101,6 @@ public class FragmentHome extends Fragment {
             @Override
             public void onClick(View view) {
                 startActivity(new Intent(getContext(), NoficationActivity.class));
-                FirebaseDatabase database = FirebaseDatabase.getInstance();
-                DatabaseReference notificationsRef = database.getReference("Notifications");
-                DatabaseReference accountsRef = database.getReference("Accounts");
-                accountsRef.orderByChild("email").equalTo(FirebaseAuth.getInstance().getCurrentUser().getEmail()).addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        for (DataSnapshot accountSnapshot : dataSnapshot.getChildren()) {
-                            String accountKey = accountSnapshot.getKey();
-
-                            DatabaseReference userRef = notificationsRef.child(accountKey);
-                            userRef.addListenerForSingleValueEvent(new ValueEventListener() {
-                                @Override
-                                public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                    for (DataSnapshot notificationSnapshot : snapshot.getChildren()) {
-                                        Notification notification = notificationSnapshot.getValue(Notification.class);
-                                        notification.setRead(true);
-                                        notificationSnapshot.getRef().setValue(notification);
-                                    }
-                                }
-
-                                @Override
-                                public void onCancelled(@NonNull DatabaseError error) {
-
-                                }
-                            });
-                        }
-                    }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {
-                        // Xử lý khi có lỗi xảy ra
-                    }
-                });
             }
         });
 

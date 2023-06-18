@@ -27,6 +27,7 @@ public class NoficationActivity extends AppCompatActivity {
     RecyclerView recyclerView;
     NotificationAdapter notificationAdapter;
     List<Notification> notificationList = new ArrayList<>();
+    DatabaseReference userRef;
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -45,7 +46,7 @@ public class NoficationActivity extends AppCompatActivity {
                 for (DataSnapshot accountSnapshot : dataSnapshot.getChildren()) {
                     String accountKey = accountSnapshot.getKey();
 
-                    DatabaseReference userRef = notificationsRef.child(accountKey);
+                    userRef = notificationsRef.child(accountKey);
                     userRef.limitToLast(10).addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -76,5 +77,25 @@ public class NoficationActivity extends AppCompatActivity {
         });
 
 
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        userRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for (DataSnapshot notificationSnapshot : snapshot.getChildren()) {
+                    Notification notification = notificationSnapshot.getValue(Notification.class);
+                    notification.setRead(true);
+                    notificationSnapshot.getRef().setValue(notification);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
     }
 }

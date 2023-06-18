@@ -64,7 +64,8 @@
             android:label="@string/title_activity_maps" />
         <activity
             android:name=".Activity.NoficationActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:parentActivityName=".Activity.ActivityMain"/>
         <activity
             android:name=".Activity.ActivityPost"
             android:exported="false" />
