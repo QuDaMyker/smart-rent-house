@@ -1,8 +1,11 @@
 package com.example.renthouse.Fragment;
 
+import android.app.ActivityManager;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -32,6 +35,10 @@ import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
+import android.app.ActivityManager;
+import android.content.Context;
+
+
 public class FragmentAccountTabAccount extends Fragment {
     ImageView imageProfile;
     TextView nameProfile;
@@ -46,6 +53,7 @@ public class FragmentAccountTabAccount extends Fragment {
     String key;
     AccountClass account;
     ProgressDialog progressDialog;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -71,7 +79,7 @@ public class FragmentAccountTabAccount extends Fragment {
         progressDialog.setMessage("Loading...");
         progressDialog.show();
 
-        if(currentUser != null) {
+        if (currentUser != null) {
             progressDialog.show();
             FirebaseDatabase database = FirebaseDatabase.getInstance();
             DatabaseReference reference = database.getReference("Accounts");
@@ -79,9 +87,9 @@ public class FragmentAccountTabAccount extends Fragment {
             reference.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    for(DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                    for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
                         key = dataSnapshot.getKey();
-                        if(dataSnapshot.child("email").getValue().equals(currentUser.getEmail())) {
+                        if (dataSnapshot.child("email").getValue().equals(currentUser.getEmail())) {
                             account = dataSnapshot.getValue(AccountClass.class);
                             break;
                         }
@@ -120,12 +128,21 @@ public class FragmentAccountTabAccount extends Fragment {
         btnDangXuat.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                if(getActivity()!= null) {
+                FirebaseAuth.getInstance().signOut();
+                
+                /*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                    ActivityManager activityManager = (ActivityManager) requireContext().getSystemService(Context.ACTIVITY_SERVICE);
+                    if (activityManager != null) {
+                        activityManager.clearApplicationUserData();
+                    }
+                }*/
+                if (getActivity() != null) {
                     getActivity().finish();
                 }
-                FirebaseAuth.getInstance().signOut();
-                startActivity(new Intent(getContext(), ActivitySplash.class));
+
+
+
+                startActivity(new Intent(requireContext(), ActivitySplash.class));
 
 
             }

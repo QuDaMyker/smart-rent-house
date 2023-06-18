@@ -48,7 +48,6 @@ public class FragmentChat extends Fragment {
     String nameOther = "";
     String emailOthes = "";
     String userCurrent_Key = "";
-    String userOtherCurrent_key = "";
     ProgressDialog progressDialog;
 
     @Override
@@ -148,18 +147,38 @@ public class FragmentChat extends Fragment {
 
                 //Toast.makeText(getContext(), nameOther, Toast.LENGTH_SHORT).show();
 
-                MessagesList messagesList = new MessagesList(userCurrent_Key, nameOther, emailOthes, lastMessages, profileOther, userOtherCurrentKey, 0);
-                messagesLists.add(messagesList);
-                messagesRecyclerView.setAdapter(new MessagesAdapter(messagesLists, getContext()));
+                databaseReference.child("Chat").child(userCurrent_Key).child(userOtherCurrentKey).orderByKey().limitToLast(1).addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        /*for (DataSnapshot childKey : snapshot.getChildren()) {
+                            lastMessages = childKey.child("msg").getValue(String.class);
 
-                fetchAccountDetails(userOtherCurrentKeys, index + 1);
+                            MessagesList messagesList = new MessagesList(userCurrent_Key, nameOther, emailOthes, lastMessages, profileOther, userOtherCurrentKey, 1);
+                            messagesLists.add(messagesList);
+                            messagesRecyclerView.setAdapter(new MessagesAdapter(messagesLists, getContext()));
+                        }*/
+                        DataSnapshot lastChild = snapshot.getChildren().iterator().next();
+                        lastMessages = lastChild.child("msg").getValue(String.class);
+
+                        MessagesList messagesList = new MessagesList(userCurrent_Key, nameOther, emailOthes, lastMessages, profileOther, userOtherCurrentKey, 0);
+                        messagesLists.add(messagesList);
+                        messagesRecyclerView.setAdapter(new MessagesAdapter(messagesLists, getContext()));
+
+                        fetchAccountDetails(userOtherCurrentKeys, index + 1);
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+                        // Xử lý khi có lỗi xảy ra
+                    }
+                });
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-
+                // Xử lý khi có lỗi xảy ra
             }
         });
-
     }
+
 }
