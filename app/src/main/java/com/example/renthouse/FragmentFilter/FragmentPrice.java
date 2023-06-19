@@ -7,6 +7,7 @@ import androidx.fragment.app.Fragment;
 
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -196,8 +197,21 @@ public class FragmentPrice extends Fragment {
     }
     public ArrayList<Long> getValue() {
         ArrayList<Long> price = new ArrayList<>();
-        price.add(Long.parseLong(valueFrom.replaceAll(" ", "")));
-        price.add(Long.parseLong(valueTo.replaceAll(" ", "")));
+        try {
+            price.add(Long.parseLong(valueFrom.replaceAll(" ", "")));
+            price.add(Long.parseLong(valueTo.replaceAll(" ", "")));
+        } catch (NumberFormatException e) {
+            Log.d("Lỗi", "Lỗi parse price");
+        }
         return price;
+    }
+
+    public String getValueFilter() {
+        return valueFrom + " VND - " + valueTo + " VND";
+    }
+
+    public void clearFocus() {
+        textInputEditTextPriceFrom.clearFocus();
+        textInputEditTextPriceTo.clearFocus();
     }
 }

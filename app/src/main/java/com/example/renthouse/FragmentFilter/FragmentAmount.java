@@ -16,6 +16,7 @@ import com.example.renthouse.R;
 import com.google.android.material.tabs.TabLayout;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -76,6 +77,8 @@ public class FragmentAmount extends Fragment {
         btnIncreasePeople = view.findViewById(R.id.buttonIncreasePeople);
         editTextAmount = view.findViewById(R.id.editTextAmountPeople);
         tabLayout = view.findViewById(R.id.tabLayoutGender);
+        editTextAmount.setEnabled(false);
+        editTextAmount.setFocusable(false);
         btnDescreasePeople.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -126,19 +129,29 @@ public class FragmentAmount extends Fragment {
                         break;
                 }
             }
-
             @Override
             public void onTabUnselected(TabLayout.Tab tab) {
-
             }
-
             @Override
             public void onTabReselected(TabLayout.Tab tab) {
-
             }
         });
         amountAndGender.add(amount);
         amountAndGender.add(gender[0]);
         return amountAndGender;
+    }
+    public String getValueString() {
+        List<Integer> list = getValue();
+        int amount = list.get(0);
+        int gender = list.get(1);
+        String value = "";
+        if (gender == 0) {
+            value = " Nam";
+        } else if (gender == 1) {
+            value = " Nữ";
+        } else {
+            value = " Khác";
+        }
+        return String.valueOf(amount) + value;
     }
 }

@@ -77,6 +77,29 @@ public class FragmentType extends Fragment {
         return flag;
     }
     public int getValue(){
-        return  selectedRadioButtonId;
+        switch (selectedRadioButtonId) {
+            case R.id.radioButtonHomeStay_Campus:
+                return 0;
+            case R.id.radioButtonHiredRoom:
+                return 1;
+            case R.id.radioButtonHome:
+                return 2;
+            case R.id.radioButtonApartment:
+                return 3;
+        }
+        return 0;
+    }
+    public String getValueString(){
+        switch (selectedRadioButtonId) {
+            case R.id.radioButtonHomeStay_Campus:
+                return "Kí túc xá/Homestay";
+            case R.id.radioButtonHiredRoom:
+                return "Phòng cho thuê";
+            case R.id.radioButtonHome:
+                return "Nhà nguyên căn";
+            case R.id.radioButtonApartment:
+                return "Căn hộ";
+        }
+        return "";
     }
 }

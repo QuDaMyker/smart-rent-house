@@ -13,34 +13,42 @@
         android:layout_marginStart="20dp"
         android:layout_marginEnd="20dp"
         android:layout_height="wrap_content">
+
         <com.google.android.material.radiobutton.MaterialRadioButton
-            android:layout_width="wrap_content"
-            android:buttonTint="@color/Primary_40"
             android:id="@+id/radioButtonHomeStay_Campus"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:buttonTint="@color/radio_button_selector"
             android:text="Kí túc xá/Homestay"
             android:textSize="15dp"
-            android:layout_height="wrap_content"/>
+            tools:ignore="TextSizeCheck" />
+
         <com.google.android.material.radiobutton.MaterialRadioButton
-            android:layout_width="wrap_content"
-            android:buttonTint="@color/Primary_40"
             android:id="@+id/radioButtonHiredRoom"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:buttonTint="@color/radio_button_selector"
             android:text="Phòng cho thuê"
             android:textSize="15dp"
-            android:layout_height="wrap_content"/>
+            tools:ignore="TextSizeCheck" />
+
         <com.google.android.material.radiobutton.MaterialRadioButton
-            android:layout_width="wrap_content"
-            android:text="Nhà nguyên căn"
             android:id="@+id/radioButtonHome"
-            android:buttonTint="@color/Primary_40"
-            android:textSize="15dp"
-            android:layout_height="wrap_content"/>
-        <com.google.android.material.radiobutton.MaterialRadioButton
             android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:buttonTint="@color/radio_button_selector"
+            android:text="Nhà nguyên căn"
+            android:textSize="15dp"
+            tools:ignore="TextSizeCheck" />
+
+        <com.google.android.material.radiobutton.MaterialRadioButton
+            android:id="@+id/radioButtonApartment"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:buttonTint="@color/radio_button_selector"
             android:text="Căn hộ"
             android:textSize="15dp"
-            android:id="@+id/radioButtonApartment"
-            android:buttonTint="@color/Primary_40"
-            android:layout_height="wrap_content"/>
+            tools:ignore="TextSizeCheck" />
     </RadioGroup>
 
 </FrameLayout>

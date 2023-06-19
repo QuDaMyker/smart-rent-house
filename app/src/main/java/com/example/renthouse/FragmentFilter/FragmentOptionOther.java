@@ -79,6 +79,29 @@ public class FragmentOptionOther extends Fragment {
         return flag;
     }
     public int getValue() {
-        return seletecedRadioButton;
+        switch (seletecedRadioButton) {
+            case R.id.radioButtonLienQuanNhat:
+                return 0;
+            case R.id.radioButtonMoiNhat:
+                return 1;
+            case R.id.radioButtonGiaMinToiMax:
+                return 2;
+            case R.id.radioButtonGiaMaxToiMin:
+                return 3;
+        }
+        return 0;
+    }
+    public String getValueString() {
+        switch (seletecedRadioButton) {
+            case R.id.radioButtonLienQuanNhat:
+                return "Liên quan nhất";
+            case R.id.radioButtonMoiNhat:
+                return "Mới nhất";
+            case R.id.radioButtonGiaMinToiMax:
+                return "Giá thấp đến cao";
+            case R.id.radioButtonGiaMaxToiMin:
+                return "Giá cao xuống thấp";
+        }
+        return "";
     }
 }

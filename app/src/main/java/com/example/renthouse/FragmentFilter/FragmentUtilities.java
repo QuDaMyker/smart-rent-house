@@ -99,8 +99,6 @@ public class FragmentUtilities extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
-
-
     }
 
     @Override
@@ -128,15 +126,11 @@ public class FragmentUtilities extends Fragment {
             button.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (button.isChecked()) {
-                        button.setTextColor(getResources().getColor(R.color.Primary_40));
-                        button.setIcon
-                    }
+                    Log.d("Trang thai", String.valueOf(button.isChecked()));
                 }
             });
             gridLayout.addView(button);
         }
-        // Inflate the layout for this fragment
         return view;
     }
     public ArrayList<Integer> getValue(){
@@ -153,6 +147,20 @@ public class FragmentUtilities extends Fragment {
         }
         return listIdx;
     }
+    public ArrayList<String> getValueString() {
+        ArrayList<String> listIdx = new ArrayList<>();
+        int childCount = gridLayout.getChildCount();
+        for (int i = 0; i < childCount; i++) {
+            View child = gridLayout.getChildAt(i);
+            if (child instanceof MaterialButton) {
+                MaterialButton button = (MaterialButton) child;
+                if(button.isChecked()){
+                    listIdx.add(String.valueOf(button.getText()));
+                }
+            }
+        }
+        return listIdx;
+    }
     public boolean hasValue() {
         boolean flag = true;
         if (getValue().isEmpty()) {
@@ -161,14 +169,12 @@ public class FragmentUtilities extends Fragment {
         return flag;
     }
     public void setValue(ArrayList<Integer> listButtonChecked){
-        int count = listButtonChecked.size();
-        for (int i = 0; i < count; i++) {
+        for (int i : listButtonChecked) {
             View child = gridLayout.getChildAt(i);
             if (child instanceof MaterialButton) {
                 MaterialButton button = (MaterialButton) child;
                 button.setChecked(true);
-
-
+                Log.d("Button", String.valueOf(button.getText()));
             }
         }
     }

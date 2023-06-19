@@ -1,32 +1,31 @@
 package com.example.renthouse.Fragment;
 
 import android.content.Context;
-import android.graphics.PorterDuff;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
-import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
 
+import com.example.renthouse.Adapter.FilterApdapter;
 import com.example.renthouse.FragmentFilter.FragmentAmount;
 import com.example.renthouse.FragmentFilter.FragmentOptionOther;
 import com.example.renthouse.FragmentFilter.FragmentPrice;
 import com.example.renthouse.FragmentFilter.FragmentType;
 import com.example.renthouse.FragmentFilter.FragmentUtilities;
+import com.example.renthouse.OOP.ObjectFilter;
 import com.example.renthouse.OOP.ObjectSearch;
 import com.example.renthouse.R;
 import com.google.android.material.button.MaterialButton;
-
-import java.util.List;
 
 public class FragmentFilter extends Fragment {
     MaterialButton[] materialButtonFilter = new MaterialButton[5];
@@ -37,8 +36,11 @@ public class FragmentFilter extends Fragment {
     private FragmentAmount amountFragment;
     private FragmentOptionOther optionOtherFragment;
     private ObjectSearch objectSearch;
-
+    private RecyclerView recyclerView;
+    private FilterApdapter filterApdapter;
     private static int POSITION = -1;
+    private LinearLayout linearLayout;
+    private ObjectFilter objectFilter;
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
@@ -61,17 +63,23 @@ public class FragmentFilter extends Fragment {
         materialButtonFilter[2] = view.findViewById(R.id.buttonType); // buttonType
         materialButtonFilter[3] = view.findViewById(R.id.buttonAmount); // buttonAmount
         materialButtonFilter[4] = view.findViewById(R.id.buttonOptionOther); // buttonOptionOther
-
+        recyclerView = view.findViewById(R.id.recycleViewFilter);
+        linearLayout = view.findViewById(R.id.linearLayoutResultFilter);
         priceFragment = new FragmentPrice();
         utilitiesFragment = new FragmentUtilities();
         typeFragment = new FragmentType();
         amountFragment = new FragmentAmount();
         optionOtherFragment = new FragmentOptionOther();
-
+        objectFilter = new ObjectFilter();
         objectSearch = new ObjectSearch();
 
-        HorizontalScrollView horizontalScrollViewResult = view.findViewById(R.id.horizontalDisplayResult);
-        horizontalScrollViewResult.setVisibility(View.GONE);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext(), RecyclerView.HORIZONTAL, false);
+        recyclerView.setLayoutManager(linearLayoutManager);
+
+        filterApdapter = new FilterApdapter();
+        recyclerView.setAdapter(filterApdapter);
+
+        linearLayout.setVisibility(View.GONE);
         handleButtonnFilter();
         _initSetButtonPrice();
         return view;
@@ -89,41 +97,65 @@ public class FragmentFilter extends Fragment {
                 if (!priceFragment.hasValue()) {
                     setButtonUnChecked();
                 } else {
-                    objectSearch.setPrice(priceFragment.getValue());
                     setButtonChecked();
+                    priceFragment.clearFocus();
+                    objectSearch.setPrice(priceFragment.getValue());
+
+                    if (!objectSearch.getPrice().isEmpty()) {
+                        objectFilter.setPriceString(priceFragment.getValueFilter());
+                        filterApdapter.setData(objectFilter.getPriceString());
+                        linearLayout.setVisibility(View.VISIBLE);
+                    }
                 }
                 break;
             case 1:
                 if (!utilitiesFragment.hasValue()) {
                     setButtonUnChecked();
                 } else {
-                    objectSearch.setUtilities(utilitiesFragment.getValue());
                     setButtonChecked();
+                    objectSearch.setUtilities(utilitiesFragment.getValue());
+                    if (!objectSearch.getUtilities().isEmpty()) {
+                        objectFilter.setUtilitesString(utilitiesFragment.getValueString());
+                        for (String utility: objectFilter.getUtilitesString()) {
+                            filterApdapter.setData(utility);
+                        }
+                    }
                 }
                 break;
             case 2:
                 if (!typeFragment.hasValue()) {
                     setButtonUnChecked();
                 } else {
-                    objectSearch.setType(typeFragment.getValue());
                     setButtonChecked();
+                    Log.d("Loại", String.valueOf(typeFragment.getValue()));
+                    objectSearch.setType(typeFragment.getValue());
+                    if (objectSearch.getType() != -1) {
+                        objectFilter.setTypeRoom(typeFragment.getValueString());
+                        filterApdapter.setData(objectFilter.getTypeRoom());
+                    }
                 }
                 break;
             case 3:
                 if (!amountFragment.hasValue()) {
                     setButtonUnChecked();
                 } else {
+                    setButtonChecked();
                     objectSearch.setAmount(amountFragment.getValue().get(0));
                     objectSearch.setGender(amountFragment.getValue().get(1));
-                    setButtonChecked();
+                    objectFilter.setAmountAndGender(amountFragment.getValueString());
+                    filterApdapter.setData(objectFilter.getAmountAndGender());
                 }
                 break;
             case 4:
                 if (!optionOtherFragment.hasValue()) {
                     setButtonUnChecked();
                 } else {
-                    objectSearch.setSort(optionOtherFragment.getValue());
                     setButtonChecked();
+                    objectSearch.setSort(optionOtherFragment.getValue());
+                    if (objectSearch.getSort() != -1) {
+                        objectFilter.setSortString(optionOtherFragment.getValueString());
+                        filterApdapter.setData(objectFilter.getSortString());
+                    }
                 }
                 break;
         }
@@ -166,6 +198,7 @@ public class FragmentFilter extends Fragment {
             case 1:
                 replaceFragment(utilitiesFragment);
                 utilitiesFragment.setValue(objectSearch.getUtilities());
+                Log.d("Loại", String.valueOf(objectSearch.getUtilities()));
                 break;
             case 2:
                 replaceFragment(typeFragment);
