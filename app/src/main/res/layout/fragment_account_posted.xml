@@ -7,14 +7,17 @@
     android:paddingBottom="80dp"
     tools:context=".Fragment.FragmentAccountPosted">
 
-    <ProgressBar
-        android:id="@+id/progressBar"
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/animationView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_gravity="center_vertical"
-        android:background="@color/Secondary_40"
-        android:indeterminateTint="@color/Primary_60"
-        android:visibility="invisible" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:lottie_autoPlay="true"
+        android:visibility="invisible"
+        app:lottie_loop="true"
+        app:lottie_rawRes="@raw/empty_search" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycleView"

@@ -1,7 +1,11 @@
 package com.example.renthouse.Fragment;
 
+import android.app.ActivityManager;
+import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -16,6 +20,7 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.example.renthouse.Activity.ActivityAccountNotification;
 import com.example.renthouse.Activity.ActivityDetailAccount;
 import com.example.renthouse.Activity.ActivityReportError;
 import com.example.renthouse.Activity.ActivitySplash;
@@ -31,6 +36,10 @@ import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
+import android.app.ActivityManager;
+import android.content.Context;
+
+
 public class FragmentAccountTabAccount extends Fragment {
     ImageView imageProfile;
     TextView nameProfile;
@@ -44,7 +53,8 @@ public class FragmentAccountTabAccount extends Fragment {
     FirebaseUser currentUser;
     String key;
     AccountClass account;
-    private ProgressBar progressBar;
+    ProgressDialog progressDialog;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -61,23 +71,26 @@ public class FragmentAccountTabAccount extends Fragment {
         btnBaoCaoSuCo = view.findViewById(R.id.account_personal_reportErrorButtonProfile);
         btnDangXuat = view.findViewById(R.id.account_personal_logoutButtonProfile);
 
-        progressBar = view.findViewById(R.id.progressBar);
-        progressBar.setVisibility(View.INVISIBLE);
 
         mAuth = FirebaseAuth.getInstance();
         currentUser = mAuth.getCurrentUser();
 
-        if(currentUser != null) {
-            progressBar.setVisibility(View.VISIBLE);
+        progressDialog = new ProgressDialog(getContext());
+        progressDialog.setCancelable(false);
+        progressDialog.setMessage("Loading...");
+        progressDialog.show();
+
+        if (currentUser != null) {
+            progressDialog.show();
             FirebaseDatabase database = FirebaseDatabase.getInstance();
             DatabaseReference reference = database.getReference("Accounts");
 
             reference.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    for(DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                    for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
                         key = dataSnapshot.getKey();
-                        if(dataSnapshot.child("email").getValue().equals(currentUser.getEmail())) {
+                        if (dataSnapshot.child("email").getValue().equals(currentUser.getEmail())) {
                             account = dataSnapshot.getValue(AccountClass.class);
                             break;
                         }
@@ -86,7 +99,7 @@ public class FragmentAccountTabAccount extends Fragment {
                     nameProfile.setText(account.getFullname());
                     emailProfile.setText(account.getEmail());
                     Picasso.get().load(account.getImage()).into(imageProfile);
-                    progressBar.setVisibility(View.INVISIBLE);
+                    progressDialog.dismiss();
                 }
 
                 @Override
@@ -105,6 +118,8 @@ public class FragmentAccountTabAccount extends Fragment {
             }
         });
 
+
+
         btnBaoCaoSuCo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -113,15 +128,31 @@ public class FragmentAccountTabAccount extends Fragment {
             }
         });
 
+        btnThongBao.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(getActivity(), ActivityAccountNotification.class));
+            }
+        });
+
         btnDangXuat.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                if(getActivity()!= null) {
+                FirebaseAuth.getInstance().signOut();
+                
+                /*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                    ActivityManager activityManager = (ActivityManager) requireContext().getSystemService(Context.ACTIVITY_SERVICE);
+                    if (activityManager != null) {
+                        activityManager.clearApplicationUserData();
+                    }
+                }*/
+                if (getActivity() != null) {
                     getActivity().finish();
                 }
-                FirebaseAuth.getInstance().signOut();
-                startActivity(new Intent(getContext(), ActivitySplash.class));
+
+
+
+                startActivity(new Intent(requireContext(), ActivitySplash.class));
 
 
             }

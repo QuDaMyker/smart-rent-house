@@ -24,8 +24,12 @@
         android:requestLegacyExternalStorage="true"
         android:supportsRtl="true"
         android:theme="@style/Theme.RentHouse"
-        tools:targetApi="31"
-        android:usesCleartextTraffic="true">
+        android:usesCleartextTraffic="true"
+        tools:targetApi="31">
+        <activity
+            android:name=".ActivityAccountNotification"
+            android:exported="false" />
+
         <service
             android:name=".FCM.MyFirebaseMessagingService"
             android:exported="false">
@@ -33,13 +37,19 @@
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
+
+        <activity
+            android:name=".Chat.ChatActivity"
+            android:exported="false" />
+        <activity
+            android:name=".Chat.Dashboard.ActivityChat"
+            android:exported="false" />
         <activity
             android:name=".Activity.ActivityReportError"
             android:exported="false" />
         <activity
             android:name=".Activity.ActivityDetailAccount"
-            android:exported="false" />
-        <!-- <service -->
+            android:exported="false" /> <!-- <service -->
         <!-- android:name=".Async.getCurrentLocationService" -->
         <!-- android:enabled="true" -->
         <!-- android:exported="true" /> -->
@@ -59,13 +69,16 @@
             android:value="${MAPS_API_KEY}" />
 
         <activity
+            android:name=".Activity.ActivityAccountNotification"
+            android:exported="false" />
+        <activity
             android:name=".Activity.MapsActivity"
             android:exported="false"
             android:label="@string/title_activity_maps" />
         <activity
             android:name=".Activity.NoficationActivity"
             android:exported="false"
-            android:parentActivityName=".Activity.ActivityMain"/>
+            android:parentActivityName=".Activity.ActivityMain" />
         <activity
             android:name=".Activity.ActivityPost"
             android:exported="false" />
@@ -102,6 +115,14 @@
         <activity
             android:name=".Activity.ActivityLogIn"
             android:exported="true" />
+
+        <service
+            android:name=".Chat.Firebase.MessingService"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
     </application>
 
 </manifest>

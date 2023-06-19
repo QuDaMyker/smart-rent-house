@@ -1,5 +1,6 @@
 package com.example.renthouse.Fragment;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Address;
@@ -63,6 +64,7 @@ public class FragmentHome extends Fragment {
     private List<District> districtList;
     private List<Ward> wardList;
     private List<District> listDis;
+    private ProgressDialog progressDialog;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -73,14 +75,15 @@ public class FragmentHome extends Fragment {
         currentUser = firebaseAuth.getCurrentUser();
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(getContext());
 
-
+        progressDialog = new ProgressDialog(getContext());
+        progressDialog.setCancelable(false);
+        progressDialog.setMessage("Loading...");
+        progressDialog.show();
 
         updateUI();
         getLastLocation();
 
-
-
-
+        progressDialog.dismiss();
 
 
         binding.btnDangBai.setOnClickListener(new View.OnClickListener() {
@@ -103,7 +106,6 @@ public class FragmentHome extends Fragment {
                 startActivity(new Intent(getContext(), NoficationActivity.class));
             }
         });
-
 
 
 

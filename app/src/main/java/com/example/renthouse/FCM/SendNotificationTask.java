@@ -40,34 +40,23 @@ public class SendNotificationTask extends AsyncTask<Void, Void, Void> {
                 for (DataSnapshot deviceSnapshot : dataSnapshot.getChildren()) {
                     Device device = deviceSnapshot.getValue(Device.class);
 
-                    //send noti
-                    FCMSend.pushNotification(context, device.getToken(), notification.getTitle(), notification.getBody());
-                    Date currentDate = new Date();
-                    SimpleDateFormat sdf = new SimpleDateFormat("HH:mm dd/MM/yyyy", Locale.getDefault());
-                    notification.setDateTime(sdf.format(currentDate));
-                    notification.setRead(false);
+                    boolean flag = false;
+                    if(device.isRoomNoti() && notification.getType().equals("room")){
+                        flag = true;
+                    }
+                    if(device.isChatNoti() && notification.getType().equals("chat")){
+                        flag = true;
+                    }
+                    if(device.isLikeNoti() && notification.getType().equals("like")){
+                        flag = true;
+                    }
+                    if(device.isScheduleNoti() && notification.getType().equals("schedule")){
+                        flag = true;
+                    }
 
-                    //Save to db
-                    FirebaseDatabase database = FirebaseDatabase.getInstance();
-                    DatabaseReference notificationsRef = database.getReference("Notifications");
-                    DatabaseReference accountsRef = database.getReference("Accounts");
-                    accountsRef.orderByChild("email").equalTo(device.getUser().getEmail()).addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                            for (DataSnapshot accountSnapshot : dataSnapshot.getChildren()) {
-                                String accountKey = accountSnapshot.getKey();
-
-                                DatabaseReference userRef = notificationsRef.child(accountKey);
-                                DatabaseReference notificationRef = userRef.push();
-                                notificationRef.setValue(notification);
-                            }
-                        }
-
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError databaseError) {
-                            // Xử lý khi có lỗi xảy ra
-                        }
-                    });
+                    if(flag){
+                        sendNoti(device);
+                    }
 
                     Log.e("Token send", device.getToken());
                 }
@@ -79,5 +68,36 @@ public class SendNotificationTask extends AsyncTask<Void, Void, Void> {
             }
         });
         return null;
+    }
+
+    public void sendNoti(Device device){
+        //send noti
+        FCMSend.pushNotification(context, device.getToken(), notification.getTitle(), notification.getBody());
+        Date currentDate = new Date();
+        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm dd/MM/yyyy", Locale.getDefault());
+        notification.setDateTime(sdf.format(currentDate));
+        notification.setRead(false);
+
+        //Save to db
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference notificationsRef = database.getReference("Notifications");
+        DatabaseReference accountsRef = database.getReference("Accounts");
+        accountsRef.orderByChild("email").equalTo(device.getUser().getEmail()).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot accountSnapshot : dataSnapshot.getChildren()) {
+                    String accountKey = accountSnapshot.getKey();
+
+                    DatabaseReference userRef = notificationsRef.child(accountKey);
+                    DatabaseReference notificationRef = userRef.push();
+                    notificationRef.setValue(notification);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                // Xử lý khi có lỗi xảy ra
+            }
+        });
     }
 }

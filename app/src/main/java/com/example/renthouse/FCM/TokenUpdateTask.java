@@ -62,6 +62,10 @@ public class TokenUpdateTask extends AsyncTask<Void, Void, Void> {
                                                 DatabaseReference newDeviceRef = devicesRef.push();
                                                 newDeviceRef.child("user").setValue(user);
                                                 newDeviceRef.child("token").setValue(token);
+                                                newDeviceRef.child("roomNoti").setValue(true);
+                                                newDeviceRef.child("chatNoti").setValue(true);
+                                                newDeviceRef.child("likeNoti").setValue(true);
+                                                newDeviceRef.child("scheduleNoti").setValue(true);
                                             }
 
                                             @Override

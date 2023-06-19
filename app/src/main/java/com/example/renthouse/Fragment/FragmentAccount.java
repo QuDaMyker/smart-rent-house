@@ -1,23 +1,17 @@
 package com.example.renthouse.Fragment;
 
-import android.net.Uri;
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.viewpager2.widget.ViewPager2;
 
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-
 import com.example.renthouse.Adapter.TabLayoutAccountAdapter;
 import com.example.renthouse.R;
-import com.example.renthouse.databinding.FragmentAccountBinding;
 import com.google.android.material.tabs.TabLayout;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.squareup.picasso.Picasso;
 
 public class FragmentAccount extends Fragment {
     private TabLayout fragHome_tab_layout;

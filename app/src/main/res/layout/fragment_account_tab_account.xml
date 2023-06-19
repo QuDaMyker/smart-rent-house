@@ -142,14 +142,6 @@
 
 
     </androidx.appcompat.widget.LinearLayoutCompat>
-    <ProgressBar
-        android:id="@+id/progressBar"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_gravity="center_vertical"
-        android:background="@color/Secondary_40"
-        android:indeterminateTint="@color/Primary_60"
-        android:visibility="invisible" />
     <Button
         android:id="@+id/account_personal_logoutButtonProfile"
         android:layout_width="wrap_content"
