@@ -168,6 +168,17 @@ public class ActivityDetails extends AppCompatActivity {
             }
         });
 
+        ivImages.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(context, ActivityFullImage.class);
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("listImages", (ArrayList<String>)srcImages);
+                bundle.putInt("curImage", curImage);
+                intent.putExtras(bundle);
+                startActivity(intent);
+            }
+        });
         btnPreImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
