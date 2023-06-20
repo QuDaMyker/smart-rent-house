@@ -214,4 +214,9 @@ public class FragmentPrice extends Fragment {
         textInputEditTextPriceFrom.clearFocus();
         textInputEditTextPriceTo.clearFocus();
     }
+    public void resetFragment() {
+        textInputEditTextPriceFrom.getText().clear();
+        textInputEditTextPriceTo.getText().clear();
+        rangeSlider.setValues(0F, 100F);
+    }
 }

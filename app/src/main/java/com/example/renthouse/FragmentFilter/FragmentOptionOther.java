@@ -104,4 +104,8 @@ public class FragmentOptionOther extends Fragment {
         }
         return "";
     }
+
+    public void resetFragment() {
+        radioGroup.clearCheck();
+    }
 }

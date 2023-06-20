@@ -102,4 +102,7 @@ public class FragmentType extends Fragment {
         }
         return "";
     }
+    public void resetFragment() {
+        radioGroup.clearCheck();
+    }
 }

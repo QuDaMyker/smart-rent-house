@@ -6,6 +6,7 @@ import androidx.appcompat.widget.AppCompatImageButton;
 import androidx.appcompat.widget.AppCompatImageView;
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,6 +38,7 @@ public class FragmentAmount extends Fragment {
     private ImageButton btnIncreasePeople;
     private TabLayout tabLayout;
     private EditText editTextAmount;
+    public int POSITION = 0;
     public FragmentAmount() {
         // Required empty public constructor
     }
@@ -103,6 +105,11 @@ public class FragmentAmount extends Fragment {
                 }
             }
         });
+        TabLayout.Tab tab  = tabLayout.getTabAt(POSITION);
+        if (tab != null){
+            tab.select();
+        }
+
         return view;
     }
     public boolean hasValue() {
@@ -112,30 +119,20 @@ public class FragmentAmount extends Fragment {
         ArrayList<Integer> amountAndGender = new ArrayList<>();
         int amount = Integer.parseInt(String.valueOf(editTextAmount.getText()));
         final int[] gender = {0};
-        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
-            @Override
-            public void onTabSelected(TabLayout.Tab tab) {
-                int position = tab.getPosition();
-                // Thực hiện các tác vụ tương ứng với tab đã chọn
-                switch (position) {
-                    case 0:
-                        gender[0] = 0; // Nữ
-                        break;
-                    case 1:
-                        gender[0] = 1; // Nam
-                        break;
-                    case 2:
-                        gender[0] = 2; // Khác
-                        break;
-                }
-            }
-            @Override
-            public void onTabUnselected(TabLayout.Tab tab) {
-            }
-            @Override
-            public void onTabReselected(TabLayout.Tab tab) {
-            }
-        });
+        int position  = tabLayout.getSelectedTabPosition();
+
+        // Thực hiện các tác vụ tương ứng với tab đã chọn
+        switch (position) {
+            case 0:
+                gender[0] = 0; // Nữ
+                break;
+            case 1:
+                gender[0] = 1; // Nam
+                break;
+            case 2:
+                gender[0] = 2; // Khác
+                break;
+        }
         amountAndGender.add(amount);
         amountAndGender.add(gender[0]);
         return amountAndGender;
@@ -146,12 +143,15 @@ public class FragmentAmount extends Fragment {
         int gender = list.get(1);
         String value = "";
         if (gender == 0) {
-            value = " Nam";
-        } else if (gender == 1) {
             value = " Nữ";
+        } else if (gender == 1) {
+            value = " Nam";
         } else {
             value = " Khác";
         }
         return String.valueOf(amount) + value;
+    }
+    public void resetFragment() {
+        editTextAmount.setText("2");
     }
 }

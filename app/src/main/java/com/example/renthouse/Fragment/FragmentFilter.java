@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.widget.AppCompatButton;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
@@ -22,6 +23,7 @@ import com.example.renthouse.FragmentFilter.FragmentOptionOther;
 import com.example.renthouse.FragmentFilter.FragmentPrice;
 import com.example.renthouse.FragmentFilter.FragmentType;
 import com.example.renthouse.FragmentFilter.FragmentUtilities;
+import com.example.renthouse.Interface.IClickItemFilterListener;
 import com.example.renthouse.OOP.ObjectFilter;
 import com.example.renthouse.OOP.ObjectSearch;
 import com.example.renthouse.R;
@@ -41,6 +43,8 @@ public class FragmentFilter extends Fragment {
     private static int POSITION = -1;
     private LinearLayout linearLayout;
     private ObjectFilter objectFilter;
+    private AppCompatButton buttonDeleteFilterTool;
+    private AppCompatButton buttonApply;
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
@@ -65,6 +69,9 @@ public class FragmentFilter extends Fragment {
         materialButtonFilter[4] = view.findViewById(R.id.buttonOptionOther); // buttonOptionOther
         recyclerView = view.findViewById(R.id.recycleViewFilter);
         linearLayout = view.findViewById(R.id.linearLayoutResultFilter);
+        buttonDeleteFilterTool = view.findViewById(R.id.buttonDeleteFilterTool);
+        buttonApply = view.findViewById(R.id.buttonApply);
+
         priceFragment = new FragmentPrice();
         utilitiesFragment = new FragmentUtilities();
         typeFragment = new FragmentType();
@@ -76,7 +83,32 @@ public class FragmentFilter extends Fragment {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext(), RecyclerView.HORIZONTAL, false);
         recyclerView.setLayoutManager(linearLayoutManager);
 
-        filterApdapter = new FilterApdapter();
+        filterApdapter = new FilterApdapter(new IClickItemFilterListener() {
+            @Override
+            public void onItemDeletePriceListener() {
+                priceFragment.resetFragment();
+            }
+
+            @Override
+            public void onItemDeleteTypeListener() {
+                typeFragment.resetFragment();
+            }
+
+            @Override
+            public void onItemDeleteUtilitiesListener() {
+
+            }
+
+            @Override
+            public void onItemDeleteAmountListener() {
+                amountFragment.resetFragment();
+            }
+
+            @Override
+            public void onItemDeleteSortListener() {
+                optionOtherFragment.resetFragment();
+            }
+        });
         recyclerView.setAdapter(filterApdapter);
 
         linearLayout.setVisibility(View.GONE);
@@ -91,7 +123,6 @@ public class FragmentFilter extends Fragment {
         replaceFragment(priceFragment);
     }
     public void unChekedButton() {
-        Log.d("Stated", String.valueOf(materialButtonFilter[POSITION].isCheckable()));
         switch (POSITION) {
             case 0:
                 if (!priceFragment.hasValue()) {
@@ -103,7 +134,7 @@ public class FragmentFilter extends Fragment {
 
                     if (!objectSearch.getPrice().isEmpty()) {
                         objectFilter.setPriceString(priceFragment.getValueFilter());
-                        filterApdapter.setData(objectFilter.getPriceString());
+                        filterApdapter.setData(objectFilter.getPriceString(), 0);
                         linearLayout.setVisibility(View.VISIBLE);
                     }
                 }
@@ -111,40 +142,33 @@ public class FragmentFilter extends Fragment {
             case 1:
                 if (!utilitiesFragment.hasValue()) {
                     setButtonUnChecked();
+                    objectSearch.setUtilities(utilitiesFragment.getValue());
                 } else {
                     setButtonChecked();
                     objectSearch.setUtilities(utilitiesFragment.getValue());
-                    if (!objectSearch.getUtilities().isEmpty()) {
-                        objectFilter.setUtilitesString(utilitiesFragment.getValueString());
-                        for (String utility: objectFilter.getUtilitesString()) {
-                            filterApdapter.setData(utility);
-                        }
-                    }
                 }
+                objectFilter.setUtilitesString(utilitiesFragment.getValueString());
+                filterApdapter.setDataUtilites(objectFilter.getUtilitesString());
                 break;
             case 2:
                 if (!typeFragment.hasValue()) {
                     setButtonUnChecked();
                 } else {
                     setButtonChecked();
-                    Log.d("Loại", String.valueOf(typeFragment.getValue()));
                     objectSearch.setType(typeFragment.getValue());
                     if (objectSearch.getType() != -1) {
                         objectFilter.setTypeRoom(typeFragment.getValueString());
-                        filterApdapter.setData(objectFilter.getTypeRoom());
+                        filterApdapter.setData(objectFilter.getTypeRoom(), 2);
                     }
                 }
                 break;
             case 3:
-                if (!amountFragment.hasValue()) {
-                    setButtonUnChecked();
-                } else {
-                    setButtonChecked();
-                    objectSearch.setAmount(amountFragment.getValue().get(0));
-                    objectSearch.setGender(amountFragment.getValue().get(1));
-                    objectFilter.setAmountAndGender(amountFragment.getValueString());
-                    filterApdapter.setData(objectFilter.getAmountAndGender());
-                }
+                setButtonChecked();
+                objectSearch.setAmount(amountFragment.getValue().get(0));
+                objectSearch.setGender(amountFragment.getValue().get(1));
+                amountFragment.POSITION = objectSearch.getGender();
+                objectFilter.setAmountAndGender(amountFragment.getValueString());
+                filterApdapter.setData(objectFilter.getAmountAndGender(), 3);
                 break;
             case 4:
                 if (!optionOtherFragment.hasValue()) {
@@ -154,7 +178,7 @@ public class FragmentFilter extends Fragment {
                     objectSearch.setSort(optionOtherFragment.getValue());
                     if (objectSearch.getSort() != -1) {
                         objectFilter.setSortString(optionOtherFragment.getValueString());
-                        filterApdapter.setData(objectFilter.getSortString());
+                        filterApdapter.setData(objectFilter.getSortString(), 4);
                     }
                 }
                 break;
@@ -170,16 +194,18 @@ public class FragmentFilter extends Fragment {
         materialButtonFilter[POSITION].setTextColor(getResources().getColor(R.color.Primary_40));
         materialButtonFilter[POSITION].setIcon(getResources().getDrawable(R.drawable.ic_expand_checked));
     }
+    private void setButtonChoose(int position) {
+        materialButtonFilter[position].setBackgroundColor(getResources().getColor(R.color.Primary_40));
+        materialButtonFilter[position].setTextColor(getResources().getColor(R.color.white));
+        materialButtonFilter[position].setIcon(getResources().getDrawable(R.drawable.ic_collapse));
+    }
     public void handleButtonnFilter() {
         for (int i = 0; i < materialButtonFilter.length; i++) {
             int finalI = i;
             materialButtonFilter[i].setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    materialButtonFilter[finalI].setBackgroundColor(getResources().getColor(R.color.Primary_40));
-                    materialButtonFilter[finalI].setTextColor(getResources().getColor(R.color.white));
-                    materialButtonFilter[finalI].setIcon(getResources().getDrawable(R.drawable.ic_collapse));
-
+                    setButtonChoose(finalI);
                     if (POSITION == finalI) {
                         return;
                     }
@@ -196,9 +222,9 @@ public class FragmentFilter extends Fragment {
                 replaceFragment(priceFragment);
                 break;
             case 1:
+                Log.d("Số lượng", String.valueOf(objectSearch.getUtilities()));
+                utilitiesFragment.buttonChecked = objectSearch.getUtilities();
                 replaceFragment(utilitiesFragment);
-                utilitiesFragment.setValue(objectSearch.getUtilities());
-                Log.d("Loại", String.valueOf(objectSearch.getUtilities()));
                 break;
             case 2:
                 replaceFragment(typeFragment);
