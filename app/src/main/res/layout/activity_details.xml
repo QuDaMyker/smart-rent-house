@@ -432,7 +432,7 @@
                     android:textSize="13sp" />
 
                 <TextView
-                    android:id="@+id/tvShowMore"
+                    android:id="@+id/tvShowMoreMT"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:clickable="true"
@@ -452,6 +452,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="5dp"
                         android:maxLines="2"
+                        android:ellipsize="end"
                         android:text="Thông tin mô tả đầy đủ"
                         android:textColor="@color/black"
                         android:textSize="13sp" />
@@ -624,7 +625,7 @@
 
             <LinearLayout
                 android:id="@+id/lnDeXuat"
-                android:layout_width="360dp"
+                android:layout_width="370dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
                 android:orientation="vertical"

@@ -2,7 +2,9 @@ package com.example.renthouse.Activity;
 
 import static com.gun0912.tedpermission.provider.TedPermissionProvider.context;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -14,11 +16,16 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toolbar;
+
+import com.example.renthouse.Adapter.RoomAdapter;
 import com.example.renthouse.OOP.AccountClass;
 import com.example.renthouse.OOP.Room;
 import com.example.renthouse.R;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 import java.util.ArrayList;
 import java.util.List;
@@ -27,6 +34,8 @@ public class ActivityDetails extends AppCompatActivity {
 
     private FirebaseDatabase db ;
     private DatabaseReference ref;
+    Room room;
+
     Toolbar bar;
     ImageButton btnPreScreen;
     CheckBox cbLiked;
@@ -61,6 +70,10 @@ public class ActivityDetails extends AppCompatActivity {
     TextView tvSoP;
     ImageButton btnThemTTtg;
     RecyclerView rcvDeXuatP;
+    int visibleRowCount = 2 ;
+    int totalRowCount ;
+
+    List<Room> rcmRooms;
     TextView tvThemDX;
     TextView tvGiaP;
     ImageButton ibChat;
@@ -98,7 +111,7 @@ public class ActivityDetails extends AppCompatActivity {
         tvGiaXe = findViewById(R.id.tvXe);
         tvGiaWifi = findViewById(R.id.tvWifi);
         tvMota = findViewById(R.id.tvMotaTT);
-        tvXemThemMT = findViewById(R.id.tvShowMore);
+        tvXemThemMT = findViewById(R.id.tvShowMoreMT);
         tvNgayDang = findViewById(R.id.tvNgay);
         //rcvTienIch = findViewById(R.id.rcvTienIch);
         tvThemTI = findViewById(R.id.tvMoreTI);
@@ -118,7 +131,7 @@ public class ActivityDetails extends AppCompatActivity {
         {
             return;
         }
-        Room room = (Room) bundle.get ("selectedRoom");
+        room = (Room) bundle.get ("selectedRoom");
 
         //load thông tin p được chọn
         //gán các thông tin
@@ -159,6 +172,23 @@ public class ActivityDetails extends AppCompatActivity {
         tvSoP.setText("Chưa fix");
 
         tvGiaP.setText(String.valueOf(room.getPrice()) +" đ");
+
+        GridLayoutManager grid = new GridLayoutManager(this, 2);
+
+        rcvDeXuatP.setLayoutManager(grid);
+
+        rcmRooms = new ArrayList<>();
+        RoomAdapter roomAdapter = new RoomAdapter(this, rcmRooms
+        );
+
+        rcvDeXuatP.setAdapter(roomAdapter);
+
+        db = FirebaseDatabase.getInstance();
+        ref = db.getReference("Rooms");
+
+        getListRoomFromFB();
+        visibleRowCount = 2;
+        totalRowCount = rcmRooms.size();
 
         //sự kiện các nút
         btnPreScreen.setOnClickListener(new View.OnClickListener() {
@@ -227,12 +257,69 @@ public class ActivityDetails extends AppCompatActivity {
                 context.startActivity(intent);
             }
         });
-//        tvXemThemMT.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//            }
-//        });
+        tvXemThemMT.setOnClickListener(new View.OnClickListener() {
 
+            boolean isExpand = false;
+            @Override
+            public void onClick(View v) {
+                isExpand  = !isExpand;
+                if (isExpand)
+                {
+                    tvMota.setMaxLines(Integer.MAX_VALUE);
+                    tvXemThemMT.setText("Thu gọn");
+                }
+                else {
+                    tvMota.setMaxLines(2);
+                    tvXemThemMT.setText("Xem thêm");
+                }
 
+            }
+        });
+        tvThemDX.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+//                if (visibleRowCount == 2) {
+//                    visibleRowCount = rcmRooms.size(); // Hiển thị tất cả các phòng đề xuất
+//                    tvThemDX.setText("Ẩn bớt");
+//                } else {
+//                    visibleRowCount = 2;
+//                    tvThemDX.setText("Xem thêm");
+//                }
+//                grid.setSpanCount(visibleRowCount);
+            }
+        });
+    }
+
+    //cùng quận thì cho vô rcm
+    private void getListRoomFromFB() {
+
+        FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+        DatabaseReference databaseReference = firebaseDatabase.getReference("Rooms");
+
+        databaseReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for (DataSnapshot dataSnapshot : snapshot.getChildren())
+                {
+                    Room r = dataSnapshot.getValue(Room.class);
+                    if (!r.getId().equals(room.getId()) && (r.getLocation().getDistrict().getCode().equals(room.getLocation().getDistrict().getCode())))
+                    {
+                        rcmRooms.add(r);
+                    }
+                }
+//                if (totalRowCount <= visibleRowCount) {
+//                    // Ẩn nút "Xem thêm" nếu không đủ phòng để hiển thị
+//                    tvThemDX.setVisibility(View.GONE);
+//                } else {
+//                    // Hiển thị nút "Xem thêm" nếu có đủ phòng để hiển thị
+//                    tvThemDX.setVisibility(View.VISIBLE);
+//                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
     }
 }
