@@ -1,9 +1,12 @@
 package com.example.renthouse.OOP;
 
+import com.example.renthouse.Chat.Messages.MessagesList;
+
 public class Notification {
     private String title;
     private String body;
     private Room attachedRoom;
+    private MessagesList attachedMessage;
     private String dateTime;
     private String type;
 
@@ -16,13 +19,6 @@ public class Notification {
         this.title = title;
         this.body = body;
         this.type = type;
-    }
-
-    public Notification(String title, String body, String type, Room attachedRoom) {
-        this.title = title;
-        this.body = body;
-        this.type = type;
-        this.attachedRoom = attachedRoom;
     }
 
     public String getTitle() {
@@ -71,5 +67,13 @@ public class Notification {
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    public MessagesList getAttachedMessage() {
+        return attachedMessage;
+    }
+
+    public void setAttachedMessage(MessagesList attachedMessage) {
+        this.attachedMessage = attachedMessage;
     }
 }

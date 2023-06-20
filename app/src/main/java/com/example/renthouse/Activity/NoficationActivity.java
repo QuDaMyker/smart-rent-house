@@ -1,5 +1,6 @@
 package com.example.renthouse.Activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 
@@ -10,6 +11,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.renthouse.Adapter.NotificationAdapter;
 import com.example.renthouse.Adapter.UniAdapter;
+import com.example.renthouse.Chat.Dashboard.ActivityChat;
+import com.example.renthouse.Chat.Messages.MessagesList;
 import com.example.renthouse.OOP.Notification;
 import com.example.renthouse.R;
 import com.google.firebase.auth.FirebaseAuth;
@@ -52,13 +55,33 @@ public class NoficationActivity extends AppCompatActivity {
                         public void onDataChange(@NonNull DataSnapshot snapshot) {
                             for (DataSnapshot notificationSnapshot : snapshot.getChildren()) {
                                 Notification notification = notificationSnapshot.getValue(Notification.class);
-                                notificationList.add(notification);
+                                Notification modifiedNotification = new Notification(notification.getTitle(), notification.getBody(), notification.getType());
+                                modifiedNotification.setAttachedRoom(notification.getAttachedRoom());
+                                modifiedNotification.setAttachedMessage(notification.getAttachedMessage());
+                                modifiedNotification.setDateTime(notification.getDateTime());
+                                modifiedNotification.setRead(notification.isRead());
+                                notificationList.add(modifiedNotification);
 
                             }
 
                             Collections.reverse(notificationList);
 
                             notificationAdapter = new NotificationAdapter(notificationList);
+                            notificationAdapter.setOnNotificationClickListener(new NotificationAdapter.OnNotificationClickListener() {
+                                @Override
+                                public void onNotificationClick(Notification notification) {
+                                    MessagesList messagesList = notification.getAttachedMessage();
+                                    if(notification.getType().equals("chat") && messagesList != null){
+                                        Intent intent = new Intent(NoficationActivity.this, ActivityChat.class);
+                                        intent.putExtra("currentKey", messagesList.getCurrentKey());
+                                        intent.putExtra("name", messagesList.getName());
+                                        intent.putExtra("email", messagesList.getEmail());
+                                        intent.putExtra("profile_pic", messagesList.getProfilePic());
+                                        intent.putExtra("otherKey", messagesList.getOtherKey());
+                                        startActivity(intent);
+                                    }
+                                }
+                            });
                             recyclerView.setAdapter(notificationAdapter);
                         }
 
@@ -82,6 +105,7 @@ public class NoficationActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
+
         userRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
