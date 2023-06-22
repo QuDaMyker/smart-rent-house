@@ -4,20 +4,28 @@ import static com.gun0912.tedpermission.provider.TedPermissionProvider.context;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.Toolbar;
 
 import com.example.renthouse.Adapter.RoomAdapter;
+import com.example.renthouse.Adapter.UtilitiesAdapter;
 import com.example.renthouse.OOP.AccountClass;
 import com.example.renthouse.OOP.Room;
 import com.example.renthouse.R;
@@ -29,14 +37,15 @@ import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class ActivityDetails extends AppCompatActivity {
+    private static final  int REQUEST_CALL = 1;
 
     private FirebaseDatabase db ;
     private DatabaseReference ref;
     Room room;
 
-    Toolbar bar;
     ImageButton btnPreScreen;
     CheckBox cbLiked;
     ImageButton btnNextImage;
@@ -78,6 +87,8 @@ public class ActivityDetails extends AppCompatActivity {
     TextView tvGiaP;
     ImageButton ibChat;
     ImageButton ibCall;
+    String accountPhone;
+
 
 
 
@@ -86,11 +97,13 @@ public class ActivityDetails extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_details);
 
+        db = FirebaseDatabase.getInstance();
+        ref = db.getReference("Rooms");
+
         listImages = new ArrayList<String>();
         listTI = new ArrayList<String>();
         Tg = new AccountClass();
 
-        //gán id
         //gán id
         btnPreScreen = findViewById(R.id.btnBack);
         cbLiked = findViewById(R.id.cbLike);
@@ -113,8 +126,8 @@ public class ActivityDetails extends AppCompatActivity {
         tvMota = findViewById(R.id.tvMotaTT);
         tvXemThemMT = findViewById(R.id.tvShowMoreMT);
         tvNgayDang = findViewById(R.id.tvNgay);
-        //rcvTienIch = findViewById(R.id.rcvTienIch);
-        tvThemTI = findViewById(R.id.tvMoreTI);
+        rcvTienIch = findViewById(R.id.rcvTienIch);
+        //tvThemTI = findViewById(R.id.tvMoreTI);
         ivTacGia = findViewById(R.id.imageTacGia);
         tvTenTG = findViewById(R.id.tvTenTg);
         tvSoP = findViewById(R.id.tvSoPhong);
@@ -153,13 +166,24 @@ public class ActivityDetails extends AppCompatActivity {
         tvCoc.setText(String.valueOf(room.getDeposit()) + " tr");
         tvTenP.setText(room.getTitle());
         tvDiaChi.setText(room.getLocation().LocationToString());
+
         tvSdt.setText(room.getPhoneNumber());
+        accountPhone = room.getPhoneNumber();
+
         tvGiaDien.setText(String.valueOf(room.getElectricityCost()/1000) + "K");
         tvGiaNuoc.setText(String.valueOf(room.getWaterCost()/1000) + "K");
         tvGiaXe.setText(String.valueOf(room.getParkingFee()/1000) +"K");
         tvGiaWifi.setText(String.valueOf(room.getInternetCost()/1000) +"K");
         tvMota.setText(room.getDescription());
         //tvNgayDang.setText(R.id.tvNgayDang);
+
+        listTI = room.getUtilities();
+        UtilitiesAdapter utilitiesAdapter = new UtilitiesAdapter(listTI, this);
+
+        GridLayoutManager grid1 = new GridLayoutManager(this, 3);
+        rcvTienIch.setLayoutManager(grid1);
+        rcvTienIch.setAdapter(utilitiesAdapter);
+
 
         Tg = room.getCreatedBy();
         String sourceImageAccount = Tg.getImage();
@@ -169,7 +193,7 @@ public class ActivityDetails extends AppCompatActivity {
 
         tvTenTG.setText(Tg.getFullname());
 
-        tvSoP.setText("Chưa fix");
+        tinhSoP(Tg);
 
         tvGiaP.setText(String.valueOf(room.getPrice()) +" đ");
 
@@ -178,13 +202,9 @@ public class ActivityDetails extends AppCompatActivity {
         rcvDeXuatP.setLayoutManager(grid);
 
         rcmRooms = new ArrayList<>();
-        RoomAdapter roomAdapter = new RoomAdapter(this, rcmRooms
-        );
+        RoomAdapter roomAdapter = new RoomAdapter(this, rcmRooms);
 
         rcvDeXuatP.setAdapter(roomAdapter);
-
-        db = FirebaseDatabase.getInstance();
-        ref = db.getReference("Rooms");
 
         getListRoomFromFB();
         visibleRowCount = 2;
@@ -197,7 +217,6 @@ public class ActivityDetails extends AppCompatActivity {
                 onBackPressed();
             }
         });
-
         ivImages.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -250,13 +269,9 @@ public class ActivityDetails extends AppCompatActivity {
         btnThemTTtg.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(context, ActivityMain.class);
-                Bundle bundle = new Bundle();
-                bundle.putSerializable("Account", Tg);
-                intent.putExtras(bundle);
-                context.startActivity(intent);
+
             }
-        });
+        });//chua làm
         tvXemThemMT.setOnClickListener(new View.OnClickListener() {
 
             boolean isExpand = false;
@@ -278,14 +293,48 @@ public class ActivityDetails extends AppCompatActivity {
         tvThemDX.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                if (visibleRowCount == 2) {
-//                    visibleRowCount = rcmRooms.size(); // Hiển thị tất cả các phòng đề xuất
-//                    tvThemDX.setText("Ẩn bớt");
-//                } else {
-//                    visibleRowCount = 2;
-//                    tvThemDX.setText("Xem thêm");
-//                }
-//                grid.setSpanCount(visibleRowCount);
+
+            }
+        });//chưa làm
+        ibCall.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (ContextCompat.checkSelfPermission(ActivityDetails.this, Manifest.permission.CALL_PHONE ) != PackageManager.PERMISSION_GRANTED)
+                {
+                    ActivityCompat.requestPermissions(ActivityDetails.this, new String[]{android.Manifest.permission.CALL_PHONE}, REQUEST_CALL);
+                }
+                else
+                {
+                    Intent intent = new Intent( Intent.ACTION_DIAL, Uri.fromParts("tel", accountPhone, null));
+                    startActivity(intent);
+                }
+            }
+        });
+        ibChat.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+            }
+        });//chưa làm
+    }
+
+    private void tinhSoP(AccountClass tg) {
+        final AtomicInteger count = new AtomicInteger(0); // Sử dụng AtomicInteger để đảm bảo tính đồng bộ
+
+        ref.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                    Room r = dataSnapshot.getValue(Room.class);
+                    if (r.getCreatedBy().getEmail().equals(tg.getEmail())) {
+                        count.incrementAndGet(); // Tăng giá trị của count
+                    }
+                }
+                tvSoP.setText(String.valueOf(count) +" phòng");
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
             }
         });
     }
@@ -307,13 +356,7 @@ public class ActivityDetails extends AppCompatActivity {
                         rcmRooms.add(r);
                     }
                 }
-//                if (totalRowCount <= visibleRowCount) {
-//                    // Ẩn nút "Xem thêm" nếu không đủ phòng để hiển thị
-//                    tvThemDX.setVisibility(View.GONE);
-//                } else {
-//                    // Hiển thị nút "Xem thêm" nếu có đủ phòng để hiển thị
-//                    tvThemDX.setVisibility(View.VISIBLE);
-//                }
+
             }
 
             @Override
@@ -321,5 +364,17 @@ public class ActivityDetails extends AppCompatActivity {
 
             }
         });
+    }
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == REQUEST_CALL) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                Intent intent = new Intent(Intent.ACTION_DIAL, Uri.fromParts("tel", accountPhone, null));
+                startActivity(intent);
+            } else {
+                Toast.makeText(this, "Ứng dụng không được phép gọi", Toast.LENGTH_SHORT).show();
+            }
+        }
     }
 }
