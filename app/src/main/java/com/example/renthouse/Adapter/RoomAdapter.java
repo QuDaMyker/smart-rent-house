@@ -6,6 +6,8 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -16,6 +18,13 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.renthouse.Activity.ActivityDetails;
 import com.example.renthouse.OOP.Room;
 import com.example.renthouse.R;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
@@ -24,6 +33,8 @@ public class RoomAdapter extends RecyclerView.Adapter<RoomAdapter.RoomViewHolder
 
     private List<Room> rooms;
     private Context context;
+    FirebaseDatabase firebaseDatabase;
+    DatabaseReference reference;
 
     public RoomAdapter(Context context, List<Room> rooms) {
         this.context = context;
@@ -60,7 +71,71 @@ public class RoomAdapter extends RecyclerView.Adapter<RoomAdapter.RoomViewHolder
                 goToDetails (room);
             }
         });
+        holder.cbLike.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
+            FirebaseUser currentUser = firebaseAuth.getCurrentUser();
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    // Nếu checkbox được chọn, them dzo thích
 
+                    String emailCur = currentUser.getEmail();
+                    firebaseDatabase = FirebaseDatabase.getInstance();
+                    reference = firebaseDatabase.getReference("Accounts");
+                    reference.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                            String emailAC = null;
+                            for (DataSnapshot snapshotAc: snapshot.getChildren())
+                            {
+                                emailAC = snapshotAc.child("email").getValue(String.class);
+                                if (emailCur.equals(emailAC)){
+                                    String idAC = snapshotAc.getKey();
+                                    DatabaseReference likedRef = firebaseDatabase.getReference("LikedRooms").child(idAC);
+                                    String idRoom = room.getId();
+                                    likedRef.child(idRoom).setValue(room);
+                                }
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
+
+                        }
+                    });
+
+
+                } else {
+                    // Nếu bỏ like thì xóa khỏi thích
+                    String emailCur = currentUser.getEmail();
+                    firebaseDatabase = FirebaseDatabase.getInstance();
+                    reference = firebaseDatabase.getReference("Accounts");
+                    reference.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                            String emailAC = null;
+                            for (DataSnapshot snapshotAc: snapshot.getChildren())
+                            {
+                                emailAC = snapshotAc.child("email").getValue(String.class);
+                                if (emailCur.equals(emailAC)){
+                                    String idAC = snapshotAc.getKey();
+                                    DatabaseReference likedRef = firebaseDatabase.getReference("LikedRooms").child(idAC);
+                                    String idRoom = room.getId();
+                                    likedRef.child(idRoom).removeValue();
+                                }
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
+
+                        }
+                    });
+
+
+                }
+            }
+        });
     }
     private  void goToDetails (Room r)
     {
@@ -92,6 +167,8 @@ public class RoomAdapter extends RecyclerView.Adapter<RoomAdapter.RoomViewHolder
         private TextView tvAddress;
         private TextView tvPrice;
 
+        private CheckBox cbLike;
+
         public RoomViewHolder(@NonNull View itemView) {
             super(itemView);
 
@@ -100,6 +177,7 @@ public class RoomAdapter extends RecyclerView.Adapter<RoomAdapter.RoomViewHolder
             tvName = itemView.findViewById(R.id.tvName);
             tvAddress = itemView.findViewById(R.id.tvAddress);
             tvPrice = itemView.findViewById(R.id.tvPrice);
+            cbLike = itemView.findViewById(R.id.cbLike);
         }
     }
 }

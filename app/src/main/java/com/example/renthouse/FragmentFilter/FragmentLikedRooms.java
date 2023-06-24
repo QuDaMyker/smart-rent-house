@@ -18,6 +18,8 @@ import com.example.renthouse.Activity.ActivityMain;
 import com.example.renthouse.Adapter.RoomAdapter;
 import com.example.renthouse.OOP.Room;
 import com.example.renthouse.R;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -47,9 +49,6 @@ public class FragmentLikedRooms extends Fragment {
     private RecyclerView recyclerView;
     private RoomAdapter roomAdapter;
     private List<Room> rooms;
-
-    FirebaseDatabase db;
-    DatabaseReference ref ;
 
 
     public FragmentLikedRooms() {
@@ -99,34 +98,34 @@ public class FragmentLikedRooms extends Fragment {
 
         recyclerView.setAdapter(roomAdapter);
 
-        db = FirebaseDatabase.getInstance();
-        ref = db.getReference("Rooms");
-
         getListRoomFromFB();
 
         return view;
     }
 
         private void getListRoomFromFB() {
-        FirebaseDatabase db = FirebaseDatabase.getInstance();
-        DatabaseReference ref = db.getReference("Rooms");
+            FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
+            FirebaseUser currentUser = firebaseAuth.getCurrentUser();
+            FirebaseDatabase db = FirebaseDatabase.getInstance();
+            DatabaseReference refLiked = db.getReference("Rooms");
 
-        ref.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                for (DataSnapshot dataSnapshot : snapshot.getChildren())
-                {
-                    Room r = dataSnapshot.getValue(Room.class);
-                    rooms.add(r);
+
+            refLiked.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    for (DataSnapshot dataSnapshot : snapshot.getChildren())
+                    {
+                        Room r = dataSnapshot.getValue(Room.class);
+                        rooms.add(r);
+                    }
+                    roomAdapter.notifyDataSetChanged();
                 }
-                roomAdapter.notifyDataSetChanged();
-            }
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
 
-            }
-        });
+                }
+            });
 
     }
 
