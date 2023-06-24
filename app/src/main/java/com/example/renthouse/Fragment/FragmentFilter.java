@@ -1,6 +1,9 @@
 package com.example.renthouse.Fragment;
 
+import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -18,25 +21,37 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
 import com.example.renthouse.Adapter.FilterApdapter;
+import com.example.renthouse.Adapter.ResultRoomAdapter;
 import com.example.renthouse.FragmentFilter.FragmentAmount;
-import com.example.renthouse.FragmentFilter.FragmentOptionOther;
+import com.example.renthouse.FragmentFilter.FragmentResult;
+import com.example.renthouse.FragmentFilter.FragmentSort;
 import com.example.renthouse.FragmentFilter.FragmentPrice;
 import com.example.renthouse.FragmentFilter.FragmentType;
 import com.example.renthouse.FragmentFilter.FragmentUtilities;
-import com.example.renthouse.Interface.IClickItemFilterListener;
+import com.example.renthouse.Interface.IAmountValueChangeListener;
+import com.example.renthouse.Interface.IClickDeleteItemFilterListener;
+import com.example.renthouse.Interface.IPriceValueChangeListener;
+import com.example.renthouse.Interface.ISortValueChangeListener;
+import com.example.renthouse.Interface.ITypeValueChangeListener;
+import com.example.renthouse.Interface.IUtilitiesValueChangeListener;
 import com.example.renthouse.OOP.ObjectFilter;
 import com.example.renthouse.OOP.ObjectSearch;
+import com.example.renthouse.OOP.Room;
 import com.example.renthouse.R;
 import com.google.android.material.button.MaterialButton;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class FragmentFilter extends Fragment {
     MaterialButton[] materialButtonFilter = new MaterialButton[5];
     private Context mContext;
-    private FragmentPrice priceFragment;
-    private FragmentUtilities utilitiesFragment;
-    private FragmentType typeFragment;
-    private FragmentAmount amountFragment;
-    private FragmentOptionOther optionOtherFragment;
+    private FragmentPrice fragmentPrice;
+    private FragmentUtilities fragmentUtilities;
+    private FragmentType fragmentType;
+    private FragmentAmount fragmentAmount;
+    private FragmentResult fragmentResult;
+    private FragmentSort fragmentSort;
     private ObjectSearch objectSearch;
     private RecyclerView recyclerView;
     private FilterApdapter filterApdapter;
@@ -45,6 +60,9 @@ public class FragmentFilter extends Fragment {
     private ObjectFilter objectFilter;
     private AppCompatButton buttonDeleteFilterTool;
     private AppCompatButton buttonApply;
+    private LinearLayout linearLayoutControl;
+
+
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
@@ -57,6 +75,7 @@ public class FragmentFilter extends Fragment {
         mContext = null;
     }
 
+    @SuppressLint("MissingInflatedId")
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -71,128 +90,298 @@ public class FragmentFilter extends Fragment {
         linearLayout = view.findViewById(R.id.linearLayoutResultFilter);
         buttonDeleteFilterTool = view.findViewById(R.id.buttonDeleteFilterTool);
         buttonApply = view.findViewById(R.id.buttonApply);
-
-        priceFragment = new FragmentPrice();
-        utilitiesFragment = new FragmentUtilities();
-        typeFragment = new FragmentType();
-        amountFragment = new FragmentAmount();
-        optionOtherFragment = new FragmentOptionOther();
         objectFilter = new ObjectFilter();
         objectSearch = new ObjectSearch();
 
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext(), RecyclerView.HORIZONTAL, false);
-        recyclerView.setLayoutManager(linearLayoutManager);
+        fragmentResult = new FragmentResult();
 
-        filterApdapter = new FilterApdapter(new IClickItemFilterListener() {
+        fragmentPrice = new FragmentPrice(new IPriceValueChangeListener() {
+            @Override
+            public void onValuePriceChangeListener() {
+                objectSearch.setPrice(fragmentPrice.getValue());
+                objectFilter.setPriceString(fragmentPrice.getValueFilter());
+                filterApdapter.setData(objectFilter.getPriceString(), 0);
+                if (filterApdapter.getItemCount() != 0) {
+                    linearLayout.setVisibility(View.VISIBLE);
+                }
+            }
+        });
+        fragmentUtilities = new FragmentUtilities(new IUtilitiesValueChangeListener() {
+            @Override
+            public void onValueUtilitiesChangeListener(String utility, int position) {
+                objectSearch.getUtilities().add(position);
+                objectFilter.getUtilitesString().add(utility);
+                filterApdapter.setData(utility, 1);
+                if (filterApdapter.getItemCount() != 0) {
+                    linearLayout.setVisibility(View.VISIBLE);
+                }
+            }
+            @Override
+            public void onValueUtilitiesDeleteListener(String utility, Integer position) {
+                try {
+                    filterApdapter.deleteItemtUtilities(utility);
+                    Log.d("Vị trí", String.valueOf(position));
+                    Log.d("Số lượng trước", String.valueOf(objectSearch.getUtilities()));
+                    objectSearch.getUtilities().remove(position);
+                    objectFilter.getUtilitesString().remove(utility);
+                    Log.d("Số lượng sau", String.valueOf(objectSearch.getUtilities()));
+                } catch (IndexOutOfBoundsException e) {
+                    Log.d("Số lượng nè", String.valueOf(objectSearch.getUtilities().size()));
+                }
+                if (filterApdapter.getItemCount() == 0) {
+                    linearLayout.setVisibility(View.GONE);
+                }
+            }
+        });
+        fragmentType = new FragmentType(new ITypeValueChangeListener() {
+            @Override
+            public void onValueTypeChangeListener() {
+                objectSearch.setType(fragmentType.getValue());
+                objectFilter.setTypeRoom(fragmentType.getValueString());
+                filterApdapter.setData(objectFilter.getTypeRoom(), 2);
+                if (filterApdapter.getItemCount() != 0) {
+                    linearLayout.setVisibility(View.VISIBLE);
+                }
+            }
+        });
+        fragmentAmount = new FragmentAmount(new IAmountValueChangeListener() {
+            @Override
+            public void onValueAmountChangeListener() {
+                objectSearch.setAmount(fragmentAmount.getValue().get(0));
+                objectSearch.setGender(fragmentAmount.getValue().get(1));
+                fragmentAmount.POSITION = objectSearch.getGender();
+                objectFilter.setAmountAndGender(fragmentAmount.getValueString());
+                filterApdapter.setData(objectFilter.getAmountAndGender(), 3);
+                if (filterApdapter.getItemCount() != 0) {
+                    linearLayout.setVisibility(View.VISIBLE);
+                }
+            }
+        });
+        fragmentSort = new FragmentSort(new ISortValueChangeListener() {
+            @Override
+            public void onValueSortChangeListener() {
+                objectSearch.setSort(fragmentSort.getValue());
+                objectFilter.setSortString(fragmentSort.getValueString());
+                filterApdapter.setData(objectFilter.getSortString(), 4);
+                if (filterApdapter.getItemCount() != 0) {
+                    linearLayout.setVisibility(View.VISIBLE);
+                }
+            }
+        });
+
+
+        LinearLayoutManager linearLayoutManager1 = new LinearLayoutManager(getContext(), RecyclerView.HORIZONTAL, false);
+        recyclerView.setLayoutManager(linearLayoutManager1);
+
+        filterApdapter = new FilterApdapter(new IClickDeleteItemFilterListener() {
             @Override
             public void onItemDeletePriceListener() {
-                priceFragment.resetFragment();
+                fragmentPrice.resetFragment();
+                objectSearch.setPrice(new ArrayList<>());
+                objectFilter.setPriceString("");
+                if (filterApdapter.getItemCount() == 1) {
+                    linearLayout.setVisibility(View.GONE);
+                }
+                if (POSITION == 0) {
+                    return;
+                } else {
+                    setButtonUnChecked(0);
+                }
             }
-
             @Override
             public void onItemDeleteTypeListener() {
-                typeFragment.resetFragment();
+                fragmentType.resetFragment();
+                objectSearch.setType(-1);
+                objectFilter.setTypeRoom("");
+                if (filterApdapter.getItemCount() == 1) {
+                    linearLayout.setVisibility(View.GONE);
+                }
+                if (POSITION == 2) {
+                    return;
+                } else {
+                    setButtonUnChecked(2);
+                }
             }
 
             @Override
-            public void onItemDeleteUtilitiesListener() {
-
+            public void onItemDeleteUtilitiesListener(String content) {
+                if (POSITION == 1) {
+                    fragmentUtilities.setButtonUnCheckedString(content);
+                }
+                objectSearch.getUtilities().remove(fragmentUtilities.postionOfButtonText(content));
+                objectFilter.getUtilitesString().remove(content);
+                if (filterApdapter.getItemCount() == 1) {
+                    linearLayout.setVisibility(View.GONE);
+                }
+                if (objectSearch.getUtilities().size() ==  0) {
+                    setButtonUnChecked(1);
+                }
             }
 
             @Override
             public void onItemDeleteAmountListener() {
-                amountFragment.resetFragment();
+                fragmentAmount.resetFragment();
+                objectFilter.setAmountAndGender("");
+                objectSearch.setAmount(-1);
+                objectSearch.setGender(-1);
+                if (filterApdapter.getItemCount() == 1) {
+                    linearLayout.setVisibility(View.GONE);
+                }
+                if (POSITION == 3) {
+                    return;
+                } else {
+                    setButtonUnChecked(3);
+                }
             }
 
             @Override
             public void onItemDeleteSortListener() {
-                optionOtherFragment.resetFragment();
+                fragmentSort.resetFragment();
+                objectSearch.setSort(-1);
+                if (filterApdapter.getItemCount() == 1) {
+                    linearLayout.setVisibility(View.GONE);
+                }
+                if (POSITION == 4) {
+                    return;
+                } else {
+                    setButtonUnChecked(4);
+                }
             }
         });
         recyclerView.setAdapter(filterApdapter);
-
         linearLayout.setVisibility(View.GONE);
         handleButtonnFilter();
         _initSetButtonPrice();
+
+        buttonDeleteFilterTool = view.findViewById(R.id.buttonDeleteFilterTool);
+        buttonDeleteFilterTool.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                builder.setTitle("Xác nhận xóa");
+                builder.setMessage("Bạn có chắc chắn muốn xóa bộ lọc không?");
+
+                // Nút xác nhận xóa
+                builder.setPositiveButton("Xóa", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        if (!objectSearch.getPrice().isEmpty()) {
+                            fragmentPrice.resetFragment();
+                        }
+                        if (!objectSearch.getUtilities().isEmpty()) {
+                            if (POSITION == 1) {
+                                fragmentUtilities.resetFragment();
+                            }
+                        }
+                        if (objectSearch.getType() != -1) {
+                            fragmentType.resetFragment();
+                        }
+                        if (objectSearch.getAmount() != -1) {
+                            fragmentAmount.resetFragment();
+                        }
+                        if (objectSearch.getSort() != -1) {
+                            fragmentSort.resetFragment();
+                        }
+                        for (int i = 0; i < 5; i ++) {
+                            if (i == POSITION) {
+                                continue;
+                            }
+                            setButtonUnChecked(i);
+                        }
+                        objectSearch.clearData();
+                        objectFilter.clearData();
+                        filterApdapter.clearData();
+                        linearLayout.setVisibility(View.GONE);
+                    }
+                });
+
+                // Nút hủy
+                builder.setNegativeButton("Hủy", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        // Đóng hộp thoại và không xóa
+                        dialog.dismiss();
+                    }
+                });
+
+                // Hiển thị hộp thoại
+                AlertDialog dialog = builder.create();
+                dialog.show();
+            }
+        });
+        buttonApply = view.findViewById(R.id.buttonApply);
+
+        buttonApply.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                linearLayoutControl.setVisibility(View.GONE);
+                FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                fragmentTransaction.replace(R.id.linearLayoutFragment, fragmentResult);
+                fragmentTransaction.commit();
+                unChekedButton();
+                POSITION = -1;
+            }
+        });
+        linearLayoutControl = view.findViewById(R.id.linearLayoutControl);
         return view;
     }
+
     public void _initSetButtonPrice() {
         materialButtonFilter[0].setBackgroundColor(getResources().getColor(R.color.Primary_40));
         materialButtonFilter[0].setTextColor(getResources().getColor(R.color.white));
         POSITION = 0;
-        replaceFragment(priceFragment);
+        replaceFragment(fragmentPrice);
     }
     public void unChekedButton() {
         switch (POSITION) {
             case 0:
-                if (!priceFragment.hasValue()) {
-                    setButtonUnChecked();
+                if (!fragmentPrice.hasValue()) {
+                    setButtonUnChecked(POSITION);
                 } else {
-                    setButtonChecked();
-                    priceFragment.clearFocus();
-                    objectSearch.setPrice(priceFragment.getValue());
-
-                    if (!objectSearch.getPrice().isEmpty()) {
-                        objectFilter.setPriceString(priceFragment.getValueFilter());
-                        filterApdapter.setData(objectFilter.getPriceString(), 0);
-                        linearLayout.setVisibility(View.VISIBLE);
-                    }
+                    setButtonChecked(POSITION);
                 }
+                fragmentPrice.clearFocus();
                 break;
             case 1:
-                if (!utilitiesFragment.hasValue()) {
-                    setButtonUnChecked();
-                    objectSearch.setUtilities(utilitiesFragment.getValue());
+                if (!fragmentUtilities.hasValue()) {
+                    setButtonUnChecked(POSITION);
                 } else {
-                    setButtonChecked();
-                    objectSearch.setUtilities(utilitiesFragment.getValue());
+                    setButtonChecked(POSITION);
                 }
-                objectFilter.setUtilitesString(utilitiesFragment.getValueString());
-                filterApdapter.setDataUtilites(objectFilter.getUtilitesString());
                 break;
             case 2:
-                if (!typeFragment.hasValue()) {
-                    setButtonUnChecked();
+                if (!fragmentType.hasValue()) {
+                    setButtonUnChecked(POSITION);
                 } else {
-                    setButtonChecked();
-                    objectSearch.setType(typeFragment.getValue());
-                    if (objectSearch.getType() != -1) {
-                        objectFilter.setTypeRoom(typeFragment.getValueString());
-                        filterApdapter.setData(objectFilter.getTypeRoom(), 2);
-                    }
+                    setButtonChecked(POSITION);
                 }
                 break;
             case 3:
-                setButtonChecked();
-                objectSearch.setAmount(amountFragment.getValue().get(0));
-                objectSearch.setGender(amountFragment.getValue().get(1));
-                amountFragment.POSITION = objectSearch.getGender();
-                objectFilter.setAmountAndGender(amountFragment.getValueString());
-                filterApdapter.setData(objectFilter.getAmountAndGender(), 3);
+                if (!fragmentAmount.hasValue()) {
+                    setButtonUnChecked(POSITION);
+                } else {
+                    setButtonChecked(POSITION);
+                }
                 break;
             case 4:
-                if (!optionOtherFragment.hasValue()) {
-                    setButtonUnChecked();
+                if (!fragmentSort.hasValue()) {
+                    setButtonUnChecked(POSITION);
                 } else {
-                    setButtonChecked();
-                    objectSearch.setSort(optionOtherFragment.getValue());
-                    if (objectSearch.getSort() != -1) {
-                        objectFilter.setSortString(optionOtherFragment.getValueString());
-                        filterApdapter.setData(objectFilter.getSortString(), 4);
-                    }
+                    setButtonChecked(POSITION);
                 }
                 break;
         }
     }
-    private void setButtonUnChecked(){
-        materialButtonFilter[POSITION].setBackgroundColor(getResources().getColor(R.color.Secondary_90));
-        materialButtonFilter[POSITION].setTextColor(getResources().getColor(R.color.Secondary_40));
-        materialButtonFilter[POSITION].setIcon(getResources().getDrawable(R.drawable.ic_expand));
+    private void setButtonUnChecked(int position){
+        materialButtonFilter[position].setBackgroundColor(getResources().getColor(R.color.Secondary_90));
+        materialButtonFilter[position].setTextColor(getResources().getColor(R.color.Secondary_40));
+        materialButtonFilter[position].setIcon(getResources().getDrawable(R.drawable.ic_expand));
     }
-    private void setButtonChecked(){
-        materialButtonFilter[POSITION].setBackgroundColor(getResources().getColor(R.color.Primary_98));
-        materialButtonFilter[POSITION].setTextColor(getResources().getColor(R.color.Primary_40));
-        materialButtonFilter[POSITION].setIcon(getResources().getDrawable(R.drawable.ic_expand_checked));
+    private void setButtonChecked(int position){
+        materialButtonFilter[position].setBackgroundColor(getResources().getColor(R.color.Primary_98));
+        materialButtonFilter[position].setTextColor(getResources().getColor(R.color.Primary_40));
+        materialButtonFilter[position].setIcon(getResources().getDrawable(R.drawable.ic_expand_checked));
     }
     private void setButtonChoose(int position) {
         materialButtonFilter[position].setBackgroundColor(getResources().getColor(R.color.Primary_40));
@@ -209,6 +398,7 @@ public class FragmentFilter extends Fragment {
                     if (POSITION == finalI) {
                         return;
                     }
+                    linearLayoutControl.setVisibility(View.VISIBLE);
                     unChekedButton();
                     POSITION = finalI;
                     setFragment(finalI);
@@ -219,28 +409,27 @@ public class FragmentFilter extends Fragment {
     public void setFragment(int position) {
         switch (position) {
             case 0:
-                replaceFragment(priceFragment);
+                replaceFragment(fragmentPrice);
                 break;
             case 1:
-                Log.d("Số lượng", String.valueOf(objectSearch.getUtilities()));
-                utilitiesFragment.buttonChecked = objectSearch.getUtilities();
-                replaceFragment(utilitiesFragment);
+                fragmentUtilities.buttonChecked = objectSearch.getUtilities();
+                replaceFragment(fragmentUtilities);
                 break;
             case 2:
-                replaceFragment(typeFragment);
+                replaceFragment(fragmentType);
                 break;
             case 3:
-                replaceFragment(amountFragment);
+                replaceFragment(fragmentAmount);
                 break;
             case 4:
-                replaceFragment(optionOtherFragment);
+                replaceFragment(fragmentSort);
                 break;
             default:
-                replaceFragment(priceFragment);
+                replaceFragment(fragmentPrice);
         }
     }
     private void replaceFragment(Fragment fragment) {
-        FragmentManager fragmentManager = getChildFragmentManager();
+        FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.replace(R.id.linearLayoutFragment, fragment);
         fragmentTransaction.commit();

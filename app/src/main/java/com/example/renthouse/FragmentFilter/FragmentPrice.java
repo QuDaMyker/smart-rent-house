@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.example.renthouse.Interface.IPriceValueChangeListener;
 import com.example.renthouse.R;
 import com.google.android.material.slider.LabelFormatter;
 import com.google.android.material.slider.RangeSlider;
@@ -22,6 +23,7 @@ import com.google.android.material.textfield.TextInputEditText;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -41,8 +43,15 @@ public class FragmentPrice extends Fragment {
     private TextInputEditText textInputEditTextPriceFrom;
     private TextInputEditText textInputEditTextPriceTo;
     private RangeSlider rangeSlider;
-    private String valueFrom;
-    private String valueTo;
+    private String valueFrom = "";
+    private String valueTo = "";
+    private IPriceValueChangeListener mListener;
+    public boolean isDelete = false;
+    public boolean isResume = false;
+    public FragmentPrice(IPriceValueChangeListener listener) {
+        // Required empty public constructor
+        this.mListener = listener;
+    }
     public FragmentPrice() {
         // Required empty public constructor
     }
@@ -84,6 +93,7 @@ public class FragmentPrice extends Fragment {
         rangeSlider = view.findViewById(R.id.rangeSlider);
         rangeSlider.setValueFrom(0);
         rangeSlider.setValueTo(100);
+        isResume = true;
         textInputEditTextPriceFrom.addTextChangedListener(new TextWatcher() {
             private DecimalFormat decimalFormat = new DecimalFormat("#,###");
             @Override
@@ -162,6 +172,7 @@ public class FragmentPrice extends Fragment {
                 }
             }
         });
+        rangeSlider.setValues(0F, 100F);
         rangeSlider.setLabelBehavior(LabelFormatter.LABEL_GONE);
         rangeSlider.addOnChangeListener(new RangeSlider.OnChangeListener() {
             @Override
@@ -182,6 +193,13 @@ public class FragmentPrice extends Fragment {
 
                 textInputEditTextPriceFrom.setText(String.valueOf(priceFrom));
                 textInputEditTextPriceTo.setText(String.valueOf(priceTo));
+                valueFrom = priceFrom;
+                valueTo = priceTo;
+                if (isResume) {
+                    return;
+                }
+                mListener.onValuePriceChangeListener();
+                isDelete = false;
            }
         });
         return view;
@@ -214,9 +232,25 @@ public class FragmentPrice extends Fragment {
         textInputEditTextPriceFrom.clearFocus();
         textInputEditTextPriceTo.clearFocus();
     }
-    public void resetFragment() {
-        textInputEditTextPriceFrom.getText().clear();
-        textInputEditTextPriceTo.getText().clear();
+
+    public void resetFragment(){
+        this.isResume = true;
+        this.isDelete = true;
         rangeSlider.setValues(0F, 100F);
+        Objects.requireNonNull(textInputEditTextPriceFrom.getText()).clear();
+        Objects.requireNonNull(textInputEditTextPriceTo.getText()).clear();
+        this.isResume = false;
+    }
+    @Override
+    public void onResume() {
+        super.onResume();
+        //rangeSlider.setValues(0F, 100F);
+        isResume = true;
+        if (isDelete) {
+            rangeSlider.setValues(0F, 100F);
+            Objects.requireNonNull(textInputEditTextPriceFrom.getText()).clear();
+            Objects.requireNonNull(textInputEditTextPriceTo.getText()).clear();
+        }
+        isResume = false;
     }
 }

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:orientation="vertical"
+    android:layout_height="match_parent"
+    android:id="@+id/fragment_result"
+    tools:context=".FragmentFilter.FragmentResult">
+    <LinearLayout
+        android:layout_marginTop="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+        <TextView
+            android:layout_width="match_parent"
+            android:id="@+id/textViewAmountResult"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:textColor="@color/Secondary_20"
+            android:textSize="20dp"
+            android:textStyle="bold"
+            android:text="5 KẾT QUẢ" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:layout_width="match_parent"
+            android:background="@color/Primary_95"
+            android:id="@+id/recycleViewResultRoom"
+            android:layout_height="wrap_content"/>
+    </LinearLayout>
+</FrameLayout>

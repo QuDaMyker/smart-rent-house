@@ -1,14 +1,18 @@
 package com.example.renthouse.FragmentFilter;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RadioGroup;
 
+import com.example.renthouse.Interface.ITypeValueChangeListener;
 import com.example.renthouse.R;
 
 /**
@@ -26,8 +30,15 @@ public class FragmentType extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+    public boolean isResume = true;
+    public boolean isDelete = false;
     private RadioGroup radioGroup;
-    private int selectedRadioButtonId = -1;
+    private ITypeValueChangeListener mListener;
+    private int selectedRadioButtonId;
+    public FragmentType(ITypeValueChangeListener mListener) {
+        // Required empty public constructor
+        this.mListener = mListener;
+    }
     public FragmentType() {
         // Required empty public constructor
     }
@@ -59,23 +70,42 @@ public class FragmentType extends Fragment {
         }
     }
 
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_type, container, false);
         radioGroup = view.findViewById(R.id.radioButtonGroupType);
+        radioGroup.clearCheck();
+        selectedRadioButtonId = -1;
+        isResume = true;
+        radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                selectedRadioButtonId = checkedId;
+                if (isResume) {
+                    return;
+                }
+                if (selectedRadioButtonId != -1) {
+                    Log.d("RadioButton", String.valueOf(selectedRadioButtonId));
+                    Log.d("RadioButton", String.valueOf(checkedId));
+                    mListener.onValueTypeChangeListener();
+                    isDelete = false;
+                }
 
+            }
+        });
         return view;
     }
     public boolean hasValue(){
         boolean flag = true;
-        selectedRadioButtonId = radioGroup.getCheckedRadioButtonId();
         if (selectedRadioButtonId == -1) {
             flag = false;
         }
         return flag;
     }
+    @SuppressLint("NonConstantResourceId")
     public int getValue(){
         switch (selectedRadioButtonId) {
             case R.id.radioButtonHomeStay_Campus:
@@ -89,6 +119,7 @@ public class FragmentType extends Fragment {
         }
         return 0;
     }
+    @SuppressLint("NonConstantResourceId")
     public String getValueString(){
         switch (selectedRadioButtonId) {
             case R.id.radioButtonHomeStay_Campus:
@@ -103,6 +134,21 @@ public class FragmentType extends Fragment {
         return "";
     }
     public void resetFragment() {
+        isResume = true;
+        isDelete = true;
         radioGroup.clearCheck();
+        selectedRadioButtonId = -1;
+        isResume = false;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        isResume = true;
+        if (isDelete) {
+            radioGroup.clearCheck();
+            selectedRadioButtonId = -1;
+        }
+        isResume = false;
     }
 }

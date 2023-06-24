@@ -1,6 +1,5 @@
 package com.example.renthouse.FragmentFilter;
 
-import static androidx.core.content.ContextCompat.getColorStateList;
 import static androidx.core.content.ContextCompat.getDrawable;
 
 import android.graphics.PorterDuff;
@@ -8,16 +7,18 @@ import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.GridLayout;
 
+import com.example.renthouse.Interface.IPriceValueChangeListener;
+import com.example.renthouse.Interface.IUtilitiesValueChangeListener;
 import com.example.renthouse.R;
 import com.google.android.material.button.MaterialButton;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -85,13 +86,18 @@ public class FragmentUtilities extends Fragment {
 
     // TODO: Rename and change types of parameters
     private String mParam1;
+    private boolean isDelete = false;
+    private boolean isResume = true;
     private String mParam2;
     private GridLayout gridLayout;
     public ArrayList<Integer> buttonChecked;
+    private IUtilitiesValueChangeListener mListener;
     public FragmentUtilities() {
         // Required empty public constructor
+    }public FragmentUtilities(IUtilitiesValueChangeListener mListener) {
+        // Required empty public constructor
+        this.mListener = mListener;
     }
-
     /**
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
@@ -125,6 +131,7 @@ public class FragmentUtilities extends Fragment {
         View view = inflater.inflate(R.layout.fragment_utilities, container, false);
 
         gridLayout = view.findViewById(R.id.grid_layout_fragment_utilities);
+        isResume = true;
         for (int i = 0; i < buttonTitles.length; i++) {
             MaterialButton button = new MaterialButton(getContext());
             button.setPadding(15,0,15,0);
@@ -136,35 +143,26 @@ public class FragmentUtilities extends Fragment {
             button.setIconGravity(MaterialButton.ICON_GRAVITY_TEXT_START);
             button.setIconTintMode(PorterDuff.Mode.MULTIPLY);
             button.setTextSize(11);
-
             button.setCornerRadius(4);
             button.setLayoutParams(new GridLayout.LayoutParams(
                     GridLayout.spec(GridLayout.UNDEFINED, GridLayout.FILL, 1f),
                     GridLayout.spec(GridLayout.UNDEFINED, GridLayout.FILL, 1f)
             ));
-            gridLayout.addView(button);
-        }
-
-        setValue(buttonChecked);
-
-        int childCount = gridLayout.getChildCount();
-        for (int i = 0; i< childCount; i++) {
-            View child = gridLayout.getChildAt(i);
-            if (child instanceof  MaterialButton) {
-                MaterialButton button = (MaterialButton) child;
-                int finalI = i;
-                button.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        if (button.isChecked()) {
-                            setButtonChecked(finalI);
-                        } else {
-                            setButtonUnChecked(finalI);
-                        }
-//                        Log.d("Stated", String.valueOf(button.isChecked()));
+            int finalI = i;
+            button.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (button.isChecked()) {
+                        setButtonChecked(finalI);
+                        mListener.onValueUtilitiesChangeListener(String.valueOf(button.getText()), finalI);
+                    } else {
+                        setButtonUnChecked(finalI);
+                        // Code ở đây
+                        mListener.onValueUtilitiesDeleteListener(String.valueOf(button.getText()), finalI);
                     }
-                });
-            }
+                }
+            });
+            gridLayout.addView(button);
         }
         return view;
     }
@@ -191,7 +189,24 @@ public class FragmentUtilities extends Fragment {
             button.setChecked(false);
         }
     }
-
+    public void setButtonUnCheckedString(String buttonText) {
+        for (int i = 0; i < buttonTitles.length; i++) {
+            if (buttonTitles[i].equals(buttonText)){
+                setButtonUnChecked(i);
+                break;
+            }
+        }
+    }
+    public Integer postionOfButtonText(String buttonText) {
+        int position = 0;
+        for (int i = 0; i < buttonTitles.length; i++) {
+            if (buttonTitles[i].equals(buttonText)){
+                position = i;
+                break;
+            }
+        }
+        return position;
+    }
     public ArrayList<Integer> getValue(){
         ArrayList<Integer> listIdx = new ArrayList<>();
         int childCount = gridLayout.getChildCount();
@@ -201,20 +216,6 @@ public class FragmentUtilities extends Fragment {
                 MaterialButton button = (MaterialButton) child;
                 if(button.isChecked()){
                     listIdx.add(i);
-                }
-            }
-        }
-        return listIdx;
-    }
-    public ArrayList<String> getValueString() {
-        ArrayList<String> listIdx = new ArrayList<>();
-        int childCount = gridLayout.getChildCount();
-        for (int i = 0; i < childCount; i++) {
-            View child = gridLayout.getChildAt(i);
-            if (child instanceof MaterialButton) {
-                MaterialButton button = (MaterialButton) child;
-                if(button.isChecked()){
-                    listIdx.add(String.valueOf(button.getText()));
                 }
             }
         }
@@ -235,6 +236,18 @@ public class FragmentUtilities extends Fragment {
                 button.setChecked(false);
                 setButtonChecked(i);
             }
+        }
+    }
+    @Override
+    public void onResume() {
+        super.onResume();
+        setValue(buttonChecked);
+    }
+
+    public void resetFragment() {
+        int childCount = gridLayout.getChildCount();
+        for (int i = 0; i < childCount; i++) {
+            setButtonUnChecked(i);
         }
     }
 }

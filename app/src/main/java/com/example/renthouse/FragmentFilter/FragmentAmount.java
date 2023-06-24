@@ -6,6 +6,8 @@ import androidx.appcompat.widget.AppCompatImageButton;
 import androidx.appcompat.widget.AppCompatImageView;
 import androidx.fragment.app.Fragment;
 
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,6 +15,7 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageButton;
 
+import com.example.renthouse.Interface.IAmountValueChangeListener;
 import com.example.renthouse.R;
 import com.google.android.material.tabs.TabLayout;
 
@@ -39,10 +42,16 @@ public class FragmentAmount extends Fragment {
     private TabLayout tabLayout;
     private EditText editTextAmount;
     public int POSITION = 0;
+    private boolean isDelete = false;
+    private boolean isResume = true;
+    private IAmountValueChangeListener mListener;
     public FragmentAmount() {
         // Required empty public constructor
     }
-
+    public FragmentAmount(IAmountValueChangeListener mListener) {
+        // Required empty public constructor
+        this.mListener = mListener;
+    }
     /**
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
@@ -81,6 +90,7 @@ public class FragmentAmount extends Fragment {
         tabLayout = view.findViewById(R.id.tabLayoutGender);
         editTextAmount.setEnabled(false);
         editTextAmount.setFocusable(false);
+        isResume = true;
         btnDescreasePeople.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -109,10 +119,53 @@ public class FragmentAmount extends Fragment {
         if (tab != null){
             tab.select();
         }
+        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                if (isResume) {
+                    return;
+                }
+                mListener.onValueAmountChangeListener();
+                isDelete = false;
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+
+            }
+        });
+        editTextAmount.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (isResume) {
+                    return;
+                }
+                mListener.onValueAmountChangeListener();
+                isDelete = false;
+            }
+        });
 
         return view;
     }
     public boolean hasValue() {
+        if (isDelete) {
+            return false;
+        }
         return true;
     }
     public ArrayList<Integer> getValue(){
@@ -152,6 +205,28 @@ public class FragmentAmount extends Fragment {
         return String.valueOf(amount) + value;
     }
     public void resetFragment() {
+        isResume = true;
+        isDelete = true;
         editTextAmount.setText("2");
+        TabLayout.Tab tab  = tabLayout.getTabAt(0);
+        if (tab != null){
+            tab.select();
+        }
+        isResume = false;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        isResume = true;
+        if (isDelete) {
+            editTextAmount.setText("2");
+            TabLayout.Tab tab  = tabLayout.getTabAt(0);
+            if (tab != null){
+                tab.select();
+            }
+        }
+        isResume = false;
+        mListener.onValueAmountChangeListener();
     }
 }

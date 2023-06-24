@@ -12,7 +12,11 @@ public class ObjectFilter {
     }
 
     public ObjectFilter() {
-
+        utilitesString = new ArrayList<String>();
+        priceString = "";
+        typeRoom = "";
+        amountAndGender = "";
+        sortString = "";
     }
 
     private String priceString;
@@ -59,5 +63,13 @@ public class ObjectFilter {
 
     public void setSortString(String sortString) {
         this.sortString = sortString;
+    }
+
+    public void clearData() {
+        utilitesString = new ArrayList<String>();
+        priceString = "";
+        typeRoom = "";
+        amountAndGender = "";
+        sortString = "";
     }
 }

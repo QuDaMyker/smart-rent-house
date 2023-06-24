@@ -11,29 +11,30 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.renthouse.Interface.IClickItemFilterListener;
+import com.example.renthouse.Interface.IClickDeleteItemFilterListener;
 import com.example.renthouse.R;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
-import java.util.PropertyPermission;
-import java.util.Set;
+import java.util.Objects;
 
 public class FilterApdapter extends RecyclerView.Adapter<FilterApdapter.FilterViewHolder> {
 
     private List<String> filters;
     private HashMap<String, List<String>> hashMapFilter;
     private boolean[] flag = new boolean[5];
-    private IClickItemFilterListener mListener;
+    private final IClickDeleteItemFilterListener mListener;
+    @SuppressLint("NotifyDataSetChanged")
     public void setData(String s, int flag) {
         switch (flag) {
             case 0: // Đặt cờ của price = true
                 updateValueWhenExists("Price", 0, s);
+                break;
+            case 1:
+                updateValueUtilities(s);
                 break;
             case 2:
                 updateValueWhenExists("Type", 2, s);
@@ -47,24 +48,38 @@ public class FilterApdapter extends RecyclerView.Adapter<FilterApdapter.FilterVi
         }
         notifyDataSetChanged();
     }
-    public void setDataUtilites(List<String> utilities) {
-        if (this.flag[1]) {
 
-            // Thay đổi giá trị của utilities trong mảng filters
-            List<String> list = hashMapFilter.get("Utilities");
-            filters.removeAll(list);
-            filters.addAll(utilities);
-            hashMapFilter.put("Utilities", utilities);
+    @SuppressLint("NotifyDataSetChanged")
+    private void updateValueUtilities(String content) {
+        if (this.flag[1]) {
+            hashMapFilter.get("Utilities").add(content);
+            filters.add(content);
         } else {
+            List<String> list = new ArrayList<>();
+            list.add(content);
+            hashMapFilter.put("Utilities", list);
+            filters.add(content);
             this.flag[1] = true;
-            for(String utility : utilities) {
-                filters.add(utility);
-            }
-            hashMapFilter.put("Utilities", utilities);
         }
         notifyDataSetChanged();
     }
+    public void deleteItemtUtilities(String content) {
+        List<String> utilities = hashMapFilter.get("Utilities");
+        if (utilities != null && utilities.contains(content)) {
+            utilities.remove(content);
+        }
+        if (utilities == null || utilities.isEmpty()) {
+            this.flag[1] = false;
+        }
+        int position = filters.indexOf(content);
+        filters.remove(position);
+        notifyItemRemoved(position);
+        notifyItemRangeChanged(position, filters.size());
+    }
     private void updateValueWhenExists(String key, int index, String content) {
+        if (content == null) {
+            return;
+        }
         if (this.flag[index]) {
             List<String> list = hashMapFilter.get(key);
             int position = filters.indexOf(list.get(0));
@@ -75,7 +90,7 @@ public class FilterApdapter extends RecyclerView.Adapter<FilterApdapter.FilterVi
         }
         hashMapFilter.put(key, new ArrayList<>(Collections.singleton(content)));
     }
-    public FilterApdapter(IClickItemFilterListener itemFilterListener) {
+    public FilterApdapter(IClickDeleteItemFilterListener itemFilterListener) {
         filters = new ArrayList<String>();
         hashMapFilter = new HashMap<>();
         Arrays.fill(flag, false);
@@ -107,24 +122,32 @@ public class FilterApdapter extends RecyclerView.Adapter<FilterApdapter.FilterVi
         });
     }
     private void handleData(String content) {
-        if (hashMapFilter.get("Price").contains(content)) {
+        if (hashMapFilter.get("Price") != null && hashMapFilter.get("Price").contains(content)) {
             hashMapFilter.get("Price").remove(content);
-            Log.d("Price", "a");
-            mListener.onItemDeletePriceListener();
             this.flag[0] = false;
-        } else if (hashMapFilter.get("Type").contains(content)) {
+            mListener.onItemDeletePriceListener();
+        } else if (hashMapFilter.get("Type") != null && hashMapFilter.get("Type").contains(content)) {
             hashMapFilter.get("Type").remove(content);
-            mListener.onItemDeleteTypeListener();
+            Log.d("Delete", "1");
             this.flag[2] = false;
-        } else if (hashMapFilter.get("Amount").contains(content)) {
+            mListener.onItemDeleteTypeListener();
+        } else if (hashMapFilter.get("Amount") != null && hashMapFilter.get("Amount").contains(content)) {
             hashMapFilter.get("Amount").remove(content);
-            mListener.onItemDeleteAmountListener();
             this.flag[3] = false;
-        } else if (hashMapFilter.get("Sort").contains(content)) {
+            mListener.onItemDeleteAmountListener();
+        } else if (hashMapFilter.get("Sort") != null && hashMapFilter.get("Sort").contains(content)) {
             hashMapFilter.get("Sort").remove(content);
-            mListener.onItemDeleteSortListener();
             this.flag[4] = false;
+            mListener.onItemDeleteSortListener();
         } else {
+            List<String> utilities = hashMapFilter.get("Utilities");
+            if (utilities != null && utilities.contains(content)) {
+                utilities.remove(content);
+                mListener.onItemDeleteUtilitiesListener(content);
+            }
+            if (utilities == null || utilities.isEmpty()) {
+                this.flag[1] = false;
+            }
 
         }
     }
@@ -136,6 +159,13 @@ public class FilterApdapter extends RecyclerView.Adapter<FilterApdapter.FilterVi
         }
         return 0;
     }
+
+    public void clearData() {
+        filters.clear();
+        hashMapFilter.clear();
+        Arrays.fill(flag, false);
+    }
+
     public class FilterViewHolder extends RecyclerView.ViewHolder {
         TextView textViewContent;
         ImageButton buttonDelete;

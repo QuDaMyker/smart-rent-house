@@ -9,14 +9,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RadioGroup;
 
+import com.example.renthouse.Interface.ISortValueChangeListener;
 import com.example.renthouse.R;
 
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link FragmentOptionOther#newInstance} factory method to
+ * Use the {@link FragmentSort#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class FragmentOptionOther extends Fragment {
+public class FragmentSort extends Fragment {
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -27,8 +28,15 @@ public class FragmentOptionOther extends Fragment {
     private String mParam1;
     private String mParam2;
     private RadioGroup radioGroup;
-    private int seletecedRadioButton = -1;
-    public FragmentOptionOther() {
+    private ISortValueChangeListener mListener;
+    private int seletecedRadioButton;
+    private boolean isResume;
+    private boolean isDelete = false;
+    public FragmentSort(ISortValueChangeListener mListener) {
+        // Required empty public constructor
+        this.mListener = mListener;
+    }
+    public FragmentSort() {
         // Required empty public constructor
     }
 
@@ -41,8 +49,8 @@ public class FragmentOptionOther extends Fragment {
      * @return A new instance of fragment FragmentOptionOther.
      */
     // TODO: Rename and change types and number of parameters
-    public static FragmentOptionOther newInstance(String param1, String param2) {
-        FragmentOptionOther fragment = new FragmentOptionOther();
+    public static FragmentSort newInstance(String param1, String param2) {
+        FragmentSort fragment = new FragmentSort();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -66,13 +74,28 @@ public class FragmentOptionOther extends Fragment {
         View view =  inflater.inflate(R.layout.fragment_option_other, container, false);
 
         radioGroup = view.findViewById(R.id.radioGroupSort);
+        seletecedRadioButton = -1;
+        radioGroup.clearCheck();
+        this.isResume = true;
 
+        radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                seletecedRadioButton = radioGroup.getCheckedRadioButtonId();
+                if (isResume) {
+                    return;
+                }
+                if (seletecedRadioButton != -1) {
+                    mListener.onValueSortChangeListener();
+                    isDelete = false;
+                }
+            }
+        });
 
         return view;
     }
     public boolean hasValue(){
         boolean flag = true;
-        seletecedRadioButton = radioGroup.getCheckedRadioButtonId();
         if (seletecedRadioButton == -1) {
             flag = false;
         }
@@ -106,6 +129,21 @@ public class FragmentOptionOther extends Fragment {
     }
 
     public void resetFragment() {
+        isResume = true;
+        isDelete = true;
         radioGroup.clearCheck();
+        seletecedRadioButton = -1;
+        isResume = false;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        isResume = true;
+        if (isDelete) {
+            radioGroup.clearCheck();
+            seletecedRadioButton = -1;
+        }
+        isResume = false;
     }
 }

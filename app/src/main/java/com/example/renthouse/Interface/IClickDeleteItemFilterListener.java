@@ -1,10 +1,9 @@
 package com.example.renthouse.Interface;
 
-public interface IClickItemFilterListener {
+public interface IClickDeleteItemFilterListener {
     void onItemDeletePriceListener();
     void onItemDeleteTypeListener();
-    void onItemDeleteUtilitiesListener();
+    void onItemDeleteUtilitiesListener(String content);
     void onItemDeleteAmountListener();
     void onItemDeleteSortListener();
-
 }
