@@ -5,6 +5,9 @@ public class MessagesList {
     private String name, email, lastMessages, profilePic, otherKey;
     private int unseenMessages;
 
+    public MessagesList() {
+    }
+
     public MessagesList(String currentKey, String name, String email, String lastMessages, String profilePic, String otherKey, int unseenMessages) {
         this.currentKey = currentKey;
         this.name = name;

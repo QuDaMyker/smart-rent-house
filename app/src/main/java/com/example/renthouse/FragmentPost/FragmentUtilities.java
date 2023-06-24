@@ -1,6 +1,7 @@
 package com.example.renthouse.FragmentPost;
 
 import android.Manifest;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -39,7 +40,7 @@ public class FragmentUtilities  extends Fragment {
     private RecyclerView rcvPhoto;
     private PhotoAdapter photoAdapter;
 
-    private List<Uri> uriListImg = new ArrayList<>();
+    public List<Uri> uriListImg = new ArrayList<>();
 
     TextView warningTxt;
     GridLayout gridLayout;
@@ -115,13 +116,13 @@ public class FragmentUtilities  extends Fragment {
         addImg.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                requestPermission();
+                selectImagesFromGallery();
             }
         });
         addImgBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                requestPermission();
+                selectImagesFromGallery();
             }
         });
         return v;
@@ -166,47 +167,26 @@ public class FragmentUtilities  extends Fragment {
         }
     }
 
-    private void requestPermission() {
-        PermissionListener permissionlistener = new PermissionListener() {
-            @Override
-            public void onPermissionGranted() {
-                selectImagesFromGallery();
-            }
-
-            @Override
-            public void onPermissionDenied(List<String> deniedPermissions) {
-                Toast.makeText(getActivity(), "Permission Denied\n" + deniedPermissions.toString(), Toast.LENGTH_SHORT).show();
-            }
-        };
-        TedPermission.create()
-                .setPermissionListener(permissionlistener)
-                .setDeniedMessage("If you reject permission,you can not use this service\n\nPlease turn on permissions at [Setting] > [Permission]")
-                .setPermissions(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.CAMERA)
-                .check();
-    }
-
     private void selectImagesFromGallery() {
-        TedBottomPicker.with(getActivity())
-                .setPeekHeight(1600)
-                .showTitle(false)
-                .setCompleteButtonText("Done")
-                .setEmptySelectionText("No Select")
-                .showMultiImage(new TedBottomSheetDialogFragment.OnMultiImageSelectedListener() {
-                    @Override
-                    public void onImagesSelected(List<Uri> uriList) {
-                        if(uriList != null && !uriList.isEmpty()){
-                            uriListImg.addAll(uriList);
-                            photoAdapter.setData(uriListImg);
-                            addImgBtn.setVisibility(View.GONE);
-                            imgLayout.setVisibility(View.VISIBLE);
-                            addImgBtn.setText("Bấm vào đây để đăng hình ảnh từ thư viện nhé!");
-                            addImgBtn.setTextColor(ContextCompat.getColor(getContext(), R.color.Primary_60));
-                            warningTxt.setText("(Tối thiểu 4 ảnh, tối đa 20 ảnh)");
-                            warningTxt.setTextColor(ContextCompat.getColor(getContext(), R.color.Secondary_60));
-                        }
-                    }
-                });
+        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+        intent.setType("image/*");
+        intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
+        getActivity().startActivityForResult(Intent.createChooser(intent, "Chọn hình ảnh"), 1);
+
     }
+
+    public void addImg(List<Uri> uriList){
+        uriListImg.addAll(uriList);
+        photoAdapter.setData(uriListImg);
+        addImgBtn.setVisibility(View.GONE);
+        imgLayout.setVisibility(View.VISIBLE);
+        addImgBtn.setText("Bấm vào đây để đăng hình ảnh từ thư viện nhé!");
+        addImgBtn.setTextColor(ContextCompat.getColor(getContext(), R.color.Primary_60));
+        warningTxt.setText("(Tối thiểu 4 ảnh, tối đa 20 ảnh)");
+        warningTxt.setTextColor(ContextCompat.getColor(getContext(), R.color.Secondary_60));
+    }
+
+
 
     private void createButtons(View v) {
 

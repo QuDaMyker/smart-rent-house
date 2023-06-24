@@ -1,6 +1,7 @@
 package com.example.renthouse.Chat.Dashboard;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
@@ -14,13 +15,20 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.renthouse.Activity.ActivityPost;
 import com.example.renthouse.Chat.MemoryData;
+import com.example.renthouse.Chat.Messages.MessagesList;
+import com.example.renthouse.FCM.SendNotificationTask;
+import com.example.renthouse.OOP.AccountClass;
+import com.example.renthouse.OOP.Notification;
 import com.example.renthouse.R;
 import com.google.android.material.button.MaterialButton;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
@@ -40,6 +48,8 @@ public class ActivityChat extends AppCompatActivity {
     private String currentKey;
     String getUserMobile = "";
     int lastIndex;
+
+    MessagesList messagesList;
     private RecyclerView chattingRecycleView;
     private ChatAdapter chatAdapter;
     private boolean loadingFirstTime = true;
@@ -96,6 +106,8 @@ public class ActivityChat extends AppCompatActivity {
         final String getEmail = getIntent().getStringExtra("email");
         final String getProfilePic = getIntent().getStringExtra("profile_pic");
         otherKey = getIntent().getStringExtra("otherKey");
+
+        getMessageList();
 
         // get user email from memory
         getUserMobile = MemoryData.getData(ActivityChat.this);
@@ -175,6 +187,11 @@ public class ActivityChat extends AppCompatActivity {
                     databaseReference.child("Chat").child(otherKey).child(currentKey).child(String.valueOf(lastIndex)).child("send-time").setValue(simpleTimeFormat.format(data));
 
                     messageEditText.setText("");
+
+                    Notification notification = new Notification("Bạn có một tin nhắn mới", "Kết nối với người thuê hoặc chủ nhà ngay bây giờ!", "chat");
+                    notification.setAttachedMessage(messagesList);
+                    SendNotificationTask task = new SendNotificationTask(ActivityChat.this, notification);
+                    task.execute();
                 }
             }
         });
@@ -184,6 +201,22 @@ public class ActivityChat extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 finish();
+            }
+        });
+    }
+
+    public void getMessageList(){
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Accounts").child(currentKey);
+        ref.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                AccountClass user = snapshot.getValue(AccountClass.class);
+                messagesList = new MessagesList(otherKey, user.getFullname(), user.getEmail(), null, user.getImage(), currentKey, 0);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
             }
         });
     }

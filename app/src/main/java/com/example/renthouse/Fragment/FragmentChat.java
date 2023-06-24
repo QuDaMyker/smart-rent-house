@@ -27,6 +27,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -157,14 +158,32 @@ public class FragmentChat extends Fragment {
                             messagesLists.add(messagesList);
                             messagesRecyclerView.setAdapter(new MessagesAdapter(messagesLists, getContext()));
                         }*/
-                        DataSnapshot lastChild = snapshot.getChildren().iterator().next();
+
+                        Iterator<DataSnapshot> iterator = snapshot.getChildren().iterator();
+                        if (iterator.hasNext()) {
+                            DataSnapshot lastChild = iterator.next();
+
+                            lastMessages = lastChild.child("msg").getValue(String.class);
+
+                            MessagesList messagesList = new MessagesList(userCurrent_Key, nameOther, emailOthes, lastMessages, profileOther, userOtherCurrentKey, 0);
+                            messagesLists.add(messagesList);
+                            messagesRecyclerView.setAdapter(new MessagesAdapter(messagesLists, getContext()));
+
+                            //fetchAccountDetails(userOtherCurrentKeys, index + 1);
+                        } else {
+                            // Xử lý trường hợp danh sách rỗng...
+                        }
+
+                        fetchAccountDetails(userOtherCurrentKeys, index + 1);
+
+                        /*DataSnapshot lastChild = snapshot.getChildren().iterator().next();
                         lastMessages = lastChild.child("msg").getValue(String.class);
 
                         MessagesList messagesList = new MessagesList(userCurrent_Key, nameOther, emailOthes, lastMessages, profileOther, userOtherCurrentKey, 0);
                         messagesLists.add(messagesList);
                         messagesRecyclerView.setAdapter(new MessagesAdapter(messagesLists, getContext()));
 
-                        fetchAccountDetails(userOtherCurrentKeys, index + 1);
+                        fetchAccountDetails(userOtherCurrentKeys, index + 1);*/
                     }
 
                     @Override

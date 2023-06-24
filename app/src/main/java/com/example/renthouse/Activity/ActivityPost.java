@@ -1,56 +1,55 @@
 package com.example.renthouse.Activity;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.ContentResolver;
 import android.content.Intent;
-import android.content.res.ColorStateList;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.View;
-import android.widget.Button;
-import android.widget.GridLayout;
 import android.widget.ScrollView;
 import android.widget.Toast;
 
+import com.example.renthouse.FCM.SendNotificationTask;
 import com.example.renthouse.FragmentPost.FragmentConfirm;
 import com.example.renthouse.FragmentPost.FragmentInformation;
 import com.example.renthouse.FragmentPost.FragmentLocation;
 import com.example.renthouse.FragmentPost.FragmentUtilities;
 import com.example.renthouse.OOP.AccountClass;
-import com.example.renthouse.OOP.City;
-import com.example.renthouse.OOP.District;
-import com.example.renthouse.OOP.LocationTemp;
+import com.example.renthouse.OOP.Notification;
 import com.example.renthouse.OOP.Room;
-import com.example.renthouse.OOP.Ward;
 import com.example.renthouse.R;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.button.MaterialButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.shuhart.stepview.StepView;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -58,6 +57,8 @@ import java.util.Locale;
 import id.zelory.compressor.Compressor;
 
 public class ActivityPost extends AppCompatActivity {
+    private FirebaseAuth firebaseAuth;
+    private FirebaseUser currentUser;
     StepView stepView;
     ScrollView scrollView;
     int position;
@@ -68,6 +69,7 @@ public class ActivityPost extends AppCompatActivity {
     FragmentLocation fragmentLocation;
     FragmentUtilities fragmentUtilities;
     StorageReference storageReference;
+    AccountClass user;
 
     public interface OnUploadImageCompleteListener {
         void onUploadImageComplete();
@@ -182,38 +184,47 @@ public class ActivityPost extends AppCompatActivity {
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference myRef = database.getReference("Rooms");
         FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+        DatabaseReference accRef = database.getReference("Accounts");
 
-        //HARDCODE, TODO: retrieve current user
-        AccountClass user = new AccountClass("ABC",
-                "abc@gmail.com",
-                "0987654321",
-                "12344",
-                "a",
-                "12-12-2023");
+        firebaseAuth = FirebaseAuth.getInstance();
+        currentUser = firebaseAuth.getCurrentUser();
+        Query query = accRef.orderByChild("email").equalTo(currentUser.getEmail());
 
-        String key = myRef.child("Rooms").push().getKey();
-        Room room = new Room(key,
-                fragmentConfirm.getTitle(),
-                fragmentConfirm.getDescription(),
-                fragmentInformation.getRoomType(),
-                fragmentInformation.getCapacity(),
-                fragmentInformation.getGender(),
-                fragmentInformation.getArea(),
-                fragmentInformation.getPrice(),
-                fragmentInformation.getDeposit(),
-                fragmentInformation.getElectricityCost(),
-                fragmentInformation.getWaterCost(),
-                fragmentInformation.getInternetCost(),
-                fragmentInformation.hasParking(),
-                fragmentInformation.getParkingFee(),
-                fragmentLocation.getLocation(),
-                fragmentUtilities.getUtilities(),
-                user,
-                fragmentConfirm.getPhoneNumber());
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    user = snapshot.getValue(AccountClass.class);
+                    String key = myRef.child("Rooms").push().getKey();
+                    Room room = new Room(key,
+                            fragmentConfirm.getTitle(),
+                            fragmentConfirm.getDescription(),
+                            fragmentInformation.getRoomType(),
+                            fragmentInformation.getCapacity(),
+                            fragmentInformation.getGender(),
+                            fragmentInformation.getArea(),
+                            fragmentInformation.getPrice(),
+                            fragmentInformation.getDeposit(),
+                            fragmentInformation.getElectricityCost(),
+                            fragmentInformation.getWaterCost(),
+                            fragmentInformation.getInternetCost(),
+                            fragmentInformation.hasParking(),
+                            fragmentInformation.getParkingFee(),
+                            fragmentLocation.getLocation(),
+                            fragmentUtilities.getUtilities(),
+                            user,
+                            fragmentConfirm.getPhoneNumber());
 
-        String pathObject = String.valueOf(room.getId());
-        myRef.child(pathObject).setValue(room);
-        updateImage(room);
+                    String pathObject = String.valueOf(room.getId());
+                    myRef.child(pathObject).setValue(room);
+                    updateImage(room);
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+            }
+        });
     }
 
     protected void replaceFragmentContent(Fragment fragment) {
@@ -243,26 +254,20 @@ public class ActivityPost extends AppCompatActivity {
                 FirebaseDatabase database = FirebaseDatabase.getInstance();
                 DatabaseReference myRef = database.getReference("Rooms/" + room.getId() + "/images");
                 myRef.setValue(uriImageStringList);
-                if(progressDialog.isShowing()){
-                    progressDialog.dismiss();
-                }
-                Toast.makeText(ActivityPost.this, "Tải lên thành công!", Toast.LENGTH_SHORT).show();
+                notificationOnSuccess(progressDialog, room);
+
             }
         };
         storageReference = FirebaseStorage.getInstance().getReference();
         List<Uri> uriList = fragmentUtilities.getUriListImg();
         int totalItems = uriList.size();
         if(totalItems == 0){
-            if(progressDialog.isShowing()){
-                progressDialog.dismiss();
-            }
-            Toast.makeText(ActivityPost.this, "Tải lên thành công!", Toast.LENGTH_SHORT).show();
-            return;
+            notificationOnSuccess(progressDialog, room);
         }
         final int[] successCount = {0};
         for(Uri u : uriList){
             Uri compressedImageUri;
-            File actualImage = new File(u.getPath());
+            File actualImage = getFileOfUri(u);
             try {
                 File compressedImageBitmap = new Compressor(this).compressToFile(actualImage);
                 compressedImageUri = Uri.fromFile(compressedImageBitmap);
@@ -300,6 +305,83 @@ public class ActivityPost extends AppCompatActivity {
                     return;
                 }
             });
+        }
+    }
+
+    private void notificationOnSuccess(ProgressDialog progressDialog, Room room){
+        if(progressDialog.isShowing()){
+            progressDialog.dismiss();
+        }
+        Toast.makeText(ActivityPost.this, "Tải lên thành công!", Toast.LENGTH_SHORT).show();
+        Notification notification = new Notification("Có phòng trọ mới vừa được đăng trên Rent House", "Hãy kiểm tra ngay để không bỏ lỡ cơ hội tuyệt vời này!", "room");
+        notification.setAttachedRoom(room);
+        SendNotificationTask task = new SendNotificationTask(ActivityPost.this, notification);
+        task.execute();
+    }
+
+    private File getFileOfUri(Uri u) {
+        ContentResolver contentResolver = getContentResolver();
+        InputStream inputStream = null;
+        OutputStream outputStream = null;
+        File file = null;
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss_SSS", Locale.ENGLISH);
+        Date now = new Date();
+        String fileName = formatter.format(now);
+
+        try {
+            inputStream = contentResolver.openInputStream(u);
+            file = new File(getCacheDir(), fileName);
+            // Tạo tệp tin trong bộ nhớ cache của ứng dụng
+
+            outputStream = new FileOutputStream(file);
+            byte[] buffer = new byte[1024];
+            int length;
+            while ((length = inputStream.read(buffer)) != -1) {
+                outputStream.write(buffer, 0, length);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (inputStream != null) {
+                    inputStream.close();
+                }
+                if (outputStream != null) {
+                    outputStream.close();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return file;
+
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        List<Uri> uri = new ArrayList<>();
+        if(requestCode == 1 && resultCode == Activity.RESULT_OK && data != null){
+            if(data.getClipData() != null){
+                //Chọn nhiều ảnh
+                int countImages = data.getClipData().getItemCount();
+                for(int i = 0; i<countImages; i++){
+                    uri.add(data.getClipData().getItemAt(i).getUri());
+                }
+
+            } else if (data.getData() != null) {
+                //Chọn 1 ảnh
+                Uri imageUri = data.getData();
+                if (imageUri != null) {
+                    uri.add(imageUri);
+                }
+            }
+            fragmentUtilities.addImg(uri);
+        }
+        else{
+            //Không chọn ảnh nào
+            Toast.makeText(this, "Bạn không chọn hình ảnh nào", Toast.LENGTH_SHORT).show();
         }
     }
 }

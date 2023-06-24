@@ -15,6 +15,7 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
     <application
+        android:name=".MyApplication"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
@@ -23,7 +24,20 @@
         android:requestLegacyExternalStorage="true"
         android:supportsRtl="true"
         android:theme="@style/Theme.RentHouse"
+        android:usesCleartextTraffic="true"
         tools:targetApi="31">
+        <activity
+            android:name=".ActivityAccountNotification"
+            android:exported="false" />
+
+        <service
+            android:name=".FCM.MyFirebaseMessagingService"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
+
         <activity
             android:name=".Chat.ChatActivity"
             android:exported="false" />
@@ -35,12 +49,10 @@
             android:exported="false" />
         <activity
             android:name=".Activity.ActivityDetailAccount"
-            android:exported="false" />
-
-        <service
-            android:name=".Async.getCurrentLocationService"
-            android:enabled="true"
-            android:exported="true" />
+            android:exported="false" /> <!-- <service -->
+        <!-- android:name=".Async.getCurrentLocationService" -->
+        <!-- android:enabled="true" -->
+        <!-- android:exported="true" /> -->
         <!--
              TODO: Before you run your application, you need a Google Maps API key.
 
@@ -57,14 +69,24 @@
             android:value="${MAPS_API_KEY}" />
 
         <activity
+            android:name=".Activity.ActivityAccountNotification"
+            android:exported="false" />
+        <activity
             android:name=".Activity.MapsActivity"
             android:exported="false"
             android:label="@string/title_activity_maps" />
+        <activity
+            android:name=".Activity.NoficationActivity"
+            android:exported="false"
+            android:parentActivityName=".Activity.ActivityMain" />
         <activity
             android:name=".Activity.ActivityPost"
             android:exported="false" />
         <activity
             android:name=".Activity.ActivityAccountInformation"
+            android:exported="false" />
+        <activity
+            android:name=".Activity.FindByMapsActivity"
             android:exported="false" />
         <activity
             android:name=".Activity.ActivityMain"

@@ -19,10 +19,15 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.example.renthouse.Activity.ActivityPost;
+import com.example.renthouse.Activity.FindByMapsActivity;
+import com.example.renthouse.Activity.MapsActivity;
+import com.example.renthouse.Activity.NoficationActivity;
+import com.example.renthouse.Adapter.NotificationAdapter;
 import com.example.renthouse.Adapter.PhoBienAdapter;
 import com.example.renthouse.ITEM.itemPhoBien_HomeFragment;
 import com.example.renthouse.OOP.City;
 import com.example.renthouse.OOP.District;
+import com.example.renthouse.OOP.Notification;
 import com.example.renthouse.OOP.Ward;
 import com.example.renthouse.databinding.FragmentHomeBinding;
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -30,6 +35,11 @@ import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -82,6 +92,21 @@ public class FragmentHome extends Fragment {
                 startActivity(new Intent(getContext(), ActivityPost.class));
             }
         });
+
+        binding.btnMaps.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(getContext(), FindByMapsActivity.class));
+            }
+        });
+
+        binding.notificationBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(getContext(), NoficationActivity.class));
+            }
+        });
+
 
 
         return view;

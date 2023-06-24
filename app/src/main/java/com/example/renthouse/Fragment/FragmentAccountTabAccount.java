@@ -20,6 +20,7 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.example.renthouse.Activity.ActivityAccountNotification;
 import com.example.renthouse.Activity.ActivityDetailAccount;
 import com.example.renthouse.Activity.ActivityReportError;
 import com.example.renthouse.Activity.ActivitySplash;
@@ -117,11 +118,20 @@ public class FragmentAccountTabAccount extends Fragment {
             }
         });
 
+
+
         btnBaoCaoSuCo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getActivity(), ActivityReportError.class);
                 startActivity(intent);
+            }
+        });
+
+        btnThongBao.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(getActivity(), ActivityAccountNotification.class));
             }
         });
 
