@@ -107,18 +107,44 @@ public class FragmentLikedRooms extends Fragment {
             FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
             FirebaseUser currentUser = firebaseAuth.getCurrentUser();
             FirebaseDatabase db = FirebaseDatabase.getInstance();
-            DatabaseReference refLiked = db.getReference("Rooms");
 
 
-            refLiked.addValueEventListener(new ValueEventListener() {
+
+            String emailCur = currentUser.getEmail();
+            DatabaseReference refAC = db.getReference("Accounts");
+            refAC.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    for (DataSnapshot dataSnapshot : snapshot.getChildren())
+                    String emailAC = null;
+                    for (DataSnapshot snapshotAc: snapshot.getChildren())
                     {
-                        Room r = dataSnapshot.getValue(Room.class);
-                        rooms.add(r);
+                        emailAC = snapshotAc.child("email").getValue(String.class);
+                        if (emailCur.equals(emailAC)){
+                            String idAC = snapshotAc.getKey();
+                            DatabaseReference refLiked = db.getReference("LikedRooms");
+                            refLiked.addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                    List<String> likedRooms= new ArrayList<>();
+                                    for (DataSnapshot userIDSnapshot : snapshot.getChildren()) {
+                                        if (userIDSnapshot.getKey().equals(idAC))
+                                        {
+                                            for (DataSnapshot roomSnapshot : userIDSnapshot.getChildren()) {
+                                                Room temp = roomSnapshot.getValue(Room.class);
+                                                rooms.add(temp);
+                                            }
+                                            roomAdapter.notifyDataSetChanged();
+                                        }
+                                    }
+                                }
+
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError error) {
+
+                                }
+                            });
+                        }
                     }
-                    roomAdapter.notifyDataSetChanged();
                 }
 
                 @Override
@@ -126,6 +152,7 @@ public class FragmentLikedRooms extends Fragment {
 
                 }
             });
+
 
     }
 
