@@ -48,6 +48,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/fragHome_listAlbum"
                 app:tabIndicatorFullWidth="false"
                 app:tabIndicatorHeight="3dp"
+                android:background="@color/white"
                 app:tabMode="fixed"
                 app:tabSelectedTextColor="@color/black"
                 app:tabTextColor="#999999" />

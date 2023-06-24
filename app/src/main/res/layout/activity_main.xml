@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/Primary_80"
     tools:context=".Activity.ActivityMain">
 
     <FrameLayout
@@ -22,6 +23,7 @@
         android:background="@color/Primary_80"
         app:itemRippleColor="@color/black"
         app:itemTextColor="@color/black"
+        app:itemIconTint="@color/black"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

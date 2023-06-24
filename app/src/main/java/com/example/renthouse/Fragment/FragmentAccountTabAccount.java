@@ -23,8 +23,14 @@ import android.widget.TextView;
 import com.example.renthouse.Activity.ActivityDetailAccount;
 import com.example.renthouse.Activity.ActivityReportError;
 import com.example.renthouse.Activity.ActivitySplash;
+import com.example.renthouse.Interface.Callback;
 import com.example.renthouse.OOP.AccountClass;
 import com.example.renthouse.R;
+import com.example.renthouse.utilities.Constants;
+import com.example.renthouse.utilities.PreferenceManager;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -32,7 +38,6 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
 import android.app.ActivityManager;
@@ -53,6 +58,7 @@ public class FragmentAccountTabAccount extends Fragment {
     String key;
     AccountClass account;
     ProgressDialog progressDialog;
+    private PreferenceManager preferenceManager;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -128,7 +134,8 @@ public class FragmentAccountTabAccount extends Fragment {
         btnDangXuat.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                FirebaseAuth.getInstance().signOut();
+                preferenceManager = new PreferenceManager(getActivity());
+
                 
                 /*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
                     ActivityManager activityManager = (ActivityManager) requireContext().getSystemService(Context.ACTIVITY_SERVICE);
@@ -136,13 +143,18 @@ public class FragmentAccountTabAccount extends Fragment {
                         activityManager.clearApplicationUserData();
                     }
                 }*/
-                if (getActivity() != null) {
+                if (preferenceManager.getBoolean(Constants.KEY_IS_SIGNED_IN) == true) {
+                    preferenceManager.clear();
+                    FirebaseAuth.getInstance().signOut();
+                    GoogleSignInOptions gso = new GoogleSignInOptions.
+                            Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).
+                            build();
+
+                    GoogleSignInClient googleSignInClient = GoogleSignIn.getClient(getActivity(), gso);
+                    googleSignInClient.signOut();
                     getActivity().finish();
+                    startActivity(new Intent(requireContext(), ActivitySplash.class));
                 }
-
-
-
-                startActivity(new Intent(requireContext(), ActivitySplash.class));
 
 
             }

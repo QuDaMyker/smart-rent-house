@@ -13,6 +13,7 @@ import android.content.ContentResolver;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.CpuUsageInfo;
 import android.util.Log;
 import android.view.View;
 import android.webkit.MimeTypeMap;
@@ -25,6 +26,8 @@ import android.widget.Toast;
 import com.example.renthouse.OOP.AccountClass;
 import com.example.renthouse.Other.CommonUtils;
 import com.example.renthouse.R;
+import com.example.renthouse.utilities.Constants;
+import com.example.renthouse.utilities.PreferenceManager;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -65,11 +68,14 @@ public class ActivityDetailAccount extends AppCompatActivity {
     private ProgressBar progressBar;
     final private DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("Accounts");
     final private StorageReference storageReference = FirebaseStorage.getInstance().getReference();
+    private PreferenceManager preferenceManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail_account);
+
+        preferenceManager = new PreferenceManager(getApplicationContext());
 
         TILfullname = findViewById(R.id.tiploFullName);
         TILemail = findViewById(R.id.tiploEmail);
@@ -128,6 +134,13 @@ public class ActivityDetailAccount extends AppCompatActivity {
                         }
                     }
                 });
+
+                preferenceManager.putString(Constants.KEY_EMAIL, account.getEmail());
+                preferenceManager.putString(Constants.KEY_FULLNAME, account.getFullname());
+                preferenceManager.putString(Constants.KEY_PHONENUMBER, account.getPhoneNumber());
+                preferenceManager.putString(Constants.KEY_PASSWORD, TIETMatKhau.getText().toString().trim());
+                preferenceManager.putString(Constants.KEY_USER_KEY, key);
+
             }
         });
 
@@ -172,6 +185,8 @@ public class ActivityDetailAccount extends AppCompatActivity {
                         account.setImage(uri.toString());
                         databaseReference.child(key).setValue(account);
                         progressBar.setVisibility(View.INVISIBLE);
+
+                        preferenceManager.putString(Constants.KEY_IMAGE, account.getImage());
                     }
                 });
             }
