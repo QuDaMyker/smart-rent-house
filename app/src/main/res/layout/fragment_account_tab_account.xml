@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Fragment.FragmentAccountTabAccount">
+
+    <FrameLayout
+        android:id="@+id/frameLayout3"
+        android:layout_width="match_parent"
+        android:layout_height="230dp"
+        android:background="@color/white"
+        android:orientation="vertical"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/account_personal_imageProfile"
+            android:layout_width="127dp"
+            android:layout_height="126dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="20dp"
+            android:src="@drawable/ic_default_profile"
+            app:civ_border_color="#FF000000"
+            app:civ_border_width="0dp" />
+
+        <TextView
+            android:id="@+id/account_personal_nameProfile"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="65dp"
+            android:text="Name"
+            android:textAlignment="center"
+            android:textColor="@color/Primary_40"
+            android:textSize="30sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <TextView
+            android:id="@+id/account_personal_emailProfile"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="95dp"
+            android:text="Email"
+            android:textSize="18sp" />
+
+        <ImageView
+            android:id="@+id/imageView14"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginStart="60dp"
+            android:layout_marginTop="25dp"
+            android:src="@drawable/ic_avatar_account" />
+
+    </FrameLayout>
+
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:id="@+id/linearLayoutCompat"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp"
+        android:gravity="center"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/frameLayout3">
+
+        <Button
+            android:id="@+id/account_personal_infomationButtonProfile"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="5dp"
+            android:backgroundTint="@color/Primary_90"
+            android:padding="10dp"
+            android:text="Thông tin cá nhân"
+            android:textAlignment="viewStart"
+            android:textColor="@color/Primary_40"
+            android:textSize="20sp"
+            app:cornerRadius="12dp"
+            app:icon="@drawable/outline_person_24"
+            app:iconPadding="15dp"
+            app:iconSize="35dp"
+            app:iconTint="@color/Primary_40" />
+
+        <Button
+            android:id="@+id/account_personal_policyButtonProfile"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="5dp"
+            android:backgroundTint="@color/Primary_90"
+            android:padding="15dp"
+            android:text="Điều khoản và chính sách"
+            android:textAlignment="viewStart"
+            android:textColor="@color/Primary_40"
+            android:textSize="20sp"
+            app:cornerRadius="12dp"
+            app:icon="@drawable/ic_policy_account"
+            app:iconPadding="20dp"
+            app:iconSize="25dp"
+            app:iconTint="@color/Primary_40" />
+
+        <Button
+            android:id="@+id/account_personal_notificationButtonProfile"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="5dp"
+            android:backgroundTint="@color/Primary_90"
+            android:padding="15dp"
+            android:text="Thông báo"
+            android:textAlignment="viewStart"
+            android:textColor="@color/Primary_40"
+            android:textSize="20sp"
+            app:cornerRadius="12dp"
+            app:icon="@drawable/ic_annouce_account"
+            app:iconPadding="20dp"
+            app:iconSize="25dp"
+            app:iconTint="@color/Primary_40" />
+
+        <Button
+            android:id="@+id/account_personal_reportErrorButtonProfile"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="5dp"
+            android:backgroundTint="@color/Primary_90"
+            android:padding="15dp"
+            android:text="Báo cáo sự cố"
+            android:textAlignment="viewStart"
+            android:textColor="@color/Primary_40"
+            android:textSize="20sp"
+            app:cornerRadius="12dp"
+            app:icon="@drawable/ic_problem_account"
+            app:iconPadding="20dp"
+            app:iconSize="25dp"
+            app:iconTint="@color/Primary_40" />
+
+
+    </androidx.appcompat.widget.LinearLayoutCompat>
+    <Button
+        android:id="@+id/account_personal_logoutButtonProfile"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
+        android:text="Đăng xuất"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayoutCompat" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

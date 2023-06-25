@@ -1,60 +1,63 @@
 package com.example.renthouse.Fragment;
 
-import android.net.Uri;
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.viewpager2.widget.ViewPager2;
+
+import com.example.renthouse.Adapter.TabLayoutAccountAdapter;
 import com.example.renthouse.R;
-import com.example.renthouse.databinding.FragmentAccountBinding;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.squareup.picasso.Picasso;
+import com.google.android.material.tabs.TabLayout;
 
 public class FragmentAccount extends Fragment {
-    private FragmentAccountBinding binding;
-    private FirebaseAuth firebaseAuth;
-    private FirebaseUser currentUser;
-
+    private TabLayout fragHome_tab_layout;
+    private ViewPager2 fragHome_viewPager2;
+    private TabLayoutAccountAdapter tabLayoutAccountAdapter;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        binding = FragmentAccountBinding.inflate(inflater, container, false);
-        View view = binding.getRoot();
+        View view = inflater.inflate(R.layout.fragment_account, container, false);
 
-        firebaseAuth = FirebaseAuth.getInstance();
-        currentUser = firebaseAuth.getCurrentUser();
+        fragHome_tab_layout = view.findViewById(R.id.fragHome_tab_layout);
+        fragHome_viewPager2 = view.findViewById(R.id.fragHome_viewPager2);
 
-        getCurrentUser();
+        fragHome_tab_layout.addTab(fragHome_tab_layout.newTab().setText("Cá nhân"));
+        fragHome_tab_layout.addTab(fragHome_tab_layout.newTab().setText("Bài đã đăng"));
 
-        binding.accountPersonalInfomationButtonProfile.setOnClickListener(new View.OnClickListener() {
+        FragmentManager fragmentManager = getChildFragmentManager();
+
+        tabLayoutAccountAdapter = new TabLayoutAccountAdapter(fragmentManager, getLifecycle());
+        fragHome_viewPager2.setAdapter(tabLayoutAccountAdapter);
+
+        fragHome_tab_layout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
-            public void onClick(View v) {
-                // Handle button click event
+            public void onTabSelected(TabLayout.Tab tab) {
+                fragHome_viewPager2.setCurrentItem(tab.getPosition());
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+
+            }
+        });
+        fragHome_viewPager2.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
+            @Override
+            public void onPageSelected(int position) {
+                fragHome_tab_layout.selectTab(fragHome_tab_layout.getTabAt(position));
             }
         });
 
         return view;
     }
-    private void getCurrentUser() {
-        if (currentUser != null) {
-            String providerId = currentUser.getUid();
-            String displayName = currentUser.getDisplayName();
-            String email = currentUser.getEmail();
-            Uri photoUrl = currentUser.getPhotoUrl();
 
-            binding.accountPersonalEmailProfile.setText(email);
-            binding.accountPersonalNameProfile.setText(displayName);
-            Picasso.get()
-                    .load(photoUrl)
-                    .placeholder(R.drawable.ic_default_profile)
-                    .error(R.drawable.back_ground_background)
-                    .into(binding.accountPersonalImageProfile);
-        }
-    }
 }

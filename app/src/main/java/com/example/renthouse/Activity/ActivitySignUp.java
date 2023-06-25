@@ -32,6 +32,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -202,7 +203,7 @@ public class ActivitySignUp extends AppCompatActivity {
         FirebaseUser currentUser = mAuth.getCurrentUser();
         if(currentUser != null) {
             String id = currentUser.getUid();
-            String name = currentUser.getDisplayName();
+            String name = signup_fullName.getText().toString();
             String email = currentUser.getEmail();
             String phonenumber = signup_phoneNumber.getText().toString().trim();
 
@@ -240,8 +241,44 @@ public class ActivitySignUp extends AppCompatActivity {
             SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             String formattedDate = dateFormat.format(now);
 
+            if(imageURL == null) {
+                imageURL = "https://cdn.pixabay.com/photo/2023/06/02/14/12/woman-8035772_1280.jpg";
+            }
             AccountClass accountCurrent = new AccountClass(name, email, "+84", "********", imageURL, formattedDate);
-            reference.child("Accounts").child(id).setValue(accountCurrent);
+            String emailToCheck = email;
+            DatabaseReference accountsRef = reference.child("Accounts");
+            Query emailQuery = accountsRef.orderByChild("email").equalTo(emailToCheck);
+
+            emailQuery.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    if (dataSnapshot.exists()) {
+                        // Account with the given email already exists
+                        // You can handle this case here
+                    } else {
+                        DatabaseReference newChildRef = reference.child("Accounts").push();
+                        String generatedKey = newChildRef.getKey();
+
+                        // Set the data for the new child node
+                        newChildRef.setValue(accountCurrent)
+                                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<Void> task) {
+                                        if (task.isSuccessful()) {
+                                            startActivity(new Intent(ActivitySignUp.this, ActivityMain.class));
+                                        } else {
+                                            // Handle the error here
+                                        }
+                                    }
+                                });
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+                    // Handle the error here
+                }
+            });
 
 
 
