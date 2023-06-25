@@ -1,0 +1,712 @@
+[
+  {
+    "name": "Đại học Quốc gia Hà Nội",
+    "address": " Phòng 601, Tòa nhà Điều hành, 144 Xuân Thủy, Cầu Giấy, Hà Nội. "
+  },
+  {
+    "name": "Đại học Tôn Đức Thắng",
+    "address": " 19 Nguyễn Hữu Thọ, Phường Tân Phong, Quận 7, TP.HCM, Việt Nam. "
+  },
+  {
+    "name": "Đại học Duy Tân",
+    "address": " 254 Nguyễn Văn Linh, Đà Nẵng, Việt Nam "
+  },
+  {
+    "name": "ĐH Bách Khoa ĐHQGHCM",
+    "address": " Song Hành, khu phố 6, Thủ Đức, Thành phố Hồ Chí Minh, Việt Nam"
+  },
+  {
+    "name": "Trường Đại học Khoa học và Công nghệ Hà Nội",
+    "address": " 1 Đại Cồ Việt, Bách Khoa, Hai Bà Trưng, Hà Nội, Việt Nam Tòa nhà C1-114, 215, 217 "
+  },
+  {
+    "name": "Đại học Đà Nẵng",
+    "address": " 41 Lê Duẩn, Q.Hải Châu, TP.Đà Nẵng "
+  },
+  {
+    "name": "Đại học Huế",
+    "address": " 03 Lê Lợi, TP Huế"
+  },
+  {
+    "name": "Đại học Công nghiệp TP.HCM",
+    "address": " Số 12 Nguyễn Văn Bảo, Phường 4, Quận Gò Vấp, TP.HCM "
+  },
+  {
+    "name": "Đại học Quốc gia TP.HCM",
+    "address": " Phường Linh Trung, Quận Thủ Đức, TP.HCM "
+  },
+  {
+    "name": "Đại học Mỏ Địa chất Hà Nội",
+    "address": " 18 Đường Viên, Phường Đức Thắng, Quận Bắc Từ Liêm, Hà Nội"
+  },
+  {
+    "name": "Đại học Kinh tế TP.HCM",
+    "address": " 59C Nguyễn Đình Chiểu, Q.3, TP. Hồ Chí Minh "
+  },
+  {
+    "name": "Đại học Cần Thơ",
+    "address": " Khu II, Đường 3 Tháng 2, P. Xuân Khánh, Q. Ninh Kiều, TP. Cần Thơ. "
+  },
+  {
+    "name": "Đại học Khoa học Tự nhiên - ĐHQG Hà Nội",
+    "address": " 334 Nguyễn Trãi, Thanh Xuân, Hà Nội"
+  },
+  {
+    "name": "Đại học Y hà nội",
+    "address": " 01 Tôn Thất Tùng-Đống Đa-Hà Nội "
+  },
+  {
+    "name": "Học Viện Công Nghệ Bưu Chính Viễn Thông",
+    "address": " Quận 1: 11 Nguyễn Đình Chiểu, P. Đa Kao, Q. 1, TP. Hồ Chí Minh Cơ sở Quận 9: Đường Man Thiện, Phường Hiệp Phú, Quận 9, TP. Hồ Chí Minh"
+  },
+  {
+    "name": "Đại học Mở Thành phố Hồ Chí Minh /Trường Đại học Mở thành phố Hồ Chí Minh",
+    "address": " 35-37 Hồ Hảo Hớn, Quận 1, Thành phố Hồ Chí Minh, Việt Nam "
+  },
+  {
+    "name": "Đại học Sư phạm Kỹ thuật TP.HCM",
+    "address": " 1 Võ Văn Ngân, Phường Linh Chiểu, Quận Thủ Đức, TP.HCM. "
+  },
+  {
+    "name": "Đại học Kinh tế Quốc dân",
+    "address": " 207 Giải Phóng, Đồng Tâm, Quận Hai Bà Trưng, ​​Hà Nội, Việt Nam"
+  },
+  {
+    "name": "Đại Học Kỹ Thuật Lê Quý Đôn",
+    "address": " 236 Hoàng Quốc Việt, Hà Nội, Việt Nam "
+  },
+  {
+    "name": "Đại học Vinh",
+    "address": " Địa chỉ: 182 Lê Duẩn, TP.Vinh, Tỉnh Nghệ An "
+  },
+  {
+    "name": "Trường Đại học Sư phạm Kỹ thuật Hưng Yên",
+    "address": " Khoái Châu, Hưng Yên "
+  },
+  {
+    "name": "Đại học Nông lâm",
+    "address": " P. Linh Trung, Q.Thủ Đức, Tp. Hồ Chí Minh "
+  },
+  {
+    "name": "Đại học Y Dược TP.HCM",
+    "address": " 217 Hồng Bàng, Phường 11, Quận 5, Thành phố Hồ Chí Minh, Việt Nam"
+  },
+  {
+    "name": "Đại học Thủ Dầu Một",
+    "address": " Số 06, Trần Văn Ơn, Phú Hòa, Thủ Dầu Một, Bình Dương"
+  },
+  {
+    "name": "Đại học Thủy Lợi",
+    "address": " Địa chỉ: 175 Tây Sơn, Đống Đa, Hà Nội "
+  },
+  {
+    "name": "Trường Đại học Y tế Công cộng",
+    "address": " Số 1A, Đường Đức Thắng, Phường Đức Thắng, Quận Bắc Từ Liêm, Thành Phố Hà Nội, Việt Nam."
+  },
+  {
+    "name": "Đại học Nha trang",
+    "address": " Số 02 Nguyễn Đình Chiểu, Nha Trang, Khánh Hòa."
+  },
+  {
+    "name": "Đại học Quy Nhơn",
+    "address": " 170 An Dương Vương, Nguyễn Văn Cừ, TP Qui Nhơn, Bình Định, Việt Nam"
+  },
+  {
+    "name": "Đại học Xây dựng Hà Nội",
+    "address": " Số 55 Đường Giải Phóng, Hai Bà Trưng, ​​Hà Nội "
+  },
+  {
+    "name": "Đại học Thái nguyên",
+    "address": " Phường Tân Thịnh, TP Thái Nguyên "
+  },
+  {
+    "name": "Học viện Nông nghiệp Việt Nam",
+    "address": " Trâu Quỳ, Gia Lâm, Hà Nội"
+  },
+  {
+    "name": "Đại học Sư phạm Hà Nội",
+    "address": " 136 Xuân Thủy, Cầu Giấy, Hà Nội"
+  },
+  {
+    "name": "Đại học Đà lạt",
+    "address": " 1 Phù Đổng Thiên Vương, Phường 8, TP Đà Lạt"
+  },
+  {
+    "name": "Đại học Quốc Tế - ĐHQGHCM",
+    "address": " Trường Đại học Quốc tế, Đại học Quốc gia TP.HCM Địa chỉ: Khu phố 6, Phường Linh Trung, Thủ Đức, TP.HCM"
+  },
+  {
+    "name": "Đại học RMIT Việt Nam",
+    "address": " 702 Nguyễn Văn Linh, Tân Hưng, Quận 7, Thành phố Hồ Chí Minh 700000, Việt Nam"
+  },
+  {
+    "name": "Đại học Hồng Đức",
+    "address": " Số 565 Quang Trung, Phường Đông Vệ, TP Thanh Hóa Đi"
+  },
+  {
+    "name": "Đại học Khoa học Tự nhiên - ĐHQGHCM",
+    "address": " 227 D. Nguyễn Văn Cừ, Phường 4, Quận 5, Thành phố Hồ Chí Minh, Việt Nam"
+  },
+  {
+    "name": "Đại học Nguyễn Tất Thành",
+    "address": " Trụ sở chính: 300A, Nguyễn Tất Thành, Phường 13, Quận 4, TP. Hồ Chí Minh, Việt Nam"
+  },
+  {
+    "name": "Đại học Trà Vinh",
+    "address": " Số 126 Nguyễn Thiện Thành, Khóm 4, Phường 5, TP Trà Vinh, Tỉnh Trà Vinh"
+  },
+  {
+    "name": "Đại học Nông Lâm Thái Nguyên",
+    "address": " Xã Quyết Thắng, TP Thái Nguyên"
+  },
+  {
+    "name": "Đại học Giao thông vận tải",
+    "address": " Số 3 Cầu Giấy, Phường Láng Thượng, Quận Đống Đa, Hà Nội, Việt Nam "
+  },
+  {
+    "name": "Đại học Tây Bắc",
+    "address": " Đường Chu Văn An, Tổ 2, Phường Quyết Tâm, TP. Sơn La, Tỉnh Sơn La."
+  },
+  {
+    "name": "ĐH Công Nghệ Thông Tin ĐHQGHCM",
+    "address": " Đường Hàn Thuyên, Khu phố 6, Phường Linh Trung, Thủ Đức, TP.HCM."
+  },
+  {
+    "name": "đại học an giang",
+    "address": " Số 18, Ung Văn Khiêm, P. Đông Xuyên, TP. Long Xuyên, Tỉnh An Giang "
+  },
+  {
+    "name": "Đại học Sài Gòn",
+    "address": " 273 An Vương, Phường 3, Quận 5, Thành phố Hồ Chí Minh 700000, Việt Nam"
+  },
+  {
+    "name": "Đại học Việt Đức",
+    "address": " Đường Lê Lai, Phường Hòa Phú, TP Thủ Dầu Một, Tỉnh Bình Dương"
+  },
+  {
+    "name": "Đại học FPT",
+    "address": " Khu Công nghệ cao Hòa Lạc, Hà Nội, Việt Nam "
+  },
+  {
+    "name": "Đại học Công nghệ TP.HCM HUTECH/ Đại học Công nghệ Thành phố Hồ Chí Minh HUTECH",
+    "address": " Trụ sở chính: 475A Điện Biên Phủ, P.25, Q.Bình Thạnh, TP.HCM Cơ sở 475B: 475B Điện Biên Phủ, P.25, Q.Bình Thạnh, TP.HCM Cơ sở 276: 276-282 Điện Biên Phủ, P.17, Q.Bình Thạnh , TP.HCM Cơ sở Ung Văn Khiêm: 31/36 Ung Văn Khiêm, Phường 25, Quận Bình Thạnh, TP.HCM Viện Công nghệ cao HUTECH: Khu Công nghệ cao TP.HCM (SHTP), Phường Long Thạnh Mỹ, Thủ Đức, TP. Hồ Chí Minh Trung tâm đào tạo nguồn nhân lực chất lượng cao: Khu công nghệ cao TP.HCM (SHTP), Xa lộ Hà Nội, Phường Hiệp Phú, Thủ Đức, TP.HCM  )"
+  },
+  {
+    "name": "Đại học Văn Lang",
+    "address": " 45 Nguyễn Khắc Nhu, Phường Cô Giang, Quận 1, Thành phố Hồ Chí Minh 700000, Việt Nam"
+  },
+  {
+    "name": "Đại học Ngoại thương",
+    "address": " 91 Phố Chùa Láng, Láng Thượng, Đống Đa, Hà Nội"
+  },
+
+  {
+    "name": "Đại học Công nghệ Thái Nguyên",
+    "address": " Số 666 Đường 3-2, Phường Tích Lương, Thành phố Thái Nguyên, Tỉnh Thái Nguyên"
+  },
+  {
+    "name": "Đại học Kinh tế Luật",
+    "address": " 669 QL1A, Khu phố 3, Thủ Đức, TP.HCM, Việt Nam"
+  },
+  {
+    "name": "Đại học Ngoại ngữ và Quốc tế học",
+    "address": " Đường Phạm Văn Đồng, Cầu Giấy, Hà Nội"
+  },
+  {
+    "name": "Đại học Sư phạm Đồng Tháp",
+    "address": " 783, Phạm Hữu Lầu, Phường 6, TP Cao Lãnh, Đồng Tháp"
+  },
+  {
+    "name": "Đại học Điện lực EVN",
+    "address": " CS1: 235 Hoàng Quốc Việt, Hà Nội CS2: Tân Minh, Sóc Sơn, Hà Nội "
+  },
+  {
+    "name": "ĐHKHXH&NV ĐHQGHCM",
+    "address": " Cơ sở 1: 10-12 Đinh Tiên Hoàng, P. Bến Nghé, Q. 1, TP. Hồ Chí Minh Cơ sở 2: Khu phố 6, Phường Linh Trung, Quận Thủ Đức, TP. Thành phố Hồ Chí Minh"
+  },
+  {
+    "name": "Đại học Kỹ thuật Công nghệ",
+    "address": " E3, 144 Xuân Thủy, Cầu Giấy, Hà Nội "
+  },
+  {
+    "name": "Viện Khoa học Xã hội Việt Nam",
+    "address": " Số 1, Liễu Giai, Ba Đình, Hà Nội"
+  },
+  {
+    "name": "Đại học Khoa học và Công nghệ Hà Nội USTH Đại học Việt Pháp",
+    "address": " Tòa nhà A21, Viện Khoa học và Công nghệ Việt Nam, 18 Hoàng Quốc Việt, Cầu Giấy, Hà Nội "
+  },
+  {
+    "name": "Đại học Sư phạm TP.HCM",
+    "address": " 280 An Vương, Phường 4, Quận 5, Thành phố Hồ Chí Minh 720000, Việt Nam"
+  },
+  {
+    "name": "Đại học Anh Quốc Việt Nam",
+    "address": " Lô GĐ-01, Khu đô thị Ecopark, Hưng Yên, Việt Nam "
+  },
+  {
+    "name": "Đại học Kinh tế Huế",
+    "address": " Cơ sở 1: 100 Phùng Hưng, TP Huế Cơ sở 2: 99 Hồ Đắc Di, TP Huế "
+  },
+  {
+    "name": "Đại học Hàng hải Việt Nam",
+    "address": " 484 Lạch Tray, Kênh Dương, Lê Chân, TP Hải Phòng. "
+  },
+  {
+    "name": "Đại học Luật Hà Nội",
+    "address": " 87 Nguyễn Chí Thanh, Đống Đa, Hà Nội "
+  },
+  {
+    "name": "Đại học Hoa Sen",
+    "address": " TRỤ SỞ CHÍNH : 08 Nguyễn Văn Tráng, Phường Bến Thành, Quận 1, TP.HCM CƠ SỞ CAO THẮNG : 93 Cao Thắng, Phường 3, Quận 3, TP.HCM"
+  },
+  {
+    "name": "Đại học Tây Hà Nội",
+    "address": " Yên Nghĩa, Hà Đông, Hà Nội"
+  },
+  {
+    "name": "Học viện Xây dựng",
+    "address": " 236 Hoàng Quốc Việt, Bắc Từ Liêm, Hà Nội "
+  },
+  {
+    "name": "Đại học sư phạm Hà Nội số 2",
+    "address": " 32 Nguyễn Văn Linh, Phường Xuân Hòa, Thành phố Phúc Yên, Tỉnh Vĩnh Phúc Việt Nam "
+  },
+  {
+    "name": "đại học tây nguyên",
+    "address": " 567 Lê Duẩn Tp. Buôn Ma Thuột, Đắk Lắk."
+  },
+  {
+    "name": "Hồ Chí Minh Đại học Công nghiệp Thực phẩm TP.HCM",
+    "address": "140 Lê Trọng Tấn, Phường Tây Thạnh, Quận Tân Phú, TP HCM "
+  },
+  {
+    "name": "Đại học Kiến trúc TP.HCM",
+    "address": " Số 196 Pasteur, Phường Võ Thị Sáu, Quận 3, TP.HCM "
+  },
+  {
+    "name": "Đại học Luật TP.HCM",
+    "address": " Trụ sở chính: Số 02, Nguyễn Tất Thành, P.12, Q.4, TP. Hồ Chí Minh. Cơ sở 2: Số 123 Quốc lộ 13, P. Hiệp Bình Chánh, Q. Thủ Đức, TP. Hồ Chí Minh. Cơ sở 3: Phường Long Phước, Quận 9, TP. Hồ Chí Minh"
+  },
+  {
+    "name": "Học viện Ngân hàng Việt Nam",
+    "address": " 12 Chùa Bộc Hà Nội, Việt Nam "
+  },
+  {
+    "name": "Đại Học Y Dược Huế",
+    "address": " 06 Ngô Quyền, Phường Vĩnh Ninh, Thành phố Huế "
+  },
+  {
+    "name": "Đại học Kinh tế Tài chính TP.HCM UEF",
+    "address": "141, 145 Điện Biên Phủ, Phường 15, Quận Bình Thạnh, TP.HCM"
+  },
+  {
+    "name": "trường tư thục ngoại giao Việt Nam",
+    "address": " 69 Chùa Láng, Láng Thượng, Đống Đa, Hà Nội 100000, Việt Nam"
+  },
+  {
+    "name": "Đại học Mở Hà Nội",
+    "address": " Nhà B101, Phố Nguyễn Hiền, Phường Bách Khoa, Quận Hai Bà Trưng, ​​TP Hà Nội"
+  },
+  {
+    "name": "Trường Đại học Kinh tế - ĐHQGHN",
+    "address": " 144 Xuân Thủy, Cầu Giấy, Hà Nội. "
+  },
+  {
+    "name": "Học Viện Tài Chính Kế Toán",
+    "address": " Số 58 Lê Văn Hiến, Phường Đức Thắng, Quận Bắc Từ Liêm, Hà Nội "
+  },
+  {
+    "name": "Đại học Hà Nội",
+    "address": "Km 9, Nguyễn Trãi, Nam Từ Liêm, Hà Nội, Việt Nam."
+  },
+  {
+    "name": "Đại học Khoa học Xã hội và Nhân văn Hà Nội",
+    "address": " 336 Nguyễn Trãi, Thanh Xuân, Hà Nội "
+  },
+  {
+    "name": "đại học văn hóa hà nội",
+    "address": " 418 La Thành, Đống Đa, Hà Nội, Việt Nam"
+  },
+  {
+    "name": "Đại học Công nghiệp Hà Nội",
+    "address": " 298 Cầu Diễn, Quận Bắc Từ Liêm, Hà Nội"
+  },
+  {
+    "name": "Đại học Lạc Hồng",
+    "address": " Huỳnh Văn Nghệ, Bửu Long, Biên Hòa, Đồng Nai, Việt Nam"
+  },
+  {
+    "name": "đại học kiến ​​trúc hà nội",
+    "address": " 3854 1616 Km 10, Nguyễn Trãi, Thanh Xuân, Hà Nội, Việt Nam"
+  },
+  {
+    "name": "Đại học Ngân hàng TP.HCM",
+    "address": " 36 Tôn Thất Đạm, Quận 1, TP.HCM "
+  },
+  {
+    "name": "Đại Học Bà Rịa Vũng Tàu",
+    "address": " CƠ SỞ 1 : 80 Trương Công Định, P.3, TP.Vũng Tàu "
+  },
+  {
+    "name": "Đại Học Dân Lập Hải Phòng",
+    "address": " Số 36 đường Dân Lập, phường Dư Hàng Kênh, quận Lê Chân, TP Hải Phòng."
+  },
+  {
+    "name": "Đại học Đông Á",
+    "address": " 33 Xô Viết Nghệ Tĩnh, Q. Hải Châu, TP. Đà Nẵng "
+  },
+  {
+    "name": "Đại học Công nghệ Giao thông vận tải",
+    "address": " Số 54 Triều Khúc, Thanh Xuân, Hà Nội "
+  },
+  {
+    "name": "Đại học Kinh doanh và Công nghệ Hà Nội",
+    "address": " 29A, ngõ 124, Vĩnh Tuy, Hai Bà Trưng, ​​Hà Nội"
+  },
+  {
+    "name": "Trường Cao Đẳng Nông Lâm Huế",
+    "address": " 102 Phùng Hưng, P. Thuận Thành, TP. Huế, Việt Nam "
+  },
+  {
+    "name": "Đại học Khoa học Thái Nguyên tại Việt Nam",
+    "address": " Phường Tân Thịnh, TP Thái Nguyên, Tỉnh Thái Nguyên."
+  },
+  {
+    "name": "Đại học Ngoại ngữ Tin học TP.HCM",
+    "address": " 828 Sư Vạn Hạnh, Phường 13, Quận 10, TP.HCM "
+  },
+  {
+    "name": "đại học thăng long",
+    "address": "Nghiêm Xuân Yêm, Đại Kim, Hoàng Mai, Hà Nội"
+  },
+  {
+    "name": "đại học bình dương",
+    "address": "Số 504 Đại lộ Bình Dương, P. Hiệp Thành, TP. Thủ Dầu Một, Bình Dương."
+  },
+  {
+    "name": "Đại học Dược Hà Nội",
+    "address": " 13-15 Lê Thánh Tông, Phan Chu Trinh, Hoàn Kiếm, Hà Nội, Việt Nam"
+  },
+  {
+    "name": "Đại Học Giao Thông Vận Tải TP.HCM",
+    "address": " Số 2, Võ Oanh, Phường 25, Quận Bình Thạnh, TP.HCM"
+  },
+  {
+    "name": "Học viện Lãnh đạo và Quản lý PACE",
+    "address": " Trụ sở chính : PACE . Tòa nhà 341 Nguyễn Trãi, Q.1, TP. Hồ Chí Minh VP Hà Nội: Capital Tower (Tầng 14) 109 Trần Hưng Đạo, Hoàn Kiếm, Hà Nội"
+  },
+  {
+    "name": "Đại học Quốc tế Sài Gòn",
+    "address": " 8C, 16 & 18 Tống Hữu Định, Phường Thảo Điền, Thủ Đức, TP.HCM."
+  },
+  {
+    "name": "Đại Học Công Nghệ Sài Gòn",
+    "address": " 180 Cao Lỗ, P.4, Q.8, TP. Hồ Chí Minh "
+  },
+  {
+    "name": "đại học Hùng Vương",
+    "address": " Phường Nông Trang, Thành Phố Việt Trì, Tỉnh Phú Thọ"
+  },
+  {
+    "name": "Đại học Văn Hiến",
+    "address": " 665-667-669 Điện Biên Phủ, Phường 1, Quận 3, TP.HCM "
+  },
+  {
+    "name": "Đại học Y Dược Cần Thơ",
+    "address": " Số 179, đường Nguyễn Văn Cừ, P. An Khánh, Q. Ninh Kiều, TP. Cần Thơ. "
+  },
+  {
+    "name": "Đại học Y khoa Phạm Ngọc Thạch",
+    "address": " Số 2 Đường Quang Trung, Phường 12, Quận 10, TP.HCM (Số cũ: 86/2 Thành Thái, Phường 12, Quận 10, TP.HCM) "
+  },
+  {
+    "name": "Đại học Hải Phòng",
+    "address": " Số 171 Phan Đăng Lưu, Kiến An, Hải Phòng"
+  },
+  {
+    "name": "Đại học Fulbright Việt Nam",
+    "address": " Tầng 2, Crescent Plaza, 105 Tôn Dật Tiên, Phường Tân Phú, Quận 7, TP.HCM"
+  },
+  {
+    "name": "trường đại học quốc tế Hồng Bàng",
+    "address": " Trụ sở chính: 215 Điện Biên Phủ, P.15, Bình Thạnh, TP.HCM Cơ sở 2: 120 Hòa Bình, P. Hòa Thạnh, Tân Phú, TP.HCM "
+  },
+  {
+    "name": "đại học quảng bình",
+    "address": " 312 Lý Thường Kiệt Thành phố Đồng Hới Quảng Bình, Việt Nam"
+  },
+  {
+    "name": "Đại học Công nghệ Đồng Nai",
+    "address": " Đường Nguyễn Khuyến, KP5, P. Trảng Dài, TP. Biên Hòa, Tỉnh Đồng Nai "
+  },
+  {
+    "name": "Đại học Tân Tạo",
+    "address": " Đại lộ Đại học Tân Tạo, Khu đô thị Tân Đức, Đức Hòa, Tỉnh Long An"
+  },
+  {
+    "name": "đại học lâm nghiệp việt nam",
+    "address": " Địa chỉ: Thị trấn Xuân Mai, Huyện Chương Mỹ, Hà Nội "
+  },
+  {
+    "name": "Học viện Kỹ thuật Mật mã Việt Nam",
+    "address": " 141 Chiến Thắng, Tân Triều, Thanh Trì, Hà Nội, Việt Nam"
+  },
+  {
+    "name": "học viện Hành chính Quốc gia",
+    "address": " 77 Nguyễn Chí Thanh, Đống Đa, Hà Nội. "
+  },
+  {
+    "name": "Học viện Hàng không Việt Nam",
+    "address": " 104 Nguyễn Văn Trỗi, Phường 8, Quận Phú Nhuận, TP.HCM, Việt Nam. "
+  },
+  {
+    "name": "Trung tâm Viện Công nghệ Châu Á tại Việt Nam AITCV",
+    "address": " Tầng 3, Tòa nhà DETECH, Phường Mỹ Đình II, Quận Nam Từ Liêm, Hà Nội"
+  },
+  {
+    "name": "Đại học Y Hải Phòng",
+    "address": " Số 72A Nguyễn Bỉnh Khiêm, Ngô Quyền, Hải Phòng "
+  },
+  {
+    "name": "đại học thương mại việt nam",
+    "address": "  79 Hồ Tùng Mậu, Cầu Giấy, Hà Nội "
+  },
+  {
+    "name": "đại học mekong",
+    "address": " Quốc lộ 1A, Phú Quới, Long Hồ, Vĩnh Long "
+  },
+  {
+    "name": "Đại học Nghệ thuật Thành phố Hồ Chí Minh",
+    "address": " 05 Phan Đăng Lưu, Phường 3, Quận Bình Thạnh, TP.HCM "
+  },
+  {
+    "name": "Học Viện Quân Y Việt Nam",
+    "address": " Số 160, Đường Phùng Hưng, Phường Phúc La, Quận Hà Đông, TP Hà Nội"
+  },
+  {
+    "name": "Đại học Công đoàn",
+    "address": " 169, Tây Sơn, Đống Đa, Hà Nội Điệ"
+  },
+  {
+    "name": "Đại học Dược Thái Bình",
+    "address": " 373 Lý Bôn, TP. Thái Bình, Tỉnh Thái Bình "
+  },
+  {
+    "name": "Đại Học Lao Động Xã Hội",
+    "address": " 43 Trần Duy Hưng, Trung Hòa, Cầu Giấy, Hà Nội"
+  },
+  {
+    "name": "Đại học Sư phạm",
+    "address": " Nhà G7, số 144 Xuân Thủy "
+  },
+  {
+    "name": "Đại học Gia Định",
+    "address": "185 -187 Hoàng Văn Thụ, P.8, Q.Phú Nhuận, TP.HCM, 371 Nguyễn Kiệm, P.3, Q.Gò Vấp, TP.HCM "
+  },
+  {
+    "name": "Đại Học Giao Thông Vận Tải TP.HCM",
+    "address": " 450-451 Lê Văn Việt, P. Tăng Nhơn Phú A, TP. Thủ Đức (Q.9 cũ), TP. Hồ Chí Minh "
+  },
+  {
+    "name": "Đại học Kinh tế Công nghiệp Long An",
+    "address": "Số 938 Quốc lộ 1, Phường Khánh Hậu, TP.Tân An, Long An Văn phòng đại diện: Số 13 Đường số 8, Khu Lý Phục Man, P. Bình Thuận, Quận 7, TP.HCM "
+  },
+  {
+    "name": "Viện Công nghệ Sài Gòn SaigonTech",
+    "address": " Lô 14, Đường số 5, Công viên phần mềm Quang Trung, Quận 12, TP. Hồ Chí Minh, Việt Nam"
+  },
+  {
+    "name": "",
+    "address": " các trường đại học tại Việt Nam"
+  },
+  {
+    "name": "Đại học Nông Lâm Bắc Giang",
+    "address": " TT ​​Bích Động, Việt Yên, Bắc Giang Đi"
+  },
+  {
+    "name": "Đại học Đồng Nai",
+    "address": " Số 4, Lê Quý Đôn, P. Tân Hiệp, TP Biên Hòa, Đồng Nai."
+  },
+  {
+    "name": "đại học Bạc Liêu",
+    "address": " Số 178 Võ Thị Sáu, P.8, TP. Bạc Liêu, Tỉnh Bạc Liêu"
+  },
+  {
+    "name": "Đại học Mỹ thuật Công nghiệp Hà Nội",
+    "address": " 360 La Thành, Quận Đống Đa, Hà Nội, Việt Nam"
+  },
+  {
+    "name": "Cao Đẳng Cộng Đồng Đồng Tháp",
+    "address": " 259 Thiên Hộ Dương, P. Hòa Thuận, TP. Cao Lãnh, Tỉnh Đồng Tháp "
+  },
+  {
+    "name": "Viện Khoa học và Công nghệ Việt Nam",
+    "address": " 10, 12 Đinh Tiên Hoàng, Quận 1 Thành phố Hồ Chí Minh Việt Nam"
+  },
+  {
+    "name": "(3) Khoa Kinh doanh Đại học Quốc gia Hà Nội",
+    "address": "144 Xuân Thủy, Cầu Giấy, Hà Nội, Việt Nam "
+  },
+  {
+    "name": "nhạc viện thành phố hồ chí minh",
+    "address": "112 Nguyễn Du, Quận 1, TP.HCM "
+  },
+  {
+    "name": "Đại học Công nghệ Cần Thơ",
+    "address": "256 Nguyễn Văn Cừ, Quận Ninh Kiều, TP Cần Thơ"
+  },
+  {
+    "name": "Trường Đại học Lao động - Xã hội CSII",
+    "address": "1018 Tô Ký, Phường Tân Chánh Hiệp, Quận 12, TP.HCM. "
+  },
+  {
+    "name": "Học viện Âm nhạc Quốc gia Việt Nam Nhạc viện Hà Nội",
+    "address": "77 Hào Nam, Đống Đa, Hà Nội "
+  },
+  {
+    "name": "Học viện quản lý giáo dục quốc gia",
+    "address": "31 Phan Đình Giót, Phương Liệt, Thanh Xuân, Hà Nội, Việt Nam"
+  },
+  {
+    "name": "Đại Học Y Dược Học Cổ Truyền Việt Nam",
+    "address": "Số 2, Trần Phú, Hà Đông, Hà Nội"
+  },
+  {
+    "name": "Đại Học Dệt May Công Nghiệp Hà Nội",
+    "address": "Lệ Chi, Gia Lâm, Hà Nội, Việt Nam"
+  },
+  {
+    "name": "Học viện Báo chí và Tuyên truyền",
+    "address": "36 Xuân Thủy, Cầu Giấy, Hà Nội"
+  },
+  {
+    "name": "Đại học Hữu nghị Công nghệ và Quản lý Hà Nội",
+    "address": "Lô 1-4, số 431 Tam Trinh, Hoàng Mai, Hà Nội"
+  },
+  {
+    "name": "Đại học Võ Trường Toản",
+    "address": "Quốc lộ 1A, Tân Phú Thạnh, Châu Thành A, Hậu Giang "
+  },
+  {
+    "name": "Trung tâm Giáo dục Quốc tế Đại học Quốc gia TP.",
+    "address": "08 Trần Quang Khải, Phường Tân Định, Quận 1, TP.HCM, VĂN PHÒNG TẠI Trụ sở Điều hành ĐHQG TP.HCM , Phường Linh Trung, Quận. Thủ Đức, TP.HCM"
+  },
+  {
+    "name": "đại học phú xuân",
+    "address": "176 Trần Phú, Phước Vĩnh, TP. Huế"
+  },
+  {
+    "name": "Học Viện Hậu Cần Việt Nam",
+    "address": "Tầng 11 Tòa nhà Hải Âu, 39B Trường Sơn, Phường 4, Tân Bình, TP.HCM, Việt Nam"
+  },
+  {
+    "name": "Đại học Tài chính Kế toán",
+    "address": " Thị trấn La Hà, Tư Nghĩa, Quảng Ngãi"
+  },
+  {
+    "name": "học viện hải quân việt nam",
+    "address": " Số 30 Trần Phú, Vĩnh Nguyên, TP Nha Trang, Tỉnh Khánh Hòa"
+  },
+  {
+    "name": "Đại học Đông Đô",
+    "address": " Km25, Quốc lộ 6, Phú Nghĩa, Chương Mỹ, Hà Nội."
+  },
+  {
+    "name": "Học viện Phòng không-Không quân Việt Nam",
+    "address": " Kim Sơn, Sơn Tây, Hà Nội"
+  },
+  {
+    "name": "Đại học Kinh tế Kỹ thuật Bình Dương",
+    "address": "530 Đại lộ Bình Dương, Phường Hiệp Thành, TP Thủ Dầu Một, Thị xã Bình Dương "
+  },
+  {
+    "name": "Cao học Học viện Khoa học Xã hội",
+    "address": "Số 477 Nguyễn Trãi, Q. Thanh Xuân, TP. Hà Nội "
+  },
+  {
+    "name": "Đại học Khoa học và Công nghệ",
+    "address": "Số 18 Hoàng Quốc Việt, Cầu Giấy, Hà Nội. "
+  },
+  {
+    "name": "Đại học Phương Đông",
+    "address": " 171 Trung Kính, Yên Hòa, Cầu Giấy, Hà Nội "
+  },
+  {
+    "name": "Học Viện Biên Phòng",
+    "address": " Sơn Lộc, Sơn Tây, Hà Nội"
+  },
+  {
+    "name": "Viện Khoa học Quân sự Việt Nam",
+    "address": " Học viện Khoa học Quân sự, Việt Nam"
+  },
+  {
+    "name": "Đại học Công nghệ Vạn Xuân",
+    "address": " Số 103, Nguyễn Sinh Cung, thị xã Cửa Lò, Nghệ An "
+  },
+  {
+    "name": "đại học quang trung",
+    "address": " 327 Đào Tấn, Quy Nhơn, Bình Định "
+  },
+  {
+    "name": "Học viện Thiết kế & Thời trang London Việt Nam",
+    "address": " 98, Tô Ngọc Vân, Phường Quảng An, Quận Tây Hồ, Hà Nội, Việt Nam "
+  },
+  {
+    "name": "Đại học Thái Bình",
+    "address": " Tân Bình, TP Thái Bình "
+  },
+  {
+    "name": "(3) Viện Đào tạo Quốc tế Khoa học Vật liệu",
+    "address": " Số 1, Đại Cồ Việt Str., Trường Đại học Bách khoa Hà Nội "
+  },
+  {
+    "name": "Viện Tài nguyên và Môi trường",
+    "address": " Viện Tài nguyên và Môi trường Việt Nam"
+  },
+  {
+    "name": "Đại học Công nghệ Đông Á",
+    "address": " Tòa nhà Polyco, Trịnh Văn Bô, Nam Từ Liêm, Hà Nội "
+  },
+  {
+    "name": "Đại học Hùng Vương TP.HCM",
+    "address": "736 Nguyễn Trãi, Q.5, TP.HCM"
+  },
+  {
+    "name": "đại học hải dương việt nam",
+    "address": "  Khu đô thị phía Nam, TP Hải Dương (Xã Liên Hồng, TP Hải Dương, Tỉnh Hải Dương).Địa điểm 2: Khu 8, Phường Hải Tân, TP Hải Dương."
+  },
+  {
+    "name": "Học viện Chính trị Quân sự Việt Nam",
+    "address": " 124, Ngô Quyền, Hà Đông, Hà Nội Đi"
+  },
+  {
+    "name": "nhạc viện Huế",
+    "address": " 01 Lê Lợi, TP Huế "
+  },
+
+  {
+    "name": "Đại học Công nghệ Miền Đông",
+    "address": " Quốc lộ 1A, KP Trần Hưng Đạo, Thị trấn Dầu Giây, Huyện Thống Nhất, Tỉnh Đồng Nai "
+  },
+  {
+    "name": "cao đẳng kiên giang",
+    "address": "425 Mạc Cửu, P. Vĩnh Thanh, TP. Rạch Giá, Kiên Giang Văn phòng: 217 Chu Văn An, P. An Hòa, TP. Rạch Giá, Kiên Giang "
+  },
+  {
+    "name": "Cao Đẳng Kinh Tế Kỹ Thuật Phương Nam",
+    "address": " 23, 25 Nguyễn Văn Vĩnh , P. . Hiệp Tân . Quận Tân Phú , Tp. HCM "
+  },
+  {
+    "name": "Đại học Quốc tế Bắc Hà",
+    "address": " Phố Hồng An, Thị trấn Lim, Huyện Tiên Du, Tỉnh Bắc Ninh "
+  },
+  {
+    "name": "Học viện Chính trị - Hành chính Quốc gia Hồ Chí Minh",
+    "address": " 99 Man Thiện, Phường Hiệp Phú, Thủ Đức, TP.HCM "
+  },
+  {
+    "name": "Võ Bị Việt Nam Đà Lạt",
+    "address": " 2B, Lữ Gia, Phường 9, Đà Lạt, Lâm Đồng"
+  }
+]
