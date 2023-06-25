@@ -4,6 +4,15 @@ import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 public class ObjectSearch {
+    public String getPath() {
+        return path;
+    }
+
+    public void setPath(String path) {
+        this.path = path;
+    }
+
+    private String path;
     private ArrayList<Integer> utilities; // Utilities dùng để lấy của firebase
     private ArrayList<Long> price; // Giá dùng để lấy của firebase;
     private int type; // Loại dùng để lấy của firebase
@@ -18,6 +27,7 @@ public class ObjectSearch {
         this.amount = -1;
         this.gender = -1;
         this.sort = -1;
+        path = "";
     }
 
     public ObjectSearch(ArrayList<Long> price, ArrayList<Integer> utilities, int type, int amount, int gender, int sort) {

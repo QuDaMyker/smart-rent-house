@@ -20,7 +20,9 @@ public class Ward {
         this.code = code;
         this.parent_code = parent_code;
     }
+    public Ward(){
 
+    }
     public String getName() {
         return name;
     }

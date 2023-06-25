@@ -18,7 +18,9 @@ public class AccountClass implements Serializable {
         this.image = image;
         this.ngayTaoTaiKhoan = ngayTaoTaiKhoan;
     }
+    public AccountClass() {
 
+    }
     public String getFullname() {
         return fullname;
     }

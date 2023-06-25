@@ -83,14 +83,14 @@ public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.Locati
             protected FilterResults performFiltering(CharSequence constraint) {
                 String strSearch = constraint.toString();
                 if (strSearch.isEmpty()) {
-                    listLocation = listHistoryLocation; // list filteredLocation này sẽ chứa các dữ liệu đọc từ file json
+                    listLocation = listHistoryLocation;
                     searchViewIsEmpty = true;
                 } else {
                     searchViewIsEmpty = false;
                     List<Location> list = new ArrayList<>();
                     for (Location location : listLocationDatabase) {
-                        String normalizedElement = Normalizer.normalize(location.getAddress(), Normalizer.Form.NFC);
-                        String normalizedSearchString = Normalizer.normalize(strSearch, Normalizer.Form.NFC);
+                        String normalizedElement = removeDiacritics(location.getAddress());
+                        String normalizedSearchString = removeDiacritics(strSearch);
 
                         if (normalizedElement.toLowerCase().contains(normalizedSearchString.toLowerCase())) {
                             list.add(location);
@@ -103,6 +103,7 @@ public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.Locati
 
                 return filterResults;
             }
+
             @Override
             protected void publishResults(CharSequence constraint, FilterResults results) {
                 listLocation = (List<Location>) results.values;
@@ -112,6 +113,12 @@ public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.Locati
                 notifyDataSetChanged();
             }
         };
+    }
+
+    public String removeDiacritics(String str) {
+        str = Normalizer.normalize(str, Normalizer.Form.NFD);
+        str = str.replaceAll("\\p{M}", "");
+        return str;
     }
     public class LocationViewHolder extends RecyclerView.ViewHolder {
         private TextView diachi;

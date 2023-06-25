@@ -1,14 +1,20 @@
 package com.example.renthouse.Activity;
 
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.text.InputFilter;
 import android.text.InputType;
+import android.text.Spannable;
+import android.text.SpannableString;
 import android.text.TextUtils;
+import android.text.style.StyleSpan;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.SearchView;
 import android.widget.TextView;
 
@@ -52,6 +58,15 @@ public class ActivitySearch extends AppCompatActivity {
         setContentView(R.layout.activity_search);
 
         searchView = findViewById(R.id.searchViewAddress);
+        LinearLayout linearLayout1 = (LinearLayout) searchView.getChildAt(0);
+        LinearLayout linearLayout2 = (LinearLayout) linearLayout1.getChildAt(2);
+        LinearLayout linearLayout3 = (LinearLayout) linearLayout2.getChildAt(1);
+        AutoCompleteTextView autoComplete = (AutoCompleteTextView) linearLayout3.getChildAt(0);
+        autoComplete.setTextSize(14);
+        autoComplete.setTypeface(null, Typeface.BOLD);
+        autoComplete.setTextColor(getColor(R.color.Primary_60));
+
+
         recyclerView = findViewById(R.id.recycleViewHistorySearch);
         textViewHistorySearch = findViewById(R.id.textViewHistorySearch);
         searchView.requestFocus();
@@ -73,7 +88,7 @@ public class ActivitySearch extends AppCompatActivity {
             @Override
             public void onItemClick(String address) {
                 searchView.setQuery(address, true);
-                showFragmentFilter();
+                showFragmentFilter(address);
             }
 
             @Override
@@ -97,7 +112,7 @@ public class ActivitySearch extends AppCompatActivity {
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                showFragmentFilter();
+                showFragmentFilter(query);
                 searchView.clearFocus();
                 locationAdapter.getFilter().filter(query);
                 return true;
@@ -130,13 +145,13 @@ public class ActivitySearch extends AppCompatActivity {
         });
 
     }
-    private void showFragmentFilter() {
+    private void showFragmentFilter(String address) {
         textViewHistorySearch.setVisibility(View.GONE);
         recyclerView.setVisibility(View.GONE);
 
 
         FragmentManager fragmentManager = getSupportFragmentManager();
-        FragmentFilter fragmentFilter = new FragmentFilter();
+        FragmentFilter fragmentFilter = new FragmentFilter(address);
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
 
         // Xóa tất cả các Fragment đang tồn tại trong LinearLayout trước khi thêm Fragment mới

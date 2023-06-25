@@ -25,6 +25,7 @@ public class Room {
     private String phoneNumber;
 
     public Room() {
+
     }
 
     public Room(String id, String title, String description, String roomType, int capacity, String gender, float area, int price, int deposit, int electricityCost, int waterCost, int internetCost, boolean parking, int parkingFee, LocationTemp location, List<String> utilities, AccountClass createdBy, String phoneNumber) {

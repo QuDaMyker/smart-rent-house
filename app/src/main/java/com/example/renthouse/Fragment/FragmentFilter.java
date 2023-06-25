@@ -62,6 +62,11 @@ public class FragmentFilter extends Fragment {
     private AppCompatButton buttonApply;
     private LinearLayout linearLayoutControl;
 
+    public FragmentFilter(String address) {
+        objectFilter = new ObjectFilter();
+        objectSearch = new ObjectSearch();
+        objectSearch.setPath(address);
+    }
 
     @Override
     public void onAttach(@NonNull Context context) {
@@ -90,8 +95,7 @@ public class FragmentFilter extends Fragment {
         linearLayout = view.findViewById(R.id.linearLayoutResultFilter);
         buttonDeleteFilterTool = view.findViewById(R.id.buttonDeleteFilterTool);
         buttonApply = view.findViewById(R.id.buttonApply);
-        objectFilter = new ObjectFilter();
-        objectSearch = new ObjectSearch();
+
 
         fragmentResult = new FragmentResult();
 
@@ -315,6 +319,7 @@ public class FragmentFilter extends Fragment {
             @Override
             public void onClick(View v) {
                 linearLayoutControl.setVisibility(View.GONE);
+                fragmentResult.setObjectSearch(objectSearch);
                 FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
                 FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
                 fragmentTransaction.replace(R.id.linearLayoutFragment, fragmentResult);

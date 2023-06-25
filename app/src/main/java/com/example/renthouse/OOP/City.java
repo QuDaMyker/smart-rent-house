@@ -6,7 +6,9 @@ public class City {
     private String type;
     private String name_with_type;
     private String code;
+    public City() {
 
+    }
     public City(String name, String slug, String type, String name_with_type, String code) {
         this.name = name;
         this.slug = slug;
