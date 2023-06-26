@@ -50,7 +50,7 @@
             android:layout_marginRight="20dp"
             android:button="@drawable/custom_checkbox_like"
             android:buttonTint="#FF5050"
-            android:checked="true"
+            android:checked="false"
             />
     </com.google.android.material.appbar.MaterialToolbar>
 

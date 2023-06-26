@@ -98,17 +98,15 @@ public class FragmentLikedRooms extends Fragment {
 
         recyclerView.setAdapter(roomAdapter);
 
-        getListRoomFromFB();
+        getListLikedRoomFromFB();
 
         return view;
     }
 
-        private void getListRoomFromFB() {
+        private void getListLikedRoomFromFB() {
             FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
             FirebaseUser currentUser = firebaseAuth.getCurrentUser();
             FirebaseDatabase db = FirebaseDatabase.getInstance();
-
-
 
             String emailCur = currentUser.getEmail();
             DatabaseReference refAC = db.getReference("Accounts");
@@ -125,7 +123,6 @@ public class FragmentLikedRooms extends Fragment {
                             refLiked.addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                    List<String> likedRooms= new ArrayList<>();
                                     for (DataSnapshot userIDSnapshot : snapshot.getChildren()) {
                                         if (userIDSnapshot.getKey().equals(idAC))
                                         {
@@ -152,8 +149,6 @@ public class FragmentLikedRooms extends Fragment {
 
                 }
             });
-
-
     }
 
     @Override

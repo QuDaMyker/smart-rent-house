@@ -29,6 +29,8 @@ import com.example.renthouse.Adapter.UtilitiesAdapter;
 import com.example.renthouse.OOP.AccountClass;
 import com.example.renthouse.OOP.Room;
 import com.example.renthouse.R;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -148,6 +150,45 @@ public class ActivityDetails extends AppCompatActivity {
 
         //load thông tin p được chọn
         //gán các thông tin
+
+        //xét id p này có nằm trong ds thích của user
+        FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
+        FirebaseUser currentUser = firebaseAuth.getCurrentUser();
+        String emaiCur = currentUser.getEmail();
+        DatabaseReference refAc = db.getReference("Accounts");
+        refAc.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot){
+                String emailAc = null;
+                for (DataSnapshot snapAc: snapshot.getChildren())
+                {
+                    emailAc = snapAc.child("email").getValue(String.class);
+                    if (emaiCur.equals(emailAc)){
+                        String idAc = snapAc.getKey();
+                        DatabaseReference refLiked = db.getReference("LikedRooms").child(idAc);
+                        ref.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                if (snapshot.hasChild(room.getId()))
+                                {
+                                    cbLiked.setChecked(true);
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError error) {
+
+                            }
+                        });
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
 
         srcImages = room.getImages();
         String src = srcImages.get(curImage);

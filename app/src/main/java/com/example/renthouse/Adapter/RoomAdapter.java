@@ -57,6 +57,45 @@ public class RoomAdapter extends RecyclerView.Adapter<RoomAdapter.RoomViewHolder
             return;
         }
 
+        FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
+        FirebaseUser currentUser = firebaseAuth.getCurrentUser();
+        String emaiCur = currentUser.getEmail();
+        firebaseDatabase = FirebaseDatabase.getInstance();
+        DatabaseReference refAc = firebaseDatabase.getReference("Accounts");
+        //xem p có phải là p đã thích k
+        refAc.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot){
+                String emailAc = null;
+                for (DataSnapshot snapAc: snapshot.getChildren())
+                {
+                    emailAc = snapAc.child("email").getValue(String.class);
+                    if (emaiCur.equals(emailAc)){
+                        String idAc = snapAc.getKey();
+                        DatabaseReference refLiked = firebaseDatabase.getReference("LikedRooms").child(idAc);
+                        refLiked.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                if (snapshot.hasChild(room.getId()))
+                                {
+                                    holder.cbLike.setChecked(true);
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError error) {
+
+                            }
+                        });
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
         holder.tvName.setText(room.getTitle());
         holder.tvAddress.setText(room.getLocation().LocationToString());
         holder.tvPrice.setText(String.valueOf(room.getPrice()/1000000) + " Tr");
@@ -71,6 +110,7 @@ public class RoomAdapter extends RecyclerView.Adapter<RoomAdapter.RoomViewHolder
                 goToDetails (room);
             }
         });
+        //cbliked thay đổi
         holder.cbLike.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
             FirebaseUser currentUser = firebaseAuth.getCurrentUser();
@@ -78,7 +118,6 @@ public class RoomAdapter extends RecyclerView.Adapter<RoomAdapter.RoomViewHolder
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
                     // Nếu checkbox được chọn, them dzo thích
-
                     String emailCur = currentUser.getEmail();
                     firebaseDatabase = FirebaseDatabase.getInstance();
                     reference = firebaseDatabase.getReference("Accounts");
@@ -97,7 +136,6 @@ public class RoomAdapter extends RecyclerView.Adapter<RoomAdapter.RoomViewHolder
                                 }
                             }
                         }
-
                         @Override
                         public void onCancelled(@NonNull DatabaseError error) {
 
@@ -122,6 +160,9 @@ public class RoomAdapter extends RecyclerView.Adapter<RoomAdapter.RoomViewHolder
                                     DatabaseReference likedRef = firebaseDatabase.getReference("LikedRooms").child(idAC);
                                     String idRoom = room.getId();
                                     likedRef.child(idRoom).removeValue();
+                                    //xóa khỏi ds hiện bên liked room
+                                    rooms.remove(room);
+                                    notifyDataSetChanged();
                                 }
                             }
                         }
@@ -131,8 +172,6 @@ public class RoomAdapter extends RecyclerView.Adapter<RoomAdapter.RoomViewHolder
 
                         }
                     });
-
-
                 }
             }
         });
