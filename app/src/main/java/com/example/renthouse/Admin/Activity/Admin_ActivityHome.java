@@ -1,4 +1,4 @@
-package com.example.renthouse.Admin;
+package com.example.renthouse.Admin.Activity;
 
 import androidx.appcompat.app.AppCompatActivity;
 

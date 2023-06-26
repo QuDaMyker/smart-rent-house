@@ -27,7 +27,7 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
-            android:name=".Admin.Admin_ActivityHome"
+            android:name=".Admin.Activity.Admin_ActivityHome"
             android:exported="false" />
         <activity
             android:name=".ActivityAccountNotification"

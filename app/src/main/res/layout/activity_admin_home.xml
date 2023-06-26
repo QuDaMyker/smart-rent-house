@@ -4,6 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Admin.Admin_ActivityHome">
+    tools:context=".Admin.Activity.Admin_ActivityHome">
 
 </androidx.constraintlayout.widget.ConstraintLayout>
