@@ -24,7 +24,6 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-
 public class FragmentLiked extends Fragment {
     private RecyclerView recyclerView;
     FirebaseDatabase db;
@@ -40,7 +39,7 @@ public class FragmentLiked extends Fragment {
         // Inflate the layout for this fragment
 
         checkListLikedRooms();
-
+        //replaceFragment(new FragmentLikedRooms());
         return view;
     }
     private void checkListLikedRooms() {

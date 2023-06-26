@@ -135,7 +135,7 @@ public class ActivityDetails extends AppCompatActivity {
         tvSoP = findViewById(R.id.tvSoPhong);
         btnThemTTtg = findViewById(R.id.btnMoreTg);
         rcvDeXuatP = findViewById(R.id.rcvDeXuatPhong);
-        tvThemDX = findViewById(R.id.tvMoreRoom);
+        //tvThemDX = findViewById(R.id.tvMoreRoom);
         tvGiaP  = findViewById(R.id.tvGia);
         ibCall = findViewById(R.id.btnToCall);
         ibChat = findViewById(R.id.btnToChat);

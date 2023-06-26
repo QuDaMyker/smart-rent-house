@@ -100,6 +100,8 @@ public class FragmentLikedRooms extends Fragment {
 
         getListLikedRoomFromFB();
 
+        //getListRoomFromFB();
+
         return view;
     }
 
@@ -149,6 +151,25 @@ public class FragmentLikedRooms extends Fragment {
 
                 }
             });
+    }
+    private void getListRoomFromFB() {
+        FirebaseDatabase db = FirebaseDatabase.getInstance();
+        DatabaseReference refLiked = db.getReference("Rooms");
+        refLiked.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for (DataSnapshot roomSnapshot : snapshot.getChildren()) {
+                    Room temp = roomSnapshot.getValue(Room.class);
+                    rooms.add(temp);
+                }
+                roomAdapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
     }
 
     @Override

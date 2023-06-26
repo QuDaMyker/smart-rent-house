@@ -102,11 +102,7 @@
         <activity
             android:name=".Activity.ActivitySplash"
             android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
         <activity
             android:name=".Activity.ActivitySignUp"
@@ -119,7 +115,13 @@
             android:exported="false" />
         <activity
             android:name=".Activity.ActivityLogIn"
-            android:exported="true" />
+            android:exported="true" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
 
         <service
             android:name=".Chat.Firebase.MessingService"
