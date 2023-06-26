@@ -1,5 +1,6 @@
 package com.example.renthouse.Fragment;
 
+import android.content.Intent;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -18,6 +19,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.example.renthouse.Activity.ActivitySearch;
+import com.example.renthouse.R;
+import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
 import com.example.renthouse.Activity.ActivityPost;
 import com.example.renthouse.Activity.FindByMapsActivity;
 import com.example.renthouse.Activity.MapsActivity;
@@ -106,9 +111,15 @@ public class FragmentHome extends Fragment {
                 startActivity(new Intent(getContext(), NoficationActivity.class));
             }
         });
-
-
-
+        binding.textInputFindRoom.clearFocus();
+        binding.textInputFindRoom.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                binding.textInputFindRoom.clearFocus();
+                Intent intent = new Intent(getActivity(), ActivitySearch.class);
+                startActivity(intent);
+            }
+        });
         return view;
     }
 

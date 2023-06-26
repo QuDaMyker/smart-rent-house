@@ -1,15 +1,15 @@
 package com.example.renthouse.OOP;
 
-public class LocationTemp {
+import java.io.Serializable;
+
+public class LocationTemp implements Serializable {
     private String street;
     private String address;
     private City city;
     private District district;
     private Ward ward;
-
     public LocationTemp() {
     }
-
     public LocationTemp(String street, String address, City city, District district, Ward ward) {
         this.street = street;
         this.address = address;

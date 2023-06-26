@@ -2,30 +2,35 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".FragmentFilter.FragmentOptionOther">
+    android:layout_height="wrap_content"
+    android:layout_marginTop="20dp"
+    tools:context=".FragmentFilter.FragmentSort">
 
     <!-- TODO: Update blank fragment layout -->
     <RadioGroup
         android:layout_width="wrap_content"
+        android:id="@+id/radioGroupSort"
         android:layout_marginStart="20dp"
         android:layout_marginEnd="20dp"
         android:layout_height="wrap_content">
         <com.google.android.material.radiobutton.MaterialRadioButton
             android:layout_width="wrap_content"
             android:buttonTint="@color/Primary_40"
+            android:id="@+id/radioButtonLienQuanNhat"
             android:text="Liên quan nhất"
             android:textSize="15dp"
             android:layout_height="wrap_content"/>
         <com.google.android.material.radiobutton.MaterialRadioButton
             android:layout_width="wrap_content"
             android:buttonTint="@color/Primary_40"
+            android:id="@+id/radioButtonMoiNhat"
             android:text="Mới nhất"
             android:textSize="15dp"
             android:layout_height="wrap_content"/>
         <com.google.android.material.radiobutton.MaterialRadioButton
             android:layout_width="wrap_content"
             android:text="Giá thấp đến cao"
+            android:id="@+id/radioButtonGiaMinToiMax"
             android:buttonTint="@color/Primary_40"
             android:textSize="15dp"
             android:layout_height="wrap_content"/>
@@ -34,6 +39,7 @@
             android:text="Giá cao xuống thấp"
             android:textSize="15dp"
             android:buttonTint="@color/Primary_40"
+            android:id="@+id/radioButtonGiaMaxToiMin"
             android:layout_height="wrap_content"/>
     </RadioGroup>
 
