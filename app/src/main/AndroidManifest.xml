@@ -94,6 +94,11 @@
         <activity
             android:name=".Activity.ActivityMain"
             android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
         <activity
             android:name=".Activity.FullScreenActivity"
@@ -114,13 +119,11 @@
         <activity
             android:name=".Activity.ActivityLogIn"
             android:exported="true" >
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
 
+        <activity android:name=".Activity.ActivitySearch"
+            android:exported="false"/>
         <service
             android:name=".Chat.Firebase.MessingService"
             android:exported="false">
