@@ -1,6 +1,8 @@
 package com.example.renthouse.OOP;
 
-public class Ward {
+import java.io.Serializable;
+
+public class Ward implements Serializable  {
     private String name;
     private String type;
     private String slug;
@@ -9,8 +11,8 @@ public class Ward {
     private String path_with_type;
     private String code;
     private String parent_code;
+    public Ward () {
 
-    public Ward() {
     }
 
     public Ward(String name, String type, String slug, String name_with_type, String path, String path_with_type, String code, String parent_code) {

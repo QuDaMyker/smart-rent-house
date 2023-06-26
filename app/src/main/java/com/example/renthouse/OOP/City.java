@@ -1,14 +1,14 @@
 package com.example.renthouse.OOP;
 
-public class City {
+import java.io.Serializable;
+
+public class City implements Serializable {
     private String name;
     private String slug;
     private String type;
     private String name_with_type;
     private String code;
-
-    public City() {
-    }
+    public City (){};
 
     public City(String name, String slug, String type, String name_with_type, String code) {
         this.name = name;

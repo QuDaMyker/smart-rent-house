@@ -1,6 +1,8 @@
 package com.example.renthouse.OOP;
 
-public class LocationTemp {
+import java.io.Serializable;
+
+public class LocationTemp implements Serializable {
     private String street;
     private String address;
     private City city;
@@ -8,8 +10,8 @@ public class LocationTemp {
     private Ward ward;
 
     public LocationTemp() {
-    }
 
+    }
     public LocationTemp(String street, String address, City city, District district, Ward ward) {
         this.street = street;
         this.address = address;

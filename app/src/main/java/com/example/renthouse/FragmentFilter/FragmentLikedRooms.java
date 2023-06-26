@@ -4,11 +4,32 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.renthouse.Activity.ActivityDetails;
+import com.example.renthouse.Activity.ActivityMain;
+import com.example.renthouse.Adapter.RoomAdapter;
+import com.example.renthouse.OOP.Room;
 import com.example.renthouse.R;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.ktx.Firebase;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.PrimitiveIterator;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -26,9 +47,12 @@ public class FragmentLikedRooms extends Fragment {
     private String mParam1;
     private String mParam2;
     private RecyclerView recyclerView;
+    private RoomAdapter roomAdapter;
+    private List<Room> rooms;
 
 
     public FragmentLikedRooms() {
+
     }
 
     /**
@@ -64,19 +88,96 @@ public class FragmentLikedRooms extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_liked_rooms, container, false);
-//        recyclerView = (RecyclerView) view.findViewById(R.id.rcv_LikedRooms);
-//        GridLayoutManager grid = new GridLayoutManager(getActivity(), 2);
-//        recyclerView.setLayoutManager(grid);
-//        RoomAdapter roomAdapter = new RoomAdapter(getListRoom());
-//        recyclerView.setAdapter(roomAdapter);
+        recyclerView = (RecyclerView) view.findViewById(R.id.rcv_LikedRooms);
+        GridLayoutManager grid = new GridLayoutManager(getActivity(), 2);
+
+        recyclerView.setLayoutManager(grid);
+
+        rooms = new ArrayList<>();
+        roomAdapter = new RoomAdapter(this.getContext(), rooms);
+
+        recyclerView.setAdapter(roomAdapter);
+
+        getListLikedRoomFromFB();
+
+        //getListRoomFromFB();
+
         return view;
     }
 
-//    private List<Room> getListRoom() {
-//       List<Room> room = new ArrayList<>();
-//       room.add( new Room("HOMESTAY DOOM MẶT TIỀN HÀNG XANH", "Đường Nguyễn Huy Tự", 12000000, R.drawable.p1));
-//        room.add( new Room("p2", "q2", 12000000, R.drawable.p1));
-//        room.add( new Room("p3", "q3", 12000000, R.drawable.p1));
-//        return room;
-//    }
+        private void getListLikedRoomFromFB() {
+            FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
+            FirebaseUser currentUser = firebaseAuth.getCurrentUser();
+            FirebaseDatabase db = FirebaseDatabase.getInstance();
+
+            String emailCur = currentUser.getEmail();
+            DatabaseReference refAC = db.getReference("Accounts");
+            refAC.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    String emailAC = null;
+                    for (DataSnapshot snapshotAc: snapshot.getChildren())
+                    {
+                        emailAC = snapshotAc.child("email").getValue(String.class);
+                        if (emailCur.equals(emailAC)){
+                            String idAC = snapshotAc.getKey();
+                            DatabaseReference refLiked = db.getReference("LikedRooms");
+                            refLiked.addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                    for (DataSnapshot userIDSnapshot : snapshot.getChildren()) {
+                                        if (userIDSnapshot.getKey().equals(idAC))
+                                        {
+                                            for (DataSnapshot roomSnapshot : userIDSnapshot.getChildren()) {
+                                                Room temp = roomSnapshot.getValue(Room.class);
+                                                rooms.add(temp);
+                                            }
+                                            roomAdapter.notifyDataSetChanged();
+                                        }
+                                    }
+                                }
+
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError error) {
+
+                                }
+                            });
+                        }
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+
+                }
+            });
+    }
+    private void getListRoomFromFB() {
+        FirebaseDatabase db = FirebaseDatabase.getInstance();
+        DatabaseReference refLiked = db.getReference("Rooms");
+        refLiked.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for (DataSnapshot roomSnapshot : snapshot.getChildren()) {
+                    Room temp = roomSnapshot.getValue(Room.class);
+                    rooms.add(temp);
+                }
+                roomAdapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (roomAdapter != null)
+        {
+            roomAdapter.release();
+        }
+    }
 }
