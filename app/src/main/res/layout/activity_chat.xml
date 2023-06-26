@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/background_chat_history"
+    tools:context=".Fragment.FragmentChatHistory">
+
+    <RelativeLayout
+        android:id="@+id/topBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:id="@+id/backBtn"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="20dp"
+            android:background="@drawable/round_back_light_10"
+            android:paddingStart="12sp"
+            android:paddingEnd="2dp"
+            android:src="@drawable/baseline_arrow_back_ios_24" />
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/profilePic"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="20dp"
+            android:layout_toEndOf="@id/backBtn"
+            android:src="@drawable/baseline_person_pin_24" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="10dp"
+            android:layout_toEndOf="@id/profilePic"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:maxLines="1"
+                android:text="User Name"
+                android:textColor="#FFFFFF"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:text="Online"
+                android:textColor="#00C853"
+                android:textSize="13sp" />
+        </LinearLayout>
+    </RelativeLayout>
+
+    <View
+        android:id="@+id/backView"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginBottom="10dp"
+        android:background="@drawable/background_chat_history_inside"
+        app:layout_constraintBottom_toTopOf="@+id/hintBar"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/topBar" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/chattingRecycleView"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:orientation="vertical"
+        android:padding="20dp"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        app:layout_constraintBottom_toBottomOf="@+id/backView"
+        app:layout_constraintTop_toTopOf="@+id/backView" />
+
+    <ProgressBar
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@+id/backView"
+        app:layout_constraintEnd_toEndOf="@+id/backView"
+        app:layout_constraintStart_toStartOf="@+id/backView"
+        app:layout_constraintTop_toTopOf="@+id/backView" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/sendBtn"
+        style="@style/Widget.Material3.Button.IconButton.Filled"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginBottom="20dp"
+        android:backgroundTint="@color/Primary_40"
+        android:contentDescription="Send"
+        android:gravity="end"
+        app:icon="@drawable/ic_send"
+        app:iconSize="24dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/messageEditTxt" />
+
+
+    <EditText
+        android:id="@+id/messageEditTxt"
+        android:layout_width="0dp"
+        android:layout_height="50dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginBottom="20dp"
+        android:background="@drawable/background_chat_input"
+        android:hint="Type something...."
+        android:paddingLeft="20dp"
+        android:textColor="@color/black"
+        android:textColorHint="@color/black"
+        android:textSize="14sp"
+
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/sendBtn"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <HorizontalScrollView
+        android:id="@+id/hintBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
+        android:scrollbars="none"
+        app:layout_constraintBottom_toTopOf="@+id/messageEditTxt"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/mButton1"
+                style="@style/Widget.Material3.Button.IconButton.Filled"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@android:color/transparent"
+                android:contentDescription="Delete"
+                android:gravity="end"
+                app:icon="@drawable/ic_cancel_fill"
+                app:iconSize="30dp"
+                app:iconTint="@color/Primary_40" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/mButton2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginEnd="10dp"
+                android:backgroundTint="@color/white"
+                android:text="Phòng này còn không ạ?"
+                android:textAllCaps="false"
+                android:textColor="@color/Secondary_20" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/mButton3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginEnd="10dp"
+                android:backgroundTint="@color/white"
+                android:text="Khi nào mình đi xem phòng được?"
+                android:textAllCaps="false"
+                android:textColor="@color/Secondary_20" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/mButton4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginEnd="10dp"
+                android:backgroundTint="@color/white"
+                android:text="Cảm ơn nhưng tôi không thích phòng này"
+                android:textAllCaps="false"
+                android:textColor="@color/Secondary_20" />
+
+        </LinearLayout>
+    </HorizontalScrollView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

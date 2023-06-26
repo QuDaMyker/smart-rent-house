@@ -1,5 +1,6 @@
 package com.example.renthouse.Adapter;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.net.Uri;
@@ -50,7 +51,7 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.PhotoViewHol
     }
 
     @Override
-    public void onBindViewHolder(@NonNull PhotoViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull PhotoViewHolder holder, @SuppressLint("RecyclerView") int position) {
         Uri uri = listPhoto.get(position);
         if(uri == null){
             return;

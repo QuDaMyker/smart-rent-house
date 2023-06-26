@@ -33,6 +33,8 @@ import android.widget.Toast;
 
 import com.example.renthouse.OOP.AccountClass;
 import com.example.renthouse.R;
+import com.example.renthouse.utilities.Constants;
+import com.example.renthouse.utilities.PreferenceManager;
 import com.google.android.gms.auth.api.identity.BeginSignInRequest;
 import com.google.android.gms.auth.api.identity.Identity;
 import com.google.android.gms.auth.api.identity.SignInClient;
@@ -65,6 +67,8 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
+import org.checkerframework.checker.units.qual.C;
+
 import java.net.IDN;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -84,11 +88,14 @@ public class ActivityLogIn extends AppCompatActivity {
     FirebaseDatabase database;
     DatabaseReference reference;
     String imageURL;
+    private PreferenceManager preferenceManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_log_in);
+
+        preferenceManager = new PreferenceManager(getApplicationContext());
 
         database = FirebaseDatabase.getInstance();
         reference = database.getReference();
@@ -130,6 +137,9 @@ public class ActivityLogIn extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
+                            preferenceManager.putString(Constants.KEY_EMAIL, email);
+                            preferenceManager.putString(Constants.KEY_PASSWORD, password);
+                            preferenceManager.putBoolean(Constants.KEY_IS_SIGNED_IN, true);
                             pushNotification();
                             Toast.makeText(getApplicationContext(), "Login Successful", Toast.LENGTH_SHORT).show();
                             Intent intent = new Intent(getApplicationContext(), ActivityMain.class);
@@ -169,6 +179,7 @@ public class ActivityLogIn extends AppCompatActivity {
                         .build();
                 gsc = GoogleSignIn.getClient(ActivityLogIn.this, gso);
                 signInWithGoogle();
+
 
             }
         });
@@ -237,47 +248,53 @@ public class ActivityLogIn extends AppCompatActivity {
                     SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                     String formattedDate = dateFormat.format(now);
                     AccountClass accountClass = new AccountClass(personName, personEmail, "+84", "********", personPhoto.toString(), formattedDate);
-
-                 /*   reference.child("Accounts").addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(DataSnapshot dataSnapshot) {
-                            for(DataSnapshot data: dataSnapshot.getChildren()){
-                                if (data.child(personalID).exists()) {
-                                    //do ur stuff
-                                } else {
-                                    reference.child("Accounts").child(personalID).setValue(accountClass);
-                                }
-                            }
-                        }
-
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError error) {
-
-                        }
+                    String emailToCheck = personEmail;
 
 
-                    });*/
-                    reference.child("Accounts").child(personalID).addListenerForSingleValueEvent(new ValueEventListener() {
+
+                    DatabaseReference accountsRef = reference.child("Accounts");
+                    Query emailQuery = accountsRef.orderByChild("email").equalTo(emailToCheck);
+
+                    emailQuery.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                            if (!dataSnapshot.exists()) {
-                                reference.child("Accounts").child(personalID).setValue(accountClass);
+                            if (dataSnapshot.exists()) {
+                                // Account with the given email already exists
+                                // You can handle this case here
+                            } else {
+                                DatabaseReference newChildRef = reference.child("Accounts").push();
+                                String generatedKey = newChildRef.getKey();
+                                preferenceManager.putString(Constants.KEY_USER_KEY, generatedKey);
 
+                                // Set the data for the new child node
+                                newChildRef.setValue(accountClass)
+                                        .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                            @Override
+                                            public void onComplete(@NonNull Task<Void> task) {
+                                                if (task.isSuccessful()) {
+                                                    // Data successfully saved
+                                                } else {
+                                                    // Handle the error here
+                                                }
+                                            }
+                                        });
                             }
                         }
-
                         @Override
                         public void onCancelled(@NonNull DatabaseError databaseError) {
                             // Handle the error here
                         }
                     });
+                    preferenceManager.putBoolean(Constants.KEY_IS_SIGNED_IN, true);
+                    preferenceManager.putString(Constants.KEY_IMAGE, accountClass.getImage());
+                    preferenceManager.putString(Constants.KEY_PHONENUMBER, accountClass.getPhoneNumber());
+                    preferenceManager.putString(Constants.KEY_EMAIL, accountClass.getEmail());
+                    preferenceManager.putString(Constants.KEY_FULLNAME, accountClass.getFullname());
+
                     pushSuccessFullNotification();
                     startActivity(new Intent(ActivityLogIn.this, ActivityMain.class));
 
-
                 }
-                //
-                //
 
             } catch (ApiException e) {
                 Toast.makeText(ActivityLogIn.this, "Error", Toast.LENGTH_SHORT).show();

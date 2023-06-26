@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center_vertical"
+    android:padding="10dp">
+    <ImageView
+        android:id="@+id/imageView4"
+        android:layout_width="50dp"
+        android:layout_height="40dp"
+        android:gravity="left"
+        app:srcCompat="@drawable/ic_uni" />
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="vertical">
+        <TextView
+            android:id="@+id/tenTruong"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="20dp"
+            android:layout_marginBottom="2dp"
+            android:layout_weight="1"
+            android:text="Trường Đại học Công Nghệ thông tin"
+            android:textColor="@color/Secondary_20"
+            android:textSize="16sp" />
+        <TextView
+            android:id="@+id/diachiTruong"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="20dp"
+            android:layout_weight="1"
+            android:text="Đặng Văn Bi, Quận Thủ Đức"
+            android:textColor="@color/Secondary_40"
+            android:textSize="14sp" />
+    </LinearLayout>
+</LinearLayout>

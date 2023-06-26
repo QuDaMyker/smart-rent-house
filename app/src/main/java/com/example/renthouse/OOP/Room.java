@@ -1,9 +1,10 @@
 package com.example.renthouse.OOP;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Room {
+public class Room implements Serializable {
     private String id;
     private String title;
     private String description;
