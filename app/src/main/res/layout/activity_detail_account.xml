@@ -101,6 +101,7 @@
                 android:drawableLeft="@drawable/outline_person_24"
                 android:drawablePadding="10dp"
                 android:hint="Họ và Tên"
+                android:inputType="text"
                 android:singleLine="true"
                 android:textColor="@color/black" />
         </com.google.android.material.textfield.TextInputLayout>
@@ -145,7 +146,7 @@
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/tiet_phoneNumber"
-                android:inputType="numberDecimal"
+                android:inputType="number"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:drawableLeft="@drawable/baseline_local_phone_24"
