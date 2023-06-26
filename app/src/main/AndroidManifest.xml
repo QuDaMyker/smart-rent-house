@@ -29,9 +29,6 @@
         <activity
             android:name=".Admin.Activity.Admin_ActivityHome"
             android:exported="false" />
-        <activity
-            android:name=".ActivityAccountNotification"
-            android:exported="false" />
 
         <service
             android:name=".FCM.MyFirebaseMessagingService"
@@ -127,5 +124,4 @@
             </intent-filter>
         </service>
     </application>
-
 </manifest>
