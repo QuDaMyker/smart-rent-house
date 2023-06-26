@@ -18,6 +18,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
+import com.example.renthouse.Admin.Activity.Admin_ActivityMain;
 import com.example.renthouse.R;
 import com.example.renthouse.utilities.Constants;
 import com.example.renthouse.utilities.PreferenceManager;
@@ -71,7 +72,12 @@ public class ActivitySplash extends AppCompatActivity {
 
                 preferenceManager = new PreferenceManager(getApplicationContext());
                 if(preferenceManager.getBoolean(Constants.KEY_IS_SIGNED_IN) == true) {
-                    startActivity(new Intent(ActivitySplash.this, ActivityMain.class));
+                    if(preferenceManager.getString(Constants.KEY_EMAIL).equals("admin")) {
+                        startActivity(new Intent(ActivitySplash.this, Admin_ActivityMain.class));
+                    } else{
+                        startActivity(new Intent(ActivitySplash.this, ActivityMain.class));
+
+                    }
                 } else {
                     startActivity(new Intent(ActivitySplash.this, ActivityLogIn.class));
                 }

@@ -27,7 +27,7 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
-            android:name=".Admin.Activity.Admin_ActivityHome"
+            android:name=".Admin.Activity.Admin_ActivityMain"
             android:exported="false" />
 
         <service
@@ -87,12 +87,12 @@
             android:exported="false" />
         <activity
             android:name=".Activity.ActivityDetails"
-            android:exported="false"></activity>
+            android:exported="false" />
         <activity
             android:name=".Activity.ActivityAccountInformation"
             android:exported="false" />
         <activity
-            android:name=".Activity.ActivityMain"
+            android:name=".Activity.ActivitySplash"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -104,9 +104,8 @@
             android:name=".Activity.FullScreenActivity"
             android:exported="false" />
         <activity
-            android:name=".Activity.ActivitySplash"
-            android:exported="true">
-        </activity>
+            android:name=".Activity.ActivityMain"
+            android:exported="false"/>
         <activity
             android:name=".Activity.ActivitySignUp"
             android:exported="false" />
@@ -118,12 +117,11 @@
             android:exported="false" />
         <activity
             android:name=".Activity.ActivityLogIn"
-            android:exported="true" >
-
-        </activity>
-
-        <activity android:name=".Activity.ActivitySearch"
             android:exported="false"/>
+        <activity
+            android:name=".Activity.ActivitySearch"
+            android:exported="false" />
+
         <service
             android:name=".Chat.Firebase.MessingService"
             android:exported="false">

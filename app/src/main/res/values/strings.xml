@@ -30,5 +30,8 @@
         <item>Xác nhận</item>
     </array>
     <string name="title_activity_maps">MapsActivity</string>
+    <string name="trang_chu">Trang chủ</string>
+    <string name="phong_tro">Phòng trọ</string>
+    <string name="nguoi_dung">Người dùng</string>
 
 </resources>

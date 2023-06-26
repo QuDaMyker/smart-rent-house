@@ -5,13 +5,13 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/Primary_80"
-    tools:context=".Activity.ActivityMain">
+    tools:context=".Admin.Activity.Admin_ActivityMain">
 
     <FrameLayout
         android:id="@+id/frame_layout"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        app:layout_constraintBottom_toTopOf="@+id/bottomNavigationView"
+        app:layout_constraintBottom_toTopOf="@id/bottomNavigationView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -23,12 +23,13 @@
         android:background="@color/Primary_80"
         app:itemRippleColor="@color/black"
         app:itemTextColor="@color/black"
+        app:backgroundTint="@color/Primary_80"
         app:itemIconTint="@color/black"
         app:labelVisibilityMode="selected"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:menu="@menu/menu_nav_button" />
+        app:menu="@menu/menu_nav_bottom_admin" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

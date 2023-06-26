@@ -32,7 +32,9 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.renthouse.Admin.Activity.Admin_ActivityMain;
 import com.example.renthouse.OOP.AccountClass;
+import com.example.renthouse.Other.CommonUtils;
 import com.example.renthouse.R;
 import com.example.renthouse.utilities.Constants;
 import com.example.renthouse.utilities.PreferenceManager;
@@ -126,6 +128,15 @@ public class ActivityLogIn extends AppCompatActivity {
                 email = String.valueOf(login_email.getText());
                 password = String.valueOf(login_password.getText());
 
+                if(email.equals("admin") && password.equals("admin")) {
+                    preferenceManager.putBoolean(Constants.KEY_IS_SIGNED_IN, true);
+                    preferenceManager.putString(Constants.KEY_EMAIL, email);
+                    preferenceManager.putString(Constants.KEY_PASSWORD, password);
+                    CommonUtils.showNotification(ActivityLogIn.this, "Thông Báo", "Chào mừng Admin trở lại", R.drawable.ic_phobien_1);
+                    startActivity(new Intent(ActivityLogIn.this, Admin_ActivityMain.class));
+                    finish();
+                    return;
+                }
                 if (TextUtils.isEmpty(email)) {
                     login_email.setError("Vui lòng điền email");
                     return;
@@ -139,6 +150,8 @@ public class ActivityLogIn extends AppCompatActivity {
                     login_password.setError("Vui lòng điền mật khẩu");
                     return;
                 }
+
+
 
                 mAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                     @Override
@@ -252,6 +265,7 @@ public class ActivityLogIn extends AppCompatActivity {
                 Toast.makeText(ActivityLogIn.this, "Error", Toast.LENGTH_SHORT).show();
             }
         }
+        progressDialog.dismiss();
     }
     private void firebaseAuthWithGoogle(String idToken) {
         AuthCredential credential = GoogleAuthProvider.getCredential(idToken, null);
