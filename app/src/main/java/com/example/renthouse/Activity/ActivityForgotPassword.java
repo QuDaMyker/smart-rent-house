@@ -3,6 +3,7 @@ package com.example.renthouse.Activity;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -23,11 +24,17 @@ public class ActivityForgotPassword extends AppCompatActivity {
     private TextView tv_backToLoginBtn;
     private Button sentBtn;
     private TextInputEditText forgotPassword_email;
+    private ProgressDialog progressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_forgot_password);
+
+        progressDialog = new ProgressDialog(ActivityForgotPassword.this);
+        progressDialog.setCancelable(false);
+        progressDialog.setMessage("Loading...");
+
 
         backToLoginBtn = findViewById(R.id.backToLoginBtn);
         forgotPassword_email = findViewById(R.id.forgotPassword_email);
@@ -38,7 +45,7 @@ public class ActivityForgotPassword extends AppCompatActivity {
         backToLoginBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                finish();
+                onBackPressed();
             }
         });
         //
@@ -47,7 +54,7 @@ public class ActivityForgotPassword extends AppCompatActivity {
         tv_backToLoginBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                finish();
+                onBackPressed();
             }
         });
         //
@@ -56,6 +63,7 @@ public class ActivityForgotPassword extends AppCompatActivity {
         sentBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                progressDialog.show();
                 FirebaseAuth.getInstance().sendPasswordResetEmail(forgotPassword_email.getText().toString().trim()).addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
@@ -68,6 +76,7 @@ public class ActivityForgotPassword extends AppCompatActivity {
                             Intent intent = new Intent(getApplicationContext(), ActivitySent.class);
                             startActivityForResult(intent, REQUEST_CODE);
                         }
+                        progressDialog.dismiss();
                     }
                 });
 
