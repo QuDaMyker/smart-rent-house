@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Admin.Activity.Admin_ActivityCreateSchedule"
+    android:background="@color/white">
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/top_app_bar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/white"
+        app:navigationIconTint="@color/Primary_40"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageButton
+            android:id="@+id/btn_Back"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="5dp"
+            android:background="@color/white"
+            android:padding="10dp"
+            android:src="@drawable/baseline_arrow_back_24"
+            app:tint="@color/Primary_40" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Tạo lịch thông báo mới"
+            android:textColor="@color/Primary_40"
+            android:textSize="22sp"
+            android:textStyle="bold"
+            android:layout_gravity="center"/>
+    </com.google.android.material.appbar.MaterialToolbar>
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintTop_toBottomOf="@+id/top_app_bar"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:scrollbars="none">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:padding="20dp">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:text="TIÊU ĐỀ THÔNG BÁO"
+                android:textColor="@color/Secondary_40"
+                android:layout_marginBottom="10dp"/>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/edtLayoutTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="20dp"
+                app:hintEnabled="false">
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/edtTitle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Nhập tiêu đề thông báo"/>
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:text="NỘI DUNG THÔNG BÁO"
+                android:textColor="@color/Secondary_40"
+                android:layout_marginBottom="10dp"/>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/edtLayoutContent"
+                android:layout_width="match_parent"
+                android:layout_height="150dp"
+                android:layout_marginBottom="20dp"
+                app:hintEnabled="false">
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/edtContent"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:hint="Nhập nội dung thông báo"
+                    android:gravity="top"/>
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:text="THỜI GIAN GỬI THÔNG BÁO"
+                android:textColor="@color/Secondary_40"
+                android:layout_marginBottom="10dp" />
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/edtLayoutTime"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="20dp"
+                app:endIconDrawable="@drawable/ic_timer_small"
+                app:endIconMode="custom"
+                app:hintEnabled="false">
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/edtTime"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:focusable="false"
+                    android:inputType="none"
+                    android:hint="Bấm để chọn thời gian gửi thông báo"/>
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:text="LẶP LẠI"
+                android:textColor="@color/Secondary_40"
+                android:layout_marginBottom="10dp"/>
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/edtLayoutLoop"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="20dp"
+                app:hintEnabled="false"
+                style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu">
+                <AutoCompleteTextView
+                    android:id="@+id/edtLoop"
+                    android:focusable="false"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="none"
+                    android:hint="Bấm để chọn chế độ lặp lại"
+                    app:simpleItems="@array/loop"/>
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:text="NGƯỜI NHẬN"
+                android:textColor="@color/Secondary_40"
+                android:layout_marginBottom="10dp"/>
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/edtLayoutReceiver"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="20dp"
+                app:hintEnabled="false"
+                style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu">
+                <AutoCompleteTextView
+                    android:id="@+id/edtReceiver"
+                    android:focusable="false"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="none"
+                    android:hint="Bấm để chọn người nhận"
+                    app:simpleItems="@array/receiver"/>
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginBottom="30dp">
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/cancelBtn"
+                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                    android:layout_width="0dp"
+                    android:layout_height="70dp"
+                    android:layout_gravity="center"
+                    android:backgroundTint="@color/white"
+                    android:text="Hủy"
+                    android:textAllCaps="false"
+                    android:textColor="@color/Primary_60"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    app:cornerRadius="100dp"
+                    app:strokeColor="@color/Primary_60"
+                    app:strokeWidth="2dp"
+                    android:layout_weight="1"
+                    android:layout_marginEnd="10dp"/>
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/createBtn"
+                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                    android:layout_width="0dp"
+                    android:layout_height="70dp"
+                    android:layout_gravity="center"
+                    android:backgroundTint="@color/Primary_60"
+                    android:text="Tạo"
+                    android:textAllCaps="false"
+                    android:textColor="@color/white"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    app:cornerRadius="100dp"
+                    android:layout_weight="1"
+                    app:strokeColor="@color/Primary_60"
+                    app:strokeWidth="2dp"
+                    android:layout_marginStart="10dp"/>
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
