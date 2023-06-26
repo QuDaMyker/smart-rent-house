@@ -8,9 +8,7 @@ public class LocationTemp implements Serializable {
     private City city;
     private District district;
     private Ward ward;
-
     public LocationTemp() {
-
     }
     public LocationTemp(String street, String address, City city, District district, Ward ward) {
         this.street = street;

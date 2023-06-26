@@ -2,13 +2,28 @@ package com.example.renthouse.FragmentFilter;
 
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
+import com.example.renthouse.Interface.IPriceValueChangeListener;
 import com.example.renthouse.R;
+import com.google.android.material.slider.LabelFormatter;
+import com.google.android.material.slider.RangeSlider;
+import com.google.android.material.textfield.TextInputEditText;
+
+
+import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -25,7 +40,18 @@ public class FragmentPrice extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
-
+    private TextInputEditText textInputEditTextPriceFrom;
+    private TextInputEditText textInputEditTextPriceTo;
+    private RangeSlider rangeSlider;
+    private String valueFrom = "";
+    private String valueTo = "";
+    private IPriceValueChangeListener mListener;
+    public boolean isDelete = false;
+    public boolean isResume = false;
+    public FragmentPrice(IPriceValueChangeListener listener) {
+        // Required empty public constructor
+        this.mListener = listener;
+    }
     public FragmentPrice() {
         // Required empty public constructor
     }
@@ -61,6 +87,170 @@ public class FragmentPrice extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_price, container, false);
+        View view  =  inflater.inflate(R.layout.fragment_price, container, false);
+        textInputEditTextPriceTo = view.findViewById(R.id.textInputEditTextPriceTo);
+        textInputEditTextPriceFrom = view.findViewById(R.id.textInputEditTextPriceFrom);
+        rangeSlider = view.findViewById(R.id.rangeSlider);
+        rangeSlider.setValueFrom(0);
+        rangeSlider.setValueTo(100);
+        isResume = true;
+        textInputEditTextPriceFrom.addTextChangedListener(new TextWatcher() {
+            private DecimalFormat decimalFormat = new DecimalFormat("#,###");
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            }
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            }
+            @Override
+            public void afterTextChanged(Editable editable) {
+                String input = editable.toString().replaceAll(" ", ""); // Loại bỏ dấu phân cách hàng nghìn có sẵn (nếu có)
+                long number;
+                try {
+                    number = Long.parseLong(input);
+                    if (number > 20000000) {
+                        Toast.makeText(getContext(), "Số tiền quá lớn", Toast.LENGTH_LONG).show();
+                        textInputEditTextPriceFrom.setText("");
+                        return;
+                    }
+
+                    String formattedNumber = decimalFormat.format(number);
+                    String price = formattedNumber.replaceAll(",", " ");
+                    List<Float> values = rangeSlider.getValues();
+                    float minValue = (float) number / 200000;
+                    if (minValue < 0.005F) {
+                        minValue = 0.005F;
+                    }
+                    values.set(0, minValue);
+                    rangeSlider.setValues(values);
+
+                    textInputEditTextPriceFrom.removeTextChangedListener(this);
+                    textInputEditTextPriceFrom.setText(price);
+                    textInputEditTextPriceFrom.setSelection(price.length());
+                    textInputEditTextPriceFrom.addTextChangedListener(this);
+                } catch (NumberFormatException e) {
+                    // Xử lý khi không thể chuyển đổi sang số
+                }
+            }
+        });
+        textInputEditTextPriceTo.addTextChangedListener(new TextWatcher() {
+            private DecimalFormat decimalFormat = new DecimalFormat("#,###");
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            }
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            }
+            @Override
+            public void afterTextChanged(Editable editable) {
+                String input = editable.toString().replaceAll(" ", ""); // Loại bỏ dấu phân cách hàng nghìn có sẵn (nếu có)
+                long number;
+                try {
+                    number = Long.parseLong(input);
+                    if (number > 20000000) {
+                        Toast.makeText(getContext(), "Số tiền quá lớn", Toast.LENGTH_LONG).show();
+                        textInputEditTextPriceTo.setText("");
+                        return;
+                    }
+                    String formattedNumber = decimalFormat.format(number);
+
+                    String price = formattedNumber.replaceAll(",", " ");
+                    List<Float> values = rangeSlider.getValues();
+                    float maxValue = (float) number / 200000;
+                    if (maxValue < values.get(0)) {
+                        maxValue = values.get(0);
+                    }
+                    values.set(1, maxValue);
+                    rangeSlider.setValues(values);
+
+                    textInputEditTextPriceTo.removeTextChangedListener(this);
+                    textInputEditTextPriceTo.setText(price);
+                    textInputEditTextPriceTo.setSelection(price.length());
+                    textInputEditTextPriceTo.addTextChangedListener(this);
+                } catch (NumberFormatException e) {
+                    // Xử lý khi không thể chuyển đổi sang số
+                }
+            }
+        });
+        rangeSlider.setValues(0F, 100F);
+        rangeSlider.setLabelBehavior(LabelFormatter.LABEL_GONE);
+        rangeSlider.addOnChangeListener(new RangeSlider.OnChangeListener() {
+            @Override
+            public void onValueChange(@NonNull RangeSlider slider, float value, boolean fromUser) {
+                List<Float> values = rangeSlider.getValues();
+                float minValue = values.get(0);
+                float maxValue = values.get(1);
+
+                long priceFromLong= Math.round(minValue * 200000);
+                long priceToLong = Math.round(maxValue * 200000);
+
+                DecimalFormat decimalFormat = new DecimalFormat("#,###");
+                String formattedNumber1 = decimalFormat.format(priceFromLong);
+                String formattedNumber2 = decimalFormat.format(priceToLong);
+
+                String priceFrom = formattedNumber1.replaceAll(",", " ");
+                String priceTo = formattedNumber2.replaceAll(",", " ");
+
+                textInputEditTextPriceFrom.setText(String.valueOf(priceFrom));
+                textInputEditTextPriceTo.setText(String.valueOf(priceTo));
+                valueFrom = priceFrom;
+                valueTo = priceTo;
+                if (isResume) {
+                    return;
+                }
+                mListener.onValuePriceChangeListener();
+                isDelete = false;
+           }
+        });
+        return view;
+    }
+    public boolean hasValue() {
+        boolean flag = true;
+        valueFrom = String.valueOf(textInputEditTextPriceFrom.getText());
+        valueTo = String.valueOf(textInputEditTextPriceTo.getText());
+        if (valueFrom.isEmpty() || valueTo.isEmpty()) {
+            flag = false;
+        }
+        return flag;
+    }
+    public ArrayList<Long> getValue() {
+        ArrayList<Long> price = new ArrayList<>();
+        try {
+            price.add(Long.parseLong(valueFrom.replaceAll(" ", "")));
+            price.add(Long.parseLong(valueTo.replaceAll(" ", "")));
+        } catch (NumberFormatException e) {
+            Log.d("Lỗi", "Lỗi parse price");
+        }
+        return price;
+    }
+
+    public String getValueFilter() {
+        return valueFrom + " VND - " + valueTo + " VND";
+    }
+
+    public void clearFocus() {
+        textInputEditTextPriceFrom.clearFocus();
+        textInputEditTextPriceTo.clearFocus();
+    }
+
+    public void resetFragment(){
+        this.isResume = true;
+        this.isDelete = true;
+        rangeSlider.setValues(0F, 100F);
+        Objects.requireNonNull(textInputEditTextPriceFrom.getText()).clear();
+        Objects.requireNonNull(textInputEditTextPriceTo.getText()).clear();
+        this.isResume = false;
+    }
+    @Override
+    public void onResume() {
+        super.onResume();
+        //rangeSlider.setValues(0F, 100F);
+        isResume = true;
+        if (isDelete) {
+            rangeSlider.setValues(0F, 100F);
+            Objects.requireNonNull(textInputEditTextPriceFrom.getText()).clear();
+            Objects.requireNonNull(textInputEditTextPriceTo.getText()).clear();
+        }
+        isResume = false;
     }
 }
