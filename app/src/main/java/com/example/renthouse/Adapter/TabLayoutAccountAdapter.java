@@ -8,6 +8,7 @@ import androidx.viewpager2.adapter.FragmentStateAdapter;
 
 import com.example.renthouse.Fragment.FragmentAccountPosted;
 import com.example.renthouse.Fragment.FragmentAccountTabAccount;
+import com.example.renthouse.Fragment.FragmentLiked;
 
 public class TabLayoutAccountAdapter extends FragmentStateAdapter {
     public TabLayoutAccountAdapter(@NonNull FragmentManager fragmentManager, @NonNull Lifecycle lifecycle) {

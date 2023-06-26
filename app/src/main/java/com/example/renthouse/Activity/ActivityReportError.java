@@ -1,20 +1,35 @@
 package com.example.renthouse.Activity;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.Toast;
 
+import com.example.renthouse.Interface.Callback;
+import com.example.renthouse.Interface.ValueEventListenerCallback;
+import com.example.renthouse.OOP.Reports;
 import com.example.renthouse.Other.CommonUtils;
 import com.example.renthouse.R;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.ktx.Firebase;
 
-public class ActivityReportError extends AppCompatActivity {
+public class ActivityReportError extends AppCompatActivity{
     private static final int EMAIL_SEND_REQUEST_CODE = 100;
     private TextInputLayout txtInTieuDe, txtInMoTa;
     private TextInputEditText txtEdtTieuDe, txtEdtMoTa;
@@ -56,6 +71,54 @@ public class ActivityReportError extends AppCompatActivity {
         } else if (txtEdtMoTa.getText().toString().isEmpty()) {
             txtInMoTa.setError("Vui Lòng Điền Thông Tin");
         } else {
+            // gui vao realtime
+            FirebaseAuth mAuth = FirebaseAuth.getInstance();
+            FirebaseUser currentUser = mAuth.getCurrentUser();
+            FirebaseDatabase database = FirebaseDatabase.getInstance();
+            DatabaseReference reference = database.getReference();
+            Reports reports = new Reports();
+            reports.setTitle(txtEdtTieuDe.getText().toString().trim());
+            reports.setContent(txtEdtMoTa.getText().toString().trim());
+            reports.setEmail(currentUser.getEmail());
+            Query query  =  reference.child("Accounts").orderByChild("email").equalTo(currentUser.getEmail());
+
+
+            query.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    for(DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                        reports.setIdUser(dataSnapshot.getKey());
+                    }
+                    Callback<Void> callback = new Callback<Void>() {
+                        @Override
+                        public void onCallback(Void result) {
+                            reference.child("Reports").push().setValue(reports);
+                        }
+                    };
+
+                    callback.onCallback(null);
+
+
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+
+                }
+            });
+
+
+
+
+
+
+
+
+
+
+
+
+
             String recipientList = "nthienphu163@gmail.com";
             String[] recipients = recipientList.split(",");
 

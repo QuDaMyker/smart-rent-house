@@ -39,7 +39,6 @@ public class FragmentLiked extends Fragment {
         View view = binding.getRoot();
         // Inflate the layout for this fragment
 
-
         checkListLikedRooms();
 
         return view;

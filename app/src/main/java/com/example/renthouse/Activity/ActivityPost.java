@@ -18,11 +18,13 @@ import android.view.View;
 import android.widget.ScrollView;
 import android.widget.Toast;
 
+import com.example.renthouse.FCM.SendNotificationTask;
 import com.example.renthouse.FragmentPost.FragmentConfirm;
 import com.example.renthouse.FragmentPost.FragmentInformation;
 import com.example.renthouse.FragmentPost.FragmentLocation;
 import com.example.renthouse.FragmentPost.FragmentUtilities;
 import com.example.renthouse.OOP.AccountClass;
+import com.example.renthouse.OOP.Notification;
 import com.example.renthouse.OOP.Room;
 import com.example.renthouse.R;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -252,21 +254,15 @@ public class ActivityPost extends AppCompatActivity {
                 FirebaseDatabase database = FirebaseDatabase.getInstance();
                 DatabaseReference myRef = database.getReference("Rooms/" + room.getId() + "/images");
                 myRef.setValue(uriImageStringList);
-                if(progressDialog.isShowing()){
-                    progressDialog.dismiss();
-                }
-                Toast.makeText(ActivityPost.this, "Tải lên thành công!", Toast.LENGTH_SHORT).show();
+                notificationOnSuccess(progressDialog, room);
+
             }
         };
         storageReference = FirebaseStorage.getInstance().getReference();
         List<Uri> uriList = fragmentUtilities.getUriListImg();
         int totalItems = uriList.size();
         if(totalItems == 0){
-            if(progressDialog.isShowing()){
-                progressDialog.dismiss();
-            }
-            Toast.makeText(ActivityPost.this, "Tải lên thành công!", Toast.LENGTH_SHORT).show();
-            return;
+            notificationOnSuccess(progressDialog, room);
         }
         final int[] successCount = {0};
         for(Uri u : uriList){
@@ -310,6 +306,17 @@ public class ActivityPost extends AppCompatActivity {
                 }
             });
         }
+    }
+
+    private void notificationOnSuccess(ProgressDialog progressDialog, Room room){
+        if(progressDialog.isShowing()){
+            progressDialog.dismiss();
+        }
+        Toast.makeText(ActivityPost.this, "Tải lên thành công!", Toast.LENGTH_SHORT).show();
+        Notification notification = new Notification("Có phòng trọ mới vừa được đăng trên Rent House", "Hãy kiểm tra ngay để không bỏ lỡ cơ hội tuyệt vời này!", "room");
+        notification.setAttachedRoom(room);
+        SendNotificationTask task = new SendNotificationTask(ActivityPost.this, notification);
+        task.execute();
     }
 
     private File getFileOfUri(Uri u) {

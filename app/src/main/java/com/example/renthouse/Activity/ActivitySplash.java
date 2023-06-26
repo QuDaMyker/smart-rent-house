@@ -1,5 +1,7 @@
 package com.example.renthouse.Activity;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
@@ -8,17 +10,23 @@ import androidx.core.content.ContextCompat;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
 import android.widget.ProgressBar;
-import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 
 import com.example.renthouse.R;
+import com.example.renthouse.utilities.Constants;
+import com.example.renthouse.utilities.PreferenceManager;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 public class ActivitySplash extends AppCompatActivity {
     private final static int REQUEST_CODE = 100;
+    private PreferenceManager preferenceManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,6 +68,15 @@ public class ActivitySplash extends AppCompatActivity {
                     }
                 }
 
+
+                preferenceManager = new PreferenceManager(getApplicationContext());
+                if(preferenceManager.getBoolean(Constants.KEY_IS_SIGNED_IN) == true) {
+                    startActivity(new Intent(ActivitySplash.this, ActivityMain.class));
+                } else {
+                    startActivity(new Intent(ActivitySplash.this, ActivityLogIn.class));
+                }
+                finish();
+
                 // After the progress is complete, check the user authentication status
                 FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
                 FirebaseUser currentUser = firebaseAuth.getCurrentUser();
@@ -67,7 +84,7 @@ public class ActivitySplash extends AppCompatActivity {
                 // Start the appropriate activity based on the user's authentication status
                 runOnUiThread(new Runnable() {
                     public void run() {
-                        if (currentUser != null) {
+                        /*if (currentUser != null) {
                             // User is already logged in, navigate to MainActivity
                             startActivity(new Intent(ActivitySplash.this, ActivityMain.class));
                         } else {
@@ -75,7 +92,8 @@ public class ActivitySplash extends AppCompatActivity {
                             startActivity(new Intent(ActivitySplash.this, ActivityLogIn.class));
                         }
 
-                        finish(); // Optional: Close the current activity
+                        finish(); // Optional: Close the current activity*/
+
                     }
                 });
             }
@@ -100,6 +118,34 @@ public class ActivitySplash extends AppCompatActivity {
                 runningSplash();
             } else {
                 finish();
+            }
+        }
+    }
+
+    // Declare the launcher at the top of your Activity/Fragment:
+    private final ActivityResultLauncher<String> requestPermissionLauncher =
+            registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {
+                if (isGranted) {
+                    // FCM SDK (and your app) can post notifications.
+                } else {
+                    // TODO: Inform user that that your app will not show notifications.
+                }
+            });
+
+    private void askNotificationPermission() {
+        // This is only necessary for API level >= 33 (TIRAMISU)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) ==
+                    PackageManager.PERMISSION_GRANTED) {
+                // FCM SDK (and your app) can post notifications.
+            } else if (shouldShowRequestPermissionRationale(Manifest.permission.POST_NOTIFICATIONS)) {
+                // TODO: display an educational UI explaining to the user the features that will be enabled
+                //       by them granting the POST_NOTIFICATION permission. This UI should provide the user
+                //       "OK" and "No thanks" buttons. If the user selects "OK," directly request the permission.
+                //       If the user selects "No thanks," allow the user to continue without notifications.
+            } else {
+                // Directly ask for the permission
+                requestPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS);
             }
         }
     }

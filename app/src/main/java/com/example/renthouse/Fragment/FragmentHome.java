@@ -1,5 +1,6 @@
 package com.example.renthouse.Fragment;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Address;
@@ -20,10 +21,13 @@ import android.widget.Toast;
 import com.example.renthouse.Activity.ActivityPost;
 import com.example.renthouse.Activity.FindByMapsActivity;
 import com.example.renthouse.Activity.MapsActivity;
+import com.example.renthouse.Activity.NoficationActivity;
+import com.example.renthouse.Adapter.NotificationAdapter;
 import com.example.renthouse.Adapter.PhoBienAdapter;
 import com.example.renthouse.ITEM.itemPhoBien_HomeFragment;
 import com.example.renthouse.OOP.City;
 import com.example.renthouse.OOP.District;
+import com.example.renthouse.OOP.Notification;
 import com.example.renthouse.OOP.Ward;
 import com.example.renthouse.databinding.FragmentHomeBinding;
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -31,6 +35,11 @@ import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -55,6 +64,7 @@ public class FragmentHome extends Fragment {
     private List<District> districtList;
     private List<Ward> wardList;
     private List<District> listDis;
+    private ProgressDialog progressDialog;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -65,14 +75,15 @@ public class FragmentHome extends Fragment {
         currentUser = firebaseAuth.getCurrentUser();
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(getContext());
 
-
+        progressDialog = new ProgressDialog(getContext());
+        progressDialog.setCancelable(false);
+        progressDialog.setMessage("Loading...");
+        progressDialog.show();
 
         updateUI();
         getLastLocation();
 
-
-
-
+        progressDialog.dismiss();
 
 
         binding.btnDangBai.setOnClickListener(new View.OnClickListener() {
@@ -89,6 +100,12 @@ public class FragmentHome extends Fragment {
             }
         });
 
+        binding.notificationBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(getContext(), NoficationActivity.class));
+            }
+        });
 
 
 

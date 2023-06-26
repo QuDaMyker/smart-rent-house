@@ -27,7 +27,7 @@ public class FragmentChatHistory extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_chat_history, container, false);
+        View view = inflater.inflate(R.layout.activity_chat, container, false);
 
         chatRecyclerView = (RecyclerView)view.findViewById(R.id.chatRecyclerView);
         List<ChatMessage> chatMessages = new ArrayList<>();

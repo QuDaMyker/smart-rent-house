@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
     android:background="@drawable/layout_bg"
     android:orientation="vertical"
     tools:context=".Fragment.FragmentHome">
@@ -51,7 +51,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/tv_xinchao" />
 
             <ImageView
-                android:id="@+id/imageView1"
+                android:id="@+id/notificationBtn"
                 android:layout_width="65dp"
                 android:layout_height="60dp"
                 android:layout_marginStart="168dp"
