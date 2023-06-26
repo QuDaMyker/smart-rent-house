@@ -111,6 +111,15 @@ public class FragmentHome extends Fragment {
                 startActivity(new Intent(getContext(), NoficationActivity.class));
             }
         });
+        binding.textInputFindRoom.clearFocus();
+        binding.textInputFindRoom.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                binding.textInputFindRoom.clearFocus();
+                Intent intent = new Intent(getActivity(), ActivitySearch.class);
+                startActivity(intent);
+            }
+        });
         return view;
     }
 

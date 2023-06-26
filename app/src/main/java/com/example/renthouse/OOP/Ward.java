@@ -25,9 +25,6 @@ public class Ward implements Serializable  {
         this.code = code;
         this.parent_code = parent_code;
     }
-    public Ward(){
-
-    }
     public String getName() {
         return name;
     }

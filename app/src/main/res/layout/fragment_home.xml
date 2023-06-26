@@ -72,6 +72,8 @@
                     android:layout_width="350dp"
                     android:layout_height="55dp"
                     android:background="@drawable/white_bg_home"
+                    android:id="@+id/textInputFindRoom"
+                    android:focusableInTouchMode="false"
                     android:drawableLeft="@drawable/ic_search_home"
                     android:drawablePadding="10dp"
                     android:hint="Tìm theo quận, tên đường, địa chỉ" />
