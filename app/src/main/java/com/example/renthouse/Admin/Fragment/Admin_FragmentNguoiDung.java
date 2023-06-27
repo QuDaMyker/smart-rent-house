@@ -3,17 +3,64 @@ package com.example.renthouse.Admin.Fragment;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.viewpager2.widget.ViewPager2;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.renthouse.Admin.Adapter.TabLayoutNguoiDungAdapter;
 import com.example.renthouse.R;
+import com.google.android.material.tabs.TabLayout;
+
 public class Admin_FragmentNguoiDung extends Fragment {
+    private TabLayout fragNguoiDung_tab_layout;
+    private ViewPager2 fragNguoiDung_viewPager2;
+    private TabLayoutNguoiDungAdapter tabLayoutNguoiDungAdapter;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_admin__nguoi_dung, container, false);
+        View view = inflater.inflate(R.layout.fragment_admin__nguoi_dung, container, false);
+
+        fragNguoiDung_tab_layout = view.findViewById(R.id.fragNguoiDung_tabLayout);
+        fragNguoiDung_viewPager2 = view.findViewById(R.id.fragNguoiDung_viewPager2);
+
+        fragNguoiDung_tab_layout.addTab(fragNguoiDung_tab_layout.newTab().setText("Danh sách người dùng"));
+        fragNguoiDung_tab_layout.addTab(fragNguoiDung_tab_layout.newTab().setText("Người dùng bị chặn"));
+
+        FragmentManager fragmentManager = getChildFragmentManager();
+
+        tabLayoutNguoiDungAdapter = new TabLayoutNguoiDungAdapter(fragmentManager, getLifecycle());
+
+        fragNguoiDung_viewPager2.setAdapter(tabLayoutNguoiDungAdapter);
+
+        fragNguoiDung_tab_layout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                fragNguoiDung_viewPager2.setCurrentItem(tab.getPosition());
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+
+            }
+        });
+
+
+        fragNguoiDung_viewPager2.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
+            @Override
+            public void onPageSelected(int position) {
+                fragNguoiDung_tab_layout.selectTab(fragNguoiDung_tab_layout.getTabAt(position));
+            }
+        });
+
+        return view;
     }
 }

@@ -287,7 +287,7 @@ public class ActivityLogIn extends AppCompatActivity {
                                 Date now = new Date();
                                 SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                                 String formattedDate = dateFormat.format(now);
-                                AccountClass accountClass = new AccountClass(personName, personEmail, "+84", "********", personPhoto.toString(), formattedDate, false);
+                                AccountClass accountClass = new AccountClass(personName, personEmail, "+84", "********", personPhoto.toString(), formattedDate, false, null);
                                 String emailToCheck = personEmail;
 
 

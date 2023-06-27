@@ -10,10 +10,11 @@ public class AccountClass implements Serializable {
     private String image;
     private String ngayTaoTaiKhoan;
     private Boolean isBlocked;
+    private String thoiGianKhoa;
 
     public AccountClass (){};
 
-    public AccountClass(String fullname, String email, String phoneNumber, String password, String image, String ngayTaoTaiKhoan, Boolean isBlocked) {
+    public AccountClass(String fullname, String email, String phoneNumber, String password, String image, String ngayTaoTaiKhoan, Boolean isBlocked, String thoiGianKhoa) {
         this.fullname = fullname;
         this.email = email;
         this.phoneNumber = phoneNumber;
@@ -21,6 +22,7 @@ public class AccountClass implements Serializable {
         this.image = image;
         this.ngayTaoTaiKhoan = ngayTaoTaiKhoan;
         this.isBlocked = isBlocked;
+        this.thoiGianKhoa = thoiGianKhoa;
     }
 
     public String getFullname() {
@@ -77,5 +79,13 @@ public class AccountClass implements Serializable {
 
     public void setBlocked(Boolean blocked) {
         isBlocked = blocked;
+    }
+
+    public String getThoiGianKhoa() {
+        return thoiGianKhoa;
+    }
+
+    public void setThoiGianKhoa(String thoiGianKhoa) {
+        this.thoiGianKhoa = thoiGianKhoa;
     }
 }
