@@ -117,7 +117,7 @@ public class ActivitySignUp extends AppCompatActivity {
         backToLoginBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                finish();
+                onBackPressed();
             }
         });
         //
@@ -125,7 +125,7 @@ public class ActivitySignUp extends AppCompatActivity {
         tv_backToLoginBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                finish();
+                onBackPressed();
             }
         });
         //

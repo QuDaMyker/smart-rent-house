@@ -12,6 +12,7 @@ import android.Manifest;
 import android.app.ActivityManager;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -89,6 +90,8 @@ public class ActivityLogIn extends AppCompatActivity {
     DatabaseReference reference;
     String imageURL;
     private PreferenceManager preferenceManager;
+    ProgressDialog progressDialog;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -96,6 +99,10 @@ public class ActivityLogIn extends AppCompatActivity {
         setContentView(R.layout.activity_log_in);
 
         preferenceManager = new PreferenceManager(getApplicationContext());
+
+        progressDialog = new ProgressDialog(ActivityLogIn.this);
+        progressDialog.setCancelable(false);
+        progressDialog.setMessage("Loading...");
 
         database = FirebaseDatabase.getInstance();
         reference = database.getReference();
@@ -179,8 +186,6 @@ public class ActivityLogIn extends AppCompatActivity {
                         .build();
                 gsc = GoogleSignIn.getClient(ActivityLogIn.this, gso);
                 signInWithGoogle();
-
-
             }
         });
 
@@ -235,66 +240,13 @@ public class ActivityLogIn extends AppCompatActivity {
         if (requestCode == 100) {
             Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
             try {
+                progressDialog.show();
                 task.getResult(ApiException.class);
                 GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(getApplicationContext());
                 firebaseAuthWithGoogle(account.getIdToken());
-                if (account != null) {
-                    String personalID = account.getId();
-                    String personName = account.getDisplayName();
-                    String personEmail = account.getEmail();
-                    Uri personPhoto = account.getPhotoUrl();
-
-                    Date now = new Date();
-                    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                    String formattedDate = dateFormat.format(now);
-                    AccountClass accountClass = new AccountClass(personName, personEmail, "+84", "********", personPhoto.toString(), formattedDate);
-                    String emailToCheck = personEmail;
 
 
 
-                    DatabaseReference accountsRef = reference.child("Accounts");
-                    Query emailQuery = accountsRef.orderByChild("email").equalTo(emailToCheck);
-
-                    emailQuery.addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                            if (dataSnapshot.exists()) {
-                                // Account with the given email already exists
-                                // You can handle this case here
-                            } else {
-                                DatabaseReference newChildRef = reference.child("Accounts").push();
-                                String generatedKey = newChildRef.getKey();
-                                preferenceManager.putString(Constants.KEY_USER_KEY, generatedKey);
-
-                                // Set the data for the new child node
-                                newChildRef.setValue(accountClass)
-                                        .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                            @Override
-                                            public void onComplete(@NonNull Task<Void> task) {
-                                                if (task.isSuccessful()) {
-                                                    // Data successfully saved
-                                                } else {
-                                                    // Handle the error here
-                                                }
-                                            }
-                                        });
-                            }
-                        }
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError databaseError) {
-                            // Handle the error here
-                        }
-                    });
-                    preferenceManager.putBoolean(Constants.KEY_IS_SIGNED_IN, true);
-                    preferenceManager.putString(Constants.KEY_IMAGE, accountClass.getImage());
-                    preferenceManager.putString(Constants.KEY_PHONENUMBER, accountClass.getPhoneNumber());
-                    preferenceManager.putString(Constants.KEY_EMAIL, accountClass.getEmail());
-                    preferenceManager.putString(Constants.KEY_FULLNAME, accountClass.getFullname());
-
-                    pushSuccessFullNotification();
-                    startActivity(new Intent(ActivityLogIn.this, ActivityMain.class));
-
-                }
 
             } catch (ApiException e) {
                 Toast.makeText(ActivityLogIn.this, "Error", Toast.LENGTH_SHORT).show();
@@ -312,9 +264,68 @@ public class ActivityLogIn extends AppCompatActivity {
                             // Cập nhật thông tin người dùng lên Firebase Authentication
                             FirebaseUser user = mAuth.getCurrentUser();
                             updateUserInfo(user);
-                            // Đăng nhập thành công
+                            // them thong tin tai khoan vao realtime
+                            if (user != null) {
+                                String personalID = user.getUid();
+                                String personName = user.getDisplayName();
+                                String personEmail = user.getEmail();
+                                Uri personPhoto = user.getPhotoUrl();
+
+                                Date now = new Date();
+                                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                                String formattedDate = dateFormat.format(now);
+                                AccountClass accountClass = new AccountClass(personName, personEmail, "+84", "********", personPhoto.toString(), formattedDate);
+                                String emailToCheck = personEmail;
+
+
+
+                                DatabaseReference accountsRef = reference.child("Accounts");
+                                Query emailQuery = accountsRef.orderByChild("email").equalTo(emailToCheck);
+
+                                emailQuery.addListenerForSingleValueEvent(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                        if (!dataSnapshot.exists()) {
+                                            DatabaseReference newChildRef = reference.child("Accounts").push();
+                                            String generatedKey = newChildRef.getKey();
+                                            preferenceManager.putString(Constants.KEY_USER_KEY, generatedKey);
+
+                                            newChildRef.setValue(accountClass)
+                                                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                        @Override
+                                                        public void onComplete(@NonNull Task<Void> task) {
+                                                            if (task.isSuccessful()) {
+                                                                // Data successfully saved
+
+                                                                preferenceManager.putString(Constants.KEY_IMAGE, accountClass.getImage());
+                                                                preferenceManager.putString(Constants.KEY_PHONENUMBER, accountClass.getPhoneNumber());
+                                                                preferenceManager.putString(Constants.KEY_EMAIL, accountClass.getEmail());
+                                                                preferenceManager.putString(Constants.KEY_FULLNAME, accountClass.getFullname());
+
+                                                                pushSuccessFullNotification();
+                                                            } else {
+                                                                // Handle the error here
+                                                            }
+                                                        }
+                                                    });
+
+                                        }
+                                        progressDialog.dismiss();
+                                        preferenceManager.putBoolean(Constants.KEY_IS_SIGNED_IN, true);
+                                        startActivity(new Intent(ActivityLogIn.this, ActivityMain.class));
+
+                                    }
+                                    @Override
+                                    public void onCancelled(@NonNull DatabaseError databaseError) {
+                                        // Handle the error here
+                                    }
+                                });
+
+                            }
+
+                            /*// Đăng nhập thành công
                             pushSuccessFullNotification();
-                            Toast.makeText(getApplicationContext(), "Đăng nhập thành công", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getApplicationContext(), "Đăng nhập thành công", Toast.LENGTH_SHORT).show();*/
                         } else {
                             // Đăng nhập thất bại
                             pushFailerNotification();

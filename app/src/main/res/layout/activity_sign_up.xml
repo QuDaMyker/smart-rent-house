@@ -51,7 +51,6 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
-
         android:textColorHint="@color/Primary_60"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -64,6 +63,7 @@
             android:drawableLeft="@drawable/outline_person_24"
             android:drawablePadding="10dp"
             android:hint="Họ và Tên"
+            android:inputType="text"
             android:singleLine="true"
             android:textColor="@color/black" />
     </com.google.android.material.textfield.TextInputLayout>
@@ -109,6 +109,7 @@
             android:id="@+id/signup_phoneNumber"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:inputType="number"
             android:drawableLeft="@drawable/baseline_local_phone_24"
             android:drawablePadding="10dp"
             android:singleLine="true"

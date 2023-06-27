@@ -52,10 +52,10 @@
 
             <ImageView
                 android:id="@+id/notificationBtn"
-                android:layout_width="65dp"
+                android:layout_width="60dp"
                 android:layout_height="60dp"
                 android:layout_marginStart="168dp"
-                android:layout_marginTop="84dp"
+                android:layout_marginTop="60dp"
                 app:layout_constraintStart_toEndOf="@+id/tv_xinchao"
                 app:layout_constraintTop_toTopOf="parent"
                 app:srcCompat="@drawable/ic_statelayer_home" />
