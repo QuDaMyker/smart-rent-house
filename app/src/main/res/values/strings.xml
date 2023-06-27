@@ -7,20 +7,17 @@
         <item>0</item>
         <item>100</item>
     </string-array>
-    <string-array name="cities">
-        <item>Hồ Chí Minh</item>
-        <item>Hà Nội</item>
-        <item>Đà Nẵng</item>
+    <string-array name="loop">
+        <item>Không bao giờ</item>
+        <item>Hàng ngày</item>
+        <item>Hàng tuần</item>
+        <item>Hàng tháng</item>
+        <item>Hàng năm</item>
     </string-array>
-    <string-array name="districts">
-        <item>Quận 1</item>
-        <item>Quận 2</item>
-        <item>Quận 3</item>
-    </string-array>
-    <string-array name="wards">
-        <item>Phường Bến Nghé</item>
-        <item>Phường Bến Thành</item>
-        <item>Phường Đa Kao</item>
+    <string-array name="receiver">
+        <item>Tất cả</item>
+        <item>Chủ trọ</item>
+        <item>Người thuê trọ</item>
     </string-array>
 
     <array name="stepperText">
