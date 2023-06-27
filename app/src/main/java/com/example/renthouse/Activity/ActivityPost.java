@@ -196,6 +196,8 @@ public class ActivityPost extends AppCompatActivity {
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     user = snapshot.getValue(AccountClass.class);
                     String key = myRef.child("Rooms").push().getKey();
+                    Date currentDate = new Date();
+                    SimpleDateFormat sdf = new SimpleDateFormat("HH:mm dd/MM/yyyy", Locale.getDefault());
                     Room room = new Room(key,
                             fragmentConfirm.getTitle(),
                             fragmentConfirm.getDescription(),
@@ -213,7 +215,9 @@ public class ActivityPost extends AppCompatActivity {
                             fragmentLocation.getLocation(),
                             fragmentUtilities.getUtilities(),
                             user,
-                            fragmentConfirm.getPhoneNumber());
+                            fragmentConfirm.getPhoneNumber(),
+                            sdf.format(currentDate),
+                            false);
 
                     String pathObject = String.valueOf(room.getId());
                     myRef.child(pathObject).setValue(room);
