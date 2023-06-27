@@ -2,6 +2,10 @@ package com.example.renthouse.utilities;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.provider.ContactsContract;
+
+import java.util.HashSet;
+import java.util.Set;
 
 public class PreferenceManager {
     private final SharedPreferences sharedPreferences;
@@ -34,5 +38,14 @@ public class PreferenceManager {
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.clear();
         editor.apply();
+    }
+    public Set<String> getStringSet(String key) {
+        return sharedPreferences.getStringSet(key, new HashSet<String>());
+    }
+    public void putStringSet(String key, Set<String> values) {
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putStringSet(key, values);
+        editor.apply();
+
     }
 }
