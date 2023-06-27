@@ -9,16 +9,20 @@ public class AccountClass implements Serializable {
     private String password;
     private String image;
     private String ngayTaoTaiKhoan;
+    private Boolean isBlocked;
 
     public AccountClass (){};
-    public AccountClass(String fullname, String email, String phoneNumber, String password, String image, String ngayTaoTaiKhoan) {
+
+    public AccountClass(String fullname, String email, String phoneNumber, String password, String image, String ngayTaoTaiKhoan, Boolean isBlocked) {
         this.fullname = fullname;
         this.email = email;
         this.phoneNumber = phoneNumber;
         this.password = password;
         this.image = image;
         this.ngayTaoTaiKhoan = ngayTaoTaiKhoan;
+        this.isBlocked = isBlocked;
     }
+
     public String getFullname() {
         return fullname;
     }
@@ -65,5 +69,13 @@ public class AccountClass implements Serializable {
 
     public void setNgayTaoTaiKhoan(String ngayTaoTaiKhoan) {
         this.ngayTaoTaiKhoan = ngayTaoTaiKhoan;
+    }
+
+    public Boolean getBlocked() {
+        return isBlocked;
+    }
+
+    public void setBlocked(Boolean blocked) {
+        isBlocked = blocked;
     }
 }

@@ -120,7 +120,6 @@ public class ActivityLogIn extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
 
 
-
         login_logInBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -128,7 +127,7 @@ public class ActivityLogIn extends AppCompatActivity {
                 email = String.valueOf(login_email.getText());
                 password = String.valueOf(login_password.getText());
 
-                if(email.equals("admin") && password.equals("admin")) {
+                if (email.equals("admin") && password.equals("admin")) {
                     preferenceManager.putBoolean(Constants.KEY_IS_SIGNED_IN, true);
                     preferenceManager.putString(Constants.KEY_EMAIL, email);
                     preferenceManager.putString(Constants.KEY_PASSWORD, password);
@@ -150,7 +149,6 @@ public class ActivityLogIn extends AppCompatActivity {
                     login_password.setError("Vui lòng điền mật khẩu");
                     return;
                 }
-
 
 
                 mAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
@@ -259,14 +257,15 @@ public class ActivityLogIn extends AppCompatActivity {
                 firebaseAuthWithGoogle(account.getIdToken());
 
 
-
-
             } catch (ApiException e) {
                 Toast.makeText(ActivityLogIn.this, "Error", Toast.LENGTH_SHORT).show();
             }
+        } else {
+            progressDialog.dismiss();
         }
-        progressDialog.dismiss();
+
     }
+
     private void firebaseAuthWithGoogle(String idToken) {
         AuthCredential credential = GoogleAuthProvider.getCredential(idToken, null);
         mAuth.signInWithCredential(credential)
@@ -288,9 +287,8 @@ public class ActivityLogIn extends AppCompatActivity {
                                 Date now = new Date();
                                 SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                                 String formattedDate = dateFormat.format(now);
-                                AccountClass accountClass = new AccountClass(personName, personEmail, "+84", "********", personPhoto.toString(), formattedDate);
+                                AccountClass accountClass = new AccountClass(personName, personEmail, "+84", "********", personPhoto.toString(), formattedDate, false);
                                 String emailToCheck = personEmail;
-
 
 
                                 DatabaseReference accountsRef = reference.child("Accounts");
@@ -317,18 +315,34 @@ public class ActivityLogIn extends AppCompatActivity {
                                                                 preferenceManager.putString(Constants.KEY_FULLNAME, accountClass.getFullname());
 
                                                                 pushSuccessFullNotification();
+                                                                progressDialog.dismiss();
+                                                                preferenceManager.putBoolean(Constants.KEY_IS_SIGNED_IN, true);
+                                                                startActivity(new Intent(ActivityLogIn.this, ActivityMain.class));
                                                             } else {
                                                                 // Handle the error here
                                                             }
                                                         }
                                                     });
+                                        } else {
+                                            for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                                                AccountClass checkAcc = snapshot.getValue(AccountClass.class);
+                                                if (checkAcc.getBlocked()) {
+                                                    progressDialog.dismiss();
+                                                    preferenceManager.putBoolean(Constants.KEY_IS_SIGNED_IN, true);
+                                                    startActivity(new Intent(ActivityLogIn.this, ActivityBlocked.class));
+                                                } else {
+                                                    pushSuccessFullNotification();
+                                                    progressDialog.dismiss();
+                                                    preferenceManager.putBoolean(Constants.KEY_IS_SIGNED_IN, true);
+                                                    startActivity(new Intent(ActivityLogIn.this, ActivityMain.class));
+                                                }
+                                            }
 
                                         }
-                                        progressDialog.dismiss();
-                                        preferenceManager.putBoolean(Constants.KEY_IS_SIGNED_IN, true);
-                                        startActivity(new Intent(ActivityLogIn.this, ActivityMain.class));
+
 
                                     }
+
                                     @Override
                                     public void onCancelled(@NonNull DatabaseError databaseError) {
                                         // Handle the error here
@@ -349,6 +363,7 @@ public class ActivityLogIn extends AppCompatActivity {
                     }
                 });
     }
+
     private void updateUserInfo(FirebaseUser user) {
         // Cập nhật thông tin người dùng lên Firebase Authentication
         UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
@@ -361,6 +376,7 @@ public class ActivityLogIn extends AppCompatActivity {
     public boolean isValidEmail(CharSequence email) {
         return android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches();
     }
+
     private void pushNotification() {
         Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher);
 
@@ -393,6 +409,7 @@ public class ActivityLogIn extends AppCompatActivity {
         }
         notificationManager.notify(0, builder.build());
     }
+
     private void pushSuccessFullNotification() {
         Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher);
 
@@ -425,6 +442,7 @@ public class ActivityLogIn extends AppCompatActivity {
         }
         notificationManager.notify(0, builder.build());
     }
+
     private void pushFailerNotification() {
         Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher);
 
