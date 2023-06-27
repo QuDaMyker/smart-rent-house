@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:background="@drawable/filter_background"
+    android:layout_width="wrap_content"
+    android:layout_marginEnd="10dp"
+    android:id="@+id/linearLayoutItemFilterChoice"
+    android:orientation="horizontal"
+    android:layout_height="35dp">
+    <TextView
+        android:layout_width="wrap_content"
+        android:textColor="@color/Secondary_40"
+        android:id="@+id/textViewContentChoice"
+        android:layout_gravity="center_vertical"
+        android:textStyle="bold"
+        android:textSize="12dp"
+        android:layout_marginLeft="10dp"
+        android:text="An ninh"
+        android:layout_height="wrap_content"/>
+    <ImageButton
+        android:src="@drawable/button_cancel_filter"
+        android:id="@+id/buttonDeleteFilterChoice"
+        android:background="@color/white"
+        android:layout_gravity="center_vertical"
+        android:layout_width="16dp"
+        android:layout_margin="10dp"
+        android:layout_height="16dp"/>
+</LinearLayout>

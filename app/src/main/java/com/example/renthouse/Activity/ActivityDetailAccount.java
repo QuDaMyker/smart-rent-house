@@ -9,6 +9,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.ContentResolver;
 import android.content.Intent;
 import android.net.Uri;
@@ -69,11 +70,16 @@ public class ActivityDetailAccount extends AppCompatActivity {
     final private DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("Accounts");
     final private StorageReference storageReference = FirebaseStorage.getInstance().getReference();
     private PreferenceManager preferenceManager;
+    private ProgressDialog progressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail_account);
+
+        progressDialog = new ProgressDialog(ActivityDetailAccount.this);
+        progressDialog.setCancelable(false);
+        progressDialog.setMessage("Loading...");
 
         preferenceManager = new PreferenceManager(getApplicationContext());
 
@@ -110,9 +116,12 @@ public class ActivityDetailAccount extends AppCompatActivity {
         key = intent.getStringExtra("KEY");
 
 
+        btnBack.setOnClickListener(v-> onBackPressed());
+
         btnUpdate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                progressDialog.show();
                 FirebaseDatabase database = FirebaseDatabase.getInstance();
                 DatabaseReference reference = database.getReference("Accounts");
                 account.setFullname(TIETfullname.getText().toString());
@@ -140,6 +149,7 @@ public class ActivityDetailAccount extends AppCompatActivity {
                 preferenceManager.putString(Constants.KEY_PHONENUMBER, account.getPhoneNumber());
                 preferenceManager.putString(Constants.KEY_PASSWORD, TIETMatKhau.getText().toString().trim());
                 preferenceManager.putString(Constants.KEY_USER_KEY, key);
+                progressDialog.dismiss();
 
             }
         });

@@ -52,10 +52,10 @@
 
             <ImageView
                 android:id="@+id/notificationBtn"
-                android:layout_width="65dp"
+                android:layout_width="60dp"
                 android:layout_height="60dp"
                 android:layout_marginStart="168dp"
-                android:layout_marginTop="84dp"
+                android:layout_marginTop="60dp"
                 app:layout_constraintStart_toEndOf="@+id/tv_xinchao"
                 app:layout_constraintTop_toTopOf="parent"
                 app:srcCompat="@drawable/ic_statelayer_home" />
@@ -72,6 +72,8 @@
                     android:layout_width="350dp"
                     android:layout_height="55dp"
                     android:background="@drawable/white_bg_home"
+                    android:id="@+id/textInputFindRoom"
+                    android:focusableInTouchMode="false"
                     android:drawableLeft="@drawable/ic_search_home"
                     android:drawablePadding="10dp"
                     android:hint="Tìm theo quận, tên đường, địa chỉ" />

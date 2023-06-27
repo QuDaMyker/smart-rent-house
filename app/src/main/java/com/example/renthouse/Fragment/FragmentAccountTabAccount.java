@@ -146,13 +146,6 @@ public class FragmentAccountTabAccount extends Fragment {
             public void onClick(View v) {
                 preferenceManager = new PreferenceManager(getActivity());
 
-                
-                /*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                    ActivityManager activityManager = (ActivityManager) requireContext().getSystemService(Context.ACTIVITY_SERVICE);
-                    if (activityManager != null) {
-                        activityManager.clearApplicationUserData();
-                    }
-                }*/
                 if (preferenceManager.getBoolean(Constants.KEY_IS_SIGNED_IN) == true) {
                     preferenceManager.clear();
                     FirebaseAuth.getInstance().signOut();

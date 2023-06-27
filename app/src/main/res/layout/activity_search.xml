@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".Activity.ActivitySearch">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:layout_marginStart="10dp"
+        android:weightSum="20"
+        android:layout_marginBottom="10dp"
+        android:orientation="horizontal">
+
+        <SearchView
+            android:id="@+id/searchViewAddress"
+            android:layout_width="0dp"
+            android:layout_weight="18"
+            android:searchIcon="@drawable/current_location"
+            android:layout_height="wrap_content"
+            android:background="@drawable/custom_edttext"
+            android:iconifiedByDefault="false"
+            android:queryHint="Tìm theo quận, tên đường, địa điểm" />
+
+        <TextView
+            android:id="@+id/textViewHuy"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="5dp"
+            android:layout_weight="2"
+            android:text="Hủy"
+            android:textColor="@color/Primary_60"
+            android:textSize="16sp" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:id="@+id/linearLayoutHistorySearch"
+        android:orientation="vertical"
+        android:layout_height="match_parent">
+        <TextView
+            android:id="@+id/textViewHistorySearch"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_marginLeft="10dp"
+            android:text="Tìm kiếm gần đây"
+            android:textColor="@color/Secondary_20"
+            android:textSize="15sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:text="Không tìm thấy kết quả"
+            android:id="@+id/textViewNoneResult"
+            android:textColor="@color/Secondary_20"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recycleViewHistorySearch"
+            android:layout_width="match_parent"
+            android:layout_margin="10dp"
+            android:layout_height="match_parent"
+            android:layout_marginTop="10dp" />
+    </LinearLayout>
+
+
+</LinearLayout>
