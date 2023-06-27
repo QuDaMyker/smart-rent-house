@@ -2,18 +2,9 @@ package com.example.renthouse.Activity;
 
 import android.graphics.Typeface;
 import android.os.Bundle;
-import android.text.InputFilter;
-import android.text.InputType;
-import android.text.Spannable;
-import android.text.SpannableString;
-import android.text.TextUtils;
-import android.text.style.StyleSpan;
 import android.util.Log;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AutoCompleteTextView;
-import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.SearchView;
 import android.widget.TextView;
@@ -28,17 +19,12 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.renthouse.Fragment.FragmentFilter;
 import com.example.renthouse.Interface.IClickItemAddressListener;
 import com.example.renthouse.R;
-import com.example.renthouse.SharedPreferences.DataLocalManager;
 import com.example.renthouse.Test.Location;
 import com.example.renthouse.Test.LocationAdapter;
+import com.example.renthouse.utilities.Constants;
+import com.example.renthouse.utilities.PreferenceManager;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -51,7 +37,7 @@ public class ActivitySearch extends AppCompatActivity {
     private TextView textViewHistorySearch;
     private List<Location> listHistoryLocation;
     private TextView textViewNoneResult;
-    private DataLocalManager dataLocalManager;
+    private PreferenceManager preferenceManager;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -73,7 +59,7 @@ public class ActivitySearch extends AppCompatActivity {
         textViewHuy = findViewById(R.id.textViewHuy);;
         textViewNoneResult = findViewById(R.id.textViewNoneResult);
         textViewNoneResult.setVisibility(View.GONE);
-        dataLocalManager = DataLocalManager.getInstance(getApplicationContext());
+        preferenceManager = new PreferenceManager(getApplicationContext());
         // Đọc dữ liệu từ file json
 
         // Đọc lịch sử tìm kiếm
@@ -103,7 +89,7 @@ public class ActivitySearch extends AppCompatActivity {
                     textViewNoneResult.setVisibility(View.GONE);
                 }
             }
-        });
+        }, preferenceManager);
         recyclerView.setAdapter(locationAdapter);
 
         // Truyền dòng kẻ giữa các item trong recycleview
@@ -174,8 +160,7 @@ public class ActivitySearch extends AppCompatActivity {
     }
     public void readHistoryLocation() {
         // Đọc lịch sử tìm kiếm ở đây
-        Set<String> listHistorySearch = new HashSet<>();
-        listHistorySearch = dataLocalManager.getSearchHistory();
+        Set<String> listHistorySearch  = preferenceManager.getStringSet(Constants.KEY_HISTORY_SEARCH);
         Log.d("Số lượng", String.valueOf(listHistorySearch.size()));
         if (listHistorySearch.size() != 0) {
             for (String location : listHistorySearch) {
