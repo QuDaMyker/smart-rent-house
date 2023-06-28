@@ -40,10 +40,10 @@
 
 
         <androidx.appcompat.widget.LinearLayoutCompat
-            android:id="@+id/filterNgayDang"
+            android:id="@+id/filterSoPhong"
             android:layout_width="120dp"
             android:layout_height="40dp"
-            android:layout_marginLeft="0dp"
+            android:layout_marginLeft="20dp"
             android:layout_marginRight="20dp"
             android:layout_weight="1"
             android:background="@drawable/bg_radius_primary_40"
@@ -60,6 +60,7 @@
                 android:textStyle="bold" />
 
             <ImageView
+                android:id="@+id/imageFilterSoPhongTang"
                 android:layout_width="20dp"
                 android:layout_height="20dp"
                 android:src="@drawable/ic_arrow_upward"
@@ -67,7 +68,7 @@
         </androidx.appcompat.widget.LinearLayoutCompat>
 
         <androidx.appcompat.widget.LinearLayoutCompat
-            android:id="@+id/filterTinhTrang"
+            android:id="@+id/filterNgayThamGia"
             android:layout_width="120dp"
             android:layout_height="40dp"
             android:layout_marginRight="20dp"
@@ -100,10 +101,14 @@
             android:id="@+id/recycleView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="5dp"
             android:background="@color/white"
+            android:clipToPadding="false"
+            android:orientation="vertical"
+            android:overScrollMode="never"
             android:paddingStart="20dp"
-            android:paddingEnd="20dp" />
+            android:paddingEnd="20dp"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
     </FrameLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
