@@ -8,9 +8,11 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.SearchView;
 import android.widget.Toast;
 
 import com.example.renthouse.Admin.Activity.Admin_ActivityThongTinNguoiDung;
@@ -29,13 +31,19 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class AdminNguoiDung_FragmentDanhSachNguoiDung extends Fragment implements ItemNguoiDungListener {
     private FragmentAdminNguoiDungDanhSachNguoiDungBinding binding;
     private List<NguoiDung> nguoiDungs;
+    private List<NguoiDung> filterSearch;
     private PreferenceManager preferenceManager;
     private NguoiDungAdapter nguoiDungAdapter;
     private FirebaseDatabase database;
@@ -84,11 +92,12 @@ public class AdminNguoiDung_FragmentDanhSachNguoiDung extends Fragment implement
                         public void onDataChange(@NonNull DataSnapshot snapshot) {
                             int countRoom = (int) snapshot.getChildrenCount();
                             tempNguoiDungs.add(new NguoiDung(key, account, countRoom));
-
+                            Log.d("count danh sach", "Count = " + count);
                             // Kiểm tra khi nào dữ liệu đã được tải xong
                             if (count.incrementAndGet() == dataSnapshotCount) {
                                 nguoiDungs.addAll(tempNguoiDungs);
-                                nguoiDungAdapter.notifyDataSetChanged();
+                                // them data tu nguoi dung vao filter
+                                loadObjects();
                                 progressDialog.dismiss();
                                 Toast.makeText(getContext(), "Load Du Lieu Thanh Cong", Toast.LENGTH_SHORT).show();
                             }
@@ -105,21 +114,21 @@ public class AdminNguoiDung_FragmentDanhSachNguoiDung extends Fragment implement
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
                 // Xử lý khi có lỗi xảy ra
+                progressDialog.dismiss();
             }
         });
     }
 
 
-
     private void init() {
         nguoiDungs = new ArrayList<>();
-        nguoiDungAdapter = new NguoiDungAdapter(getContext(), nguoiDungs, R.color.Secondary_20, this);
+        filterSearch = new ArrayList<>();
+        nguoiDungAdapter = new NguoiDungAdapter(getContext(), filterSearch, this);
         binding.recycleView.setAdapter(nguoiDungAdapter);
         database = FirebaseDatabase.getInstance();
     }
 
     private void setListeners() {
-
 
         binding.filterSoPhong.setOnClickListener(v -> {
             filtersoPhongTang = !filtersoPhongTang;
@@ -128,15 +137,70 @@ public class AdminNguoiDung_FragmentDanhSachNguoiDung extends Fragment implement
             binding.filterNgayThamGia.setBackgroundResource(R.drawable.bg_radius_primary_40);
             if (filtersoPhongTang) {
                 binding.imageFilterSoPhongTang.setImageResource(R.drawable.ic_arrow_downward);
+                Collections.sort(filterSearch, (obj1, obj2) -> obj2.getSoLuongPhong() - obj1.getSoLuongPhong());
+                nguoiDungAdapter.notifyDataSetChanged();
             } else {
                 binding.imageFilterSoPhongTang.setImageResource(R.drawable.ic_arrow_upward);
+                Collections.sort(filterSearch, (obj1, obj2) -> obj1.getSoLuongPhong() - obj2.getSoLuongPhong());
+                nguoiDungAdapter.notifyDataSetChanged();
             }
         });
+
         binding.filterNgayThamGia.setOnClickListener(v -> {
             filterNgayThamgia = !filterNgayThamgia;
             filtersoPhongTang = false;
             binding.filterNgayThamGia.setBackgroundResource(R.drawable.bg_radius_solid_primary_60);
             binding.filterSoPhong.setBackgroundResource(R.drawable.bg_radius_primary_40);
+            if (filterNgayThamgia) {
+                binding.imageFilterNgayThamGia.setImageResource(R.drawable.ic_arrow_downward);
+                Collections.sort(filterSearch, new Comparator<NguoiDung>() {
+                    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+                    @Override
+                    public int compare(NguoiDung obj1, NguoiDung obj2) {
+                        try {
+                            Date date1 = dateFormat.parse(obj1.getAccountClass().getNgayTaoTaiKhoan());
+                            Date date2 = dateFormat.parse(obj2.getAccountClass().getNgayTaoTaiKhoan());
+                            return date1.compareTo(date2);
+                        } catch (ParseException e) {
+                            e.printStackTrace();
+                        }
+                        return 0;
+                    }
+                });
+                nguoiDungAdapter.notifyDataSetChanged();
+            } else {
+                binding.imageFilterNgayThamGia.setImageResource(R.drawable.ic_arrow_upward);
+                Collections.sort(filterSearch, new Comparator<NguoiDung>() {
+                    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+                    @Override
+                    public int compare(NguoiDung obj1, NguoiDung obj2) {
+                        try {
+                            Date date1 = dateFormat.parse(obj1.getAccountClass().getNgayTaoTaiKhoan());
+                            Date date2 = dateFormat.parse(obj2.getAccountClass().getNgayTaoTaiKhoan());
+                            return date2.compareTo(date1);
+                        } catch (ParseException e) {
+                            e.printStackTrace();
+                        }
+                        return 0;
+                    }
+                });
+                nguoiDungAdapter.notifyDataSetChanged();
+            }
+        });
+
+        binding.searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                filterObjects(newText);
+                return true;
+            }
         });
     }
 
@@ -146,5 +210,21 @@ public class AdminNguoiDung_FragmentDanhSachNguoiDung extends Fragment implement
         Intent intent = new Intent(getActivity(), Admin_ActivityThongTinNguoiDung.class);
         intent.putExtra(Constants.KEY_NGUOIDUNG, nguoiDung);
         startActivity(intent);
+    }
+
+    private void loadObjects() {
+        filterSearch.clear();
+        filterSearch.addAll(nguoiDungs);
+        nguoiDungAdapter.notifyDataSetChanged();
+    }
+
+    private void filterObjects(String query) {
+        filterSearch.clear();
+        for (NguoiDung obj : nguoiDungs) {
+            if (obj.getAccountClass().getFullname().toLowerCase().contains(query.toLowerCase())) {
+                filterSearch.add(obj);
+            }
+        }
+        nguoiDungAdapter.notifyDataSetChanged();
     }
 }
