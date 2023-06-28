@@ -2,13 +2,10 @@ package com.example.renthouse.FragmentFilter;
 
 import android.os.Bundle;
 
-import androidx.appcompat.widget.AppCompatImageButton;
-import androidx.appcompat.widget.AppCompatImageView;
 import androidx.fragment.app.Fragment;
 
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -42,8 +39,8 @@ public class FragmentAmount extends Fragment {
     private TabLayout tabLayout;
     private EditText editTextAmount;
     public int POSITION = 0;
-    private boolean isDelete = false;
-    private boolean isResume = true;
+    public boolean isDelete = false;
+    public boolean isResume = true;
     private IAmountValueChangeListener mListener;
     public FragmentAmount() {
         // Required empty public constructor
@@ -168,41 +165,28 @@ public class FragmentAmount extends Fragment {
         }
         return true;
     }
-    public ArrayList<Integer> getValue(){
+    public int getAmount(){
         ArrayList<Integer> amountAndGender = new ArrayList<>();
         int amount = Integer.parseInt(String.valueOf(editTextAmount.getText()));
-        final int[] gender = {0};
+        return amount;
+    }
+    public String getGender() {
         int position  = tabLayout.getSelectedTabPosition();
-
         // Thực hiện các tác vụ tương ứng với tab đã chọn
         switch (position) {
             case 0:
-                gender[0] = 0; // Nữ
-                break;
+                return "Nữ";
             case 1:
-                gender[0] = 1; // Nam
-                break;
+                return "Nam";
             case 2:
-                gender[0] = 2; // Khác
-                break;
+                return "Khác";
         }
-        amountAndGender.add(amount);
-        amountAndGender.add(gender[0]);
-        return amountAndGender;
+        return null;
     }
     public String getValueString() {
-        List<Integer> list = getValue();
-        int amount = list.get(0);
-        int gender = list.get(1);
-        String value = "";
-        if (gender == 0) {
-            value = " Nữ";
-        } else if (gender == 1) {
-            value = " Nam";
-        } else {
-            value = " Khác";
-        }
-        return String.valueOf(amount) + value;
+        int amount = getAmount();
+        String gender = getGender();
+        return amount +" " + gender;
     }
     public void resetFragment() {
         isResume = true;

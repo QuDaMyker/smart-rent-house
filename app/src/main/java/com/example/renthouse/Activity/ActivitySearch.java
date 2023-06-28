@@ -23,6 +23,8 @@ import com.example.renthouse.Test.Location;
 import com.example.renthouse.Test.LocationAdapter;
 import com.example.renthouse.utilities.Constants;
 import com.example.renthouse.utilities.PreferenceManager;
+import com.google.common.reflect.TypeToken;
+import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -89,7 +91,7 @@ public class ActivitySearch extends AppCompatActivity {
                     textViewNoneResult.setVisibility(View.GONE);
                 }
             }
-        }, preferenceManager);
+        });
         recyclerView.setAdapter(locationAdapter);
 
         // Truyền dòng kẻ giữa các item trong recycleview
@@ -111,7 +113,6 @@ public class ActivitySearch extends AppCompatActivity {
                 } else {
                     textViewHistorySearch.setText("Gợi ý");
                 }
-                int itemCount = locationAdapter.getItemCount();
                 return false;
             }
         });
@@ -121,6 +122,12 @@ public class ActivitySearch extends AppCompatActivity {
                 if (hasFocus) {
                     hideFragmentFilter();
                 }
+            }
+        });
+        searchView.setOnCloseListener(new SearchView.OnCloseListener() {
+            @Override
+            public boolean onClose() {
+                return false;
             }
         });
         textViewHuy.setOnClickListener(new View.OnClickListener() {
@@ -160,11 +167,14 @@ public class ActivitySearch extends AppCompatActivity {
     }
     public void readHistoryLocation() {
         // Đọc lịch sử tìm kiếm ở đây
-        Set<String> listHistorySearch  = preferenceManager.getStringSet(Constants.KEY_HISTORY_SEARCH);
-        Log.d("Số lượng", String.valueOf(listHistorySearch.size()));
-        if (listHistorySearch.size() != 0) {
-            for (String location : listHistorySearch) {
-                listHistoryLocation.add(new Location(location));
+        String jsonString = preferenceManager.getString(Constants.KEY_HISTORY_SEARCH);
+        if (jsonString != null) {
+            // Convert JSON string to List
+            List<String> listHistory = new Gson().fromJson(jsonString, new TypeToken<List<String>>(){}.getType());
+            if (listHistory.size() != 0) {
+                for (String location : listHistory) {
+                    listHistoryLocation.add(new Location(location));
+                }
             }
         }
     }

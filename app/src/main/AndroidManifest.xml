@@ -26,8 +26,12 @@
         android:theme="@style/Theme.RentHouse"
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
-        <activity android:name=".Activity.FindByMapsActivity"
-            android:exported="false"/>
+        <activity
+            android:name=".ActivityRecentSeen"
+            android:exported="false" />
+        <activity
+            android:name=".Activity.FindByMapsActivity"
+            android:exported="false" />
         <activity
             android:name=".Admin.Activity.Admin_ActivityCreateSchedule"
             android:exported="false" />
@@ -95,26 +99,19 @@
             android:exported="false" />
         <activity
             android:name=".Activity.ActivityDetails"
-            android:exported="false"></activity>
+            android:exported="false" />
         <activity
             android:name=".Activity.ActivityAccountInformation"
             android:exported="false" />
         <activity
             android:name=".Activity.ActivityMain"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
+            android:exported="true"></activity>
         <activity
             android:name=".Activity.FullScreenActivity"
             android:exported="false" />
         <activity
             android:name=".Activity.ActivitySplash"
-            android:exported="true">
-        </activity>
+            android:exported="true"></activity>
         <activity
             android:name=".Activity.ActivitySignUp"
             android:exported="false" />
@@ -126,12 +123,17 @@
             android:exported="false" />
         <activity
             android:name=".Activity.ActivityLogIn"
-            android:exported="true" >
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
 
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
+        <activity
+            android:name=".Activity.ActivitySearch"
+            android:exported="false" />
 
-        <activity android:name=".Activity.ActivitySearch"
-            android:exported="false"/>
         <service
             android:name=".Chat.Firebase.MessingService"
             android:exported="false">

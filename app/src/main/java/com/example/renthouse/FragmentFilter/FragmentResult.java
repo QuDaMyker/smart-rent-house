@@ -135,6 +135,32 @@ public class FragmentResult extends Fragment {
             }
         });
     }
+    private boolean isPriceValid(Room room) {
+        if (objectSearch.getPrice() == null || objectSearch.getPrice().isEmpty()) {
+            return true;
+        } else {
+            if (room.getPrice() <= objectSearch.getPrice().get(1) && room.getPrice() >= objectSearch.getPrice().get(0)) {
+                return true;
+            }
+            return false;
+        }
+    }
+//    private boolean isContainsUtilities(Room room) {
+//        if (objectSearch.getUtilities() == null || objectSearch.getUtilities().isEmpty()) {
+//            return true;
+//        } else {
+//           // for (String )
+//        }
+//    }
+//    private boolean isContainTypeRoom(Room room) {
+//
+//    }
+//    private boolean isContainAmount(Room room) {
+//
+//    }
+//    private boolean isContainSort(Room room) {
+//
+//    }
 
     public void setObjectSearch(ObjectSearch objectSearch) {
         this.objectSearch = objectSearch;
