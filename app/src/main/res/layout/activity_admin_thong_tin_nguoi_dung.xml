@@ -45,7 +45,7 @@
     </com.google.android.material.appbar.MaterialToolbar>
 
     <androidx.appcompat.widget.LinearLayoutCompat
-        android:id="@+id/linearLayout1"
+        android:id="@+id/thongbaokhoa"
         android:layout_marginTop="30dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -64,6 +64,7 @@
             android:textStyle="bold" />
 
         <TextView
+            android:id="@+id/tvThoiGianKhoa"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="21/06/2023"
@@ -81,7 +82,7 @@
         android:orientation="vertical"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/linearLayout1">
+        app:layout_constraintTop_toBottomOf="@+id/thongbaokhoa">
 
         <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/account_personal_imageProfile"
@@ -183,7 +184,7 @@
     </LinearLayout>
 
     <Button
-        android:id="@+id/btn_CapNhat"
+        android:id="@+id/btn_KhoaTaiKhoan"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="30dp"

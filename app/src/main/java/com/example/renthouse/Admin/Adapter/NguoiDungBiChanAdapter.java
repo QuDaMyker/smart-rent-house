@@ -51,7 +51,7 @@ public class NguoiDungBiChanAdapter extends RecyclerView.Adapter<NguoiDungBiChan
 
         void setData(NguoiDung nguoiDung) {
             Picasso.get().load(nguoiDung.getAccountClass().getImage()).into(binding.imageUser);
-            binding.nameUser.setText("nguoiDung.getAccountClass().getFullname()");
+            binding.nameUser.setText(nguoiDung.getAccountClass().getFullname());
             binding.countRoom.setText(nguoiDung.getSoLuongPhong() + "");
             binding.dateJoinUser.setText(nguoiDung.getAccountClass().getNgayTaoTaiKhoan());
             binding.getRoot().setOnClickListener(v -> {

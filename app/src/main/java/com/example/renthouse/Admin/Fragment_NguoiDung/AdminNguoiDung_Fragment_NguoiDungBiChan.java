@@ -71,7 +71,7 @@ public class AdminNguoiDung_Fragment_NguoiDungBiChan extends Fragment implements
     private void loadData() {
         progressDialog.show();
         DatabaseReference reference = database.getReference();
-        Query query = reference.child("Accounts").orderByChild("blocked").equalTo(false);
+        Query query = reference.child("Accounts").orderByChild("blocked").equalTo(true);
         query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -90,10 +90,11 @@ public class AdminNguoiDung_Fragment_NguoiDungBiChan extends Fragment implements
                             tempNguoiDungs.add(new NguoiDung(key, account, countRoom));
 
 
-                            Log.d("count", "Count = " + count);
                             // Kiểm tra khi nào dữ liệu đã được tải xong
                             if (count.incrementAndGet() == dataSnapshotCount) {
                                 nguoiDungs.addAll(tempNguoiDungs);
+                                Log.d("count", "Count temp = " + tempNguoiDungs.size() + "Countnguoidungs = " + nguoiDungs.size());
+                                nguoiDungBiChanAdapter.notifyDataSetChanged();
                                 progressDialog.dismiss();
                                 Toast.makeText(getContext(), "Load Du Lieu Thanh Cong", Toast.LENGTH_SHORT).show();
                             }
@@ -105,6 +106,7 @@ public class AdminNguoiDung_Fragment_NguoiDungBiChan extends Fragment implements
                         }
                     });
                 }
+                progressDialog.dismiss();
             }
 
             @Override
