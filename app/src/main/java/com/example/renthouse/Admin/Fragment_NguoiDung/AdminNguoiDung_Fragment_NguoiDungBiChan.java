@@ -1,9 +1,15 @@
 package com.example.renthouse.Admin.Fragment_NguoiDung;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
@@ -18,6 +24,7 @@ import com.example.renthouse.Admin.Adapter.NguoiDungAdapter;
 import com.example.renthouse.Admin.Adapter.NguoiDungBiChanAdapter;
 import com.example.renthouse.Admin.OOP.NguoiDung;
 import com.example.renthouse.Admin.listeners.ItemNguoiDungListener;
+import com.example.renthouse.Admin.listeners.LoadDataFragment;
 import com.example.renthouse.OOP.AccountClass;
 import com.example.renthouse.databinding.FragmentAdminNguoiDungNguoiDungBiChanBinding;
 import com.example.renthouse.utilities.Constants;
@@ -35,7 +42,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class AdminNguoiDung_Fragment_NguoiDungBiChan extends Fragment implements ItemNguoiDungListener {
+public class AdminNguoiDung_Fragment_NguoiDungBiChan extends Fragment implements ItemNguoiDungListener, LoadDataFragment {
     private FragmentAdminNguoiDungNguoiDungBiChanBinding binding;
     private List<NguoiDung> nguoiDungs;
     private PreferenceManager preferenceManager;
@@ -58,13 +65,10 @@ public class AdminNguoiDung_Fragment_NguoiDungBiChan extends Fragment implements
 
         preferenceManager = new PreferenceManager(getContext());
 
-        nguoiDungs = new ArrayList<>();
-        nguoiDungBiChanAdapter = new NguoiDungBiChanAdapter(getContext(), nguoiDungs, this);
-        binding.recycleView.setAdapter(nguoiDungBiChanAdapter);
-        database = FirebaseDatabase.getInstance();
 
-        //init();
-        loadData();
+
+        init();
+        //loadData();
         return view;
     }
 
@@ -128,6 +132,26 @@ public class AdminNguoiDung_Fragment_NguoiDungBiChan extends Fragment implements
     public void onItemNguoiDungClick(NguoiDung nguoiDung) {
         Intent intent = new Intent(getActivity(), Admin_ActivityThongTinNguoiDung.class);
         intent.putExtra(Constants.KEY_NGUOIDUNG, nguoiDung);
-        startActivity(intent);
+        mStartForResult.launch(intent);
+    }
+    private ActivityResultLauncher<Intent> mStartForResult = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
+            new ActivityResultCallback<ActivityResult>() {
+                @Override
+                public void onActivityResult(ActivityResult result) {
+                    if (result.getResultCode() == Activity.RESULT_OK) {
+                        Intent intent = result.getData();
+                        // Handle the Intent
+                        nguoiDungs.clear();
+                        nguoiDungBiChanAdapter.notifyDataSetChanged();
+                        loadData();
+                    }
+                }
+            });
+
+    @Override
+    public void loadDataFragment() {
+        nguoiDungs.clear();
+        nguoiDungBiChanAdapter.notifyDataSetChanged();
+        loadData();
     }
 }

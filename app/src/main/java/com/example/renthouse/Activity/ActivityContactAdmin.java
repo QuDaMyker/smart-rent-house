@@ -1,5 +1,6 @@
 package com.example.renthouse.Activity;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
@@ -15,12 +16,22 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
+
+import org.checkerframework.checker.units.qual.A;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class ActivityContactAdmin extends AppCompatActivity {
     private ActivityContactAdminBinding binding;
     private PreferenceManager preferenceManager;
+    private AccountClass account;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -37,16 +48,20 @@ public class ActivityContactAdmin extends AppCompatActivity {
         binding.btnSent.setOnClickListener(v->{
             if(checkValid()) {
                 Intent intent = getIntent();
+                AccountClass account = (AccountClass) intent.getSerializableExtra("account");
                 String keyUser = intent.getStringExtra("key");
-                String email = intent.getStringExtra("email");
+                String email = account.getEmail();
                 String title = binding.txtEdtTieuDe.getText().toString().trim();
                 String content = binding.txtEdtMoTaSuCo.getText().toString().trim();
 
                 FirebaseDatabase database = FirebaseDatabase.getInstance();
-                DatabaseReference reference = database.getReference("Reports");
-                Reports reports = new Reports(email, keyUser, title, content);
+                DatabaseReference reference = database.getReference();
+                Date now = new Date();
+                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                String formattedDate = dateFormat.format(now);
+                Reports reports = new Reports(account, keyUser, title, content, formattedDate);
 
-                reference.push().setValue(reports);
+                reference.child("Reports").push().setValue(reports);
 
                 // go bo thong tin dang nhap va clear SharedPrefence
                 clearCacheAccount();
@@ -59,9 +74,10 @@ public class ActivityContactAdmin extends AppCompatActivity {
 
     private void loadIntent() {
         Intent intent = getIntent();
-        binding.nameUser.setText(intent.getStringExtra("fullname"));
-        binding.emailUser.setText(intent.getStringExtra("email"));
-        if(intent.getBooleanExtra("blocked", false)) {
+        AccountClass account = (AccountClass) intent.getSerializableExtra("account");
+        binding.nameUser.setText(account.getFullname());
+        binding.emailUser.setText(account.getEmail());
+        if(account.getBlocked()) {
             binding.blockUser.setText("Đã khóa");
         }
     }

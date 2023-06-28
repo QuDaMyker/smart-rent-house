@@ -66,9 +66,8 @@ public class ActivityBlocked extends AppCompatActivity {
                     for(DataSnapshot snapshot : dataSnapshot.getChildren()) {
                         AccountClass account = snapshot.getValue(AccountClass.class);
                         intent.putExtra("key", snapshot.getKey());
-                        intent.putExtra("fullname", account.getFullname());
-                        intent.putExtra("email", account.getEmail());
-                        intent.putExtra("blocked", account.getBlocked());
+                        intent.putExtra("account", account);
+                        Toast.makeText(getApplicationContext(), account.getFullname(), Toast.LENGTH_SHORT).show();
                         startActivity(intent);
                     }
 

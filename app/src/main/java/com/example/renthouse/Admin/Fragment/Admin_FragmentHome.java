@@ -1,5 +1,6 @@
 package com.example.renthouse.Admin.Fragment;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 
@@ -9,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.renthouse.Admin.Activity.Admin_ActivityBaoCaoNguoiDung;
 import com.example.renthouse.R;
 import com.example.renthouse.databinding.FragmentAdminHomeBinding;
 import com.github.mikephil.charting.charts.BarChart;
@@ -30,11 +32,18 @@ public class Admin_FragmentHome extends Fragment {
         // Inflate the layout for this fragment
 
 
-
+        setListener();
 
         return view;
     }
     private void setListener() {
+        binding.linearBaoCaoNguoiDung.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getContext(), Admin_ActivityBaoCaoNguoiDung.class);
+                startActivity(intent);
+            }
+        });
 
     }
     private void setChartBar() {

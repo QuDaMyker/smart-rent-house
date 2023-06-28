@@ -2,6 +2,7 @@ package com.example.renthouse.Admin.Activity;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -24,6 +25,7 @@ public class Admin_ActivityThongTinNguoiDung extends AppCompatActivity {
     private ActivityAdminThongTinNguoiDungBinding binding;
     private Intent intent;
     private NguoiDung nguoiDung;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -44,7 +46,7 @@ public class Admin_ActivityThongTinNguoiDung extends AppCompatActivity {
 
                 account.setBlocked(false);
                 account.setThoiGianKhoa("Khong khoa");
-            }else {
+            } else {
                 account.setBlocked(true);
                 Date now = new Date();
                 SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -57,8 +59,8 @@ public class Admin_ActivityThongTinNguoiDung extends AppCompatActivity {
 
             reference.child("Accounts").child(nguoiDung.getKey()).setValue(account);
             Toast.makeText(this, "Thao tac thanh cong", Toast.LENGTH_SHORT).show();
+            setResult(Activity.RESULT_OK);
             onBackPressed();
-
         });
     }
 
@@ -72,14 +74,16 @@ public class Admin_ActivityThongTinNguoiDung extends AppCompatActivity {
             binding.tietFullName.setText(nguoiDung.getAccountClass().getFullname());
             binding.tietEmail.setText(nguoiDung.getAccountClass().getEmail());
             binding.tietPhoneNumber.setText(nguoiDung.getAccountClass().getPhoneNumber());
-            binding.btnKhoaTaiKhoan.setBackgroundColor(Color.parseColor("#FF425E"));
+            binding.btnKhoaTaiKhoan.setBackgroundColor(Color.parseColor("#6DC565"));
+            binding.btnKhoaTaiKhoan.setText("Mở khóa tài khoản này");
         } else {
             binding.thongbaokhoa.setVisibility(View.INVISIBLE);
             Picasso.get().load(nguoiDung.getAccountClass().getImage()).into(binding.accountPersonalImageProfile);
             binding.tietFullName.setText(nguoiDung.getAccountClass().getFullname());
             binding.tietEmail.setText(nguoiDung.getAccountClass().getEmail());
             binding.tietPhoneNumber.setText(nguoiDung.getAccountClass().getPhoneNumber());
-            binding.btnKhoaTaiKhoan.setBackgroundColor(Color.parseColor("#6DC565"));
+            binding.btnKhoaTaiKhoan.setBackgroundColor(Color.parseColor("#FF425E"));
+            binding.btnKhoaTaiKhoan.setText("Khóa tài khoản này");
         }
     }
 }

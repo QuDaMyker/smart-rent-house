@@ -14,6 +14,7 @@ import android.widget.Toast;
 
 import com.example.renthouse.Interface.Callback;
 import com.example.renthouse.Interface.ValueEventListenerCallback;
+import com.example.renthouse.OOP.AccountClass;
 import com.example.renthouse.OOP.Reports;
 import com.example.renthouse.Other.CommonUtils;
 import com.example.renthouse.R;
@@ -28,6 +29,9 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.ktx.Firebase;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class ActivityReportError extends AppCompatActivity{
     private static final int EMAIL_SEND_REQUEST_CODE = 100;
@@ -79,15 +83,21 @@ public class ActivityReportError extends AppCompatActivity{
             Reports reports = new Reports();
             reports.setTitle(txtEdtTieuDe.getText().toString().trim());
             reports.setContent(txtEdtMoTa.getText().toString().trim());
-            reports.setEmail(currentUser.getEmail());
-            Query query  =  reference.child("Accounts").orderByChild("email").equalTo(currentUser.getEmail());
 
+            Date now = new Date();
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            String formattedDate = dateFormat.format(now);
+
+            reports.setNgayBaoCao(formattedDate);
+            Query query  =  reference.child("Accounts").orderByChild("email").equalTo(currentUser.getEmail());
 
             query.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                     for(DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                        AccountClass account = dataSnapshot.getValue(AccountClass.class);
                         reports.setIdUser(dataSnapshot.getKey());
+                        reports.setAccount(account);
                     }
                     Callback<Void> callback = new Callback<Void>() {
                         @Override

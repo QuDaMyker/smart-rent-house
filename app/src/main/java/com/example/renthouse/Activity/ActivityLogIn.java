@@ -290,6 +290,10 @@ public class ActivityLogIn extends AppCompatActivity {
                                 AccountClass accountClass = new AccountClass(personName, personEmail, "+84", "********", personPhoto.toString(), formattedDate, false, null);
                                 String emailToCheck = personEmail;
 
+                                preferenceManager.putString(Constants.KEY_IMAGE, accountClass.getImage());
+                                preferenceManager.putString(Constants.KEY_PHONENUMBER, accountClass.getPhoneNumber());
+                                preferenceManager.putString(Constants.KEY_EMAIL, accountClass.getEmail());
+                                preferenceManager.putString(Constants.KEY_FULLNAME, accountClass.getFullname());
 
                                 DatabaseReference accountsRef = reference.child("Accounts");
                                 Query emailQuery = accountsRef.orderByChild("email").equalTo(emailToCheck);
@@ -309,10 +313,7 @@ public class ActivityLogIn extends AppCompatActivity {
                                                             if (task.isSuccessful()) {
                                                                 // Data successfully saved
 
-                                                                preferenceManager.putString(Constants.KEY_IMAGE, accountClass.getImage());
-                                                                preferenceManager.putString(Constants.KEY_PHONENUMBER, accountClass.getPhoneNumber());
-                                                                preferenceManager.putString(Constants.KEY_EMAIL, accountClass.getEmail());
-                                                                preferenceManager.putString(Constants.KEY_FULLNAME, accountClass.getFullname());
+
 
                                                                 pushSuccessFullNotification();
                                                                 progressDialog.dismiss();

@@ -11,13 +11,20 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.renthouse.Admin.Adapter.TabLayoutNguoiDungAdapter;
+import com.example.renthouse.Admin.Fragment_NguoiDung.AdminNguoiDung_FragmentDanhSachNguoiDung;
+import com.example.renthouse.Admin.Fragment_NguoiDung.AdminNguoiDung_Fragment_NguoiDungBiChan;
 import com.example.renthouse.R;
 import com.google.android.material.tabs.TabLayout;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class Admin_FragmentNguoiDung extends Fragment {
     private TabLayout fragNguoiDung_tab_layout;
     private ViewPager2 fragNguoiDung_viewPager2;
     private TabLayoutNguoiDungAdapter tabLayoutNguoiDungAdapter;
+    private Fragment selectedFragment = null;
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -40,6 +47,13 @@ public class Admin_FragmentNguoiDung extends Fragment {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
                 fragNguoiDung_viewPager2.setCurrentItem(tab.getPosition());
+
+                selectedFragment = fragmentManager.getFragments().get(tab.getPosition());
+                if (selectedFragment instanceof AdminNguoiDung_FragmentDanhSachNguoiDung) {
+                    ((AdminNguoiDung_FragmentDanhSachNguoiDung) selectedFragment).loadDataFragment();
+                } else {
+                    ((AdminNguoiDung_Fragment_NguoiDungBiChan) selectedFragment).loadDataFragment();
+                }
             }
 
             @Override
@@ -63,4 +77,5 @@ public class Admin_FragmentNguoiDung extends Fragment {
 
         return view;
     }
+
 }

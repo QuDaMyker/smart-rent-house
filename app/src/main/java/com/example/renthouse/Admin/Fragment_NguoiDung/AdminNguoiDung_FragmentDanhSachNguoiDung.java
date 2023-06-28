@@ -1,9 +1,14 @@
 package com.example.renthouse.Admin.Fragment_NguoiDung;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -19,6 +24,7 @@ import com.example.renthouse.Admin.Activity.Admin_ActivityThongTinNguoiDung;
 import com.example.renthouse.Admin.Adapter.NguoiDungAdapter;
 import com.example.renthouse.Admin.OOP.NguoiDung;
 import com.example.renthouse.Admin.listeners.ItemNguoiDungListener;
+import com.example.renthouse.Admin.listeners.LoadDataFragment;
 import com.example.renthouse.OOP.AccountClass;
 import com.example.renthouse.R;
 import com.example.renthouse.databinding.FragmentAdminNguoiDungDanhSachNguoiDungBinding;
@@ -40,7 +46,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class AdminNguoiDung_FragmentDanhSachNguoiDung extends Fragment implements ItemNguoiDungListener {
+public class AdminNguoiDung_FragmentDanhSachNguoiDung extends Fragment implements ItemNguoiDungListener, LoadDataFragment {
     private FragmentAdminNguoiDungDanhSachNguoiDungBinding binding;
     private List<NguoiDung> nguoiDungs;
     private List<NguoiDung> filterSearch;
@@ -109,6 +115,7 @@ public class AdminNguoiDung_FragmentDanhSachNguoiDung extends Fragment implement
                         }
                     });
                 }
+                progressDialog.dismiss();
             }
 
             @Override
@@ -205,13 +212,6 @@ public class AdminNguoiDung_FragmentDanhSachNguoiDung extends Fragment implement
     }
 
 
-    @Override
-    public void onItemNguoiDungClick(NguoiDung nguoiDung) {
-        Intent intent = new Intent(getActivity(), Admin_ActivityThongTinNguoiDung.class);
-        intent.putExtra(Constants.KEY_NGUOIDUNG, nguoiDung);
-        startActivity(intent);
-    }
-
     private void loadObjects() {
         filterSearch.clear();
         filterSearch.addAll(nguoiDungs);
@@ -226,5 +226,33 @@ public class AdminNguoiDung_FragmentDanhSachNguoiDung extends Fragment implement
             }
         }
         nguoiDungAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void onItemNguoiDungClick(NguoiDung nguoiDung) {
+        Intent intent = new Intent(getActivity(), Admin_ActivityThongTinNguoiDung.class);
+        intent.putExtra(Constants.KEY_NGUOIDUNG, nguoiDung);
+        mStartForResult.launch(intent);
+    }
+
+    private ActivityResultLauncher<Intent> mStartForResult = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
+        @Override
+        public void onActivityResult(ActivityResult result) {
+            if (result.getResultCode() == Activity.RESULT_OK) {
+                Intent intent = result.getData();
+                nguoiDungs.clear();
+                filterSearch.clear();
+                nguoiDungAdapter.notifyDataSetChanged();
+                loadData();
+            }
+        }
+    });
+
+    @Override
+    public void loadDataFragment() {
+        nguoiDungs.clear();
+        filterSearch.clear();
+        nguoiDungAdapter.notifyDataSetChanged();
+        loadData();
     }
 }

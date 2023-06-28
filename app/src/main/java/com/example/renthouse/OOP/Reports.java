@@ -1,27 +1,29 @@
 package com.example.renthouse.OOP;
 
 public class Reports {
-    private String email;
+    private AccountClass account;
     private String idUser;
     private String title;
     private String content;
+    private String ngayBaoCao;
 
     public Reports() {
     }
 
-    public Reports(String email, String idUser, String title, String content) {
-        this.email = email;
+    public Reports(AccountClass account, String idUser, String title, String content, String ngayBaoCao) {
+        this.account = account;
         this.idUser = idUser;
         this.title = title;
         this.content = content;
+        this.ngayBaoCao = ngayBaoCao;
     }
 
-    public String getEmail() {
-        return email;
+    public AccountClass getAccount() {
+        return account;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+    public void setAccount(AccountClass account) {
+        this.account = account;
     }
 
     public String getIdUser() {
@@ -46,5 +48,13 @@ public class Reports {
 
     public void setContent(String content) {
         this.content = content;
+    }
+
+    public String getNgayBaoCao() {
+        return ngayBaoCao;
+    }
+
+    public void setNgayBaoCao(String ngayBaoCao) {
+        this.ngayBaoCao = ngayBaoCao;
     }
 }
