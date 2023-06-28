@@ -1,5 +1,7 @@
 package com.example.renthouse.Activity;
 
+import static com.example.renthouse.utilities.Constants.STATUS_PENDING;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -217,7 +219,8 @@ public class ActivityPost extends AppCompatActivity {
                             user,
                             fragmentConfirm.getPhoneNumber(),
                             sdf.format(currentDate),
-                            false);
+                            false,
+                            STATUS_PENDING);
 
                     String pathObject = String.valueOf(room.getId());
                     myRef.child(pathObject).setValue(room);
