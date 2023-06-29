@@ -331,12 +331,12 @@ public class ActivityDetails extends AppCompatActivity {
 
             }
         });
-        tvThemDX.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-            }
-        });//chưa làm
+//        tvThemDX.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//
+//            }
+//        });//chưa làm
         ibCall.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

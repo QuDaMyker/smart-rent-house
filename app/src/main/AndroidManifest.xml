@@ -102,11 +102,7 @@
         <activity
             android:name=".Activity.ActivityMain"
             android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
         <activity
             android:name=".Activity.FullScreenActivity"
@@ -114,6 +110,11 @@
         <activity
             android:name=".Activity.ActivitySplash"
             android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
         <activity
             android:name=".Activity.ActivitySignUp"
