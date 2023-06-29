@@ -211,6 +211,7 @@ public class FragmentAmount extends Fragment {
             }
         }
         isResume = false;
+        isDelete = false;
         mListener.onValueAmountChangeListener();
     }
 }

@@ -167,16 +167,21 @@ public class ActivitySearch extends AppCompatActivity {
     }
     public void readHistoryLocation() {
         // Đọc lịch sử tìm kiếm ở đây
-        String jsonString = preferenceManager.getString(Constants.KEY_HISTORY_SEARCH);
-        if (jsonString != null) {
-            // Convert JSON string to List
-            List<String> listHistory = new Gson().fromJson(jsonString, new TypeToken<List<String>>(){}.getType());
-            if (listHistory.size() != 0) {
-                for (String location : listHistory) {
-                    listHistoryLocation.add(new Location(location));
+        try {
+            String jsonString = preferenceManager.getString(Constants.KEY_HISTORY_SEARCH);
+            if (jsonString != null) {
+                // Convert JSON string to List
+                List<String> listHistory = new Gson().fromJson(jsonString, new TypeToken<List<String>>(){}.getType());
+                if (listHistory.size() != 0) {
+                    for (String location : listHistory) {
+                        listHistoryLocation.add(new Location(location));
+                    }
                 }
             }
+        } catch (RuntimeException e){
+            preferenceManager.putString(Constants.KEY_HISTORY_SEARCH, null);
         }
+
     }
 
 
