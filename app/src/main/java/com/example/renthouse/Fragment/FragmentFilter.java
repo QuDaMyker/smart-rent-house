@@ -21,7 +21,6 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
 import com.example.renthouse.Adapter.FilterApdapter;
-import com.example.renthouse.Adapter.ResultRoomAdapter;
 import com.example.renthouse.FragmentFilter.FragmentAmount;
 import com.example.renthouse.FragmentFilter.FragmentResult;
 import com.example.renthouse.FragmentFilter.FragmentSort;
@@ -36,12 +35,10 @@ import com.example.renthouse.Interface.ITypeValueChangeListener;
 import com.example.renthouse.Interface.IUtilitiesValueChangeListener;
 import com.example.renthouse.OOP.ObjectFilter;
 import com.example.renthouse.OOP.ObjectSearch;
-import com.example.renthouse.OOP.Room;
 import com.example.renthouse.R;
 import com.google.android.material.button.MaterialButton;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class FragmentFilter extends Fragment {
     MaterialButton[] materialButtonFilter = new MaterialButton[5];
@@ -112,8 +109,8 @@ public class FragmentFilter extends Fragment {
         });
         fragmentUtilities = new FragmentUtilities(new IUtilitiesValueChangeListener() {
             @Override
-            public void onValueUtilitiesChangeListener(String utility, int position) {
-                objectSearch.getUtilities().add(position);
+            public void onValueUtilitiesChangeListener(String utility) {
+                objectSearch.getUtilities().add(utility);
                 objectFilter.getUtilitesString().add(utility);
                 filterApdapter.setData(utility, 1);
                 if (filterApdapter.getItemCount() != 0) {
@@ -121,14 +118,11 @@ public class FragmentFilter extends Fragment {
                 }
             }
             @Override
-            public void onValueUtilitiesDeleteListener(String utility, Integer position) {
+            public void onValueUtilitiesDeleteListener(String utility) {
                 try {
                     filterApdapter.deleteItemtUtilities(utility);
-                    Log.d("Vị trí", String.valueOf(position));
-                    Log.d("Số lượng trước", String.valueOf(objectSearch.getUtilities()));
-                    objectSearch.getUtilities().remove(position);
+                    objectSearch.getUtilities().remove(utility);
                     objectFilter.getUtilitesString().remove(utility);
-                    Log.d("Số lượng sau", String.valueOf(objectSearch.getUtilities()));
                 } catch (IndexOutOfBoundsException e) {
                     Log.d("Số lượng nè", String.valueOf(objectSearch.getUtilities().size()));
                 }
@@ -140,7 +134,7 @@ public class FragmentFilter extends Fragment {
         fragmentType = new FragmentType(new ITypeValueChangeListener() {
             @Override
             public void onValueTypeChangeListener() {
-                objectSearch.setType(fragmentType.getValue());
+                objectSearch.setType(fragmentType.getValueString());
                 objectFilter.setTypeRoom(fragmentType.getValueString());
                 filterApdapter.setData(objectFilter.getTypeRoom(), 2);
                 if (filterApdapter.getItemCount() != 0) {
@@ -151,9 +145,21 @@ public class FragmentFilter extends Fragment {
         fragmentAmount = new FragmentAmount(new IAmountValueChangeListener() {
             @Override
             public void onValueAmountChangeListener() {
-                objectSearch.setAmount(fragmentAmount.getValue().get(0));
-                objectSearch.setGender(fragmentAmount.getValue().get(1));
-                fragmentAmount.POSITION = objectSearch.getGender();
+                objectSearch.setAmount(fragmentAmount.getAmount());
+                objectSearch.setGender(fragmentAmount.getGender());
+                switch (objectSearch.getGender()) {
+                    case "Nữ":
+                        fragmentAmount.POSITION = 0;
+                        break;
+                    case "Nam":
+                        fragmentAmount.POSITION = 1;
+                        break;
+                    case "Khác":
+                        fragmentAmount.POSITION = 2;
+                        break;
+                    default:
+                        fragmentAmount.POSITION = -1;
+                }
                 objectFilter.setAmountAndGender(fragmentAmount.getValueString());
                 filterApdapter.setData(objectFilter.getAmountAndGender(), 3);
                 if (filterApdapter.getItemCount() != 0) {
@@ -164,7 +170,7 @@ public class FragmentFilter extends Fragment {
         fragmentSort = new FragmentSort(new ISortValueChangeListener() {
             @Override
             public void onValueSortChangeListener() {
-                objectSearch.setSort(fragmentSort.getValue());
+                objectSearch.setSort(fragmentSort.getValueString());
                 objectFilter.setSortString(fragmentSort.getValueString());
                 filterApdapter.setData(objectFilter.getSortString(), 4);
                 if (filterApdapter.getItemCount() != 0) {
@@ -186,23 +192,19 @@ public class FragmentFilter extends Fragment {
                 if (filterApdapter.getItemCount() == 1) {
                     linearLayout.setVisibility(View.GONE);
                 }
-                if (POSITION == 0) {
-                    return;
-                } else {
+                if (POSITION != 0) {
                     setButtonUnChecked(0);
                 }
             }
             @Override
             public void onItemDeleteTypeListener() {
                 fragmentType.resetFragment();
-                objectSearch.setType(-1);
+                objectSearch.setType("");
                 objectFilter.setTypeRoom("");
                 if (filterApdapter.getItemCount() == 1) {
                     linearLayout.setVisibility(View.GONE);
                 }
-                if (POSITION == 2) {
-                    return;
-                } else {
+                if (POSITION != 2) {
                     setButtonUnChecked(2);
                 }
             }
@@ -212,12 +214,12 @@ public class FragmentFilter extends Fragment {
                 if (POSITION == 1) {
                     fragmentUtilities.setButtonUnCheckedString(content);
                 }
-                objectSearch.getUtilities().remove(fragmentUtilities.postionOfButtonText(content));
+                objectSearch.getUtilities().remove(content);
                 objectFilter.getUtilitesString().remove(content);
                 if (filterApdapter.getItemCount() == 1) {
                     linearLayout.setVisibility(View.GONE);
                 }
-                if (objectSearch.getUtilities().size() ==  0) {
+                if (POSITION != 1 && objectSearch.getUtilities().size() == 0) {
                     setButtonUnChecked(1);
                 }
             }
@@ -227,13 +229,11 @@ public class FragmentFilter extends Fragment {
                 fragmentAmount.resetFragment();
                 objectFilter.setAmountAndGender("");
                 objectSearch.setAmount(-1);
-                objectSearch.setGender(-1);
+                objectSearch.setGender("");
                 if (filterApdapter.getItemCount() == 1) {
                     linearLayout.setVisibility(View.GONE);
                 }
-                if (POSITION == 3) {
-                    return;
-                } else {
+                if (POSITION != 3) {
                     setButtonUnChecked(3);
                 }
             }
@@ -241,13 +241,11 @@ public class FragmentFilter extends Fragment {
             @Override
             public void onItemDeleteSortListener() {
                 fragmentSort.resetFragment();
-                objectSearch.setSort(-1);
+                objectSearch.setSort("");
                 if (filterApdapter.getItemCount() == 1) {
                     linearLayout.setVisibility(View.GONE);
                 }
-                if (POSITION == 4) {
-                    return;
-                } else {
+                if (POSITION != 4) {
                     setButtonUnChecked(4);
                 }
             }
@@ -277,13 +275,13 @@ public class FragmentFilter extends Fragment {
                                 fragmentUtilities.resetFragment();
                             }
                         }
-                        if (objectSearch.getType() != -1) {
+                        if (objectSearch.getType().isEmpty()) {
                             fragmentType.resetFragment();
                         }
                         if (objectSearch.getAmount() != -1) {
                             fragmentAmount.resetFragment();
                         }
-                        if (objectSearch.getSort() != -1) {
+                        if (objectSearch.getSort().isEmpty()) {
                             fragmentSort.resetFragment();
                         }
                         for (int i = 0; i < 5; i ++) {
@@ -324,6 +322,7 @@ public class FragmentFilter extends Fragment {
                 FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
                 fragmentTransaction.replace(R.id.linearLayoutFragment, fragmentResult);
                 fragmentTransaction.commit();
+                Log.d("hehehe", String.valueOf(objectSearch));
                 unChekedButton();
                 POSITION = -1;
             }
@@ -363,6 +362,9 @@ public class FragmentFilter extends Fragment {
                 }
                 break;
             case 3:
+                Log.d("Stated resume", String.valueOf(fragmentAmount.isResume));
+                Log.d("Stated delete", String.valueOf(fragmentAmount.isDelete));
+
                 if (!fragmentAmount.hasValue()) {
                     setButtonUnChecked(POSITION);
                 } else {
