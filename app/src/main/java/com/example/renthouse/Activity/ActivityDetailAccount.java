@@ -107,50 +107,55 @@ public class ActivityDetailAccount extends AppCompatActivity {
 
         Intent intent = getIntent();
         account = (AccountClass) intent.getSerializableExtra("ACCOUNT");
-        TIETfullname.setText(account.getFullname());
-        TIETemail.setText(account.getEmail());
-        TIETsodienthoai.setText(account.getPhoneNumber());
-        TIETMatKhau.setText(account.getPassword());
-        Picasso.get().load(account.getImage()).into(imageProfile);
+        TIETfullname.setText(preferenceManager.getString(Constants.KEY_FULLNAME));
+        TIETemail.setText(preferenceManager.getString(Constants.KEY_EMAIL));
+        TIETsodienthoai.setText(preferenceManager.getString(Constants.KEY_PHONENUMBER));
+        TIETMatKhau.setText(preferenceManager.getString(Constants.KEY_PASSWORD));
+        Picasso.get().load(preferenceManager.getString(Constants.KEY_IMAGE)).into(imageProfile);
 
         key = intent.getStringExtra("KEY");
 
-
-        btnBack.setOnClickListener(v-> onBackPressed());
+        btnBack.setOnClickListener(v -> onBackPressed());
 
         btnUpdate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                progressDialog.show();
-                FirebaseDatabase database = FirebaseDatabase.getInstance();
-                DatabaseReference reference = database.getReference("Accounts");
-                account.setFullname(TIETfullname.getText().toString());
-                account.setPhoneNumber(TIETsodienthoai.getText().toString());
-                reference.child(key).setValue(account).addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                    }
-                });
+                if (checkTrueCondition()) {
 
-                currentUser.updatePassword(TIETMatKhau.getText().toString().trim()).addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        if(task.isSuccessful()) {
-                            CommonUtils.showNotification(ActivityDetailAccount.this, "Cập nhật mật khẩu", "Cập nhật mật khẩu thành công", R.drawable.ic_phobien_1);
-                            finish();
-                        }else {
-                            CommonUtils.showNotification(ActivityDetailAccount.this, "Cập nhật mật khẩu", "Cập nhật mật khẩu thất bại", R.drawable.ic_phobien_1);
+                    FirebaseDatabase database = FirebaseDatabase.getInstance();
+                    DatabaseReference reference = database.getReference();
+                    account.setFullname(TIETfullname.getText().toString().trim());
+                    account.setPhoneNumber(TIETsodienthoai.getText().toString().trim());
+                    account.setPassword(TIETMatKhau.getText().toString().trim());
+                    reference.child("Accounts").child(key).setValue(account).addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+
                         }
+                    });
+
+                    try {
+                        currentUser.updatePassword(TIETMatKhau.getText().toString().trim()).addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                if (task.isSuccessful()) {
+                                    //CommonUtils.showNotification(ActivityDetailAccount.this, "Cập nhật mật khẩu", "Cập nhật mật khẩu thành công", R.drawable.ic_phobien_1);
+                                    finish();
+                                } else {
+                                    //CommonUtils.showNotification(ActivityDetailAccount.this, "Cập nhật mật khẩu", "Cập nhật mật khẩu thất bại", R.drawable.ic_phobien_1);
+                                }
+                            }
+                        });
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
-                });
 
-                preferenceManager.putString(Constants.KEY_EMAIL, account.getEmail());
-                preferenceManager.putString(Constants.KEY_FULLNAME, account.getFullname());
-                preferenceManager.putString(Constants.KEY_PHONENUMBER, account.getPhoneNumber());
-                preferenceManager.putString(Constants.KEY_PASSWORD, TIETMatKhau.getText().toString().trim());
-                preferenceManager.putString(Constants.KEY_USER_KEY, key);
-                progressDialog.dismiss();
-
+                    preferenceManager.putString(Constants.KEY_FULLNAME, TIETfullname.getText().toString().trim());
+                    preferenceManager.putString(Constants.KEY_PHONENUMBER, TIETsodienthoai.getText().toString().trim());
+                    preferenceManager.putString(Constants.KEY_PASSWORD, TIETMatKhau.getText().toString().trim());
+                    preferenceManager.putString(Constants.KEY_USER_KEY, key);
+                    onBackPressed();
+                }
             }
         });
 
@@ -218,5 +223,63 @@ public class ActivityDetailAccount extends AppCompatActivity {
         ContentResolver contentResolver = getContentResolver();
         MimeTypeMap mime = MimeTypeMap.getSingleton();
         return mime.getExtensionFromMimeType(contentResolver.getType(fileUri));
+    }
+
+    private boolean checkTrueCondition() {
+        if (TIETfullname.getText().toString().matches("[0-9\\p{Punct}]+")) {
+            TILfullname.setError("Không đúng định dạng");
+            return false;
+        } else {
+            TILfullname.setError(null);
+            if (!TIETemail.getText().toString().matches("^[\\w.-]+@[a-zA-Z]+\\.[a-zA-Z]{2,3}$")) {
+                TILemail.setError("Không đúng định dạng");
+                return false;
+            } else {
+                TILemail.setError(null);
+                if (!TIETsodienthoai.getText().toString().matches("^\\d{10}$")) {
+                    TILsodienthoai.setError("Ví dụ: 0912345678");
+                    return false;
+                } else {
+                    TILsodienthoai.setError(null);
+                    if (!isValidPassword(TIETMatKhau.getText().toString())) {
+                        TILmatkhau.setError("Mật khẩu từ 8 đến 20 ký tự, bao gồm chữ cái viết hoa, chữ cái viết thường và số");
+                        return false;
+                    } else {
+                        TILmatkhau.setError(null);
+                        return true;
+                    }
+                }
+            }
+        }
+    }
+
+    public static boolean isValidPassword(String password) {
+        // Kiểm tra độ dài của mật khẩu
+        if (password.length() < 8 || password.length() > 15) {
+            return false;
+        }
+
+        // Kiểm tra có ít nhất một số
+        if (!password.matches(".*\\d+.*")) {
+            return false;
+        }
+
+        // Kiểm tra có ít nhất một chữ thường
+        if (!password.matches(".*[a-z]+.*")) {
+            return false;
+        }
+
+        // Kiểm tra có ít nhất một chữ in hoa
+        if (!password.matches(".*[A-Z]+.*")) {
+            return false;
+        }
+
+        // Kiểm tra có ít nhất một ký tự đặc biệt
+        if (!password.matches(".*[!@#$%^&*()\\-=_+\\[\\]{};':\"\\\\|,.<>/?]+.*")) {
+            return false;
+        }
+
+        // Mật khẩu hợp lệ
+        return true;
     }
 }

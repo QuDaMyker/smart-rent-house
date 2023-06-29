@@ -148,6 +148,8 @@ public class ActivityDetails extends AppCompatActivity {
 
         preferenceManager = new PreferenceManager(ActivityDetails.this);
 
+
+
         Intent intent = getIntent();
         if (intent == null) {
             return;

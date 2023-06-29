@@ -294,6 +294,7 @@ public class ActivityLogIn extends AppCompatActivity {
                                 preferenceManager.putString(Constants.KEY_PHONENUMBER, accountClass.getPhoneNumber());
                                 preferenceManager.putString(Constants.KEY_EMAIL, accountClass.getEmail());
                                 preferenceManager.putString(Constants.KEY_FULLNAME, accountClass.getFullname());
+                                preferenceManager.putString(Constants.KEY_DATECREATEDACCOUNT, accountClass.getNgayTaoTaiKhoan());
 
                                 DatabaseReference accountsRef = reference.child("Accounts");
                                 Query emailQuery = accountsRef.orderByChild("email").equalTo(emailToCheck);
