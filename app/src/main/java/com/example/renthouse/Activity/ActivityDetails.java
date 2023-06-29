@@ -16,6 +16,7 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.ContactsContract;
+import android.util.Log;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.ImageButton;
@@ -26,28 +27,35 @@ import android.widget.Toolbar;
 
 import com.example.renthouse.Adapter.RoomAdapter;
 import com.example.renthouse.Adapter.UtilitiesAdapter;
+import com.example.renthouse.Chat.Dashboard.ActivityChat;
+import com.example.renthouse.Chat.OOP.Conversation;
 import com.example.renthouse.OOP.AccountClass;
 import com.example.renthouse.OOP.Room;
 import com.example.renthouse.R;
+import com.example.renthouse.utilities.Constants;
+import com.example.renthouse.utilities.PreferenceManager;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
+
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class ActivityDetails extends AppCompatActivity {
-    private static final  int REQUEST_CALL = 1;
-
-    private FirebaseDatabase db ;
+    private static final int REQUEST_CALL = 1;
+    private FirebaseDatabase db;
     private DatabaseReference ref;
     Room room;
-
     ImageButton btnPreScreen;
     CheckBox cbLiked;
     ImageButton btnNextImage;
@@ -72,7 +80,7 @@ public class ActivityDetails extends AppCompatActivity {
     TextView tvMota;
     TextView tvNgayDang;
     TextView tvXemThemMT;
-    List <String> listTI;
+    List<String> listTI;
     RecyclerView rcvTienIch;
     TextView tvThemTI;
     AccountClass Tg;
@@ -81,18 +89,15 @@ public class ActivityDetails extends AppCompatActivity {
     TextView tvSoP;
     ImageButton btnThemTTtg;
     RecyclerView rcvDeXuatP;
-    int visibleRowCount = 2 ;
-    int totalRowCount ;
-
+    int visibleRowCount = 2;
+    int totalRowCount;
     List<Room> rcmRooms;
     TextView tvThemDX;
     TextView tvGiaP;
     ImageButton ibChat;
     ImageButton ibCall;
     String accountPhone;
-
-
-
+    private PreferenceManager preferenceManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -136,17 +141,28 @@ public class ActivityDetails extends AppCompatActivity {
         btnThemTTtg = findViewById(R.id.btnMoreTg);
         rcvDeXuatP = findViewById(R.id.rcvDeXuatPhong);
         //tvThemDX = findViewById(R.id.tvMoreRoom);
-        tvGiaP  = findViewById(R.id.tvGia);
+        tvGiaP = findViewById(R.id.tvGia);
         ibCall = findViewById(R.id.btnToCall);
         ibChat = findViewById(R.id.btnToChat);
 
 
-        Bundle bundle = getIntent().getExtras();
-        if (bundle == null)
-        {
+        preferenceManager = new PreferenceManager(ActivityDetails.this);
+
+        Intent intent = getIntent();
+        if (intent == null) {
             return;
         }
-        room = (Room) bundle.get ("selectedRoom");
+        room = (Room) intent.getSerializableExtra("selectedRoom");
+        if (room.getCreatedBy().getEmail().equals(preferenceManager.getString(Constants.KEY_EMAIL))) {
+            ibChat.setVisibility(View.INVISIBLE);
+            ibCall.setVisibility(View.INVISIBLE);
+        }
+
+        /*Bundle bundle = getIntent().getExtras();
+        if (bundle == null) {
+            return;
+        }
+        room = (Room) bundle.get("selectedRoom");*/
 
         //load thông tin p được chọn
         //gán các thông tin
@@ -158,19 +174,17 @@ public class ActivityDetails extends AppCompatActivity {
         DatabaseReference refAc = db.getReference("Accounts");
         refAc.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot){
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
                 String emailAc = null;
-                for (DataSnapshot snapAc: snapshot.getChildren())
-                {
+                for (DataSnapshot snapAc : snapshot.getChildren()) {
                     emailAc = snapAc.child("email").getValue(String.class);
-                    if (emaiCur.equals(emailAc)){
+                    if (emaiCur.equals(emailAc)) {
                         String idAc = snapAc.getKey();
                         DatabaseReference refLiked = db.getReference("LikedRooms").child(idAc);
                         ref.addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
                             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                if (snapshot.hasChild(room.getId()))
-                                {
+                                if (snapshot.hasChild(room.getId())) {
                                     cbLiked.setChecked(true);
                                 }
                             }
@@ -195,8 +209,7 @@ public class ActivityDetails extends AppCompatActivity {
         stt.setText("1/" + String.valueOf(srcImages.size()));
         Picasso.get().load(src).into(ivImages);
 
-        if (curImage ==0 )
-        {
+        if (curImage == 0) {
             btnPreImage.setVisibility(View.GONE);
         }
 
@@ -211,10 +224,10 @@ public class ActivityDetails extends AppCompatActivity {
         tvSdt.setText(room.getPhoneNumber());
         accountPhone = room.getPhoneNumber();
 
-        tvGiaDien.setText(String.valueOf(room.getElectricityCost()/1000) + "K");
-        tvGiaNuoc.setText(String.valueOf(room.getWaterCost()/1000) + "K");
-        tvGiaXe.setText(String.valueOf(room.getParkingFee()/1000) +"K");
-        tvGiaWifi.setText(String.valueOf(room.getInternetCost()/1000) +"K");
+        tvGiaDien.setText(String.valueOf(room.getElectricityCost() / 1000) + "K");
+        tvGiaNuoc.setText(String.valueOf(room.getWaterCost() / 1000) + "K");
+        tvGiaXe.setText(String.valueOf(room.getParkingFee() / 1000) + "K");
+        tvGiaWifi.setText(String.valueOf(room.getInternetCost() / 1000) + "K");
         tvMota.setText(room.getDescription());
         //tvNgayDang.setText(R.id.tvNgayDang);
 
@@ -228,15 +241,13 @@ public class ActivityDetails extends AppCompatActivity {
 
         Tg = room.getCreatedBy();
         String sourceImageAccount = Tg.getImage();
-        Picasso.get()
-                .load(sourceImageAccount)
-                .into(ivTacGia);
+        Picasso.get().load(sourceImageAccount).into(ivTacGia);
 
         tvTenTG.setText(Tg.getFullname());
 
         tinhSoP(Tg);
 
-        tvGiaP.setText(String.valueOf(room.getPrice()) +" đ");
+        tvGiaP.setText(String.valueOf(room.getPrice()) + " đ");
 
         GridLayoutManager grid = new GridLayoutManager(this, 2);
 
@@ -263,7 +274,7 @@ public class ActivityDetails extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(context, ActivityFullImage.class);
                 Bundle bundle = new Bundle();
-                bundle.putSerializable("listImages", (ArrayList<String>)srcImages);
+                bundle.putSerializable("listImages", (ArrayList<String>) srcImages);
                 bundle.putInt("curImage", curImage);
                 intent.putExtras(bundle);
                 startActivity(intent);
@@ -273,18 +284,15 @@ public class ActivityDetails extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 curImage--;
-                stt.setText(String.valueOf(curImage+1) +"/" + srcImages.size());
+                stt.setText(String.valueOf(curImage + 1) + "/" + srcImages.size());
                 String temp = srcImages.get(curImage);
                 Picasso.get().load(temp).into(ivImages);
-                if (curImage != srcImages.size()-1)
-                {
+                if (curImage != srcImages.size() - 1) {
                     btnNextImage.setVisibility(View.VISIBLE);
                 }
-                if (curImage == 0)
-                {
+                if (curImage == 0) {
                     btnPreImage.setVisibility(View.GONE);
-                }
-                else {
+                } else {
                     btnPreImage.setVisibility(View.VISIBLE);
                 }
             }
@@ -293,16 +301,15 @@ public class ActivityDetails extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 curImage++;
-                stt.setText(String.valueOf(curImage+1) +"/" + srcImages.size());
+                stt.setText(String.valueOf(curImage + 1) + "/" + srcImages.size());
                 String temp = srcImages.get(curImage);
                 Picasso.get().load(temp).into(ivImages);
-                if (curImage != 0){
+                if (curImage != 0) {
                     btnPreImage.setVisibility(View.VISIBLE);
                 }
-                if (curImage == srcImages.size() -1) {
+                if (curImage == srcImages.size() - 1) {
                     btnNextImage.setVisibility(View.GONE);
-                }
-                else {
+                } else {
                     btnNextImage.setVisibility(View.VISIBLE);
                 }
             }
@@ -316,37 +323,33 @@ public class ActivityDetails extends AppCompatActivity {
         tvXemThemMT.setOnClickListener(new View.OnClickListener() {
 
             boolean isExpand = false;
+
             @Override
             public void onClick(View v) {
-                isExpand  = !isExpand;
-                if (isExpand)
-                {
+                isExpand = !isExpand;
+                if (isExpand) {
                     tvMota.setMaxLines(Integer.MAX_VALUE);
                     tvXemThemMT.setText("Thu gọn");
-                }
-                else {
+                } else {
                     tvMota.setMaxLines(2);
                     tvXemThemMT.setText("Xem thêm");
                 }
 
             }
         });
-        tvThemDX.setOnClickListener(new View.OnClickListener() {
+       /* tvThemDX.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
             }
-        });//chưa làm
+        });//chưa làm*/
         ibCall.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (ContextCompat.checkSelfPermission(ActivityDetails.this, Manifest.permission.CALL_PHONE ) != PackageManager.PERMISSION_GRANTED)
-                {
+                if (ContextCompat.checkSelfPermission(ActivityDetails.this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
                     ActivityCompat.requestPermissions(ActivityDetails.this, new String[]{android.Manifest.permission.CALL_PHONE}, REQUEST_CALL);
-                }
-                else
-                {
-                    Intent intent = new Intent( Intent.ACTION_DIAL, Uri.fromParts("tel", accountPhone, null));
+                } else {
+                    Intent intent = new Intent(Intent.ACTION_DIAL, Uri.fromParts("tel", accountPhone, null));
                     startActivity(intent);
                 }
             }
@@ -354,6 +357,78 @@ public class ActivityDetails extends AppCompatActivity {
         ibChat.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                if (preferenceManager.getString(Constants.KEY_USER_KEY) != null) {
+                    Log.d("key", preferenceManager.getString(Constants.KEY_USER_KEY));
+                }
+
+                Intent intentChat = new Intent(ActivityDetails.this, ActivityChat.class);
+                Log.d("Key", preferenceManager.getString(Constants.KEY_USER_KEY));
+                intentChat.putExtra("currentKey", preferenceManager.getString(Constants.KEY_USER_KEY));
+                intentChat.putExtra("name", room.getCreatedBy().getFullname());
+                intentChat.putExtra("email", room.getCreatedBy().getEmail());
+                intentChat.putExtra("profile_pic", room.getCreatedBy().getImage());
+
+                FirebaseDatabase database = FirebaseDatabase.getInstance();
+                DatabaseReference reference = database.getReference();
+
+                Query query = reference.child("Accounts").orderByChild("email").equalTo(room.getCreatedBy().getEmail());
+                query.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                            String otherKey = dataSnapshot.getKey();
+                            intentChat.putExtra("otherKey", otherKey);
+
+                            Query query1 = reference.child("Chat").child(preferenceManager.getString(Constants.KEY_USER_KEY)).orderByKey().equalTo(otherKey);
+                            query1.addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                    if (!snapshot.exists()) {
+
+                                        Date data = new Date();
+                                        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault());
+                                        SimpleDateFormat simpleTimeFormat = new SimpleDateFormat("hh:mm aa", Locale.getDefault());
+
+                                        reference.child("Chat").child(preferenceManager.getString(Constants.KEY_USER_KEY)).child(otherKey).child("1").child("sender").setValue(preferenceManager.getString(Constants.KEY_USER_KEY));
+                                        reference.child("Chat").child(preferenceManager.getString(Constants.KEY_USER_KEY)).child(otherKey).child("1").child("msg").setValue("Xin Chào");
+                                        reference.child("Chat").child(preferenceManager.getString(Constants.KEY_USER_KEY)).child(otherKey).child("1").child("send-date").setValue(simpleDateFormat.format(data));
+                                        reference.child("Chat").child(preferenceManager.getString(Constants.KEY_USER_KEY)).child(otherKey).child("1").child("send-time").setValue(simpleTimeFormat.format(data));
+
+                                        Conversation conversation = new Conversation(preferenceManager.getString(Constants.KEY_USER_KEY), otherKey, "Xin Chào", simpleDateFormat.format(data).toString(), simpleTimeFormat.format(data).toString());
+
+                                        reference.child("Conversations").child(preferenceManager.getString(Constants.KEY_USER_KEY)).child(otherKey).setValue(conversation);
+
+                                        // Set value cho người nhận
+                                        reference.child("Chat").child(otherKey).child(preferenceManager.getString(Constants.KEY_USER_KEY)).child("1").child("sender").setValue(preferenceManager.getString(Constants.KEY_USER_KEY));
+                                        reference.child("Chat").child(otherKey).child(preferenceManager.getString(Constants.KEY_USER_KEY)).child("1").child("msg").setValue("Xin Chào");
+                                        reference.child("Chat").child(otherKey).child(preferenceManager.getString(Constants.KEY_USER_KEY)).child("1").child("send-date").setValue(simpleDateFormat.format(data));
+                                        reference.child("Chat").child(otherKey).child(preferenceManager.getString(Constants.KEY_USER_KEY)).child("1").child("send-time").setValue(simpleTimeFormat.format(data));
+
+                                        reference.child("Conversations").child(otherKey).child(preferenceManager.getString(Constants.KEY_USER_KEY)).setValue(conversation);
+                                    }
+                                }
+
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError error) {
+
+                                }
+                            });
+
+
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+
+                    }
+                });
+
+
+                startActivity(intentChat);
+
+
             }
         });//chưa làm
     }
@@ -370,7 +445,7 @@ public class ActivityDetails extends AppCompatActivity {
                         count.incrementAndGet(); // Tăng giá trị của count
                     }
                 }
-                tvSoP.setText(String.valueOf(count) +" phòng");
+                tvSoP.setText(String.valueOf(count) + " phòng");
             }
 
             @Override
@@ -389,11 +464,9 @@ public class ActivityDetails extends AppCompatActivity {
         databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                for (DataSnapshot dataSnapshot : snapshot.getChildren())
-                {
+                for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
                     Room r = dataSnapshot.getValue(Room.class);
-                    if (!r.getId().equals(room.getId()) && (r.getLocation().getDistrict().getCode().equals(room.getLocation().getDistrict().getCode())))
-                    {
+                    if (!r.getId().equals(room.getId()) && (r.getLocation().getDistrict().getCode().equals(room.getLocation().getDistrict().getCode()))) {
                         rcmRooms.add(r);
                     }
                 }
@@ -406,6 +479,7 @@ public class ActivityDetails extends AppCompatActivity {
             }
         });
     }
+
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);

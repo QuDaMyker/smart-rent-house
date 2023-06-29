@@ -60,9 +60,6 @@
         </service>
 
         <activity
-            android:name=".Chat.ChatActivity"
-            android:exported="false" />
-        <activity
             android:name=".Chat.Dashboard.ActivityChat"
             android:exported="false" />
         <activity
