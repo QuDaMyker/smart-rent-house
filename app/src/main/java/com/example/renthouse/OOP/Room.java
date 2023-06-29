@@ -26,12 +26,13 @@ public class Room implements Serializable {
     private String phoneNumber;
     private String dateTime;
     private boolean isRented;
+    private String status;
 
     public Room() {
 
     }
 
-    public Room(String id, String title, String description, String roomType, int capacity, String gender, float area, int price, int deposit, int electricityCost, int waterCost, int internetCost, boolean parking, int parkingFee, LocationTemp location, List<String> utilities, AccountClass createdBy, String phoneNumber, String dateTime, boolean isRented) {
+    public Room(String id, String title, String description, String roomType, int capacity, String gender, float area, int price, int deposit, int electricityCost, int waterCost, int internetCost, boolean parking, int parkingFee, LocationTemp location, List<String> utilities, AccountClass createdBy, String phoneNumber, String dateTime, boolean isRented, String status) {
         this.id = id;
         this.title = title;
         this.description = description;
@@ -52,6 +53,7 @@ public class Room implements Serializable {
         this.phoneNumber = phoneNumber;
         this.dateTime = dateTime;
         this.isRented = isRented;
+        this.status = status;
     }
 
     public String getId() {
@@ -220,5 +222,13 @@ public class Room implements Serializable {
 
     public void setRented(boolean rented) {
         isRented = rented;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 }

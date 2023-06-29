@@ -9,5 +9,11 @@ public class Constants {
     public static final String KEY_PASSWORD = "password";
     public static final String KEY_PHONENUMBER = "phoneNumber";
     public static final String KEY_IS_SIGNED_IN = "isSignedIn";
+    public static final String KEY_NGUOIDUNG = "nguoidung";
     public static final String KEY_HISTORY_SEARCH = "historySearch";
+    public static final String STATUS_PENDING = "pending";
+    public static final String STATUS_APPROVED = "approved";
+    public static final String STATUS_EXPIRED = "expired";
+    public static final String STATUS_DELETED = "deleted";
+
 }

@@ -244,7 +244,7 @@ public class ActivitySignUp extends AppCompatActivity {
             if(imageURL == null) {
                 imageURL = "https://cdn.pixabay.com/photo/2023/06/02/14/12/woman-8035772_1280.jpg";
             }
-            AccountClass accountCurrent = new AccountClass(name, email, "+84", "********", imageURL, formattedDate);
+            AccountClass accountCurrent = new AccountClass(name, email, "+84", "********", imageURL, formattedDate, false, null);
             String emailToCheck = email;
             DatabaseReference accountsRef = reference.child("Accounts");
             Query emailQuery = accountsRef.orderByChild("email").equalTo(emailToCheck);

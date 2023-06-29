@@ -146,18 +146,16 @@ public class FragmentAccountTabAccount extends Fragment {
             public void onClick(View v) {
                 preferenceManager = new PreferenceManager(getActivity());
 
-                if (preferenceManager.getBoolean(Constants.KEY_IS_SIGNED_IN) == true) {
-                    preferenceManager.clear();
-                    FirebaseAuth.getInstance().signOut();
-                    GoogleSignInOptions gso = new GoogleSignInOptions.
-                            Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).
-                            build();
+                preferenceManager.clear();
+                FirebaseAuth.getInstance().signOut();
+                GoogleSignInOptions gso = new GoogleSignInOptions.
+                        Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).
+                        build();
 
-                    GoogleSignInClient googleSignInClient = GoogleSignIn.getClient(getActivity(), gso);
-                    googleSignInClient.signOut();
-                    getActivity().finish();
-                    startActivity(new Intent(requireContext(), ActivitySplash.class));
-                }
+                GoogleSignInClient googleSignInClient = GoogleSignIn.getClient(getActivity(), gso);
+                googleSignInClient.signOut();
+                getActivity().finish();
+                startActivity(new Intent(requireContext(), ActivitySplash.class));
 
 
             }

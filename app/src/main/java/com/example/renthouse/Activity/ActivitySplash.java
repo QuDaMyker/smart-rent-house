@@ -18,6 +18,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
+import com.example.renthouse.Admin.Activity.Admin_ActivityMain;
 import com.example.renthouse.R;
 import com.example.renthouse.utilities.Constants;
 import com.example.renthouse.utilities.PreferenceManager;
@@ -70,21 +71,26 @@ public class ActivitySplash extends AppCompatActivity {
 
 
                 preferenceManager = new PreferenceManager(getApplicationContext());
-                if(preferenceManager.getBoolean(Constants.KEY_IS_SIGNED_IN) == true) {
-                    startActivity(new Intent(ActivitySplash.this, ActivityMain.class));
+                if(preferenceManager.getBoolean(Constants.KEY_IS_SIGNED_IN)) {
+                    if(preferenceManager.getString(Constants.KEY_EMAIL).equals("admin")) {
+                        startActivity(new Intent(ActivitySplash.this, Admin_ActivityMain.class));
+                    } else{
+                        startActivity(new Intent(ActivitySplash.this, ActivityMain.class));
+
+                    }
                 } else {
                     startActivity(new Intent(ActivitySplash.this, ActivityLogIn.class));
                 }
                 finish();
 
-                // After the progress is complete, check the user authentication status
+                /*// After the progress is complete, check the user authentication status
                 FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
                 FirebaseUser currentUser = firebaseAuth.getCurrentUser();
 
                 // Start the appropriate activity based on the user's authentication status
                 runOnUiThread(new Runnable() {
                     public void run() {
-                        /*if (currentUser != null) {
+                        *//*if (currentUser != null) {
                             // User is already logged in, navigate to MainActivity
                             startActivity(new Intent(ActivitySplash.this, ActivityMain.class));
                         } else {
@@ -92,10 +98,10 @@ public class ActivitySplash extends AppCompatActivity {
                             startActivity(new Intent(ActivitySplash.this, ActivityLogIn.class));
                         }
 
-                        finish(); // Optional: Close the current activity*/
+                        finish(); // Optional: Close the current activity*//*
 
                     }
-                });
+                });*/
             }
         }).start();
     }
