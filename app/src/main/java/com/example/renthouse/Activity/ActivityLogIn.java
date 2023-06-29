@@ -158,6 +158,23 @@ public class ActivityLogIn extends AppCompatActivity {
                             preferenceManager.putString(Constants.KEY_EMAIL, email);
                             preferenceManager.putString(Constants.KEY_PASSWORD, password);
                             preferenceManager.putBoolean(Constants.KEY_IS_SIGNED_IN, true);
+
+                            DatabaseReference ref = database.getReference();
+                            Query query = ref.child("Accounts").orderByChild("email").equalTo(email);
+                            query.addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                    for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                                        preferenceManager.putString(Constants.KEY_USER_KEY, dataSnapshot.getKey());
+                                    }
+                                }
+
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError error) {
+
+                                }
+                            });
+
                             pushNotification();
                             Toast.makeText(getApplicationContext(), "Login Successful", Toast.LENGTH_SHORT).show();
                             Intent intent = new Intent(getApplicationContext(), ActivityMain.class);
@@ -328,6 +345,7 @@ public class ActivityLogIn extends AppCompatActivity {
                                         } else {
                                             for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                                                 AccountClass checkAcc = snapshot.getValue(AccountClass.class);
+                                                preferenceManager.putString(Constants.KEY_USER_KEY, snapshot.getKey());
                                                 if (checkAcc.getBlocked()) {
                                                     progressDialog.dismiss();
                                                     preferenceManager.putBoolean(Constants.KEY_IS_SIGNED_IN, true);

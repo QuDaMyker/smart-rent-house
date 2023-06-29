@@ -1,5 +1,6 @@
 package com.example.renthouse.Fragment;
 
+import android.content.Context;
 import android.content.Intent;
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -86,7 +87,7 @@ public class FragmentHome extends Fragment {
         progressDialog.show();
 
         updateUI();
-        getLastLocation();
+//        getLastLocation();
 
         progressDialog.dismiss();
 
@@ -141,13 +142,17 @@ public class FragmentHome extends Fragment {
 
 
     private void getLastLocation() {
-        if (ContextCompat.checkSelfPermission(getContext(), android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+        Context context = getContext();
+        if(context == null) {
+            return;
+        }
+        if (ContextCompat.checkSelfPermission(context, android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             fusedLocationProviderClient.getLastLocation().addOnSuccessListener(new OnSuccessListener<Location>() {
                 @Override
                 public void onSuccess(Location location) {
                     if (location != null) {
                         try {
-                            Geocoder geocoder = new Geocoder(getContext(), Locale.getDefault());
+                            Geocoder geocoder = new Geocoder(context, Locale.getDefault());
                             List<Address> addresses = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
 
                             latitude = addresses.get(0).getLatitude();
@@ -168,7 +173,7 @@ public class FragmentHome extends Fragment {
                 public void onSuccess(Location location) {
                     if (location != null) {
                         try {
-                            Geocoder geocoder = new Geocoder(getContext(), Locale.getDefault());
+                            Geocoder geocoder = new Geocoder(context, Locale.getDefault());
                             List<Address> addresses = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
 
                             latitude = addresses.get(0).getLatitude();

@@ -118,7 +118,7 @@ public class ResultRoomAdapter extends RecyclerView.Adapter<ResultRoomAdapter.Ro
                 public void onClick(View v) {
                     // Xử lý sự kiện click vào item trong recycleview (tức đã xem) :D
                     //addSeenRoom(room);
-                    //onClickGoDetail(room);
+                    onClickGoDetail(room);
                 }
             });
         }
