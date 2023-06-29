@@ -13,24 +13,24 @@ public class ObjectSearch {
     }
 
     private String path;
-    private ArrayList<Integer> utilities; // Utilities dùng để lấy của firebase
+    private ArrayList<String> utilities; // Utilities dùng để lấy của firebase
     private ArrayList<Long> price; // Giá dùng để lấy của firebase;
-    private int type; // Loại dùng để lấy của firebase
+    private String type; // Loại dùng để lấy của firebase
     private int amount; // Số lượng
-    private int gender; // Giới tính lấy firebase
-    private int sort; // Sắp xếp lấy firebase
+    private String gender; // Giới tính lấy firebase
+    private String sort; // Sắp xếp lấy firebase
 
     public ObjectSearch() {
         this.price = new ArrayList<>();
         this.utilities = new ArrayList<>();
-        this.type = -1;
+        this.type = "";
         this.amount = -1;
-        this.gender = -1;
-        this.sort = -1;
+        this.gender = "";
+        this.sort = "";
         path = "";
     }
 
-    public ObjectSearch(ArrayList<Long> price, ArrayList<Integer> utilities, int type, int amount, int gender, int sort) {
+    public ObjectSearch(ArrayList<Long> price, ArrayList<String> utilities, String type, int amount, String gender, String sort) {
         this.price = price;
         this.utilities = utilities;
         this.type = type;
@@ -47,19 +47,19 @@ public class ObjectSearch {
         this.price = price;
     }
 
-    public ArrayList<Integer> getUtilities() {
+    public ArrayList<String> getUtilities() {
         return utilities;
     }
 
-    public void setUtilities(ArrayList<Integer> utilities) {
+    public void setUtilities(ArrayList<String> utilities) {
         this.utilities = utilities;
     }
 
-    public int getType() {
+    public String getType() {
         return type;
     }
 
-    public void setType(int type) {
+    public void setType(String type) {
         this.type = type;
     }
 
@@ -71,28 +71,28 @@ public class ObjectSearch {
         this.amount = amount;
     }
 
-    public int getGender() {
+    public String getGender() {
         return gender;
     }
 
-    public void setGender(int gender) {
+    public void setGender(String gender) {
         this.gender = gender;
     }
 
-    public int getSort() {
+    public String getSort() {
         return sort;
     }
 
-    public void setSort(int sort) {
+    public void setSort(String sort) {
         this.sort = sort;
     }
 
     public void clearData() {
         this.price = new ArrayList<>();
         this.utilities = new ArrayList<>();
-        this.type = -1;
+        this.type = "";
         this.amount = -1;
-        this.gender = -1;
-        this.sort = -1;
+        this.gender = "";
+        this.sort = "";
     }
 }

@@ -1,5 +1,6 @@
 package com.example.renthouse.Test;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -17,10 +18,15 @@ import com.example.renthouse.JSONReader.JSONReaderLocation;
 import com.example.renthouse.R;
 import com.example.renthouse.utilities.Constants;
 import com.example.renthouse.utilities.PreferenceManager;
+import com.google.common.reflect.TypeToken;
+import com.google.gson.Gson;
 
 import java.text.Normalizer;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -28,12 +34,12 @@ public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.Locati
     private List<Location> listLocation;
     private List<Location> listHistoryLocation;
     private List<Location> listLocationDatabase;
-    private boolean searchViewIsEmpty;
+    public boolean searchViewIsEmpty;
     private Context context;
     private IClickItemAddressListener mListener;
     private PreferenceManager preferenceManager;
 
-    public LocationAdapter(List<Location> mListLocation, Context context, String currentLocation, IClickItemAddressListener listener, PreferenceManager preferenceManager) {
+    public LocationAdapter(List<Location> mListLocation, Context context, String currentLocation, IClickItemAddressListener listener) {
         this.listHistoryLocation = mListLocation;
         this.listLocation = mListLocation;
         this.mListener = listener;
@@ -42,7 +48,7 @@ public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.Locati
         jsonReaderLocation.readDatabaseLocation(currentLocation);
         this.listLocationDatabase = jsonReaderLocation.getLocationList();
         searchViewIsEmpty = true;
-        this.preferenceManager = preferenceManager;
+        this.preferenceManager = new PreferenceManager(context);
     }
     @NonNull
     @Override
@@ -52,23 +58,53 @@ public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.Locati
         return new LocationViewHolder(view);
     }
     @Override
-    public void onBindViewHolder(@NonNull LocationViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull LocationViewHolder holder, @SuppressLint("RecyclerView") int position) {
         // set du lieu len
         Location location = listLocation.get(position);
         if (location == null) {
             return;
         }
         if (searchViewIsEmpty) {
-            Set<String> list= preferenceManager.getStringSet(Constants.KEY_HISTORY_SEARCH);
-            listHistoryLocation.clear();
-            for (String s : list) {
-                listHistoryLocation.add(new Location(s));
-            }
             holder.xoa.setVisibility(View.VISIBLE);
         } else {
             holder.xoa.setVisibility(View.INVISIBLE);
         }
         holder.diachi.setText(location.getAddress());
+        holder.diachi.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mListener != null) {
+                    boolean flag = false;
+                    String address = String.valueOf(holder.diachi.getText());
+                    for (Location location : listHistoryLocation) {
+                        if (location.getAddress().equals(address)) {
+                            listHistoryLocation.remove(location);
+                            listHistoryLocation.add(0, location);
+                            flag = true;
+                            notifyDataSetChanged();
+                            break;
+                        }
+                    }
+                    if (!flag) {
+                        listHistoryLocation.add(0, new Location(address));
+                        notifyDataSetChanged();
+                    }
+                    LinkedHashSet<String> listHistory = castListStringLocation();
+                    String jsonString = new Gson().toJson(listHistory);
+                    preferenceManager.putString(Constants.KEY_HISTORY_SEARCH, jsonString);
+                    mListener.onItemClick(address);
+                }
+            }
+        });
+//        holder.xoa.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                listHistoryLocation.remove(position);
+//                notifyItemRemoved(position);
+//                Set<String> listHistoryLocation = new HashSet<>(castListStringLocation());
+//                preferenceManager.putStringSet(Constants.KEY_HISTORY_SEARCH, listHistoryLocation);
+//            }
+//        });
     }
     @Override
     public int getItemCount() {
@@ -77,7 +113,18 @@ public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.Locati
         }
         return 0;
     }
-
+    private void updateListHistoryLocation() {
+        String jsonString = preferenceManager.getString(Constants.KEY_HISTORY_SEARCH);
+        if (jsonString != null) {
+            // Convert JSON string to List
+            List<String> listHistory = new Gson().fromJson(jsonString, new TypeToken<List<String>>(){}.getType());
+            listHistoryLocation.clear();
+            for (String location : listHistory) {
+                listHistoryLocation.add(new Location(location));
+            }
+            notifyDataSetChanged();
+        }
+    }
     // Hàm lọc dữ liệu
     @Override
     public Filter getFilter() {
@@ -86,7 +133,9 @@ public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.Locati
             protected FilterResults performFiltering(CharSequence constraint) {
                 String strSearch = constraint.toString();
                 if (strSearch.isEmpty()) {
+                    updateListHistoryLocation();
                     listLocation = listHistoryLocation;
+                    notifyDataSetChanged();
                     searchViewIsEmpty = true;
                 } else {
                     searchViewIsEmpty = false;
@@ -137,32 +186,20 @@ public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.Locati
                     if (position != RecyclerView.NO_POSITION) {
                         listHistoryLocation.remove(position);
                         notifyItemRemoved(position);
-                        Set<String> listHistoryLocation = new HashSet<>(castListStringLocation());
-                        preferenceManager.putStringSet(Constants.KEY_HISTORY_SEARCH, listHistoryLocation);
-                    }
-                }
-            });
-            diachi.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (mListener != null) {
-                        int position = getAdapterPosition();
-                        if (position != RecyclerView.NO_POSITION) {
-                            listHistoryLocation.add(new Location(String.valueOf(diachi.getText())));
-                            Set<String> listHistoryLocation = new HashSet<>(castListStringLocation());
-                            preferenceManager.putStringSet(Constants.KEY_HISTORY_SEARCH, listHistoryLocation);
-                            mListener.onItemClick(String.valueOf(diachi.getText()));
-                        }
+                        LinkedHashSet<String> listHistory = castListStringLocation();
+                        String jsonString = new Gson().toJson(listHistory);
+                        preferenceManager.putString(Constants.KEY_HISTORY_SEARCH, jsonString);
                     }
                 }
             });
         }
     }
-    private List<String> castListStringLocation() {
-        List<String> locationList = new ArrayList<>();
-        for (Location location : listHistoryLocation) {
-            locationList.add(location.getAddress());
+    private LinkedHashSet<String> castListStringLocation() {
+        LinkedHashSet<String> locationSet = new LinkedHashSet<>();
+        for (int i = 0; i < listHistoryLocation.size(); i++) {
+            String address =  String.valueOf(listHistoryLocation.get(i).getAddress());
+            locationSet.add(address);
         }
-        return  locationList;
+        return  locationSet;
     }
 }
