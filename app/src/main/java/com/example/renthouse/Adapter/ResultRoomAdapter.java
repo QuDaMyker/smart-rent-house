@@ -2,8 +2,10 @@ package com.example.renthouse.Adapter;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.PorterDuff;
+import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,11 +13,13 @@ import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.renthouse.Activity.ActivityDetails;
 import com.example.renthouse.OOP.AccountClass;
 import com.example.renthouse.OOP.Room;
 import com.example.renthouse.R;
@@ -47,6 +51,7 @@ public class ResultRoomAdapter extends RecyclerView.Adapter<ResultRoomAdapter.Ro
         this.roomList = list;
         this.mcContext = context;
         this.roomListFavorite = new ArrayList<>();
+
     }
 
     @NonNull
@@ -63,10 +68,11 @@ public class ResultRoomAdapter extends RecyclerView.Adapter<ResultRoomAdapter.Ro
             holder.shimmerFrameLayout.startShimmerAnimation();
         } else {
             holder.shimmerFrameLayout.stopShimmerAnimation();
-            Room content = roomList.get(position);
-            if (content == null) {
+            Room room = roomList.get(position);
+            if (room == null) {
                 return;
             }
+
             holder.textViewAmountPeople.setText("Số người: " + roomList.get(position).getCapacity());
             holder.textViewAmountPeople.setBackground(null);
 
@@ -96,7 +102,7 @@ public class ResultRoomAdapter extends RecyclerView.Adapter<ResultRoomAdapter.Ro
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                     if (isChecked) {
                         roomListFavorite.add(roomList.get(position));
-                        updateDataFirebase(roomList.get(position));
+                        //updateDataFirebase(roomList.get(position));
                         notifyDataSetChanged();
                     } else {
                         if (roomListFavorite.contains(roomList.get(position))){
@@ -107,16 +113,77 @@ public class ResultRoomAdapter extends RecyclerView.Adapter<ResultRoomAdapter.Ro
                     }
                 }
             });
+            holder.layoutItem.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    // Xử lý sự kiện click vào item trong recycleview (tức đã xem) :D
+                    //addSeenRoom(room);
+                    //onClickGoDetail(room);
+                }
+            });
         }
 
     }
 
+    private void addSeenRoom(Room room) {
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference accRef = database.getReference("Accounts");
+        firebaseAuth = FirebaseAuth.getInstance();
+        user = firebaseAuth.getCurrentUser();
+        //DatabaseReference roomRef = database.getReference("Rooms");
+        Query query = accRef.orderByChild("email").equalTo(user.getEmail());
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+
+                for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                    String idUser = dataSnapshot.getKey();
+                    DatabaseReference refLiked = database.getReference("SeenRoom").child(idUser);
+                    refLiked.addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                            if (snapshot.getChildrenCount() == 0) {
+                                List<String> listSeenRoom = new ArrayList<>();
+                                listSeenRoom.add(room.getId());
+                                refLiked.setValue(listSeenRoom);
+                            } else {
+                                for (DataSnapshot dataSnapshot1 : snapshot.getChildren()) {
+                                    String value = (String) dataSnapshot1.getValue();
+                                    if (value.equals(room.getId())) {
+
+                                    }
+
+                                }
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
+
+                        }
+                    });
+                }
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
+
+    private void onClickGoDetail(Room room) {
+        Intent intent = new Intent(mcContext, ActivityDetails.class);
+        Bundle bundle  = new Bundle();
+        bundle.putSerializable("selectedRoom", room);
+        intent.putExtras(bundle);
+        mcContext.startActivity(intent);
+    }
     private void updateDataFirebase(Room room) {
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference accRef = database.getReference("Accounts");
-
         firebaseAuth = FirebaseAuth.getInstance();
         user = firebaseAuth.getCurrentUser();
+
         Query query = accRef.orderByChild("email").equalTo(user.getEmail());
         query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -127,7 +194,6 @@ public class ResultRoomAdapter extends RecyclerView.Adapter<ResultRoomAdapter.Ro
 
                 }
             }
-
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
 
@@ -152,6 +218,7 @@ public class ResultRoomAdapter extends RecyclerView.Adapter<ResultRoomAdapter.Ro
         ImageView imageViewRoom;
         MaterialCheckBox checkboxLike;
         ShimmerFrameLayout shimmerFrameLayout;
+        LinearLayout layoutItem;
         public RoomViewHolder(@NonNull View itemView) {
             super(itemView);
             textViewAmountPeople = itemView.findViewById(R.id.textViewAmountPeople);
@@ -161,6 +228,7 @@ public class ResultRoomAdapter extends RecyclerView.Adapter<ResultRoomAdapter.Ro
             imageViewRoom = itemView.findViewById(R.id.imageViewImageRoom);
             checkboxLike = itemView.findViewById(R.id.likedCheckBox);
             shimmerFrameLayout = itemView.findViewById(R.id.shimmerFrameLayout);
+            layoutItem = itemView.findViewById(R.id.item_result_room);
         }
     }
 }
