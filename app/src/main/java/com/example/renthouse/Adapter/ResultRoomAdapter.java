@@ -38,6 +38,7 @@ import com.google.firebase.firestore.auth.User;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class ResultRoomAdapter extends RecyclerView.Adapter<ResultRoomAdapter.RoomViewHolder>{
@@ -117,7 +118,7 @@ public class ResultRoomAdapter extends RecyclerView.Adapter<ResultRoomAdapter.Ro
                 @Override
                 public void onClick(View v) {
                     // Xử lý sự kiện click vào item trong recycleview (tức đã xem) :D
-                    //addSeenRoom(room);
+                    addSeenRoom(room);
                     //onClickGoDetail(room);
                 }
             });
@@ -137,23 +138,38 @@ public class ResultRoomAdapter extends RecyclerView.Adapter<ResultRoomAdapter.Ro
             public void onDataChange(@NonNull DataSnapshot snapshot) {
 
                 for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                    // Lấy được id của user
                     String idUser = dataSnapshot.getKey();
+
+                    // Tạo node SeenRoom và add node idUser vô
                     DatabaseReference refLiked = database.getReference("SeenRoom").child(idUser);
                     refLiked.addValueEventListener(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot snapshot) {
                             if (snapshot.getChildrenCount() == 0) {
-                                List<String> listSeenRoom = new ArrayList<>();
-                                listSeenRoom.add(room.getId());
-                                refLiked.setValue(listSeenRoom);
+                                List<String> listRoom = new ArrayList<>();
+                                listRoom.add(room.getId());
+                                refLiked.setValue(listRoom);
                             } else {
-                                for (DataSnapshot dataSnapshot1 : snapshot.getChildren()) {
-                                    String value = (String) dataSnapshot1.getValue();
-                                    if (value.equals(room.getId())) {
+                                Object obj= String.valueOf(snapshot.getValue());
+                                // Convert obj to a string representation
+                                String objString = String.valueOf(obj);
 
-                                    }
+                                // Remove leading and trailing whitespace and brackets
+                                String elementsString = objString.trim().substring(1, objString.length() - 1);
+
+                                // Split into individual elements
+                                String[] elementsArray = elementsString.split(",");
+
+                                // Create a new ArrayList<String> and add elements
+                                List<String> arrayList = new ArrayList<>(Arrays.asList(elementsArray));
+
+                                if (arrayList.contains(room.getId())) {
+                                    arrayList.remove(room.getId());
 
                                 }
+                                arrayList.add(0, room.getId());
+                                refLiked.setValue(arrayList);
                             }
                         }
 
