@@ -86,7 +86,6 @@ public class FragmentAccountTabAccount extends Fragment {
         progressDialog.setCancelable(false);
         progressDialog.setMessage("Loading...");
 
-
         if (currentUser != null) {
             progressDialog.show();
             Picasso.get().load(preferenceManager.getString(Constants.KEY_IMAGE)).into(imageProfile);
@@ -128,7 +127,6 @@ public class FragmentAccountTabAccount extends Fragment {
                 startActivity(intent);
             }
         });
-
 
 
         btnBaoCaoSuCo.setOnClickListener(new View.OnClickListener() {

@@ -324,7 +324,7 @@ public class ActivityLogIn extends AppCompatActivity {
                                             String generatedKey = newChildRef.getKey();
                                             preferenceManager.putString(Constants.KEY_USER_KEY, generatedKey);
 
-                                            newChildRef.child(generatedKey).setValue(accountClass)
+                                            newChildRef.setValue(accountClass)
                                                     .addOnCompleteListener(new OnCompleteListener<Void>() {
                                                         @Override
                                                         public void onComplete(@NonNull Task<Void> task) {

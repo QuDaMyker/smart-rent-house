@@ -66,7 +66,6 @@ public class ActivityDetailAccount extends AppCompatActivity {
     private AccountClass account;
     private String key;
     private Uri imageUri;
-    private ProgressBar progressBar;
     final private DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("Accounts");
     final private StorageReference storageReference = FirebaseStorage.getInstance().getReference();
     private PreferenceManager preferenceManager;
@@ -93,8 +92,7 @@ public class ActivityDetailAccount extends AppCompatActivity {
         TIETsodienthoai = findViewById(R.id.tiet_phoneNumber);
         TIETMatKhau = findViewById(R.id.tiet_password);
 
-        progressBar = findViewById(R.id.progressBar);
-        progressBar.setVisibility(View.INVISIBLE);
+        progressDialog.dismiss();
 
         imageProfile = findViewById(R.id.account_personal_imageProfile);
         btnBack = findViewById(R.id.btn_Back);
@@ -167,6 +165,7 @@ public class ActivityDetailAccount extends AppCompatActivity {
                     Intent data = result.getData();
                     imageUri = data.getData();
                     imageProfile.setImageURI(imageUri);
+                    preferenceManager.putString(Constants.KEY_IMAGE, imageUri.toString());
                 } else {
                     Toast.makeText(getApplicationContext(), "No image selected", Toast.LENGTH_SHORT).show();
                 }
@@ -189,7 +188,7 @@ public class ActivityDetailAccount extends AppCompatActivity {
     }
 
     public void uploadToFireBase(Uri uri) {
-        final StorageReference imageRference = storageReference.child(System.currentTimeMillis() + "." + getFileExtension(uri));
+        final StorageReference imageRference = storageReference.child("Image Profiles").child(System.currentTimeMillis() + "." + getFileExtension(uri));
 
         imageRference.putFile(uri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
             @Override
@@ -199,7 +198,7 @@ public class ActivityDetailAccount extends AppCompatActivity {
                     public void onSuccess(Uri uri) {
                         account.setImage(uri.toString());
                         databaseReference.child(key).setValue(account);
-                        progressBar.setVisibility(View.INVISIBLE);
+                        progressDialog.dismiss();
 
                         preferenceManager.putString(Constants.KEY_IMAGE, account.getImage());
                     }
@@ -208,12 +207,12 @@ public class ActivityDetailAccount extends AppCompatActivity {
         }).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
             @Override
             public void onProgress(@NonNull UploadTask.TaskSnapshot snapshot) {
-                progressBar.setVisibility(View.VISIBLE);
+                progressDialog.show();
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-                progressBar.setVisibility(View.INVISIBLE);
+                progressDialog.dismiss();
                 Toast.makeText(ActivityDetailAccount.this, "Failed", Toast.LENGTH_SHORT).show();
             }
         });
