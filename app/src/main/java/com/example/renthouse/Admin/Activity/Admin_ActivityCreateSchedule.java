@@ -3,6 +3,7 @@ package com.example.renthouse.Admin.Activity;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextUtils;
@@ -13,6 +14,8 @@ import android.widget.Toast;
 
 import com.example.renthouse.Admin.OOP.NotiSchedule;
 import com.example.renthouse.R;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.datepicker.MaterialDatePicker;
 import com.google.android.material.datepicker.MaterialPickerOnPositiveButtonClickListener;
@@ -46,6 +49,7 @@ public class Admin_ActivityCreateSchedule extends AppCompatActivity {
 
     MaterialButton createBtn;
     MaterialButton cancelBtn;
+    NotiSchedule editNoti;
 
 
     @Override
@@ -69,6 +73,19 @@ public class Admin_ActivityCreateSchedule extends AppCompatActivity {
 
         createBtn = findViewById(R.id.createBtn);
         cancelBtn = findViewById(R.id.cancelBtn);
+        editNoti = null;
+        try {
+            editNoti = (NotiSchedule) getIntent().getExtras().get("notiSchedule");
+            edtTime.setText(editNoti.getTime());
+            edtTitle.setText(editNoti.getTitle());
+            edtContent.setText(editNoti.getContent());
+            edtLoop.setText(editNoti.getLoop(), false);
+            edtReceiver.setText(editNoti.getReceiver(), false);
+            edtDate.setText(editNoti.getDate());
+        }
+        catch (Exception e){
+
+        }
 
         edtTime.addTextChangedListener(new TextWatcher() {
             @Override
@@ -229,15 +246,35 @@ public class Admin_ActivityCreateSchedule extends AppCompatActivity {
                 if(validateData()){
                     FirebaseDatabase database = FirebaseDatabase.getInstance();
                     DatabaseReference notiSchedulesRef = database.getReference("NotiSchedules");
-                    NotiSchedule notiSchedule = new NotiSchedule(
-                            edtTitle.getText().toString(),
-                            edtContent.getText().toString(),
-                            edtReceiver.getText().toString(),
-                            edtDate.getText().toString(),
-                            edtTime.getText().toString(),
-                            edtLoop.getText().toString());
-                    notiSchedulesRef.push().setValue(notiSchedule);
+                    if(editNoti != null){
+                        DatabaseReference editRef = database.getReference("NotiSchedules").child(editNoti.getKey());
+                        NotiSchedule notiSchedule = new NotiSchedule(
+                                editNoti.getKey(),
+                                edtTitle.getText().toString(),
+                                edtContent.getText().toString(),
+                                edtReceiver.getText().toString(),
+                                edtDate.getText().toString(),
+                                edtTime.getText().toString(),
+                                edtLoop.getText().toString());
+                        editRef.setValue(notiSchedule);
+                    }
+                    else{
+                        String key = notiSchedulesRef.push().getKey();
+                        NotiSchedule notiSchedule = new NotiSchedule(
+                                key,
+                                edtTitle.getText().toString(),
+                                edtContent.getText().toString(),
+                                edtReceiver.getText().toString(),
+                                edtDate.getText().toString(),
+                                edtTime.getText().toString(),
+                                edtLoop.getText().toString());
+                        String pathObject = String.valueOf(notiSchedule.getKey());
+                        notiSchedulesRef.child(pathObject).setValue(notiSchedule);
+                    }
                     Toast.makeText(Admin_ActivityCreateSchedule.this, "Successful", Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(Admin_ActivityCreateSchedule.this, Admin_ActivityScheduledNotification.class);
+                    setResult(RESULT_OK, intent);
+                    finish();
                 }
             }
         });

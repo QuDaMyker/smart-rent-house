@@ -1,6 +1,9 @@
 package com.example.renthouse.Admin.OOP;
 
-public class NotiSchedule {
+import java.io.Serializable;
+
+public class NotiSchedule implements Serializable {
+    private String key;
     private String title;
     private String content;
     private String receiver;
@@ -11,13 +14,22 @@ public class NotiSchedule {
     public NotiSchedule() {
     }
 
-    public NotiSchedule(String title, String content, String receiver, String date, String time, String loop) {
+    public NotiSchedule(String key, String title, String content, String receiver, String date, String time, String loop) {
+        this.key = key;
         this.title = title;
         this.content = content;
         this.receiver = receiver;
         this.date = date;
         this.time = time;
         this.loop = loop;
+    }
+
+    public String getKey() {
+        return key;
+    }
+
+    public void setKey(String key) {
+        this.key = key;
     }
 
     public String getTitle() {
