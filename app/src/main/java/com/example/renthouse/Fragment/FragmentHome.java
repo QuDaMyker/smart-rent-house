@@ -19,6 +19,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.example.renthouse.Activity.ActivityDetails;
+import com.example.renthouse.Activity.ActivityRecentSeen;
 import com.example.renthouse.Activity.ActivitySearch;
 import com.example.renthouse.R;
 import com.google.android.material.textfield.TextInputEditText;
@@ -89,7 +91,12 @@ public class FragmentHome extends Fragment {
         getLastLocation();
 
         progressDialog.dismiss();
-
+        binding.linearLayout5.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(getContext(), ActivityRecentSeen.class));
+            }
+        });
 
         binding.btnDangBai.setOnClickListener(new View.OnClickListener() {
             @Override
