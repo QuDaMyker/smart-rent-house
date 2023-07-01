@@ -19,6 +19,7 @@ public class UniAdapter extends RecyclerView.Adapter<UniAdapter.ViewHolder> {
     private List<University> itemList;
     private List<University> filteredList;
     private LinearLayout introView;
+    private TextView helpTv;
     public interface OnItemClickListener {
         void onItemClick(int position, University data);
     }
@@ -94,14 +95,25 @@ public class UniAdapter extends RecyclerView.Adapter<UniAdapter.ViewHolder> {
 
         if (introView != null) {
             if (filteredList.isEmpty()) {
-                introView.setVisibility(View.VISIBLE);
+                if(TextUtils.isEmpty(keyword)){
+                    introView.setVisibility(View.VISIBLE);
+                    helpTv.setVisibility(View.GONE);
+                }
+                else{
+                    introView.setVisibility(View.GONE);
+                    helpTv.setVisibility(View.VISIBLE);
+                }
             } else {
                 introView.setVisibility(View.GONE);
+                helpTv.setVisibility(View.GONE);
             }
         }
     }
 
     public void setIntroView(LinearLayout introView){
         this.introView = introView;
+    }
+    public void setHelpTv(TextView helpTv){
+        this.helpTv = helpTv;
     }
 }

@@ -141,7 +141,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 Room room = (Room) marker.getTag();
 
                 if (room != null) {
-                    //TODO: chuyển đến màn hình details
+                    Intent intent = new Intent(MapsActivity.this, ActivityDetails.class);
+                    Bundle bundle = new Bundle();
+                    bundle.putSerializable("selectedRoom", room);
+                    intent.putExtras(bundle);
+                    startActivity(intent);
                 }
                 else{
                     Log.e("E", "Không tồn tại phòng trọ");

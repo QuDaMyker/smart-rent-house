@@ -110,6 +110,9 @@
             android:name=".Activity.ActivityAccountInformation"
             android:exported="false" />
         <activity
+            android:name=".Activity.FullScreenActivity"
+            android:exported="false" />
+        <activity
             android:name=".Activity.ActivitySplash"
             android:exported="true">
             <intent-filter>
@@ -118,9 +121,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".Activity.FullScreenActivity"
-            android:exported="false" />
         <activity
             android:name=".Activity.ActivityMain"
             android:exported="false" />
