@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.renthouse.Admin.Activity.Admin_ActivityBaoCaoNguoiDung;
+import com.example.renthouse.Admin.Activity.Admin_ActivityScheduledNotification;
 import com.example.renthouse.R;
 import com.example.renthouse.databinding.FragmentAdminHomeBinding;
 import com.github.mikephil.charting.charts.BarChart;
@@ -41,6 +42,13 @@ public class Admin_FragmentHome extends Fragment {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getContext(), Admin_ActivityBaoCaoNguoiDung.class);
+                startActivity(intent);
+            }
+        });
+        binding.linearDatLichThongBao.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getContext(), Admin_ActivityScheduledNotification.class);
                 startActivity(intent);
             }
         });
