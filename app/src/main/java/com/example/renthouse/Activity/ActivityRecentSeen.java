@@ -1,4 +1,4 @@
-package com.example.renthouse.Admin.Activity;
+package com.example.renthouse.Activity;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -6,11 +6,11 @@ import android.os.Bundle;
 
 import com.example.renthouse.R;
 
-public class Admin_ActivityHome extends AppCompatActivity {
+public class ActivityRecentSeen extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_admin_home);
+        setContentView(R.layout.activity_recent_seen);
     }
 }

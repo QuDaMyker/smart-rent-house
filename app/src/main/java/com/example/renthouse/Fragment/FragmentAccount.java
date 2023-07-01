@@ -17,6 +17,7 @@ public class FragmentAccount extends Fragment {
     private TabLayout fragHome_tab_layout;
     private ViewPager2 fragHome_viewPager2;
     private TabLayoutAccountAdapter tabLayoutAccountAdapter;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -50,6 +51,7 @@ public class FragmentAccount extends Fragment {
 
             }
         });
+
         fragHome_viewPager2.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
             @Override
             public void onPageSelected(int position) {

@@ -34,15 +34,10 @@ public class ActivityFullImage extends AppCompatActivity {
     final Context context = this;
     private List<String> src;
     int curImage = 0;
-
-
-
     ImageButton btnPreScreen;
     ImageButton btnNextImage;
     ImageButton btnPreImage;
-
     TextView stt;
-
     TouchImageView ivImages;
 
     @Override

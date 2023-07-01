@@ -26,8 +26,21 @@
         android:theme="@style/Theme.RentHouse"
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
-        <activity android:name=".Activity.FindByMapsActivity"
-            android:exported="false"/>
+        <activity
+            android:name=".Admin.Activity.Admin_ActivityBaoCaoNguoiDung"
+            android:exported="false" />
+        <activity
+            android:name=".Admin.Activity.Admin_ActivityThongTinNguoiDung"
+            android:exported="false" />
+        <activity
+            android:name=".Activity.ActivityContactAdmin"
+            android:exported="false" />
+        <activity
+            android:name=".Activity.ActivityBlocked"
+            android:exported="false" />
+        <activity
+            android:name=".Activity.FindByMapsActivity"
+            android:exported="false" />
         <activity
             android:name=".Admin.Activity.Admin_ActivityCreateSchedule"
             android:exported="false" />
@@ -35,7 +48,7 @@
             android:name=".Admin.Activity.Admin_ActivityScheduledNotification"
             android:exported="false" />
         <activity
-            android:name=".Admin.Activity.Admin_ActivityHome"
+            android:name=".Admin.Activity.Admin_ActivityMain"
             android:exported="false" />
 
         <service
@@ -46,9 +59,6 @@
             </intent-filter>
         </service>
 
-        <activity
-            android:name=".Chat.ChatActivity"
-            android:exported="false" />
         <activity
             android:name=".Chat.Dashboard.ActivityChat"
             android:exported="false" />
@@ -95,15 +105,10 @@
             android:exported="false" />
         <activity
             android:name=".Activity.ActivityDetails"
-            android:exported="false"></activity>
+            android:exported="false" />
         <activity
             android:name=".Activity.ActivityAccountInformation"
             android:exported="false" />
-        <activity
-            android:name=".Activity.ActivityMain"
-            android:exported="true">
-
-        </activity>
         <activity
             android:name=".Activity.FullScreenActivity"
             android:exported="false" />
@@ -117,6 +122,9 @@
             </intent-filter>
         </activity>
         <activity
+            android:name=".Activity.ActivityMain"
+            android:exported="false" />
+        <activity
             android:name=".Activity.ActivitySignUp"
             android:exported="false" />
         <activity
@@ -127,12 +135,11 @@
             android:exported="false" />
         <activity
             android:name=".Activity.ActivityLogIn"
-            android:exported="true" >
+            android:exported="false" />
+        <activity
+            android:name=".Activity.ActivitySearch"
+            android:exported="false" />
 
-        </activity>
-
-        <activity android:name=".Activity.ActivitySearch"
-            android:exported="false"/>
         <service
             android:name=".Chat.Firebase.MessingService"
             android:exported="false">

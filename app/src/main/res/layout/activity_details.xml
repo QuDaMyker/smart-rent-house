@@ -50,8 +50,7 @@
             android:layout_marginRight="20dp"
             android:button="@drawable/custom_checkbox_like"
             android:buttonTint="#FF5050"
-            android:checked="false"
-            />
+            android:checked="false" />
     </com.google.android.material.appbar.MaterialToolbar>
 
     <ScrollView
@@ -71,20 +70,19 @@
             android:layout_height="wrap_content"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/detail_tool_bar"
-            >
+            app:layout_constraintTop_toBottomOf="@id/detail_tool_bar">
 
             <ImageView
                 android:id="@+id/ivImages"
                 android:layout_width="match_parent"
                 android:layout_height="250dp"
+                android:scaleType="centerCrop"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="@id/linear2"
-                android:scaleType="centerCrop"
-                >
+                app:layout_constraintTop_toTopOf="@id/linear2">
 
             </ImageView>
+
             <ImageButton
                 android:id="@+id/btnPreImage"
                 android:layout_width="wrap_content"
@@ -93,8 +91,7 @@
                 android:background="@drawable/btn_circle_previous"
                 app:layout_constraintBottom_toBottomOf="@id/ivImages"
                 app:layout_constraintLeft_toLeftOf="@id/ivImages"
-                app:layout_constraintTop_toTopOf="@id/ivImages"
-                >
+                app:layout_constraintTop_toTopOf="@id/ivImages">
 
             </ImageButton>
 
@@ -109,17 +106,18 @@
                 app:layout_constraintTop_toTopOf="@id/ivImages">
 
             </ImageButton>
+
             <TextView
                 android:id="@+id/tvIndex"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="20dp"
                 android:text="1/4"
+                android:textColor="@color/white"
+                android:textSize="15dp"
                 app:layout_constraintBottom_toBottomOf="@id/ivImages"
                 app:layout_constraintLeft_toLeftOf="@id/ivImages"
                 app:layout_constraintRight_toRightOf="@id/ivImages"
-                android:textSize="15dp"
-                android:layout_marginBottom="20dp"
-                android:textColor="@color/white"
 
                 />
 
@@ -453,8 +451,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="5dp"
-                        android:maxLines="2"
                         android:ellipsize="end"
+                        android:maxLines="2"
                         android:text="Thông tin mô tả đầy đủ"
                         android:textColor="@color/black"
                         android:textSize="13sp" />
@@ -536,15 +534,15 @@
                     android:rowCount="5"
                     android:useDefaultMargins="true" />
 
-<!--                <TextView-->
-<!--                    android:id="@+id/tvMoreTI"-->
-<!--                    android:layout_width="wrap_content"-->
-<!--                    android:layout_height="wrap_content"-->
-<!--                    android:layout_gravity="center"-->
-<!--                    android:clickable="true"-->
-<!--                    android:text="Xem thêm"-->
-<!--                    android:textColor="@color/Primary_40"-->
-<!--                    android:textStyle="bold" />-->
+                <!--                <TextView-->
+                <!--                    android:id="@+id/tvMoreTI"-->
+                <!--                    android:layout_width="wrap_content"-->
+                <!--                    android:layout_height="wrap_content"-->
+                <!--                    android:layout_gravity="center"-->
+                <!--                    android:clickable="true"-->
+                <!--                    android:text="Xem thêm"-->
+                <!--                    android:textColor="@color/Primary_40"-->
+                <!--                    android:textStyle="bold" />-->
 
             </LinearLayout>
 
@@ -645,15 +643,15 @@
 
                 </androidx.recyclerview.widget.RecyclerView>
 
-<!--                <TextView-->
-<!--                    android:id="@+id/tvMoreRoom"-->
-<!--                    android:layout_width="wrap_content"-->
-<!--                    android:layout_height="wrap_content"-->
-<!--                    android:layout_gravity="center"-->
-<!--                    android:clickable="true"-->
-<!--                    android:text="Xem thêm"-->
-<!--                    android:textColor="@color/Primary_40"-->
-<!--                    android:textStyle="bold" />-->
+                <!--                <TextView-->
+                <!--                    android:id="@+id/tvMoreRoom"-->
+                <!--                    android:layout_width="wrap_content"-->
+                <!--                    android:layout_height="wrap_content"-->
+                <!--                    android:layout_gravity="center"-->
+                <!--                    android:clickable="true"-->
+                <!--                    android:text="Xem thêm"-->
+                <!--                    android:textColor="@color/Primary_40"-->
+                <!--                    android:textStyle="bold" />-->
 
             </LinearLayout>
 

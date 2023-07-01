@@ -18,6 +18,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.renthouse.Activity.ActivityPost;
 import com.example.renthouse.Chat.MemoryData;
 import com.example.renthouse.Chat.Messages.MessagesList;
+import com.example.renthouse.Chat.OOP.Conversation;
 import com.example.renthouse.FCM.SendNotificationTask;
 import com.example.renthouse.OOP.AccountClass;
 import com.example.renthouse.OOP.Notification;
@@ -81,8 +82,6 @@ public class ActivityChat extends AppCompatActivity {
             ConstraintLayout.LayoutParams layoutParams1 = (ConstraintLayout.LayoutParams) backView.getLayoutParams();
             layoutParams1.bottomToTop = R.id.messageEditTxt;
             backView.setLayoutParams(layoutParams1);
-
-
 
 
         });
@@ -180,11 +179,17 @@ public class ActivityChat extends AppCompatActivity {
                     databaseReference.child("Chat").child(currentKey).child(otherKey).child(String.valueOf(lastIndex)).child("send-date").setValue(simpleDateFormat.format(data));
                     databaseReference.child("Chat").child(currentKey).child(otherKey).child(String.valueOf(lastIndex)).child("send-time").setValue(simpleTimeFormat.format(data));
 
+                    Conversation conversation = new Conversation(currentKey, otherKey, getMessages, simpleDateFormat.format(data).toString(), simpleTimeFormat.format(data).toString());
+
+                    databaseReference.child("Conversations").child(currentKey).child(otherKey).setValue(conversation);
+
                     // Set value cho người nhận
                     databaseReference.child("Chat").child(otherKey).child(currentKey).child(String.valueOf(lastIndex)).child("sender").setValue(currentKey);
                     databaseReference.child("Chat").child(otherKey).child(currentKey).child(String.valueOf(lastIndex)).child("msg").setValue(getMessages);
                     databaseReference.child("Chat").child(otherKey).child(currentKey).child(String.valueOf(lastIndex)).child("send-date").setValue(simpleDateFormat.format(data));
                     databaseReference.child("Chat").child(otherKey).child(currentKey).child(String.valueOf(lastIndex)).child("send-time").setValue(simpleTimeFormat.format(data));
+
+                    databaseReference.child("Conversations").child(otherKey).child(currentKey).setValue(conversation);
 
                     messageEditText.setText("");
 
@@ -205,7 +210,7 @@ public class ActivityChat extends AppCompatActivity {
         });
     }
 
-    public void getMessageList(){
+    public void getMessageList() {
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Accounts").child(currentKey);
         ref.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override

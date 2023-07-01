@@ -90,7 +90,7 @@ public class FragmentUtilities extends Fragment {
     private boolean isResume = true;
     private String mParam2;
     private GridLayout gridLayout;
-    public ArrayList<Integer> buttonChecked;
+    public ArrayList<String> buttonChecked;
     private IUtilitiesValueChangeListener mListener;
     public FragmentUtilities() {
         // Required empty public constructor
@@ -154,11 +154,11 @@ public class FragmentUtilities extends Fragment {
                 public void onClick(View v) {
                     if (button.isChecked()) {
                         setButtonChecked(finalI);
-                        mListener.onValueUtilitiesChangeListener(String.valueOf(button.getText()), finalI);
+                        mListener.onValueUtilitiesChangeListener(String.valueOf(button.getText()));
                     } else {
                         setButtonUnChecked(finalI);
                         // Code ở đây
-                        mListener.onValueUtilitiesDeleteListener(String.valueOf(button.getText()), finalI);
+                        mListener.onValueUtilitiesDeleteListener(String.valueOf(button.getText()));
                     }
                 }
             });
@@ -228,13 +228,14 @@ public class FragmentUtilities extends Fragment {
         }
         return flag;
     }
-    public void setValue(ArrayList<Integer> listButtonChecked){
-        for (int i : listButtonChecked) {
-            View view = gridLayout.getChildAt(i);
+    public void setValue(ArrayList<String> listButtonChecked){
+        for (String i : listButtonChecked) {
+            int position = postionOfButtonText(i);
+            View view = gridLayout.getChildAt(position);
             if (view instanceof MaterialButton) {
                 MaterialButton button = (MaterialButton) view;
                 button.setChecked(false);
-                setButtonChecked(i);
+                setButtonChecked(position);
             }
         }
     }

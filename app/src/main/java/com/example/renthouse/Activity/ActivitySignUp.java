@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -19,6 +20,8 @@ import android.widget.Toast;
 
 import com.example.renthouse.OOP.AccountClass;
 import com.example.renthouse.R;
+import com.example.renthouse.utilities.Constants;
+import com.example.renthouse.utilities.PreferenceManager;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -50,17 +53,22 @@ public class ActivitySignUp extends AppCompatActivity {
     private ImageButton backToLoginBtn;
     private Button signUpBtn;
     private TextView tv_backToLoginBtn;
-    private TextInputEditText signup_fullName, signup_email, signup_phoneNumber, signup_password;
+    private com.google.android.material.textfield.TextInputEditText signup_fullName, signup_email, signup_phoneNumber, signup_password;
+    private com.google.android.material.textfield.TextInputLayout signUpFullname, signUpEmail, signUpPhoneNumber, signUpPassword;
     private String imageURL;
-    FirebaseDatabase database;
-    DatabaseReference reference;
-    FirebaseAuth mAuth;
-    ValueEventListener eventListener;
+    private FirebaseDatabase database;
+    private DatabaseReference reference;
+    private FirebaseAuth mAuth;
+    private ValueEventListener eventListener;
+    private PreferenceManager preferenceManager;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_up);
+
+        preferenceManager = new PreferenceManager(ActivitySignUp.this);
 
         mAuth = FirebaseAuth.getInstance();
 
@@ -75,6 +83,11 @@ public class ActivitySignUp extends AppCompatActivity {
         signup_phoneNumber = findViewById(R.id.signup_phoneNumber);
         signup_password = findViewById(R.id.signup_password);
 
+        signUpFullname = findViewById(R.id.tiploFullName);
+        signUpEmail = findViewById(R.id.tiploEmail);
+        signUpPhoneNumber = findViewById(R.id.tiploPhoneNumber);
+        signUpPassword = findViewById(R.id.tiploPassword);
+
         // Ẩn hiện toggle
         if (signup_password.getText().toString().isEmpty()) {
             TextInputLayout pw = findViewById(R.id.tiploPassword);
@@ -87,12 +100,14 @@ public class ActivitySignUp extends AppCompatActivity {
                 // Trước khi text thay đổi
 
             }
+
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 // Trong quá trình text thay đổi
                 TextInputLayout pw = findViewById(R.id.tiploPassword);
                 pw.setPasswordVisibilityToggleEnabled(true);
             }
+
             @Override
             public void afterTextChanged(Editable s) {
                 // Sau khi text đã thay đổi
@@ -143,73 +158,85 @@ public class ActivitySignUp extends AppCompatActivity {
 
 
     }
-    private void checkTrueCondition() {
-        if (signup_fullName.getText().toString().isEmpty()) {
-            signup_fullName.setError("Vui lòng điền họ và tên");
-            return;
-        } else {
-            signup_fullName.setError(null);
+
+    public static boolean isValidPassword(String password) {
+        // Kiểm tra độ dài của mật khẩu
+        if (password.length() < 8 || password.length() > 15) {
+            return false;
         }
-        if (signup_email.getText().toString().isEmpty()) {
-            signup_email.setError("Vui Lòng Điền Email");
-            return;
-        } else {
-            signup_email.setError(null);
+
+        // Kiểm tra có ít nhất một số
+        if (!password.matches(".*\\d+.*")) {
+            return false;
         }
-        if (signup_phoneNumber.getText().toString().isEmpty()) {
-            signup_phoneNumber.setError("Vui lòng điền số điện thoại");
-            return;
-        } else {
-            signup_phoneNumber.setError(null);
+
+        // Kiểm tra có ít nhất một chữ thường
+        if (!password.matches(".*[a-z]+.*")) {
+            return false;
         }
-        if (signup_password.getText().toString().isEmpty()) {
-            signup_password.setError("Vui mật khẩu");
-            return;
-        } else {
-            signup_password.setError(null);
+
+        // Kiểm tra có ít nhất một chữ in hoa
+        if (!password.matches(".*[A-Z]+.*")) {
+            return false;
         }
-        if (!isValidEmail(signup_email.getText().toString())) {
-            signup_email.setError("Vui lòng điền đúng định dạng email");
-            return;
-        } else {
-            signup_email.setError(null);
+
+        // Kiểm tra có ít nhất một ký tự đặc biệt
+        if (!password.matches(".*[!@#$%^&*()\\-=_+\\[\\]{};':\"\\\\|,.<>/?]+.*")) {
+            return false;
         }
-        if (!isValidPhoneNumber(signup_phoneNumber.getText().toString())) {
-            signup_phoneNumber.setError("Vui lòng điền đúng định dạng số điện thoại");
-            return;
+
+        // Mật khẩu hợp lệ
+        return true;
+    }
+
+
+    private boolean checkTrueCondition() {
+        if (signup_fullName.getText().toString().matches("[0-9\\p{Punct}]+")) {
+            signUpFullname.setError("Không đúng định dạng");
+            return false;
         } else {
-            signup_phoneNumber.setError(null);
-        }
-        if (!isValidPassword(signup_password.getText().toString())) {
-            signup_password.setError("mật khẩu từ 8 đến 20 ký tự, bao gồm chữ cái viết hoa, chữ cái viết thường và số");
-            return;
-        } else {
-            signup_password.setError(null);
+            if (!signup_email.getText().toString().matches("^[\\w.-]+@[a-zA-Z]+\\.[a-zA-Z]{2,3}$")) {
+                signUpEmail.setError("Không đúng định dạng");
+                return false;
+            } else {
+                if (!signup_phoneNumber.getText().toString().matches("^\\d{10}$")) {
+                    signUpPhoneNumber.setError("Không đúng định dạng");
+                    return false;
+                } else {
+                    if (!isValidPassword(signup_password.getText().toString())) {
+                        signUpPassword.setError("Mật khẩu từ 8 đến 20 ký tự, bao gồm chữ cái viết hoa, chữ cái viết thường và số");
+                        return false;
+                    } else {
+                        return true;
+                    }
+                }
+            }
         }
     }
+
     private void saveData() {
-        checkTrueCondition();
+        if (checkTrueCondition()) {
+            String email = signup_email.getText().toString().trim();
+            String password = signup_password.getText().toString().trim();
 
-        String email = signup_email.getText().toString().trim();
-        String password = signup_password.getText().toString().trim();
-
-        createAccount(email, password);
+            createAccount(email, password);
+        }
     }
 
     private void loadAccountToDataBase() {
+
         database = FirebaseDatabase.getInstance();
         reference = database.getReference();
 
         FirebaseUser currentUser = mAuth.getCurrentUser();
-        if(currentUser != null) {
+        if (currentUser != null) {
             String id = currentUser.getUid();
             String name = signup_fullName.getText().toString();
             String email = currentUser.getEmail();
             String phonenumber = signup_phoneNumber.getText().toString().trim();
 
-            if(currentUser.getPhotoUrl() == null) {
+            if (currentUser.getPhotoUrl() == null) {
                 Uri uriImage = Uri.parse("android.resource://" + getPackageName() + "/" + R.drawable.ic_default_profile);
-
 
                 StorageReference storageReference = FirebaseStorage.getInstance().getReference().child("Image Profiles").child(id);
                 AlertDialog.Builder builder = new AlertDialog.Builder(ActivitySignUp.this);
@@ -231,8 +258,8 @@ public class ActivitySignUp extends AppCompatActivity {
                     public void onFailure(@NonNull Exception e) {
                         dialog.dismiss();
                     }
-                });            }
-            else {
+                });
+            } else {
                 imageURL = currentUser.getPhotoUrl().toString();
             }
 
@@ -241,10 +268,10 @@ public class ActivitySignUp extends AppCompatActivity {
             SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             String formattedDate = dateFormat.format(now);
 
-            if(imageURL == null) {
+            if (imageURL == null) {
                 imageURL = "https://cdn.pixabay.com/photo/2023/06/02/14/12/woman-8035772_1280.jpg";
             }
-            AccountClass accountCurrent = new AccountClass(name, email, "+84", "********", imageURL, formattedDate);
+            AccountClass accountCurrent = new AccountClass(name, email, "+84", "********", imageURL, formattedDate, false, "khong khoa");
             String emailToCheck = email;
             DatabaseReference accountsRef = reference.child("Accounts");
             Query emailQuery = accountsRef.orderByChild("email").equalTo(emailToCheck);
@@ -260,17 +287,20 @@ public class ActivitySignUp extends AppCompatActivity {
                         String generatedKey = newChildRef.getKey();
 
                         // Set the data for the new child node
-                        newChildRef.setValue(accountCurrent)
-                                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                    @Override
-                                    public void onComplete(@NonNull Task<Void> task) {
-                                        if (task.isSuccessful()) {
-                                            startActivity(new Intent(ActivitySignUp.this, ActivityMain.class));
-                                        } else {
-                                            // Handle the error here
-                                        }
-                                    }
-                                });
+                        newChildRef.setValue(accountCurrent).addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                if (task.isSuccessful()) {
+                                    preferenceManager.putBoolean(Constants.KEY_IS_SIGNED_IN, true);
+                                    preferenceManager.putString(Constants.KEY_EMAIL, accountCurrent.getEmail());
+                                    preferenceManager.putString(Constants.KEY_PASSWORD, accountCurrent.getPassword());
+                                    preferenceManager.putString(Constants.KEY_IMAGE, accountCurrent.getImage());
+                                    startActivity(new Intent(ActivitySignUp.this, ActivityMain.class));
+                                } else {
+                                    // Handle the error here
+                                }
+                            }
+                        });
                     }
                 }
 
@@ -279,11 +309,8 @@ public class ActivitySignUp extends AppCompatActivity {
                     // Handle the error here
                 }
             });
-
-
-
         }
-}
+    }
 
     public void createAccount(String email, String password) {
         mAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
@@ -293,28 +320,10 @@ public class ActivitySignUp extends AppCompatActivity {
                     loadAccountToDataBase();
                 } else {
                     // If sign in fails, display a message to the user.
-                    Toast.makeText(ActivitySignUp.this, "Authentication failed.",
-                            Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ActivitySignUp.this, "Authentication failed.", Toast.LENGTH_SHORT).show();
                 }
             }
         });
-    }
-
-    public boolean isValidEmail(CharSequence email) {
-        return android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches();
-    }
-
-    public boolean isValidPhoneNumber(CharSequence phoneNumber) {
-        return android.util.Patterns.PHONE.matcher(phoneNumber).matches();
-    }
-
-    public boolean isValidPassword(CharSequence password) {
-        Pattern pattern;
-        Matcher matcher;
-        final String PASSWORD_PATTERN = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=\\S+$).{8,20}$";
-        pattern = Pattern.compile(PASSWORD_PATTERN);
-        matcher = pattern.matcher(password);
-        return matcher.matches();
     }
 
 

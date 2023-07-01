@@ -23,8 +23,13 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -122,8 +127,16 @@ public class FragmentResult extends Fragment {
                 for (DataSnapshot roomSnapshot : dataSnapshot.getChildren()) {
                     Room room = roomSnapshot.getValue(Room.class);
                     // Kiểm tra điều kiện nè
-                    if (objectSearch.getPath().equals(room.getLocation().getWard().getPath())) {
-                        list.add(room);
+                    if (objectSearch.getPath().equals(room.getLocation().getWard().getPath())){
+                        if (isPriceValid(room) || isContainAmount(room) || isContainsUtilities(room)
+                                || isContainTypeRoom(room)) {
+                            list.add(room);
+                        }
+                    }
+                    try {
+                        sortItem(list);
+                    } catch (ParseException e) {
+                        throw new RuntimeException(e);
                     }
                 }
                 shimmerRun();
@@ -134,6 +147,101 @@ public class FragmentResult extends Fragment {
                 Log.d("Lỗi nè", "lỗi");
             }
         });
+    }
+    private boolean isPriceValid(Room room) {
+        if (objectSearch.getPrice() == null || objectSearch.getPrice().isEmpty()) {
+            return true;
+        } else {
+            if (room.getPrice() <= objectSearch.getPrice().get(1) && room.getPrice() >= objectSearch.getPrice().get(0)) {
+                return true;
+            }
+            return false;
+        }
+    }
+    private boolean isContainsUtilities(Room room) {
+        if (objectSearch.getUtilities() == null || objectSearch.getUtilities().isEmpty()) {
+            return true;
+        } else {
+            // Lọc như này để chọn được nhiều option hơn
+            for (String utility : objectSearch.getUtilities()) {
+                if (room.getUtilities().contains(utility)) {
+                    return true;
+                }
+            }
+            return false;
+        }
+    }
+    private boolean isContainTypeRoom(Room room) {
+        if (objectSearch.getType() == null || objectSearch.getType().isEmpty()) {
+            return true;
+        } else {
+            if(objectSearch.getType().equals(room.getRoomType())) {
+                return true;
+            }
+            return false;
+        }
+    }
+    private boolean isContainAmount(Room room) {
+        if(objectSearch.getAmount() == -1) {
+            return true;
+        } else {
+            if (objectSearch.getGender().equals(room.getGender()) && objectSearch.getAmount() <= room.getCapacity()){
+                return true;
+            }
+            return false;
+        }
+    }
+    private void sortItem(List<Room> roomList) throws ParseException {
+        switch (objectSearch.getSort()) {
+            case "Liên quan nhất":
+                break;
+            case "Mới nhất":
+                sortDate(roomList);
+                break;
+            case "Giá thấp đến cao":
+                sortMintoMax(roomList);
+                break;
+            case "Giá cao xuống thấp":
+                sortMaxtoMin(roomList);
+                break;
+            default:
+                break;
+        }
+    }
+
+    private void sortMaxtoMin(List<Room> roomList) {
+        for (int i = 0; i < roomList.size() - 1; i++) {
+            for (int j = i; j < roomList.size(); j++) {
+                if (roomList.get(i).getPrice() < roomList.get(i).getPrice()) {
+                    Collections.swap(roomList, i, j);
+                }
+            }
+        }
+    }
+
+    private void sortMintoMax(List<Room> roomList) {
+        for (int i = 0; i < roomList.size() - 1; i++) {
+            for (int j = i; j < roomList.size(); j++) {
+                if (roomList.get(i).getPrice() > roomList.get(i).getPrice()) {
+                    Collections.swap(roomList, i, j);
+                }
+            }
+        }
+    }
+    private void sortDate(List<Room> roomList) throws ParseException {
+        for (int i = 0; i < roomList.size() - 1; i++) {
+            for (int j = i; j < roomList.size(); j++) {
+                String dateTime1 = roomList.get(i).getDateTime();
+                String dateTime2 = roomList.get(i).getDateTime();
+                SimpleDateFormat sdf = new SimpleDateFormat("HH:mm dd/MM/yyyy", Locale.getDefault());
+                Date dateObj1 = sdf.parse(dateTime1);
+                Date dateObj2 = sdf.parse(dateTime2);
+
+                if (dateObj1.before(dateObj2)) {
+                    Collections.swap(roomList, i, j);
+                }
+            }
+        }
     }
 
     public void setObjectSearch(ObjectSearch objectSearch) {
