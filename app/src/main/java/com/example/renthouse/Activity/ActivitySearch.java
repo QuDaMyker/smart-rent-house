@@ -162,9 +162,10 @@ public class ActivitySearch extends AppCompatActivity {
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentFilter fragment = (FragmentFilter) fragmentManager.findFragmentById(R.id.linearLayoutHistorySearch);
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.remove(fragment);
+        if (fragment!=null){
+            fragmentTransaction.remove(fragment);
+        }
         fragmentTransaction.commit();
-
         textViewHistorySearch.setVisibility(View.VISIBLE);
         recyclerView.setVisibility(View.VISIBLE);
 

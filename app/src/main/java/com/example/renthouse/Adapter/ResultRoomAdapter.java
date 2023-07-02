@@ -37,6 +37,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.auth.User;
+import com.squareup.picasso.Picasso;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -101,6 +102,11 @@ public class ResultRoomAdapter extends RecyclerView.Adapter<ResultRoomAdapter.Ro
 
             holder.imageViewRoom.setBackground(null);
             holder.imageViewRoom.setImageResource(R.drawable.image_room_result);
+            String image = room.getImages().get(0);
+
+            Picasso.get()
+                    .load(image)
+                    .into(holder.imageViewRoom);
 
             holder.checkboxLike.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
@@ -205,6 +211,9 @@ public class ResultRoomAdapter extends RecyclerView.Adapter<ResultRoomAdapter.Ro
                                     listRoom.remove(room.getId());
                                 }
                                 listRoom.add(0, room.getId());
+                                if (listRoom.size() > 10) {
+                                    listRoom.remove(listRoom.size() - 1);
+                                }
                             }
                             refSeen.setValue(listRoom);
                         }

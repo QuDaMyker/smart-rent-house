@@ -1,17 +1,21 @@
 package com.example.renthouse.Adapter;
 
 import android.content.Context;
+import android.content.Intent;
+import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.renthouse.Activity.ActivityDetails;
 import com.example.renthouse.OOP.Room;
 import com.example.renthouse.R;
 import com.google.android.material.checkbox.MaterialCheckBox;
@@ -23,6 +27,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.squareup.picasso.Picasso;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -32,9 +37,8 @@ public class RoomLatestAdapter extends RecyclerView.Adapter<RoomLatestAdapter.Ro
     List<Room> listRoomLatest;
     Context mContext;
 
-    public RoomLatestAdapter(Context mContextm, List<Room> roomLatest) {
+    public RoomLatestAdapter(Context mContextm) {
         this.mContext = mContext;
-        this.listRoomLatest = roomLatest;
     }
     public void setDuLieu(List<Room> roomArrayList){
         this.listRoomLatest = roomArrayList;
@@ -44,7 +48,7 @@ public class RoomLatestAdapter extends RecyclerView.Adapter<RoomLatestAdapter.Ro
     @NonNull
     @Override
     public RoomLatestViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_result_room, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_latest_room, parent, false);
         return new RoomLatestViewHolder(view);
     }
 
@@ -53,6 +57,10 @@ public class RoomLatestAdapter extends RecyclerView.Adapter<RoomLatestAdapter.Ro
         Room room = listRoomLatest.get(position);
         if(room == null) {
             return;
+        }
+        for (Room room1 : listRoomLatest) {
+            Log.d("Room Adapter", String.valueOf(room.getLocation().getWard().getPath()));
+            Log.d("Room price", String.valueOf(room.getTitle()));
         }
         FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
         FirebaseUser currentUser = firebaseAuth.getCurrentUser();
@@ -102,6 +110,19 @@ public class RoomLatestAdapter extends RecyclerView.Adapter<RoomLatestAdapter.Ro
         String priceString = formattedNumber.replaceAll(",", ".");
         priceString += " đ/phòng";
         holder.textViewPrice.setText(priceString);
+        String image = room.getImages().get(0);
+
+        Picasso.get()
+                .load(image)
+                .into(holder.imageView);
+        holder.itemRoom.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                goToDetails (room);
+            }
+        });
+
+        // Kiểm tra check change
         holder.checkBoxLiked.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -162,6 +183,14 @@ public class RoomLatestAdapter extends RecyclerView.Adapter<RoomLatestAdapter.Ro
         });
     }
 
+    private void goToDetails(Room room) {
+        Intent intent = new Intent(mContext, ActivityDetails.class);
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("selectedRoom", room);
+        intent.putExtras(bundle);
+        mContext.startActivity(intent);
+    }
+
     @Override
     public int getItemCount() {
         if (listRoomLatest.size() == 0) {
@@ -176,6 +205,7 @@ public class RoomLatestAdapter extends RecyclerView.Adapter<RoomLatestAdapter.Ro
         TextView textViewNameRoom;
         TextView textViewPrice;
         TextView textViewAddress;
+        LinearLayout itemRoom;
         public RoomLatestViewHolder(@NonNull View itemView) {
             super(itemView);
             imageView = itemView.findViewById(R.id.imageViewImageRoomLatest);
@@ -183,6 +213,7 @@ public class RoomLatestAdapter extends RecyclerView.Adapter<RoomLatestAdapter.Ro
             textViewAddress =itemView.findViewById(R.id.textViewAddressLatestRoom);
             textViewNameRoom=itemView.findViewById(R.id.textViewRoomNameLatest);
             textViewPrice=itemView.findViewById(R.id.textViewPriceLatesRoom);
+            itemRoom = itemView.findViewById(R.id.item_latest_room);
         }
     }
 }
