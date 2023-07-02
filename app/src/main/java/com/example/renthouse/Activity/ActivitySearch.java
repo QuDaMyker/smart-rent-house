@@ -101,6 +101,7 @@ public class ActivitySearch extends AppCompatActivity {
             @Override
             public boolean onQueryTextSubmit(String query) {
                 showFragmentFilter(query);
+                locationAdapter.saveHistoryLocation(query);
                 searchView.clearFocus();
                 locationAdapter.getFilter().filter(query);
                 return true;
@@ -109,8 +110,10 @@ public class ActivitySearch extends AppCompatActivity {
             public boolean onQueryTextChange(String newText) {
                 locationAdapter.getFilter().filter(newText);
                 if (newText.isEmpty()) {
+                    locationAdapter.searchViewIsEmpty = true;
                     textViewHistorySearch.setText("Lịch sử tìm kiếm");
                 } else {
+                    locationAdapter.searchViewIsEmpty = false;
                     textViewHistorySearch.setText("Gợi ý");
                 }
                 return false;
@@ -127,6 +130,7 @@ public class ActivitySearch extends AppCompatActivity {
         searchView.setOnCloseListener(new SearchView.OnCloseListener() {
             @Override
             public boolean onClose() {
+
                 return false;
             }
         });
@@ -158,9 +162,10 @@ public class ActivitySearch extends AppCompatActivity {
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentFilter fragment = (FragmentFilter) fragmentManager.findFragmentById(R.id.linearLayoutHistorySearch);
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.remove(fragment);
+        if (fragment!=null){
+            fragmentTransaction.remove(fragment);
+        }
         fragmentTransaction.commit();
-
         textViewHistorySearch.setVisibility(View.VISIBLE);
         recyclerView.setVisibility(View.VISIBLE);
 
