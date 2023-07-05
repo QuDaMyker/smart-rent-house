@@ -4,73 +4,77 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.bumptech.glide.Glide;
-import com.example.renthouse.ITEM.itemPhoBien_HomeFragment;
+import com.example.renthouse.Interface.ItemClick;
+import com.example.renthouse.OOP.PhoBien;
 import com.example.renthouse.R;
-import com.google.android.material.imageview.ShapeableImageView;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
-public class PhoBienAdapter extends RecyclerView.Adapter<PhoBienAdapter.ViewHolder> {
+public class PhoBienAdapter extends RecyclerView.Adapter<PhoBienAdapter.PhoBienViewHolder> {
     private Context context;
-    private List<itemPhoBien_HomeFragment> list;
+    private List<PhoBien> phoBienList;
+    private final ItemClick itemClick;
 
-    public PhoBienAdapter(Context context, List<itemPhoBien_HomeFragment> list) {
+    public PhoBienAdapter(Context context, List<PhoBien> phoBienList, ItemClick itemClick) {
         this.context = context;
-        this.list = list;
+        this.phoBienList = phoBienList;
+        this.itemClick = itemClick;
     }
 
     @NonNull
     @Override
-    public PhoBienAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_phobien_homefragment, parent, false);
-
-        return new ViewHolder(view);
+    public PhoBienAdapter.PhoBienViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(context).inflate(R.layout.item_phobien_homefragment, parent, false);
+        return new PhoBienViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull PhoBienAdapter.ViewHolder holder, int position) {
-        itemPhoBien_HomeFragment item = list.get(position);
-        Glide.with(context)
-                .load(item.getImage())
-                .into(holder.image);
+    public void onBindViewHolder(@NonNull PhoBienAdapter.PhoBienViewHolder holder, int position) {
+        PhoBien phoBien = phoBienList.get(position);
 
-        //Picasso.get().load(item.getImage()).error(R.drawable.ic_phobien_1).into(holder.image);
-        holder.location.setText(item.getLocation());
-        holder.cardView.setOnClickListener(new View.OnClickListener() {
+        holder.title.setText(phoBien.getTitle());
+        String image = phoBien.getImage();
+        Picasso.get()
+                .load(image)
+                .into(holder.imageView);
+        holder.itemPhoBien.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
-                Toast.makeText(v.getContext(), "Click", Toast.LENGTH_SHORT).show();
+            public void onClick(View view) {
+                goToListPhoBien(phoBien);
             }
         });
     }
 
+    private void goToListPhoBien(PhoBien phoBien){ }
+
     @Override
     public int getItemCount() {
-        if(list != null) {
-            return list.size();
-        }
-        return 0;
+        return phoBienList.size();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
-        private ShapeableImageView image;
-        private TextView location;
-        private CardView cardView;
-        public ViewHolder(@NonNull View itemView) {
+    public class PhoBienViewHolder extends RecyclerView.ViewHolder {
+        ImageView imageView;
+        TextView title;
+        LinearLayout itemPhoBien;
+        public PhoBienViewHolder(@NonNull View itemView) {
             super(itemView);
-            image = itemView.findViewById(R.id.image);
-            location = itemView.findViewById(R.id.location);
-            cardView = itemView.findViewById(R.id.cardView);
 
+            imageView = itemView.findViewById(R.id.image);
+            title = itemView.findViewById(R.id.location);
+            itemPhoBien = itemView.findViewById(R.id.cardView);
         }
     }
 }

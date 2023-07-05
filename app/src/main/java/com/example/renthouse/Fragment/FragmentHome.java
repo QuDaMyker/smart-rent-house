@@ -24,14 +24,15 @@ import com.example.renthouse.Activity.ActivityDetails;
 import com.example.renthouse.Activity.ActivityRecentSeen;
 import com.example.renthouse.Activity.ActivitySearch;
 import com.example.renthouse.Adapter.OutstandingRoomAdapter;
+import com.example.renthouse.Adapter.PhoBienAdapter;
 import com.example.renthouse.Interface.ItemClick;
+import com.example.renthouse.OOP.PhoBien;
 import com.example.renthouse.OOP.Room;
 import com.example.renthouse.R;
 import com.example.renthouse.utilities.PreferenceManager;
 import com.example.renthouse.Activity.ActivityPost;
 import com.example.renthouse.Activity.FindByMapsActivity;
 import com.example.renthouse.Activity.NoficationActivity;
-import com.example.renthouse.Adapter.PhoBienAdapter;
 import com.example.renthouse.ITEM.itemPhoBien_HomeFragment;
 import com.example.renthouse.OOP.City;
 import com.example.renthouse.OOP.District;
@@ -61,9 +62,6 @@ public class FragmentHome extends Fragment {
     private FirebaseAuth firebaseAuth;
     private FirebaseUser currentUser;
     private List<itemPhoBien_HomeFragment> listItemPhoBien_HomeFragment;
-    private PhoBienAdapter phoBienAdapter;
-
-
 
     private FusedLocationProviderClient fusedLocationProviderClient;
     double latitude;
@@ -79,6 +77,9 @@ public class FragmentHome extends Fragment {
     private List<Room> outstandingList;
     private OutstandingRoomAdapter outstandingRoomAdapter;
     private RecyclerView outstanding_recyclerView;
+    private List<PhoBien> phoBienList;
+    private PhoBienAdapter phoBienAdapter;
+    private RecyclerView phobien_recyclerView;
     private PreferenceManager preferenceManager;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -99,37 +100,8 @@ public class FragmentHome extends Fragment {
         updateUI();
         getLastLocation();
 
-        outstandingList = new ArrayList<>();
-        outstandingRoomAdapter = new OutstandingRoomAdapter(getContext(), outstandingList, new ItemClick() {
-            @Override
-            public void onItemClick(Room room) {
-                Intent intent = new Intent(getContext(), ActivityDetails.class);
-                intent.putExtra("selectedRoom", room);
-                startActivity(intent);
-            }
-        });
-        GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), 2);
-        outstanding_recyclerView.setLayoutManager(gridLayoutManager);
-        outstanding_recyclerView.setAdapter(outstandingRoomAdapter);
-
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference reference = database.getReference();
-        Query query = reference.child("Rooms");
-        query.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                List<Room> temroom = new ArrayList<>();
-                for (DataSnapshot Snapshot : snapshot.getChildren()){
-                    Room room = Snapshot.getValue((Room.class));
-                    temroom.add(room);
-                }
-                outstandingList.addAll(temroom);
-                outstandingRoomAdapter.notifyDataSetChanged();
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) { }
-        });
+        setDataPhoBien();
+        setDataOutstandingRoom();
 
         progressDialog.dismiss();
 
@@ -170,6 +142,71 @@ public class FragmentHome extends Fragment {
             }
         });
         return view;
+    }
+
+    private void setDataPhoBien() {
+        phoBienList = new ArrayList<>();
+        phoBienAdapter = new PhoBienAdapter(getContext(), phoBienList, new ItemClick() {
+            @Override
+            public void onItemClick(Room room) {
+            }
+        });
+        GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), (int) phoBienList.stream().count());
+        phobien_recyclerView.setLayoutManager(gridLayoutManager);
+        phobien_recyclerView.setAdapter(phoBienAdapter);
+
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference reference = database.getReference();
+        Query query = reference.child("PopularRoom");
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                List<PhoBien> temphobien = new ArrayList<>();
+                for (DataSnapshot Snapshot : snapshot.getChildren()){
+                    PhoBien phobien = Snapshot.getValue((PhoBien.class));
+                    temphobien.add(phobien);
+                }
+                phoBienList.addAll(temphobien);
+                phoBienAdapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) { }
+        });
+    }
+
+    private void setDataOutstandingRoom() {
+        outstandingList = new ArrayList<>();
+        outstandingRoomAdapter = new OutstandingRoomAdapter(getContext(), outstandingList, new ItemClick() {
+            @Override
+            public void onItemClick(Room room) {
+                Intent intent = new Intent(getContext(), ActivityDetails.class);
+                intent.putExtra("selectedRoom", room);
+                startActivity(intent);
+            }
+        });
+        GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), 2);
+        outstanding_recyclerView.setLayoutManager(gridLayoutManager);
+        outstanding_recyclerView.setAdapter(outstandingRoomAdapter);
+
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference reference = database.getReference();
+        Query query = reference.child("Rooms");
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                List<Room> temroom = new ArrayList<>();
+                for (DataSnapshot Snapshot : snapshot.getChildren()){
+                    Room room = Snapshot.getValue((Room.class));
+                    temroom.add(room);
+                }
+                outstandingList.addAll(temroom);
+                outstandingRoomAdapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) { }
+        });
     }
 
 
