@@ -21,6 +21,7 @@ import android.view.View;
 import android.widget.CheckBox;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.Toolbar;
@@ -34,6 +35,7 @@ import com.example.renthouse.OOP.Room;
 import com.example.renthouse.R;
 import com.example.renthouse.utilities.Constants;
 import com.example.renthouse.utilities.PreferenceManager;
+import com.google.android.material.button.MaterialButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -94,10 +96,16 @@ public class ActivityDetails extends AppCompatActivity {
     List<Room> rcmRooms;
     TextView tvThemDX;
     TextView tvGiaP;
-    ImageButton ibChat;
-    ImageButton ibCall;
+//    ImageButton ibChat;
+//    ImageButton ibCall;
+    MaterialButton ibChat;
+    MaterialButton ibCall;
+    MaterialButton btnToDelete;
+    MaterialButton btnToEdit;
     String accountPhone;
     private PreferenceManager preferenceManager;
+    LinearLayout NormalUserLayout;
+    LinearLayout OwnerLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -106,6 +114,9 @@ public class ActivityDetails extends AppCompatActivity {
 
         db = FirebaseDatabase.getInstance();
         ref = db.getReference("Rooms");
+
+        NormalUserLayout = findViewById(R.id.NormalUserLayout);
+        OwnerLayout = findViewById(R.id.OwnerLayout);
 
         listImages = new ArrayList<String>();
         listTI = new ArrayList<String>();
@@ -144,6 +155,8 @@ public class ActivityDetails extends AppCompatActivity {
         tvGiaP = findViewById(R.id.tvGia);
         ibCall = findViewById(R.id.btnToCall);
         ibChat = findViewById(R.id.btnToChat);
+        btnToDelete = findViewById(R.id.btnToDelete);
+        btnToEdit = findViewById(R.id.btnToEdit);
 
 
         preferenceManager = new PreferenceManager(ActivityDetails.this);
@@ -154,8 +167,12 @@ public class ActivityDetails extends AppCompatActivity {
         }
         room = (Room) intent.getSerializableExtra("selectedRoom");
         if (room.getCreatedBy().getEmail().equals(preferenceManager.getString(Constants.KEY_EMAIL))) {
-            ibChat.setVisibility(View.INVISIBLE);
-            ibCall.setVisibility(View.INVISIBLE);
+            OwnerLayout.setVisibility(View.VISIBLE);
+            NormalUserLayout.setVisibility(View.GONE);
+        }
+        else{
+            OwnerLayout.setVisibility(View.GONE);
+            NormalUserLayout.setVisibility(View.VISIBLE);
         }
 
         /*Bundle bundle = getIntent().getExtras();
@@ -431,6 +448,19 @@ public class ActivityDetails extends AppCompatActivity {
 
             }
         });//chưa làm
+
+        btnToEdit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
+        btnToDelete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
     }
 
     private void tinhSoP(AccountClass tg) {
