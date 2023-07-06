@@ -675,7 +675,7 @@
             android:id="@+id/tvGia"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingLeft="30dp"
+            android:paddingLeft="20dp"
             android:text="20.000.000 đ"
             android:textColor="@color/white"
             android:textSize="23sp" />
@@ -687,19 +687,106 @@
             android:textColor="@color/white"
             android:textSize="15sp" />
 
-        <ImageButton
-            android:id="@+id/btnToChat"
-            android:layout_width="70dp"
-            android:layout_height="40dp"
-            android:layout_marginLeft="25dp"
-            android:src="@drawable/btn_chat" />
+        <LinearLayout
+            android:id="@+id/NormalUserLayout"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="20dp"
+            android:layout_weight="1"
+            android:visibility="gone">
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnToChat"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:paddingHorizontal="5dp"
+                android:paddingVertical="12dp"
+                android:text="Chat"
+                android:textStyle="bold"
+                android:layout_weight="1"
+                app:icon="@drawable/ic_chat_foreground"
+                app:iconTint="@color/Primary_40"
+                android:textColor="@color/Primary_40"
+                android:textSize="16dp"
+                app:iconGravity="textEnd"
+                app:iconSize="22dp"
+                app:cornerRadius="10dp"
+                android:backgroundTint="@color/Primary_98"
+                android:layout_marginEnd="10dp"/>
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnToCall"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:paddingHorizontal="5dp"
+                android:paddingVertical="12dp"
+                android:text="Gọi"
+                android:textStyle="bold"
+                android:layout_weight="1"
+                app:icon="@drawable/ic_phone"
+                app:iconTint="@color/Secondary_40"
+                android:textColor="@color/Secondary_40"
+                android:textSize="16dp"
+                app:iconGravity="textEnd"
+                app:iconSize="22dp"
+                app:cornerRadius="10dp"
+                android:backgroundTint="@color/Secondary_90"/>
+        </LinearLayout>
+        <LinearLayout
+            android:id="@+id/OwnerLayout"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="20dp"
+            android:layout_weight="1">
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnToDelete"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:paddingHorizontal="5dp"
+                android:paddingVertical="12dp"
+                android:text="Xóa"
+                android:textStyle="bold"
+                android:layout_weight="1"
+                app:icon="@drawable/ic_delete"
+                app:iconTint="@color/Red_50"
+                android:textColor="@color/Red_50"
+                android:textSize="16dp"
+                app:iconGravity="textStart"
+                app:iconSize="22dp"
+                app:cornerRadius="10dp"
+                android:backgroundTint="@color/Red_90"
+                android:layout_marginEnd="10dp"/>
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnToEdit"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:paddingHorizontal="5dp"
+                android:paddingVertical="12dp"
+                android:text="Sửa"
+                android:textStyle="bold"
+                android:layout_weight="1"
+                app:icon="@drawable/ic_edit"
+                app:iconTint="@color/Secondary_40"
+                android:textColor="@color/Secondary_40"
+                android:textSize="16dp"
+                app:iconGravity="textStart"
+                app:iconSize="22dp"
+                app:cornerRadius="10dp"
+                android:backgroundTint="@color/Secondary_90"/>
+        </LinearLayout>
 
-        <ImageButton
-            android:id="@+id/btnToCall"
-            android:layout_width="70dp"
-            android:layout_height="40dp"
-            android:layout_marginLeft="18dp"
-            android:src="@drawable/btn_call" />
+
+        <!--        <ImageButton-->
+<!--            android:id="@+id/btnToChat"-->
+<!--            android:layout_width="70dp"-->
+<!--            android:layout_height="40dp"-->
+<!--            android:layout_marginLeft="25dp"-->
+<!--            android:src="@drawable/btn_chat" />-->
+
+<!--        <ImageButton-->
+<!--            android:id="@+id/btnToCall"-->
+<!--            android:layout_width="70dp"-->
+<!--            android:layout_height="40dp"-->
+<!--            android:layout_marginLeft="18dp"-->
+<!--            android:src="@drawable/btn_call" />-->
 
     </LinearLayout>
 
