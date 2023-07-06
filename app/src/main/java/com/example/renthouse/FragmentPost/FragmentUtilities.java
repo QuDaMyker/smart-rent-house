@@ -20,7 +20,9 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.renthouse.Activity.ActivityPost;
 import com.example.renthouse.Adapter.PhotoAdapter;
+import com.example.renthouse.OOP.Room;
 import com.example.renthouse.R;
 import com.google.android.material.button.MaterialButton;
 import com.gun0912.tedpermission.PermissionListener;
@@ -39,6 +41,7 @@ public class FragmentUtilities  extends Fragment {
     private MaterialButton addImgBtn;
     private RecyclerView rcvPhoto;
     private PhotoAdapter photoAdapter;
+    private boolean isDataSet = false;
 
     public List<Uri> uriListImg = new ArrayList<>();
 
@@ -125,6 +128,11 @@ public class FragmentUtilities  extends Fragment {
                 selectImagesFromGallery();
             }
         });
+        ActivityPost activityPost = (ActivityPost) getActivity();
+        if(!isDataSet && activityPost.roomToEdit != null){
+            setData(activityPost.roomToEdit);
+            isDataSet = true;
+        }
         return v;
     }
 
@@ -244,6 +252,28 @@ public class FragmentUtilities  extends Fragment {
 
     public List<Uri> getUriListImg() {
         return uriListImg;
+    }
+    public void setData(Room room){
+        for (String uri: room.getImages()) {
+            uriListImg.add(Uri.parse(uri));
+        }
+        photoAdapter.setData(uriListImg);
+        addImgBtn.setVisibility(View.GONE);
+        imgLayout.setVisibility(View.VISIBLE);
+
+        int childCount = gridLayout.getChildCount();
+        for (int i = 0; i < childCount; i++) {
+            View child = gridLayout.getChildAt(i);
+            if (child instanceof MaterialButton) {
+                MaterialButton button = (MaterialButton) child;
+                for (String util: room.getUtilities()) {
+                    if(button.getText().equals(util)){
+                        button.setChecked(true);
+                        break;
+                    }
+                }
+            }
+        }
     }
     public boolean validateData(){
         boolean flag = true;

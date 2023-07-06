@@ -72,6 +72,7 @@ public class ActivityPost extends AppCompatActivity {
     FragmentUtilities fragmentUtilities;
     StorageReference storageReference;
     AccountClass user;
+    public Room roomToEdit;
 
     public interface OnUploadImageCompleteListener {
         void onUploadImageComplete();
@@ -80,6 +81,14 @@ public class ActivityPost extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_post);
+
+        roomToEdit = null;
+        try {
+            roomToEdit = (Room) getIntent().getExtras().get("roomToEdit");
+        }
+        catch (Exception e){
+
+        }
 
         fragmentConfirm = new FragmentConfirm();
         fragmentInformation = new FragmentInformation();
@@ -185,53 +194,81 @@ public class ActivityPost extends AppCompatActivity {
     private void pushRoomData() {
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference myRef = database.getReference("Rooms");
-        FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
         DatabaseReference accRef = database.getReference("Accounts");
 
         firebaseAuth = FirebaseAuth.getInstance();
         currentUser = firebaseAuth.getCurrentUser();
         Query query = accRef.orderByChild("email").equalTo(currentUser.getEmail());
 
-        query.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                    user = snapshot.getValue(AccountClass.class);
-                    String key = myRef.child("Rooms").push().getKey();
-                    Date currentDate = new Date();
-                    SimpleDateFormat sdf = new SimpleDateFormat("HH:mm dd/MM/yyyy", Locale.getDefault());
-                    Room room = new Room(key,
-                            fragmentConfirm.getTitle(),
-                            fragmentConfirm.getDescription(),
-                            fragmentInformation.getRoomType(),
-                            fragmentInformation.getCapacity(),
-                            fragmentInformation.getGender(),
-                            fragmentInformation.getArea(),
-                            fragmentInformation.getPrice(),
-                            fragmentInformation.getDeposit(),
-                            fragmentInformation.getElectricityCost(),
-                            fragmentInformation.getWaterCost(),
-                            fragmentInformation.getInternetCost(),
-                            fragmentInformation.hasParking(),
-                            fragmentInformation.getParkingFee(),
-                            fragmentLocation.getLocation(),
-                            fragmentUtilities.getUtilities(),
-                            user,
-                            fragmentConfirm.getPhoneNumber(),
-                            sdf.format(currentDate),
-                            false,
-                            STATUS_PENDING);
+        if(roomToEdit == null){
+            query.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                        user = snapshot.getValue(AccountClass.class);
+                        String key = myRef.child("Rooms").push().getKey();
+                        Date currentDate = new Date();
+                        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm dd/MM/yyyy", Locale.getDefault());
+                        Room room = new Room(key,
+                                fragmentConfirm.getTitle(),
+                                fragmentConfirm.getDescription(),
+                                fragmentInformation.getRoomType(),
+                                fragmentInformation.getCapacity(),
+                                fragmentInformation.getGender(),
+                                fragmentInformation.getArea(),
+                                fragmentInformation.getPrice(),
+                                fragmentInformation.getDeposit(),
+                                fragmentInformation.getElectricityCost(),
+                                fragmentInformation.getWaterCost(),
+                                fragmentInformation.getInternetCost(),
+                                fragmentInformation.hasParking(),
+                                fragmentInformation.getParkingFee(),
+                                fragmentLocation.getLocation(),
+                                fragmentUtilities.getUtilities(),
+                                user,
+                                fragmentConfirm.getPhoneNumber(),
+                                sdf.format(currentDate),
+                                false,
+                                STATUS_PENDING);
 
-                    String pathObject = String.valueOf(room.getId());
-                    myRef.child(pathObject).setValue(room);
-                    updateImage(room);
+                        String pathObject = String.valueOf(room.getId());
+                        myRef.child(pathObject).setValue(room);
+                        updateImage(room);
+                    }
                 }
-            }
 
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-            }
-        });
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+                }
+            });
+        }
+        else{
+            DatabaseReference editRef = database.getReference("Rooms").child(roomToEdit.getId());
+            Room editedRoom = new Room(roomToEdit.getId(),
+                    fragmentConfirm.getTitle(),
+                    fragmentConfirm.getDescription(),
+                    fragmentInformation.getRoomType(),
+                    fragmentInformation.getCapacity(),
+                    fragmentInformation.getGender(),
+                    fragmentInformation.getArea(),
+                    fragmentInformation.getPrice(),
+                    fragmentInformation.getDeposit(),
+                    fragmentInformation.getElectricityCost(),
+                    fragmentInformation.getWaterCost(),
+                    fragmentInformation.getInternetCost(),
+                    fragmentInformation.hasParking(),
+                    fragmentInformation.getParkingFee(),
+                    fragmentLocation.getLocation(),
+                    fragmentUtilities.getUtilities(),
+                    roomToEdit.getCreatedBy(),
+                    fragmentConfirm.getPhoneNumber(),
+                    roomToEdit.getDateTime(),
+                    roomToEdit.isRented(),
+                    roomToEdit.getStatus());
+            editRef.setValue(editedRoom);
+            updateImage(editedRoom);
+        }
+
     }
 
     protected void replaceFragmentContent(Fragment fragment) {
@@ -275,43 +312,52 @@ public class ActivityPost extends AppCompatActivity {
         for(Uri u : uriList){
             Uri compressedImageUri;
             File actualImage = getFileOfUri(u);
-            try {
-                File compressedImageBitmap = new Compressor(this).compressToFile(actualImage);
-                compressedImageUri = Uri.fromFile(compressedImageBitmap);
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-            if(compressedImageUri == null){
-                continue;
-            }
-            SimpleDateFormat formatter = new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss_SSS", Locale.ENGLISH);
-            Date now = new Date();
-            String fileName = formatter.format(now);
-            StorageReference roomImageRef = storageReference.child("Room Images/" + fileName);
-            roomImageRef.putFile(compressedImageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                @Override
-                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                    roomImageRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                        @Override
-                        public void onSuccess(Uri uri) {
-                            uriImageStringList.add(uri.toString());
-                            successCount[0]++;
-                            if(successCount[0] == totalItems){
-                                listener.onUploadImageComplete();
+            if(actualImage != null){
+                try {
+                    File compressedImageBitmap = new Compressor(this).compressToFile(actualImage);
+                    compressedImageUri = Uri.fromFile(compressedImageBitmap);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+                if(compressedImageUri == null){
+                    continue;
+                }
+                SimpleDateFormat formatter = new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss_SSS", Locale.ENGLISH);
+                Date now = new Date();
+                String fileName = formatter.format(now);
+                StorageReference roomImageRef = storageReference.child("Room Images/" + fileName);
+                roomImageRef.putFile(compressedImageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                    @Override
+                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                        roomImageRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                            @Override
+                            public void onSuccess(Uri uri) {
+                                uriImageStringList.add(uri.toString());
+                                successCount[0]++;
+                                if(successCount[0] == totalItems){
+                                    listener.onUploadImageComplete();
+                                }
                             }
-                        }
-                    });
-                }
-            }).addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception e) {
-                    Toast.makeText(ActivityPost.this, "Đã xảy ra lỗi, vui lòng thử lại", Toast.LENGTH_SHORT).show();
-                    if(progressDialog.isShowing()){
-                        progressDialog.dismiss();
+                        });
                     }
-                    return;
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Toast.makeText(ActivityPost.this, "Đã xảy ra lỗi, vui lòng thử lại", Toast.LENGTH_SHORT).show();
+                        if(progressDialog.isShowing()){
+                            progressDialog.dismiss();
+                        }
+                        return;
+                    }
+                });
+            }
+            else{
+                uriImageStringList.add(u.toString());
+                successCount[0]++;
+                if(successCount[0] == totalItems){
+                    listener.onUploadImageComplete();
                 }
-            });
+            }
         }
     }
 
@@ -320,10 +366,12 @@ public class ActivityPost extends AppCompatActivity {
             progressDialog.dismiss();
         }
         Toast.makeText(ActivityPost.this, "Tải lên thành công!", Toast.LENGTH_SHORT).show();
-        Notification notification = new Notification("Có phòng trọ mới vừa được đăng trên Rent House", "Hãy kiểm tra ngay để không bỏ lỡ cơ hội tuyệt vời này!", "room");
-        notification.setAttachedRoom(room);
-        SendNotificationTask task = new SendNotificationTask(ActivityPost.this, notification);
-        task.execute();
+        if(roomToEdit == null){
+            Notification notification = new Notification("Có phòng trọ mới vừa được đăng trên Rent House", "Hãy kiểm tra ngay để không bỏ lỡ cơ hội tuyệt vời này!", "room");
+            notification.setAttachedRoom(room);
+            SendNotificationTask task = new SendNotificationTask(ActivityPost.this, notification);
+            task.execute();
+        }
     }
 
     private File getFileOfUri(Uri u) {
