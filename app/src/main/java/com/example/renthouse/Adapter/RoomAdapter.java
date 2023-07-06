@@ -107,7 +107,7 @@ public class RoomAdapter extends RecyclerView.Adapter<RoomAdapter.RoomViewHolder
         holder.itemRooom.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                goToDetails (room);
+                goToDetails(room);
             }
         });
         //cbliked thay đổi
