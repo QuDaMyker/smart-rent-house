@@ -16,9 +16,11 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 
+import com.example.renthouse.Activity.ActivityPost;
 import com.example.renthouse.OOP.City;
 import com.example.renthouse.OOP.District;
 import com.example.renthouse.OOP.LocationTemp;
+import com.example.renthouse.OOP.Room;
 import com.example.renthouse.OOP.Ward;
 import com.example.renthouse.R;
 import com.google.android.material.textfield.TextInputEditText;
@@ -48,6 +50,11 @@ public class FragmentLocation extends Fragment {
     City selectedCity;
     District selectedDistrict;
     Ward selectedWard;
+    private boolean isDataSet = false;
+    List<City> cityList;
+    List<District> districtList;
+    List<Ward> wardList;
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
@@ -72,9 +79,9 @@ public class FragmentLocation extends Fragment {
         Type listDistrictType = new TypeToken<List<District>>(){}.getType();
         Type listWardType = new TypeToken<List<Ward>>(){}.getType();
 
-        List<City> cityList = gson.fromJson(cityJson, listCityType);
-        List<District> districtList = gson.fromJson(districtJson, listDistrictType);
-        List<Ward> wardList = gson.fromJson(wardJson, listWardType);
+        cityList = gson.fromJson(cityJson, listCityType);
+        districtList = gson.fromJson(districtJson, listDistrictType);
+        wardList = gson.fromJson(wardJson, listWardType);
 
         cityEdt.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -235,6 +242,11 @@ public class FragmentLocation extends Fragment {
 
             }
         });
+        ActivityPost activityPost = (ActivityPost) getActivity();
+        if(!isDataSet && activityPost.roomToEdit != null){
+            setData(activityPost.roomToEdit);
+            isDataSet = true;
+        }
         return v;
     }
 
@@ -261,6 +273,20 @@ public class FragmentLocation extends Fragment {
 
     public LocationTemp getLocation(){
         return new LocationTemp(edtStreet.getText().toString(), edtAddress.getText().toString(), selectedCity, selectedDistrict, selectedWard);
+    }
+
+    public void setData(Room room){
+        selectedCity = room.getLocation().getCity();
+        cityEdt.setText(selectedCity.getName());
+
+        selectedDistrict = room.getLocation().getDistrict();
+        districtEdt.setText(selectedDistrict.getName());
+
+        selectedWard = room.getLocation().getWard();
+        wardEdt.setText(selectedWard.getName());
+
+        edtStreet.setText(room.getLocation().getStreet());
+        edtAddress.setText(room.getLocation().getAddress());
     }
 
     public boolean validateData(){

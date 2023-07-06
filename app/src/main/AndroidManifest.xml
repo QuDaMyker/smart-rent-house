@@ -141,7 +141,8 @@
         <activity
             android:name=".Activity.ActivitySearch"
             android:exported="false" />
-
+        <activity android:name=".Activity.ActivityRecentSeen"
+            android:exported="false"/>
         <service
             android:name=".Chat.Firebase.MessingService"
             android:exported="false">

@@ -24,6 +24,8 @@ import com.example.renthouse.OOP.AccountClass;
 import com.example.renthouse.OOP.Room;
 import com.example.renthouse.R;
 import com.facebook.shimmer.ShimmerFrameLayout;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.checkbox.MaterialCheckBox;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -35,9 +37,11 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.auth.User;
+import com.squareup.picasso.Picasso;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class ResultRoomAdapter extends RecyclerView.Adapter<ResultRoomAdapter.RoomViewHolder>{
@@ -47,11 +51,13 @@ public class ResultRoomAdapter extends RecyclerView.Adapter<ResultRoomAdapter.Ro
     FirebaseAuth firebaseAuth;
     FirebaseUser user;
     public boolean isShimmerEnabled = true;
+    public String userKey;
+    DatabaseReference seenRoomRef;
     public ResultRoomAdapter(ArrayList<Room> list, Context context) {
         this.roomList = list;
         this.mcContext = context;
         this.roomListFavorite = new ArrayList<>();
-
+        seenRoomRef = FirebaseDatabase.getInstance().getReference().child("SeenRooms");
     }
 
     @NonNull
@@ -96,20 +102,69 @@ public class ResultRoomAdapter extends RecyclerView.Adapter<ResultRoomAdapter.Ro
 
             holder.imageViewRoom.setBackground(null);
             holder.imageViewRoom.setImageResource(R.drawable.image_room_result);
+            String image = room.getImages().get(0);
+
+            Picasso.get()
+                    .load(image)
+                    .into(holder.imageViewRoom);
 
             holder.checkboxLike.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
+                FirebaseUser currentUser = firebaseAuth.getCurrentUser();
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                     if (isChecked) {
-                        roomListFavorite.add(roomList.get(position));
-                        //updateDataFirebase(roomList.get(position));
-                        notifyDataSetChanged();
+                        // Nếu checkbox được chọn, them dzo thích
+                        String emailCur = currentUser.getEmail();
+                        FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+                        DatabaseReference reference = firebaseDatabase.getReference("Accounts");
+                        reference.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                String emailAC = null;
+                                for (DataSnapshot snapshotAc: snapshot.getChildren())
+                                {
+                                    emailAC = snapshotAc.child("email").getValue(String.class);
+                                    if (emailCur.equals(emailAC)){
+                                        String idAC = snapshotAc.getKey();
+                                        DatabaseReference likedRef = firebaseDatabase.getReference("LikedRooms").child(idAC);
+                                        String idRoom = room.getId();
+                                        likedRef.child(idRoom).setValue(room);
+                                    }
+                                }
+                            }
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError error) {
+
+                            }
+                        });
+
+
                     } else {
-                        if (roomListFavorite.contains(roomList.get(position))){
-                            roomListFavorite.remove(roomList.get(position));
-                            // Remove dữ liệu khỏi firebase
-                            notifyDataSetChanged();
-                        }
+                        // Nếu bỏ like thì xóa khỏi thích
+                        String emailCur = currentUser.getEmail();
+                        FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+                        DatabaseReference reference = firebaseDatabase.getReference("Accounts");
+                        reference.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                String emailAC = null;
+                                for (DataSnapshot snapshotAc: snapshot.getChildren())
+                                {
+                                    emailAC = snapshotAc.child("email").getValue(String.class);
+                                    if (emailCur.equals(emailAC)){
+                                        String idAC = snapshotAc.getKey();
+                                        DatabaseReference likedRef = firebaseDatabase.getReference("LikedRooms").child(idAC);
+                                        String idRoom = room.getId();
+                                        likedRef.child(idRoom).removeValue();
+                                    }
+                                }
+                            }
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError error) {
+
+                            }
+                        });
                     }
                 }
             });
@@ -117,7 +172,7 @@ public class ResultRoomAdapter extends RecyclerView.Adapter<ResultRoomAdapter.Ro
                 @Override
                 public void onClick(View v) {
                     // Xử lý sự kiện click vào item trong recycleview (tức đã xem) :D
-                    //addSeenRoom(room);
+                    addSeenRoom(room);
                     //onClickGoDetail(room);
                 }
             });
@@ -137,26 +192,31 @@ public class ResultRoomAdapter extends RecyclerView.Adapter<ResultRoomAdapter.Ro
             public void onDataChange(@NonNull DataSnapshot snapshot) {
 
                 for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                    // Lấy được id của user
                     String idUser = dataSnapshot.getKey();
-                    DatabaseReference refLiked = database.getReference("SeenRoom").child(idUser);
-                    refLiked.addValueEventListener(new ValueEventListener() {
+
+                    // Tạo node SeenRoom và add node idUser vô
+                    DatabaseReference refSeen = database.getReference("SeenRoom").child(idUser);
+                    refSeen.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot snapshot) {
+                            List<String> listRoom = new ArrayList<>();
                             if (snapshot.getChildrenCount() == 0) {
-                                List<String> listSeenRoom = new ArrayList<>();
-                                listSeenRoom.add(room.getId());
-                                refLiked.setValue(listSeenRoom);
+                                listRoom.add(room.getId());
                             } else {
-                                for (DataSnapshot dataSnapshot1 : snapshot.getChildren()) {
-                                    String value = (String) dataSnapshot1.getValue();
-                                    if (value.equals(room.getId())) {
-
-                                    }
-
+                                for (DataSnapshot snapshot1 : snapshot.getChildren()) {
+                                    listRoom.add(snapshot1.getValue(String.class));
+                                }
+                                if (listRoom.contains(room.getId())) {
+                                    listRoom.remove(room.getId());
+                                }
+                                listRoom.add(0, room.getId());
+                                if (listRoom.size() > 10) {
+                                    listRoom.remove(listRoom.size() - 1);
                                 }
                             }
+                            refSeen.setValue(listRoom);
                         }
-
                         @Override
                         public void onCancelled(@NonNull DatabaseError error) {
 

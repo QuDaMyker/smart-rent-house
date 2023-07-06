@@ -23,6 +23,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.text.Normalizer;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -126,8 +127,9 @@ public class FragmentResult extends Fragment {
                 // Dữ liệu đã thay đổi, bạn có thể truy cập và xử lý dữ liệu tại đây
                 for (DataSnapshot roomSnapshot : dataSnapshot.getChildren()) {
                     Room room = roomSnapshot.getValue(Room.class);
+
                     // Kiểm tra điều kiện nè
-                    if (objectSearch.getPath().equals(room.getLocation().getWard().getPath())){
+                    if (isContainsAddress(room)){
                         if (isPriceValid(room) || isContainAmount(room) || isContainsUtilities(room)
                                 || isContainTypeRoom(room)) {
                             list.add(room);
@@ -147,6 +149,26 @@ public class FragmentResult extends Fragment {
                 Log.d("Lỗi nè", "lỗi");
             }
         });
+    }
+    private boolean isContainsAddress(Room room) {
+        if (room.getLocation().getWard().getPath().equals(objectSearch.getPath())){
+            return true;
+        }
+        String str1 = removeDiacritics(room.getLocation().getDistrict().getPath_with_type());
+        String str2 = removeDiacritics(objectSearch.getPath());
+
+        // Chuyển đổi chuỗi str1 và str2 thành chữ thường (lowercase) và xóa dấu
+        String str1Modified = str1.toLowerCase();
+        String str2Modified = str2.toLowerCase();
+
+        // Kiểm tra xem chuỗi str1Modified có chứa chuỗi str2Modified hay không
+        boolean contains = str1Modified.contains(str2Modified);
+        return contains;
+    }
+    public String removeDiacritics(String str) {
+        str = Normalizer.normalize(str, Normalizer.Form.NFD);
+        str = str.replaceAll("\\p{M}", "");
+        return str;
     }
     private boolean isPriceValid(Room room) {
         if (objectSearch.getPrice() == null || objectSearch.getPrice().isEmpty()) {

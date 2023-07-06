@@ -12,6 +12,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.example.renthouse.Activity.ActivityPost;
+import com.example.renthouse.OOP.Room;
 import com.example.renthouse.R;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
@@ -25,6 +27,8 @@ public class FragmentConfirm extends Fragment {
     TextInputLayout edtLayoutPhoneNumber;
     TextInputLayout edtLayoutTitle;
     TextInputLayout edtLayoutDescription;
+    private boolean isDataSet = false;
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
@@ -85,6 +89,11 @@ public class FragmentConfirm extends Fragment {
 
             }
         });
+        ActivityPost activityPost = (ActivityPost) getActivity();
+        if(!isDataSet && activityPost.roomToEdit != null){
+            setData(activityPost.roomToEdit);
+            isDataSet = true;
+        }
         return v;
     }
 
@@ -103,6 +112,12 @@ public class FragmentConfirm extends Fragment {
 
     public String getDescription(){
         return edtDescription.getText().toString();
+    }
+
+    public void setData(Room room){
+        edtPhoneNumber.setText(room.getPhoneNumber());
+        edtTitle.setText(room.getTitle());
+        edtDescription.setText(room.getDescription());
     }
 
     public boolean validateData(){
@@ -125,4 +140,5 @@ public class FragmentConfirm extends Fragment {
         }
         return flag;
     }
+
 }
