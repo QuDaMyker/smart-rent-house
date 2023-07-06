@@ -11,6 +11,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.Manifest;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
@@ -35,6 +37,7 @@ import com.example.renthouse.OOP.Room;
 import com.example.renthouse.R;
 import com.example.renthouse.utilities.Constants;
 import com.example.renthouse.utilities.PreferenceManager;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.button.MaterialButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -106,6 +109,7 @@ public class ActivityDetails extends AppCompatActivity {
     private PreferenceManager preferenceManager;
     LinearLayout NormalUserLayout;
     LinearLayout OwnerLayout;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -452,13 +456,40 @@ public class ActivityDetails extends AppCompatActivity {
         btnToEdit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                Intent intent =new Intent(ActivityDetails.this, ActivityPost.class);
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("roomToEdit", room);
+                intent.putExtras(bundle);
+                startActivity(intent);
+                finish();
             }
         });
         btnToDelete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                AlertDialog confirmDialog = new AlertDialog.Builder(ActivityDetails.this)
+                        .setTitle("Xóa phòng trọ")
+                        .setMessage("Bạn có chắc chắn muốn xóa phòng trọ này?")
+                        .setPositiveButton("Xóa", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int whichButton) {
+                                FirebaseDatabase database = FirebaseDatabase.getInstance();
+                                DatabaseReference notiSchedulesRef = database.getReference("Rooms");
+                                notiSchedulesRef.child(room.getId()).removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
+                                    @Override
+                                    public void onSuccess(Void unused) {
+                                        Toast.makeText(ActivityDetails.this, "Xóa phòng trọ thành công", Toast.LENGTH_SHORT).show();
+                                        finish();
+                                    }
+                                });
+                            }
+                        })
+                        .setNegativeButton("Hủy", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        })
+                        .create();
+                confirmDialog.show();
             }
         });
     }
