@@ -376,7 +376,7 @@ public class ActivityDetails extends AppCompatActivity {
                 DatabaseReference reference = database.getReference();
 
 
-                Query query = reference.child("Accounts").orderByChild("email").equalTo("quocdanhmyker@gmail.com");
+                Query query = reference.child("Accounts").orderByChild("email").equalTo(room.getCreatedBy().getEmail());
                 query.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
