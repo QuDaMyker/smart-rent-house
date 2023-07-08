@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -104,15 +105,22 @@ public class FragmentChat extends Fragment {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 messagesLists.clear();
                 tempMessagesLists.clear();
+                Log.d("count", snapshot.getChildrenCount()+"");
                 for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
                     String otherKey = dataSnapshot.getKey();
                     String lastMessage = dataSnapshot.child("lastMessage").getValue(String.class);
+                    String time = dataSnapshot.child("sendDate").getValue(String.class) + " " + dataSnapshot.child("sendTime").getValue(String.class);
+
+                    Log.d("thoigian",time);
+
                     Query query = reference.child("Accounts").orderByKey().equalTo(otherKey);
                     query.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot snapshot1) {
                             for (DataSnapshot dataSnapshot1 : snapshot1.getChildren()) {
                                 AccountClass accountClass = dataSnapshot1.getValue(AccountClass.class);
+
+
                                 MessagesList messagesList = new MessagesList(
                                         preferenceManager.getString(Constants.KEY_USER_KEY),
                                         accountClass.getFullname(),
@@ -121,30 +129,36 @@ public class FragmentChat extends Fragment {
                                         accountClass.getImage(),
                                         otherKey,
                                         0,
-                                        dataSnapshot1.child("sendTime").getValue(String.class)
-
+                                        time
                                 );
                                 tempMessagesLists.add(messagesList);
-                            }
-                            messagesLists.addAll(tempMessagesLists);
-                            Collections.sort(messagesLists, new Comparator<MessagesList>() {
-                                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                                if (tempMessagesLists.size() == snapshot.getChildrenCount()) {
+                                    messagesLists.addAll(tempMessagesLists);
 
-                                @Override
-                                public int compare(MessagesList obj1, MessagesList obj2) {
-                                    try {
-                                        Date date1 = dateFormat.parse(obj1.getSendTime());
-                                        Date date2 = dateFormat.parse(obj2.getSendTime());
-                                        return date1.compareTo(date2);
-                                    } catch (ParseException e) {
-                                        e.printStackTrace();
-                                    }
-                                    return 0;
+                                    Collections.sort(messagesLists, new Comparator<MessagesList>() {
+                                        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+                                        @Override
+                                        public int compare(MessagesList obj1, MessagesList obj2) {
+
+                                            try {
+                                                Date date1 = dateFormat.parse(obj2.getSendTime());
+                                                Date date2 = dateFormat.parse(obj1.getSendTime());
+                                                return date1.compareTo(date2);
+                                            } catch (ParseException e) {
+                                                e.printStackTrace();
+                                            }
+                                            return 0;
+                                        }
+                                    });
+
+                                    messagesAdapter.notifyDataSetChanged();
+                                    progressDialog.dismiss();
                                 }
-                            });
-                            messagesAdapter.notifyDataSetChanged();
-                            messagesAdapter.notifyDataSetChanged();
-                            progressDialog.dismiss();
+
+                            }
+
+
                         }
 
                         @Override
@@ -153,12 +167,15 @@ public class FragmentChat extends Fragment {
                         }
                     });
                 }
-                progressDialog.dismiss();
+
+
+
+
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-
+                progressDialog.dismiss();
             }
         });
 
