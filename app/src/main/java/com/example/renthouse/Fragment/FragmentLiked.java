@@ -38,8 +38,8 @@ public class FragmentLiked extends Fragment {
         View view = binding.getRoot();
         // Inflate the layout for this fragment
 
-        checkListLikedRooms();
-        //replaceFragment(new FragmentLikedRooms());
+        //checkListLikedRooms();
+        replaceFragment(new FragmentLikedRooms());
         return view;
     }
     private void checkListLikedRooms() {

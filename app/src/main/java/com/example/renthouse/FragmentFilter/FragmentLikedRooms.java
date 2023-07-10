@@ -18,6 +18,8 @@ import com.example.renthouse.Activity.ActivityMain;
 import com.example.renthouse.Adapter.RoomAdapter;
 import com.example.renthouse.OOP.Room;
 import com.example.renthouse.R;
+import com.example.renthouse.utilities.Constants;
+import com.example.renthouse.utilities.PreferenceManager;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -49,7 +51,8 @@ public class FragmentLikedRooms extends Fragment {
     private RecyclerView recyclerView;
     private RoomAdapter roomAdapter;
     private List<Room> rooms;
-
+    private  List<String> idRoomsLiked;
+    private PreferenceManager preferenceManager;
 
     public FragmentLikedRooms() {
 
@@ -81,6 +84,8 @@ public class FragmentLikedRooms extends Fragment {
             mParam2 = getArguments().getString(ARG_PARAM2);
 
         }
+
+        preferenceManager = new PreferenceManager(getContext());
     }
 
     @Override
@@ -93,25 +98,31 @@ public class FragmentLikedRooms extends Fragment {
 
         recyclerView.setLayoutManager(grid);
 
+
+        idRoomsLiked = new ArrayList<String>();
         rooms = new ArrayList<>();
         roomAdapter = new RoomAdapter(this.getContext(), rooms);
 
         recyclerView.setAdapter(roomAdapter);
 
-        getListLikedRoomFromFB();
+        //getListLikedRoomFromFB();
 
-        //getListRoomFromFB();
+        getListRoomFromFB();
 
         return view;
     }
-
         private void getListLikedRoomFromFB() {
             FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
             FirebaseUser currentUser = firebaseAuth.getCurrentUser();
             FirebaseDatabase db = FirebaseDatabase.getInstance();
 
+
             String emailCur = currentUser.getEmail();
+
+            String email = preferenceManager.getString(Constants.KEY_USER_KEY);
+
             DatabaseReference refAC = db.getReference("Accounts");
+            //lấy id ng dùng hiện tại
             refAC.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -121,6 +132,7 @@ public class FragmentLikedRooms extends Fragment {
                         emailAC = snapshotAc.child("email").getValue(String.class);
                         if (emailCur.equals(emailAC)){
                             String idAC = snapshotAc.getKey();
+                            //lấy danh sách id phòng user đã thích
                             DatabaseReference refLiked = db.getReference("LikedRooms");
                             refLiked.addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
@@ -129,10 +141,32 @@ public class FragmentLikedRooms extends Fragment {
                                         if (userIDSnapshot.getKey().equals(idAC))
                                         {
                                             for (DataSnapshot roomSnapshot : userIDSnapshot.getChildren()) {
-                                                Room temp = roomSnapshot.getValue(Room.class);
-                                                rooms.add(temp);
+                                                String idRoom = roomSnapshot.getValue(String.class);
+                                                idRoomsLiked.add(idRoom);
                                             }
-                                            roomAdapter.notifyDataSetChanged();
+
+                                            DatabaseReference refRoom = db.getReference("Rooms");
+                                            refRoom.addListenerForSingleValueEvent(new ValueEventListener() {
+                                                @Override
+                                                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                                    for (String roomId : idRoomsLiked)
+                                                    {
+                                                        if (snapshot.hasChild(roomId))
+                                                        {
+                                                            DataSnapshot roomSnapShot = snapshot.child(roomId);
+                                                            Room room = roomSnapShot.getValue(Room.class);
+                                                            rooms.add(room);
+                                                        }
+                                                    }
+                                                    roomAdapter.notifyDataSetChanged();
+                                                }
+
+                                                @Override
+                                                public void onCancelled(@NonNull DatabaseError error) {
+
+                                                }
+                                            });
+
                                         }
                                     }
                                 }

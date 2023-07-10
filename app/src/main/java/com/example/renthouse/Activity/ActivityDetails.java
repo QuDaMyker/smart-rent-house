@@ -21,6 +21,7 @@ import android.provider.ContactsContract;
 import android.util.Log;
 import android.view.View;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -60,6 +61,7 @@ public class ActivityDetails extends AppCompatActivity {
     private static final int REQUEST_CALL = 1;
     private FirebaseDatabase db;
     private DatabaseReference ref;
+    private  String idAC = null;
     Room room;
     ImageButton btnPreScreen;
     CheckBox cbLiked;
@@ -118,6 +120,7 @@ public class ActivityDetails extends AppCompatActivity {
 
         NormalUserLayout = findViewById(R.id.NormalUserLayout);
         OwnerLayout = findViewById(R.id.OwnerLayout);
+
 
         listImages = new ArrayList<String>();
         listTI = new ArrayList<String>();
@@ -184,40 +187,25 @@ public class ActivityDetails extends AppCompatActivity {
         //load thông tin p được chọn
         //gán các thông tin
 
-        //xét id p này có nằm trong ds thích của user
-        FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
-        FirebaseUser currentUser = firebaseAuth.getCurrentUser();
-        String emaiCur = currentUser.getEmail();
-        DatabaseReference refAc = db.getReference("Accounts");
-        refAc.addListenerForSingleValueEvent(new ValueEventListener() {
+
+        cbLiked.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                String emailAc = null;
-                for (DataSnapshot snapAc : snapshot.getChildren()) {
-                    emailAc = snapAc.child("email").getValue(String.class);
-                    if (emaiCur.equals(emailAc)) {
-                        String idAc = snapAc.getKey();
-                        DatabaseReference refLiked = db.getReference("LikedRooms").child(idAc);
-                        ref.addListenerForSingleValueEvent(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                if (snapshot.hasChild(room.getId())) {
-                                    cbLiked.setChecked(true);
-                                }
-                            }
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    // Nếu checkbox được chọn, them id phòng dzo ds Likedroom
+                    DatabaseReference likedRef = db.getReference("LikedRooms").child(idAC);
+                    String idRoom = room.getId();
+                    likedRef.child(idRoom).setValue(idRoom);
 
-                            @Override
-                            public void onCancelled(@NonNull DatabaseError error) {
-
-                            }
-                        });
-                    }
                 }
-            }
+                else {
+                    DatabaseReference likedRef = db.getReference("LikedRooms").child(idAC);
+                    String idRoom = room.getId();
+                    likedRef.child(idRoom).removeValue();
+                    //xóa khỏi ds hiện bên liked room
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
 
+                }
             }
         });
 
@@ -489,6 +477,12 @@ public class ActivityDetails extends AppCompatActivity {
             }
         });
     }
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        IsLikedRoom();
+    }
 
     private void tinhSoP(AccountClass tg) {
         final AtomicInteger count = new AtomicInteger(0); // Sử dụng AtomicInteger để đảm bảo tính đồng bộ
@@ -549,4 +543,50 @@ public class ActivityDetails extends AppCompatActivity {
             }
         }
     }
+    public void IsLikedRoom () {
+        //xét id p này có nằm trong ds thích của user
+        if (preferenceManager.getString(Constants.KEY_USER_KEY) != null) {
+            Log.d("key", preferenceManager.getString(Constants.KEY_USER_KEY));
+        }
+        FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
+        FirebaseUser currentUser = firebaseAuth.getCurrentUser();
+        String emaiCur = currentUser.getEmail();
+
+        DatabaseReference refAc = db.getReference("Accounts");
+        refAc.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                String emailAc = null;
+                for (DataSnapshot snapAc : snapshot.getChildren()) {
+                    emailAc = snapAc.child("email").getValue(String.class);
+                    if (emaiCur.equals(emailAc)) {
+                        idAC = snapAc.getKey();
+                        DatabaseReference refLiked = db.getReference("LikedRooms").child(idAC);
+                        refLiked.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                //check lại khúc này
+                                boolean temp = false;
+                                if (snapshot.hasChild(room.getId())) {
+                                    temp = true;
+                                    cbLiked.setChecked(true);
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError error) {
+
+                            }
+                        });
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
+
 }
