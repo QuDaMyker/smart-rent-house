@@ -49,16 +49,16 @@ public class Admin_ActivityScheduledNotification extends AppCompatActivity {
         scheduleRecycleView = findViewById(R.id.scheduleRecycleView);
         scheduleRecycleView.setLayoutManager(new LinearLayoutManager(this));
         notiScheduleAdapter = new NotiScheduleAdapter(notiScheduleList);
-        notiScheduleAdapter.setOnEditButtonClickListener(new NotiScheduleAdapter.OnEditButtonClickListener() {
-            @Override
-            public void onEditButtonClick(int position) {
-                Intent intent =new Intent(Admin_ActivityScheduledNotification.this, Admin_ActivityCreateSchedule.class);
-                Bundle bundle = new Bundle();
-                bundle.putSerializable("notiSchedule", notiScheduleList.get(position));
-                intent.putExtras(bundle);
-                launcher.launch(intent);
-            }
-        });
+//        notiScheduleAdapter.setOnEditButtonClickListener(new NotiScheduleAdapter.OnEditButtonClickListener() {
+//            @Override
+//            public void onEditButtonClick(int position) {
+//                Intent intent =new Intent(Admin_ActivityScheduledNotification.this, Admin_ActivityCreateSchedule.class);
+//                Bundle bundle = new Bundle();
+//                bundle.putSerializable("notiSchedule", notiScheduleList.get(position));
+//                intent.putExtras(bundle);
+//                launcher.launch(intent);
+//            }
+//        });
         notiScheduleAdapter.setOnDeleteButtonClickListener(new NotiScheduleAdapter.OnDeleteButtonClickListener() {
             @Override
             public void onDeleteButtonClick(int position) {

@@ -79,17 +79,17 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="@+id/contentLayout"
         android:orientation="vertical">
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/editBtn"
-            style="@style/Widget.Material3.Button.IconButton.Filled"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
-            android:layout_marginBottom="10dp"
-            android:backgroundTint="@color/Primary_40"
-            android:contentDescription="Edit"
-            app:icon="@drawable/ic_edit"
-            app:iconSize="20dp" />
+<!--        <com.google.android.material.button.MaterialButton-->
+<!--            android:id="@+id/editBtn"-->
+<!--            style="@style/Widget.Material3.Button.IconButton.Filled"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_marginStart="10dp"-->
+<!--            android:layout_marginBottom="10dp"-->
+<!--            android:backgroundTint="@color/Primary_40"-->
+<!--            android:contentDescription="Edit"-->
+<!--            app:icon="@drawable/ic_edit"-->
+<!--            app:iconSize="20dp" />-->
         <com.google.android.material.button.MaterialButton
             android:id="@+id/deleteBtn"
             style="@style/Widget.Material3.Button.IconButton.Filled"
