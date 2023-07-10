@@ -44,9 +44,11 @@ import com.squareup.picasso.Picasso;
 import android.app.ActivityManager;
 import android.content.Context;
 
+import de.hdodenhof.circleimageview.CircleImageView;
+
 
 public class FragmentAccountTabAccount extends Fragment {
-    private ImageView imageProfile;
+    private CircleImageView imageProfile;
     private TextView nameProfile;
     private TextView emailProfile;
     private Button btnThongTinCanhan;
@@ -87,12 +89,12 @@ public class FragmentAccountTabAccount extends Fragment {
         progressDialog.setMessage("Loading...");
 
         if (currentUser != null) {
-            progressDialog.show();
+            //progressDialog.show();
             Picasso.get().load(preferenceManager.getString(Constants.KEY_IMAGE)).into(imageProfile);
             nameProfile.setText(preferenceManager.getString(Constants.KEY_FULLNAME));
             emailProfile.setText(preferenceManager.getString(Constants.KEY_EMAIL));
 
-            FirebaseDatabase database = FirebaseDatabase.getInstance();
+            /*FirebaseDatabase database = FirebaseDatabase.getInstance();
             DatabaseReference reference = database.getReference("Accounts");
 
             reference.addValueEventListener(new ValueEventListener() {
@@ -116,7 +118,7 @@ public class FragmentAccountTabAccount extends Fragment {
 
                 }
             });
-            progressDialog.dismiss();
+            progressDialog.dismiss();*/
         }
         btnThongTinCanhan.setOnClickListener(new View.OnClickListener() {
             @Override
