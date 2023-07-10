@@ -204,7 +204,6 @@ public class ActivityDetails extends AppCompatActivity {
                     likedRef.child(idRoom).removeValue();
                     //xóa khỏi ds hiện bên liked room
 
-
                 }
             }
         });
@@ -435,7 +434,7 @@ public class ActivityDetails extends AppCompatActivity {
 
 
             }
-        });//chưa làm
+        });
 
         btnToEdit.setOnClickListener(new View.OnClickListener() {
             @Override
