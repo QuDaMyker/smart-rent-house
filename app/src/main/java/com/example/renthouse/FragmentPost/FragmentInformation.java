@@ -17,6 +17,8 @@ import android.widget.RadioGroup;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.example.renthouse.Activity.ActivityPost;
+import com.example.renthouse.OOP.Room;
 import com.example.renthouse.R;
 import com.google.android.material.materialswitch.MaterialSwitch;
 import com.google.android.material.switchmaterial.SwitchMaterial;
@@ -50,7 +52,7 @@ public class FragmentInformation extends Fragment {
     TextInputLayout edtLayoutWaterCost;
     TextInputLayout edtLayoutInternetCost;
     TextInputLayout edtLayoutParkingFee;
-
+    private boolean isDataSet = false;
 
     @Nullable
     @Override
@@ -276,6 +278,11 @@ public class FragmentInformation extends Fragment {
                 }
             }
         });
+        ActivityPost activityPost = (ActivityPost) getActivity();
+        if(!isDataSet && activityPost.roomToEdit != null){
+            setData(activityPost.roomToEdit);
+            isDataSet = true;
+        }
         return v;
     }
 
@@ -343,6 +350,81 @@ public class FragmentInformation extends Fragment {
 
     public boolean hasParking(){
         return cbParking.isChecked();
+    }
+
+    public void setData(Room room){
+        for (int i = 0; i < radioBtnType.getChildCount(); i++) {
+            RadioButton radioButton = (RadioButton) radioBtnType.getChildAt(i);
+            if (radioButton.getText().toString().equals(room.getRoomType())) {
+                radioBtnType.check(radioButton.getId());
+                break;
+            }
+        }
+
+        for (int i = 0; i < radioBtnGender.getChildCount(); i++) {
+            RadioButton radioButton = (RadioButton) radioBtnGender.getChildAt(i);
+            if (radioButton.getText().toString().equals(room.getGender())) {
+                radioBtnGender.check(radioButton.getId());
+                break;
+            }
+        }
+
+        edtCapacity.setText(String.valueOf(room.getCapacity()));
+        edtArea.setText(String.valueOf(Math.round(room.getArea())));
+        edtPrice.setText(String.valueOf(room.getPrice()));
+        edtDeposit.setText(String.valueOf(room.getDeposit()));
+
+        if(room.getElectricityCost() == 0){
+            switchFreeElectricity.setChecked(true);
+            edtElectricityCost.setEnabled(false);
+            edtElectricityCost.setText("0");
+        }
+        else{
+            switchFreeElectricity.setChecked(false);
+            edtElectricityCost.setEnabled(true);
+            edtElectricityCost.setText(String.valueOf(room.getElectricityCost()));
+        }
+
+        if(room.getWaterCost() == 0){
+            switchFreeWater.setChecked(true);
+            edtWaterCost.setEnabled(false);
+            edtWaterCost.setText("0");
+        }
+        else{
+            switchFreeWater.setChecked(false);
+            edtWaterCost.setEnabled(true);
+            edtWaterCost.setText(String.valueOf(room.getWaterCost()));
+        }
+
+        if(room.getInternetCost() == 0){
+            switchFreeInternet.setChecked(true);
+            edtInternetCost.setEnabled(false);
+            edtInternetCost.setText("0");
+        }
+        else{
+            switchFreeInternet.setChecked(false);
+            edtInternetCost.setEnabled(true);
+            edtInternetCost.setText(String.valueOf(room.getInternetCost()));
+        }
+
+        if (room.isParking()){
+            parkingInfo.setVisibility(View.VISIBLE);
+            cbParking.setChecked(true);
+            if(room.getParkingFee() == 0){
+                switchFreeParking.setChecked(true);
+                edtParkingFee.setEnabled(false);
+                edtParkingFee.setText("0");
+            }
+            else{
+                switchFreeParking.setChecked(false);
+                edtParkingFee.setEnabled(true);
+                edtParkingFee.setText(String.valueOf(room.getParkingFee()));
+            }
+        }
+        else {
+            cbParking.setChecked(false);
+            parkingInfo.setVisibility(View.GONE);
+        }
     }
 
 

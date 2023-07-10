@@ -11,6 +11,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.Manifest;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
@@ -21,6 +23,7 @@ import android.view.View;
 import android.widget.CheckBox;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.Toolbar;
@@ -34,6 +37,8 @@ import com.example.renthouse.OOP.Room;
 import com.example.renthouse.R;
 import com.example.renthouse.utilities.Constants;
 import com.example.renthouse.utilities.PreferenceManager;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.material.button.MaterialButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -94,10 +99,17 @@ public class ActivityDetails extends AppCompatActivity {
     List<Room> rcmRooms;
     TextView tvThemDX;
     TextView tvGiaP;
-    ImageButton ibChat;
-    ImageButton ibCall;
+//    ImageButton ibChat;
+//    ImageButton ibCall;
+    MaterialButton ibChat;
+    MaterialButton ibCall;
+    MaterialButton btnToDelete;
+    MaterialButton btnToEdit;
     String accountPhone;
     private PreferenceManager preferenceManager;
+    LinearLayout NormalUserLayout;
+    LinearLayout OwnerLayout;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -106,6 +118,9 @@ public class ActivityDetails extends AppCompatActivity {
 
         db = FirebaseDatabase.getInstance();
         ref = db.getReference("Rooms");
+
+        NormalUserLayout = findViewById(R.id.NormalUserLayout);
+        OwnerLayout = findViewById(R.id.OwnerLayout);
 
         listImages = new ArrayList<String>();
         listTI = new ArrayList<String>();
@@ -144,6 +159,8 @@ public class ActivityDetails extends AppCompatActivity {
         tvGiaP = findViewById(R.id.tvGia);
         ibCall = findViewById(R.id.btnToCall);
         ibChat = findViewById(R.id.btnToChat);
+        btnToDelete = findViewById(R.id.btnToDelete);
+        btnToEdit = findViewById(R.id.btnToEdit);
 
 
         preferenceManager = new PreferenceManager(ActivityDetails.this);
@@ -156,8 +173,12 @@ public class ActivityDetails extends AppCompatActivity {
         }
         room = (Room) intent.getSerializableExtra("selectedRoom");
         if (room.getCreatedBy().getEmail().equals(preferenceManager.getString(Constants.KEY_EMAIL))) {
-            ibChat.setVisibility(View.INVISIBLE);
-            ibCall.setVisibility(View.INVISIBLE);
+            OwnerLayout.setVisibility(View.VISIBLE);
+            NormalUserLayout.setVisibility(View.GONE);
+        }
+        else{
+            OwnerLayout.setVisibility(View.GONE);
+            NormalUserLayout.setVisibility(View.VISIBLE);
         }
 
         /*Bundle bundle = getIntent().getExtras();
@@ -438,6 +459,46 @@ public class ActivityDetails extends AppCompatActivity {
 
             }
         });//chưa làm
+
+        btnToEdit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent =new Intent(ActivityDetails.this, ActivityPost.class);
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("roomToEdit", room);
+                intent.putExtras(bundle);
+                startActivity(intent);
+                finish();
+            }
+        });
+        btnToDelete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                AlertDialog confirmDialog = new AlertDialog.Builder(ActivityDetails.this)
+                        .setTitle("Xóa phòng trọ")
+                        .setMessage("Bạn có chắc chắn muốn xóa phòng trọ này?")
+                        .setPositiveButton("Xóa", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int whichButton) {
+                                FirebaseDatabase database = FirebaseDatabase.getInstance();
+                                DatabaseReference notiSchedulesRef = database.getReference("Rooms");
+                                notiSchedulesRef.child(room.getId()).removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
+                                    @Override
+                                    public void onSuccess(Void unused) {
+                                        Toast.makeText(ActivityDetails.this, "Xóa phòng trọ thành công", Toast.LENGTH_SHORT).show();
+                                        finish();
+                                    }
+                                });
+                            }
+                        })
+                        .setNegativeButton("Hủy", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        })
+                        .create();
+                confirmDialog.show();
+            }
+        });
     }
 
     private void tinhSoP(AccountClass tg) {

@@ -48,34 +48,45 @@
             android:layout_height="wrap_content"
             android:background="@drawable/custom_edttext"
             android:iconifiedByDefault="false"
-            android:queryHint="Nhập tên trường Đại học của bạn" />
+            android:queryHint="Nhập tên trường học hoặc nơi làm việc" />
 
     </LinearLayout>
     <LinearLayout
         android:layout_width="match_parent"
-        android:id="@+id/linearLayoutHistorySearch"
+        android:id="@+id/linearLayoutHistory"
         android:orientation="vertical"
         android:layout_height="0dp"
         app:layout_constraintTop_toBottomOf="@+id/layoutSearchView"
         app:layout_constraintBottom_toBottomOf="parent">
 
+        <TextView
+            android:id="@+id/helpTv"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center_horizontal"
+            android:text="Bấm enter để tìm kiếm"
+            android:textSize="16sp"
+            android:textColor="@color/Secondary_20"
+            android:layout_marginTop="20dp"
+            android:visibility="gone"/>
         <LinearLayout
             android:id="@+id/introView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:gravity="center_horizontal"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:visibility="visible">
             <ImageView
-                android:layout_width="250dp"
-                android:layout_height="250dp"
-                android:src="@drawable/student"
+                android:layout_width="300dp"
+                android:layout_height="200dp"
+                android:src="@drawable/find_by_maps"
                 android:layout_marginBottom="30dp"
                 android:layout_marginTop="80dp"/>
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="80dp"
-                android:text="Smart Rent House hỗ trợ các bạn sinh viên tìm chỗ trọ thuận tiện nhất bằng cách nhập tên trường Đại học của bạn"
+                android:text="Smart Rent House tìm chỗ trọ thuận tiện nhất cho bạn bằng cách nhập địa chỉ nơi làm việc và học tập"
                 android:textAlignment="center"
                 android:textColor="@color/Secondary_20"
                 android:layout_marginBottom="10dp"/>
