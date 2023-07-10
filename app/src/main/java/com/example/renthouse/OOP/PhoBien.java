@@ -1,14 +1,25 @@
 package com.example.renthouse.OOP;
 
 import java.io.Serializable;
+import java.util.List;
 
 public class PhoBien implements Serializable {
+    private List<Room> roomList;
     private String image;
-    private String title;
+    private String name;
 
-    public PhoBien(String image, String title) {
+    public PhoBien(String image, List<Room> roomList, String name) {
+        this.roomList = roomList;
         this.image = image;
-        this.title = title;
+        this.name = name;
+    }
+
+    public List<Room> getRoomList() {
+        return roomList;
+    }
+
+    public void setRoomList(List<Room> roomList) {
+        this.roomList = roomList;
     }
 
     public String getImage() {
@@ -19,14 +30,11 @@ public class PhoBien implements Serializable {
         this.image = image;
     }
 
-    public String getTitle() {
-        return title;
+    public String getName() {
+        return name;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
+    public void setName(String name) {
+        this.name = name;
     }
-
-
-
 }

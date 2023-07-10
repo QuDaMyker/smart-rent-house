@@ -21,11 +21,13 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.example.renthouse.Activity.ActivityDetails;
+import com.example.renthouse.Activity.ActivityPhoBien;
 import com.example.renthouse.Activity.ActivityRecentSeen;
 import com.example.renthouse.Activity.ActivitySearch;
 import com.example.renthouse.Adapter.OutstandingRoomAdapter;
 import com.example.renthouse.Adapter.PhoBienAdapter;
 import com.example.renthouse.Interface.ItemClick;
+import com.example.renthouse.Interface.ItemClickPhoBien;
 import com.example.renthouse.OOP.PhoBien;
 import com.example.renthouse.OOP.Room;
 import com.example.renthouse.R;
@@ -52,6 +54,7 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -89,6 +92,7 @@ public class FragmentHome extends Fragment {
         firebaseAuth = FirebaseAuth.getInstance();
         currentUser = firebaseAuth.getCurrentUser();
         outstanding_recyclerView = view.findViewById(R.id.recycleView_phongnoibat);
+        phobien_recyclerView = view.findViewById(R.id.recycleView_phobien);
         preferenceManager = new PreferenceManager(getContext());
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(getContext());
 
@@ -100,8 +104,8 @@ public class FragmentHome extends Fragment {
         updateUI();
         getLastLocation();
 
-        setDataPhoBien();
         setDataOutstandingRoom();
+        setDataPhoBien();
 
         progressDialog.dismiss();
 
@@ -146,33 +150,53 @@ public class FragmentHome extends Fragment {
 
     private void setDataPhoBien() {
         phoBienList = new ArrayList<>();
-        phoBienAdapter = new PhoBienAdapter(getContext(), phoBienList, new ItemClick() {
-            @Override
-            public void onItemClick(Room room) {
-            }
-        });
-        GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), (int) phoBienList.stream().count());
+        phoBienAdapter = new PhoBienAdapter(getContext(), phoBienList);
+        GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), 2);
         phobien_recyclerView.setLayoutManager(gridLayoutManager);
         phobien_recyclerView.setAdapter(phoBienAdapter);
 
         FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference reference = database.getReference();
-        Query query = reference.child("PopularRoom");
-        query.addListenerForSingleValueEvent(new ValueEventListener() {
+        DatabaseReference reference = database.getReference("PopularRoom");
+        reference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                List<PhoBien> temphobien = new ArrayList<>();
-                for (DataSnapshot Snapshot : snapshot.getChildren()){
-                    PhoBien phobien = Snapshot.getValue((PhoBien.class));
-                    temphobien.add(phobien);
+                List<PhoBien> temPhoBien = new ArrayList<>();
+
+                for (DataSnapshot Snapshot: snapshot.getChildren()){
+                    DatabaseReference listroom = reference.child("ListRoom");
+                    List<Room> temroom = new ArrayList<>();
+                    listroom.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                            for (DataSnapshot Snapshot : snapshot.getChildren()){
+                                Room room = Snapshot.getValue(Room.class);
+                                temroom.add(room);
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
+
+                        }
+                    });
+
+                    String image = Snapshot.child("Image").getValue(String.class);
+                    String name = Snapshot.child("Name").getValue(String.class);
+                    PhoBien phobien = new PhoBien(image, temroom,name);
+
+                    temPhoBien.add(phobien);
                 }
-                phoBienList.addAll(temphobien);
+                phoBienList.addAll(temPhoBien);
                 phoBienAdapter.notifyDataSetChanged();
             }
 
             @Override
-            public void onCancelled(@NonNull DatabaseError error) { }
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
         });
+
+
     }
 
     private void setDataOutstandingRoom() {
@@ -210,12 +234,12 @@ public class FragmentHome extends Fragment {
     }
 
 
-    private List<itemPhoBien_HomeFragment> getListItemPhoBien_HomeFragment() {
-        List<itemPhoBien_HomeFragment> list = new ArrayList<>();
-
-
-        return list;
-    }
+//    private List<itemPhoBien_HomeFragment> getListItemPhoBien_HomeFragment() {
+//        List<itemPhoBien_HomeFragment> list = new ArrayList<>();
+//
+//
+//        return list;
+//    }
 
     private void updateUI() {
         if (currentUser != null) {
