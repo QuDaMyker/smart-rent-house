@@ -79,6 +79,7 @@ public class ActivityDetails extends AppCompatActivity {
     TextView tvCoc;
     TextView tvTenP;
     TextView tvDiaChi;
+    TextView tvChiDuong;
     TextView tvSdt;
     TextView tvGiaDien;
     TextView tvGiaNuoc;
@@ -140,6 +141,7 @@ public class ActivityDetails extends AppCompatActivity {
         tvCoc = findViewById(R.id.tvCoc);
         tvTenP = findViewById(R.id.tvTen);
         tvDiaChi = findViewById(R.id.tvDiaChi);
+        tvChiDuong = findViewById(R.id.tvChiDuong);
         tvSdt = findViewById(R.id.tvSdt);
         tvGiaDien = findViewById(R.id.tvDien);
         tvGiaNuoc = findViewById(R.id.tvNuoc);
@@ -267,6 +269,12 @@ public class ActivityDetails extends AppCompatActivity {
         totalRowCount = rcmRooms.size();
 
         //sự kiện các nút
+        tvChiDuong.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
         btnPreScreen.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

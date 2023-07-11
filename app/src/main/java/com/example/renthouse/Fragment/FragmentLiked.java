@@ -91,8 +91,6 @@ public class FragmentLiked extends Fragment {
             }
         });
     }
-
-
     private void replaceFragment(Fragment f)
     {
         FragmentManager fragmentManager = getChildFragmentManager();
@@ -100,5 +98,4 @@ public class FragmentLiked extends Fragment {
         fragmentTransaction.replace(R.id.frameLayout, f);
         fragmentTransaction.commit();
     }
-
 }
