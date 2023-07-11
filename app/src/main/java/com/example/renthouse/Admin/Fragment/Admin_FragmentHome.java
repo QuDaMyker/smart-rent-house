@@ -10,19 +10,26 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.renthouse.Activity.ActivitySplash;
 import com.example.renthouse.Admin.Activity.Admin_ActivityBaoCaoNguoiDung;
 import com.example.renthouse.Admin.Activity.Admin_ActivityScheduledNotification;
 import com.example.renthouse.R;
 import com.example.renthouse.databinding.FragmentAdminHomeBinding;
+import com.example.renthouse.utilities.PreferenceManager;
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.ArrayList;
 
 public class Admin_FragmentHome extends Fragment {
     private FragmentAdminHomeBinding binding;
+    private PreferenceManager preferenceManager;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -32,11 +39,16 @@ public class Admin_FragmentHome extends Fragment {
         View view = binding.getRoot();
         // Inflate the layout for this fragment
 
-
+        init();
         setListener();
 
         return view;
     }
+
+    private void init() {
+        preferenceManager = new PreferenceManager(getContext());
+    }
+
     private void setListener() {
         binding.linearBaoCaoNguoiDung.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -53,6 +65,21 @@ public class Admin_FragmentHome extends Fragment {
             }
         });
 
+        binding.imageLogout.setOnClickListener(v-> logOut());
+
+    }
+
+    private void logOut() {
+        preferenceManager.clear();
+        FirebaseAuth.getInstance().signOut();
+        GoogleSignInOptions gso = new GoogleSignInOptions.
+                Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).
+                build();
+
+        GoogleSignInClient googleSignInClient = GoogleSignIn.getClient(getActivity(), gso);
+        googleSignInClient.signOut();
+        getActivity().finish();
+        startActivity(new Intent(requireContext(), ActivitySplash.class));
     }
     private void setChartBar() {
         BarChart barChart = binding.barChart;
