@@ -10,7 +10,7 @@
         android:color="#D3D3D3"
         android:width="1dp" /> <!-- Màu và độ rộng của đường viền -->
     <gradient
-        android:startColor="#EDEDED"
-        android:endColor="#FFFFFF"
+        android:startColor="@color/white"
+        android:endColor="@color/white"
         android:angle="90" /> <!-- Màu sắc gradient của LinearLayoutCompat -->
 </shape>

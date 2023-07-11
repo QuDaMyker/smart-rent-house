@@ -69,9 +69,7 @@ public class FragmentChat extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_chat, container, false);
 
-        final CircleImageView userProfilePic = view.findViewById(R.id.userProfilePic);
         messagesRecyclerView = view.findViewById(R.id.messagesRecyclerView);
-        imageCurrentUser = view.findViewById(R.id.userProfilePic);
         // get intent
 
         reference = FirebaseDatabase.getInstance().getReference();
@@ -80,11 +78,7 @@ public class FragmentChat extends Fragment {
         mAuth = FirebaseAuth.getInstance();
         FirebaseUser currentUser = mAuth.getCurrentUser();
 
-        if (currentUser != null) {
-            email = currentUser.getEmail();
-            name = currentUser.getDisplayName();
-            Picasso.get().load(preferenceManager.getString(Constants.KEY_IMAGE)).into(imageCurrentUser);
-        }
+
 
         messagesRecyclerView.setHasFixedSize(true);
         messagesRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -108,7 +102,14 @@ public class FragmentChat extends Fragment {
                 Log.d("count", snapshot.getChildrenCount()+"");
                 for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
                     String otherKey = dataSnapshot.getKey();
-                    String lastMessage = dataSnapshot.child("lastMessage").getValue(String.class);
+                    String sendId = dataSnapshot.child("sendId").getValue(String.class);
+                    String lastMessage;
+                    if(sendId.equals(preferenceManager.getString(Constants.KEY_USER_KEY))) {
+                        lastMessage = "Tôi: " + dataSnapshot.child("lastMessage").getValue(String.class);
+                    } else {
+                        lastMessage = dataSnapshot.child("lastMessage").getValue(String.class);
+                    }
+
                     String time = dataSnapshot.child("sendDate").getValue(String.class) + " " + dataSnapshot.child("sendTime").getValue(String.class);
 
                     Log.d("thoigian",time);
@@ -155,21 +156,15 @@ public class FragmentChat extends Fragment {
                                     messagesAdapter.notifyDataSetChanged();
                                     progressDialog.dismiss();
                                 }
-
                             }
-
-
                         }
-
                         @Override
                         public void onCancelled(@NonNull DatabaseError error) {
-
+                            progressDialog.dismiss();
                         }
                     });
                 }
-
-
-
+                progressDialog.dismiss();
 
             }
 

@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_marginLeft="20dp"
-    android:layout_marginRight="20dp"
-    android:layout_marginBottom="20dp">
+    android:layout_margin="5dp"
+    android:paddingBottom="5dp"
+    android:layout_height="wrap_content">
 
     <LinearLayout
         android:id="@+id/rootLayout"
@@ -20,10 +19,10 @@
 
             <de.hdodenhof.circleimageview.CircleImageView xmlns:app="http://schemas.android.com/apk/res-auto"
                 android:id="@+id/profilePic"
-                android:layout_width="70dp"
-                android:layout_height="70dp"
-                android:src="@drawable/baseline_person_pin_24"
-                app:civ_border_color="#6A6868"
+                android:layout_width="56dp"
+                android:layout_height="56dp"
+                android:src="@drawable/ic_account_foreground"
+                app:civ_border_color="@android:color/transparent"
                 app:civ_border_width="1dp" />
 
             <LinearLayout
@@ -32,19 +31,38 @@
                 android:layout_centerVertical="true"
                 android:layout_marginStart="20dp"
                 android:layout_marginEnd="10dp"
-                android:layout_toStartOf="@+id/unseenMessages"
                 android:layout_toEndOf="@+id/profilePic"
                 android:gravity="center"
                 android:orientation="vertical">
 
-                <TextView
-                    android:id="@+id/name"
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:maxLines="1"
-                    android:text="Full Name"
-                    android:textSize="19sp"
-                    android:textStyle="bold" />
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/name"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="left"
+                        android:layout_weight="2"
+                        android:gravity="left"
+                        android:maxLines="1"
+                        android:text="Full Name"
+                        android:textSize="19sp" />
+
+                    <TextView
+                        android:id="@+id/timesent"
+                        android:layout_width="wrap_content"
+                        android:gravity="center"
+                        android:layout_gravity="center"
+                        android:textSize="12sp"
+                        android:layout_height="wrap_content"
+                        android:ellipsize="end"
+                        android:maxLines="1"
+                        android:text="2023-01-03 14-02-56" />
+                </LinearLayout>
+
 
                 <TextView
                     android:id="@+id/lastMessages"
@@ -53,23 +71,10 @@
                     android:layout_marginTop="5dp"
                     android:maxLines="1"
                     android:text="This is a last messages"
-                    android:textColor="#00FEE9"
+                    android:textColor="@color/Secondary_40"
                     android:textSize="14sp"
                     android:textStyle="bold" />
             </LinearLayout>
-
-            <TextView
-                android:id="@+id/unseenMessages"
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:layout_alignParentEnd="true"
-                android:layout_centerVertical="true"
-                android:layout_marginEnd="20dp"
-                android:background="#9ABC64"
-                android:gravity="center"
-                android:text="1"
-                android:textColor="#FFFFFF"
-                android:textSize="18sp" />
 
         </RelativeLayout>
 

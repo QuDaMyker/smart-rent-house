@@ -346,9 +346,12 @@ public class ActivityLogIn extends AppCompatActivity {
                                             for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                                                 AccountClass checkAcc = snapshot.getValue(AccountClass.class);
                                                 preferenceManager.putString(Constants.KEY_USER_KEY, snapshot.getKey());
+                                                preferenceManager.putString(Constants.KEY_IMAGE, checkAcc.getImage());
+
                                                 if (checkAcc.getBlocked()) {
                                                     progressDialog.dismiss();
                                                     preferenceManager.putBoolean(Constants.KEY_IS_SIGNED_IN, true);
+
                                                     startActivity(new Intent(ActivityLogIn.this, ActivityBlocked.class));
                                                 } else {
                                                     pushSuccessFullNotification();

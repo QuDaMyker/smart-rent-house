@@ -6,7 +6,7 @@
     android:layout_height="wrap_content"
     android:layout_margin="5dp"
     android:background="@drawable/bg_radius_secondary90"
-    android:padding="10dp">
+    android:padding="5dp">
 
     <TextView
         android:id="@+id/tvTitle"

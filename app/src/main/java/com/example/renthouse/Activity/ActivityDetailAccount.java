@@ -104,14 +104,26 @@ public class ActivityDetailAccount extends AppCompatActivity {
 
 
         Intent intent = getIntent();
-        account = (AccountClass) intent.getSerializableExtra("ACCOUNT");
+
         TIETfullname.setText(preferenceManager.getString(Constants.KEY_FULLNAME));
         TIETemail.setText(preferenceManager.getString(Constants.KEY_EMAIL));
         TIETsodienthoai.setText(preferenceManager.getString(Constants.KEY_PHONENUMBER));
         TIETMatKhau.setText(preferenceManager.getString(Constants.KEY_PASSWORD));
         Picasso.get().load(preferenceManager.getString(Constants.KEY_IMAGE)).into(imageProfile);
 
-        key = intent.getStringExtra("KEY");
+
+        key = preferenceManager.getString(Constants.KEY_USER_KEY);
+        account = new AccountClass();
+        account.setFullname(preferenceManager.getString(Constants.KEY_FULLNAME));
+        account.setEmail(preferenceManager.getString(Constants.KEY_EMAIL));
+        account.setPhoneNumber(preferenceManager.getString(Constants.KEY_PHONENUMBER));
+        account.setPassword(preferenceManager.getString(Constants.KEY_PASSWORD));
+        account.setImage(preferenceManager.getString(Constants.KEY_IMAGE));
+        account.setNgayTaoTaiKhoan(preferenceManager.getString(Constants.KEY_DATECREATEDACCOUNT));
+        account.setBlocked(false);
+        account.setThoiGianKhoa("Khong khoa");
+
+
 
         btnBack.setOnClickListener(v -> onBackPressed());
 
@@ -169,6 +181,7 @@ public class ActivityDetailAccount extends AppCompatActivity {
                 } else {
                     Toast.makeText(getApplicationContext(), "No image selected", Toast.LENGTH_SHORT).show();
                 }
+
                 if (imageUri != null) {
                     uploadToFireBase(imageUri);
                 } else {
@@ -196,11 +209,11 @@ public class ActivityDetailAccount extends AppCompatActivity {
                 imageRference.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                     @Override
                     public void onSuccess(Uri uri) {
-                        account.setImage(uri.toString());
-                        databaseReference.child(key).setValue(account);
+                        preferenceManager.putString(Constants.KEY_IMAGE, uri.toString());
+                        Toast.makeText(ActivityDetailAccount.this, preferenceManager.getString(Constants.KEY_IMAGE), Toast.LENGTH_SHORT).show();
+                        databaseReference.child(key).child("image").setValue(preferenceManager.getString(Constants.KEY_IMAGE));
                         progressDialog.dismiss();
 
-                        preferenceManager.putString(Constants.KEY_IMAGE, account.getImage());
                     }
                 });
             }

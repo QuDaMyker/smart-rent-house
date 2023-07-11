@@ -6,6 +6,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.viewpager2.widget.ViewPager2;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -49,11 +50,14 @@ public class Admin_FragmentNguoiDung extends Fragment {
                 fragNguoiDung_viewPager2.setCurrentItem(tab.getPosition());
 
                 selectedFragment = fragmentManager.getFragments().get(tab.getPosition());
+
                 if (selectedFragment instanceof AdminNguoiDung_FragmentDanhSachNguoiDung) {
                     ((AdminNguoiDung_FragmentDanhSachNguoiDung) selectedFragment).loadDataFragment();
-                } else {
+                } else if (selectedFragment instanceof  AdminNguoiDung_Fragment_NguoiDungBiChan){
                     ((AdminNguoiDung_Fragment_NguoiDungBiChan) selectedFragment).loadDataFragment();
                 }
+
+
             }
 
             @Override
