@@ -276,6 +276,7 @@ public class ActivityLogIn extends AppCompatActivity {
 
             } catch (ApiException e) {
                 Toast.makeText(ActivityLogIn.this, "Error", Toast.LENGTH_SHORT).show();
+                progressDialog.dismiss();
             }
         } else {
             progressDialog.dismiss();
@@ -369,6 +370,7 @@ public class ActivityLogIn extends AppCompatActivity {
                                     @Override
                                     public void onCancelled(@NonNull DatabaseError databaseError) {
                                         // Handle the error here
+                                        progressDialog.dismiss();
                                     }
                                 });
 
@@ -385,6 +387,7 @@ public class ActivityLogIn extends AppCompatActivity {
                         }
                     }
                 });
+        progressDialog.dismiss();
     }
 
     private void updateUserInfo(FirebaseUser user) {
