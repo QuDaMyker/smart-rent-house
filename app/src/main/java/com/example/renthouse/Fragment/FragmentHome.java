@@ -99,15 +99,9 @@ public class FragmentHome extends Fragment {
         progressDialog = new ProgressDialog(getContext());
         progressDialog.setCancelable(false);
         progressDialog.setMessage("Loading...");
-        progressDialog.show();
 
         updateUI();
 //        getLastLocation();
-
-        setDataOutstandingRoom();
-        setDataPhoBien();
-
-        progressDialog.dismiss();
 
         binding.linearLayout5.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -181,11 +175,12 @@ public class FragmentHome extends Fragment {
                 }
                 phoBienList.addAll(temPhoBien);
                 phoBienAdapter.notifyDataSetChanged();
+                progressDialog.dismiss();
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-
+                progressDialog.dismiss();
             }
         });
 
@@ -215,24 +210,31 @@ public class FragmentHome extends Fragment {
                 List<Room> temroom = new ArrayList<>();
                 for (DataSnapshot Snapshot : snapshot.getChildren()){
                     Room room = Snapshot.getValue((Room.class));
-                    temroom.add(room);
+                    if (room.getStatus().equals("approved")) {
+                        temroom.add(room);
+                    }
                 }
                 outstandingList.addAll(temroom);
                 outstandingRoomAdapter.notifyDataSetChanged();
+                progressDialog.dismiss();
             }
 
             @Override
-            public void onCancelled(@NonNull DatabaseError error) { }
+            public void onCancelled(@NonNull DatabaseError error) {
+                progressDialog.dismiss();
+            }
         });
     }
 
 
     private void updateUI() {
+        progressDialog.show();
         if (currentUser != null) {
             binding.tvXinchao.setText("Hi, " + currentUser.getDisplayName());
         }
 
-
+        setDataOutstandingRoom();
+        setDataPhoBien();
     }
 
 
