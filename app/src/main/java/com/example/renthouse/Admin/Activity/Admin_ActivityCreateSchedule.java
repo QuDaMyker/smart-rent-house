@@ -3,6 +3,9 @@ package com.example.renthouse.Admin.Activity;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
@@ -13,6 +16,8 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Toast;
 
 import com.example.renthouse.Admin.OOP.NotiSchedule;
+import com.example.renthouse.BroadcastReceiver.MyAlarmReceiver;
+import com.example.renthouse.MyApplication;
 import com.example.renthouse.R;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -29,7 +34,11 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
+import java.util.Locale;
 
 public class Admin_ActivityCreateSchedule extends AppCompatActivity {
 
@@ -49,7 +58,7 @@ public class Admin_ActivityCreateSchedule extends AppCompatActivity {
 
     MaterialButton createBtn;
     MaterialButton cancelBtn;
-    NotiSchedule editNoti;
+    //NotiSchedule editNoti;
 
 
     @Override
@@ -73,19 +82,19 @@ public class Admin_ActivityCreateSchedule extends AppCompatActivity {
 
         createBtn = findViewById(R.id.createBtn);
         cancelBtn = findViewById(R.id.cancelBtn);
-        editNoti = null;
-        try {
-            editNoti = (NotiSchedule) getIntent().getExtras().get("notiSchedule");
-            edtTime.setText(editNoti.getTime());
-            edtTitle.setText(editNoti.getTitle());
-            edtContent.setText(editNoti.getContent());
-            edtLoop.setText(editNoti.getLoop(), false);
-            edtReceiver.setText(editNoti.getReceiver(), false);
-            edtDate.setText(editNoti.getDate());
-        }
-        catch (Exception e){
-
-        }
+//        editNoti = null;
+//        try {
+//            editNoti = (NotiSchedule) getIntent().getExtras().get("notiSchedule");
+//            edtTime.setText(editNoti.getTime());
+//            edtTitle.setText(editNoti.getTitle());
+//            edtContent.setText(editNoti.getContent());
+//            edtLoop.setText(editNoti.getLoop(), false);
+//            edtReceiver.setText(editNoti.getReceiver(), false);
+//            edtDate.setText(editNoti.getDate());
+//        }
+//        catch (Exception e){
+//
+//        }
 
         edtTime.addTextChangedListener(new TextWatcher() {
             @Override
@@ -246,35 +255,89 @@ public class Admin_ActivityCreateSchedule extends AppCompatActivity {
                 if(validateData()){
                     FirebaseDatabase database = FirebaseDatabase.getInstance();
                     DatabaseReference notiSchedulesRef = database.getReference("NotiSchedules");
-                    if(editNoti != null){
-                        DatabaseReference editRef = database.getReference("NotiSchedules").child(editNoti.getKey());
-                        NotiSchedule notiSchedule = new NotiSchedule(
-                                editNoti.getKey(),
-                                edtTitle.getText().toString(),
-                                edtContent.getText().toString(),
-                                edtReceiver.getText().toString(),
-                                edtDate.getText().toString(),
-                                edtTime.getText().toString(),
-                                edtLoop.getText().toString());
-                        editRef.setValue(notiSchedule);
+//                    if(editNoti != null){
+//                        DatabaseReference editRef = database.getReference("NotiSchedules").child(editNoti.getKey());
+//                        NotiSchedule notiSchedule = new NotiSchedule(
+//                                editNoti.getKey(),
+//                                edtTitle.getText().toString(),
+//                                edtContent.getText().toString(),
+//                                edtReceiver.getText().toString(),
+//                                edtDate.getText().toString(),
+//                                edtTime.getText().toString(),
+//                                edtLoop.getText().toString());
+//                        editRef.setValue(notiSchedule);
+//                    }
+//                    else{
+//                        String key = notiSchedulesRef.push().getKey();
+//                        NotiSchedule notiSchedule = new NotiSchedule(
+//                                key,
+//                                edtTitle.getText().toString(),
+//                                edtContent.getText().toString(),
+//                                edtReceiver.getText().toString(),
+//                                edtDate.getText().toString(),
+//                                edtTime.getText().toString(),
+//                                edtLoop.getText().toString());
+//                        String pathObject = String.valueOf(notiSchedule.getKey());
+//                        notiSchedulesRef.child(pathObject).setValue(notiSchedule);
+//                    }
+
+                    Date dateTime = null;
+
+                    try {
+                        dateTime = new SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault()).parse(edtDate.getText() + " " + edtTime.getText());
+                    } catch (ParseException e) {
+                        e.printStackTrace();
                     }
-                    else{
-                        String key = notiSchedulesRef.push().getKey();
-                        NotiSchedule notiSchedule = new NotiSchedule(
-                                key,
-                                edtTitle.getText().toString(),
-                                edtContent.getText().toString(),
-                                edtReceiver.getText().toString(),
-                                edtDate.getText().toString(),
-                                edtTime.getText().toString(),
-                                edtLoop.getText().toString());
-                        String pathObject = String.valueOf(notiSchedule.getKey());
-                        notiSchedulesRef.child(pathObject).setValue(notiSchedule);
+
+                    if (dateTime != null) {
+                        SimpleDateFormat dateFormat = new SimpleDateFormat("HHmmddMM", Locale.getDefault());
+                        String requestCodeString = dateFormat.format(dateTime);
+                        int requestCode = Integer.parseInt(requestCodeString);
+                        // Lấy giờ và phút từ dateTime
+                        Calendar calendar = Calendar.getInstance();
+                        calendar.setTime(dateTime);
+
+                        // Kiểm tra nếu thời gian thông báo đã qua
+                        if (calendar.before(Calendar.getInstance())) {
+                            Toast.makeText(Admin_ActivityCreateSchedule.this, "Thời gian đã qua", Toast.LENGTH_SHORT).show();
+                        }
+                        else {
+
+                            String key = notiSchedulesRef.push().getKey();
+                            NotiSchedule notiSchedule = new NotiSchedule(
+                                    key,
+                                    edtTitle.getText().toString(),
+                                    edtContent.getText().toString(),
+                                    edtReceiver.getText().toString(),
+                                    edtDate.getText().toString(),
+                                    edtTime.getText().toString(),
+                                    edtLoop.getText().toString());
+                            String pathObject = String.valueOf(notiSchedule.getKey());
+                            notiSchedulesRef.child(pathObject).setValue(notiSchedule);
+
+                            // Đặt thời gian thông báo cho AlarmManager
+                            AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+                            Intent intent = new Intent(Admin_ActivityCreateSchedule.this, MyAlarmReceiver.class);
+                            intent.putExtra("title", notiSchedule.getTitle());
+                            intent.putExtra("content", notiSchedule.getContent());
+                            PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), requestCode, intent, 0);
+                            long repeatMode;
+                            if(edtLoop.getText().equals("Hàng ngày")){
+                                repeatMode = AlarmManager.INTERVAL_DAY;
+                            }
+                            else {
+                                repeatMode = 0;
+                            }
+                            // Đặt thông số cho AlarmManager
+                            alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), repeatMode, pendingIntent);
+
+
+                            Toast.makeText(Admin_ActivityCreateSchedule.this, "Successful", Toast.LENGTH_SHORT).show();
+                            Intent returnIntent = new Intent(Admin_ActivityCreateSchedule.this, Admin_ActivityScheduledNotification.class);
+                            setResult(RESULT_OK, returnIntent);
+                            finish();
+                        }
                     }
-                    Toast.makeText(Admin_ActivityCreateSchedule.this, "Successful", Toast.LENGTH_SHORT).show();
-                    Intent intent = new Intent(Admin_ActivityCreateSchedule.this, Admin_ActivityScheduledNotification.class);
-                    setResult(RESULT_OK, intent);
-                    finish();
                 }
             }
         });

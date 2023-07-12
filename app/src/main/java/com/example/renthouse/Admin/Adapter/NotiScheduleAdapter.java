@@ -20,13 +20,13 @@ import java.util.List;
 public class NotiScheduleAdapter extends RecyclerView.Adapter<NotiScheduleAdapter.ViewHolder> {
 
     private List<NotiSchedule> itemList;
-    public interface OnEditButtonClickListener {
-        void onEditButtonClick(int position);
-    }
-    private OnEditButtonClickListener editButtonClickListener;
-    public void setOnEditButtonClickListener(OnEditButtonClickListener listener) {
-        this.editButtonClickListener = listener;
-    }
+//    public interface OnEditButtonClickListener {
+//        void onEditButtonClick(int position);
+//    }
+//    private OnEditButtonClickListener editButtonClickListener;
+//    public void setOnEditButtonClickListener(OnEditButtonClickListener listener) {
+//        this.editButtonClickListener = listener;
+//    }
 
     public interface OnDeleteButtonClickListener {
         void onDeleteButtonClick(int position);
@@ -52,7 +52,12 @@ public class NotiScheduleAdapter extends RecyclerView.Adapter<NotiScheduleAdapte
         holder.contentTv.setText(item.getContent());
         holder.timeTv.setText(item.getTime());
         holder.receiverTv.setText(item.getReceiver());
-        holder.loopTv.setText(item.getLoop());
+        if (item.getLoop().equals("Không bao giờ")){
+            holder.loopTv.setText(item.getDate());
+        }
+        else {
+            holder.loopTv.setText(item.getLoop());
+        }
     }
 
     @Override
@@ -66,7 +71,7 @@ public class NotiScheduleAdapter extends RecyclerView.Adapter<NotiScheduleAdapte
         TextView timeTv;
         TextView receiverTv;
         TextView loopTv;
-        MaterialButton editBtn;
+        //MaterialButton editBtn;
         MaterialButton deleteBtn;
 
         public ViewHolder(@NonNull View itemView) {
@@ -76,17 +81,17 @@ public class NotiScheduleAdapter extends RecyclerView.Adapter<NotiScheduleAdapte
             timeTv = itemView.findViewById(R.id.timeTv);
             receiverTv = itemView.findViewById(R.id.receiverTv);
             loopTv = itemView.findViewById(R.id.loopTv);
-            editBtn = itemView.findViewById(R.id.editBtn);
+            //editBtn = itemView.findViewById(R.id.editBtn);
             deleteBtn = itemView.findViewById(R.id.deleteBtn);
 
-            editBtn.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    if (editButtonClickListener != null) {
-                        editButtonClickListener.onEditButtonClick(getAdapterPosition());
-                    }
-                }
-            });
+//            editBtn.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View view) {
+//                    if (editButtonClickListener != null) {
+//                        editButtonClickListener.onEditButtonClick(getAdapterPosition());
+//                    }
+//                }
+//            });
 
             deleteBtn.setOnClickListener(new View.OnClickListener() {
                 @Override

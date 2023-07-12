@@ -44,21 +44,23 @@ import com.squareup.picasso.Picasso;
 import android.app.ActivityManager;
 import android.content.Context;
 
+import de.hdodenhof.circleimageview.CircleImageView;
+
 
 public class FragmentAccountTabAccount extends Fragment {
-    ImageView imageProfile;
-    TextView nameProfile;
-    TextView emailProfile;
-    Button btnThongTinCanhan;
-    Button btnDieuKhoanChinhSach;
-    Button btnThongBao;
-    Button btnBaoCaoSuCo;
-    Button btnDangXuat;
-    FirebaseAuth mAuth;
-    FirebaseUser currentUser;
-    String key;
-    AccountClass account;
-    ProgressDialog progressDialog;
+    private CircleImageView imageProfile;
+    private TextView nameProfile;
+    private TextView emailProfile;
+    private Button btnThongTinCanhan;
+    private Button btnDieuKhoanChinhSach;
+    private Button btnThongBao;
+    private Button btnBaoCaoSuCo;
+    private Button btnDangXuat;
+    private FirebaseAuth mAuth;
+    private FirebaseUser currentUser;
+    private String key;
+    private AccountClass account;
+    private ProgressDialog progressDialog;
     private PreferenceManager preferenceManager;
 
     @Override
@@ -67,6 +69,7 @@ public class FragmentAccountTabAccount extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_account_tab_account, container, false);
 
+        preferenceManager = new PreferenceManager(getActivity());
 
         imageProfile = view.findViewById(R.id.account_personal_imageProfile);
         nameProfile = view.findViewById(R.id.account_personal_nameProfile);
@@ -84,11 +87,14 @@ public class FragmentAccountTabAccount extends Fragment {
         progressDialog = new ProgressDialog(getContext());
         progressDialog.setCancelable(false);
         progressDialog.setMessage("Loading...");
-        progressDialog.show();
 
         if (currentUser != null) {
-            progressDialog.show();
-            FirebaseDatabase database = FirebaseDatabase.getInstance();
+            //progressDialog.show();
+            Picasso.get().load(preferenceManager.getString(Constants.KEY_IMAGE)).into(imageProfile);
+            nameProfile.setText(preferenceManager.getString(Constants.KEY_FULLNAME));
+            emailProfile.setText(preferenceManager.getString(Constants.KEY_EMAIL));
+
+            /*FirebaseDatabase database = FirebaseDatabase.getInstance();
             DatabaseReference reference = database.getReference("Accounts");
 
             reference.addValueEventListener(new ValueEventListener() {
@@ -105,7 +111,6 @@ public class FragmentAccountTabAccount extends Fragment {
                     nameProfile.setText(account.getFullname());
                     emailProfile.setText(account.getEmail());
                     Picasso.get().load(account.getImage()).into(imageProfile);
-                    progressDialog.dismiss();
                 }
 
                 @Override
@@ -113,6 +118,7 @@ public class FragmentAccountTabAccount extends Fragment {
 
                 }
             });
+            progressDialog.dismiss();*/
         }
         btnThongTinCanhan.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -123,7 +129,6 @@ public class FragmentAccountTabAccount extends Fragment {
                 startActivity(intent);
             }
         });
-
 
 
         btnBaoCaoSuCo.setOnClickListener(new View.OnClickListener() {
@@ -144,7 +149,7 @@ public class FragmentAccountTabAccount extends Fragment {
         btnDangXuat.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                preferenceManager = new PreferenceManager(getActivity());
+
 
                 preferenceManager.clear();
                 FirebaseAuth.getInstance().signOut();

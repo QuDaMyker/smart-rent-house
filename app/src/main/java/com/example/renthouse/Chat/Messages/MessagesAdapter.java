@@ -45,15 +45,9 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.MyView
 
         holder.name.setText(item.getName());
         holder.lastMessage.setText(item.getLastMessages());
+        holder.timesent.setText(item.getSendTime());
 
-        if (item.getUnseenMessages() == 0) {
-            holder.unseenMessages.setVisibility(View.GONE);
-            holder.lastMessage.setTextColor(Color.parseColor("#878787"));
-        } else {
-            holder.unseenMessages.setVisibility(View.VISIBLE);
-            holder.unseenMessages.setText(item.getUnseenMessages() + "");
-            holder.lastMessage.setTextColor(context.getResources().getColor(R.color.black));
-        }
+
 
         holder.rootLayout.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -87,6 +81,7 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.MyView
         private TextView lastMessage;
         private TextView unseenMessages;
         private LinearLayout rootLayout;
+        private TextView timesent;
 
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -94,8 +89,9 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.MyView
             profilePic = itemView.findViewById(R.id.profilePic);
             name = itemView.findViewById(R.id.name);
             lastMessage = itemView.findViewById(R.id.lastMessages);
-            unseenMessages = itemView.findViewById(R.id.unseenMessages);
             rootLayout = itemView.findViewById(R.id.rootLayout);
+            timesent = itemView.findViewById(R.id.timesent);
+
         }
     }
 }

@@ -13,6 +13,7 @@
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.SET_ALARM"/>
 
     <application
         android:name=".MyApplication"
@@ -26,25 +27,7 @@
         android:theme="@style/Theme.RentHouse"
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
-
-        <!--
-             TODO: Before you run your application, you need a Google Maps API key.
-
-             To get one, follow the directions here:
-
-                https://developers.google.com/maps/documentation/android-sdk/get-api-key
-
-             Once you have your API key (it starts with "AIza"), define a new property in your
-             project's local.properties file (e.g. MAPS_API_KEY=Aiza...), and replace the
-             "YOUR_API_KEY" string in this file with "${MAPS_API_KEY}".
-        -->
-        <meta-data
-            android:name="com.google.android.geo.API_KEY"
-            android:value="YOUR_API_KEY" />
-
-        <activity
-            android:name=".Admin.Activity.Admin_ActivityThongTinPhong"
-            android:exported="false" />
+        <receiver android:name=".BroadcastReceiver.MyAlarmReceiver"/>
         <activity
             android:name=".Admin.Activity.Admin_ActivityBaoCaoNguoiDung"
             android:exported="false" />
@@ -86,7 +69,25 @@
             android:exported="false" />
         <activity
             android:name=".Activity.ActivityDetailAccount"
-            android:exported="false" />
+            android:exported="false" /> <!-- <service -->
+        <!-- android:name=".Async.getCurrentLocationService" -->
+        <!-- android:enabled="true" -->
+        <!-- android:exported="true" /> -->
+        <!--
+             TODO: Before you run your application, you need a Google Maps API key.
+
+             To get one, follow the directions here:
+
+                https://developers.google.com/maps/documentation/android-sdk/get-api-key
+
+             Once you have your API key (it starts with "AIza"), define a new property in your
+             project's local.properties file (e.g. MAPS_API_KEY=Aiza...), and replace the
+             "YOUR_API_KEY" string in this file with "${MAPS_API_KEY}".
+        -->
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="${MAPS_API_KEY}" />
+
         <activity
             android:name=".Activity.ActivityAccountNotification"
             android:exported="false" />
@@ -115,10 +116,18 @@
             android:exported="false" />
         <activity
             android:name=".Activity.ActivitySplash"
-            android:exported="true" />
+            android:exported="true">
+
+        </activity>
         <activity
             android:name=".Activity.ActivityMain"
-            android:exported="true" />
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
         <activity
             android:name=".Activity.ActivitySignUp"
             android:exported="false" />
@@ -130,20 +139,12 @@
             android:exported="false" />
         <activity
             android:name=".Activity.ActivityLogIn"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
+            android:exported="false" />
         <activity
             android:name=".Activity.ActivitySearch"
             android:exported="false" />
-        <activity
-            android:name=".Activity.ActivityRecentSeen"
-            android:exported="false" />
-
+        <activity android:name=".Activity.ActivityRecentSeen"
+            android:exported="false"/>
         <service
             android:name=".Chat.Firebase.MessingService"
             android:exported="false">

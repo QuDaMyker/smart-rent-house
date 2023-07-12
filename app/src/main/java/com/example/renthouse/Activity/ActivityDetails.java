@@ -7,6 +7,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.Manifest;
@@ -16,6 +17,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.util.Log;
 import android.view.View;
 import android.widget.CheckBox;
@@ -25,6 +27,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.Toolbar;
 
 import com.example.renthouse.Adapter.RoomAdapter;
 import com.example.renthouse.Adapter.UtilitiesAdapter;
@@ -76,7 +79,6 @@ public class ActivityDetails extends AppCompatActivity {
     TextView tvCoc;
     TextView tvTenP;
     TextView tvDiaChi;
-    TextView tvChiDuong;
     TextView tvSdt;
     TextView tvGiaDien;
     TextView tvGiaNuoc;
@@ -97,7 +99,10 @@ public class ActivityDetails extends AppCompatActivity {
     int visibleRowCount = 2;
     int totalRowCount;
     List<Room> rcmRooms;
+    TextView tvThemDX;
     TextView tvGiaP;
+//    ImageButton ibChat;
+//    ImageButton ibCall;
     MaterialButton ibChat;
     MaterialButton ibCall;
     MaterialButton btnToDelete;
@@ -119,7 +124,6 @@ public class ActivityDetails extends AppCompatActivity {
         NormalUserLayout = findViewById(R.id.NormalUserLayout);
         OwnerLayout = findViewById(R.id.OwnerLayout);
 
-
         listImages = new ArrayList<String>();
         listTI = new ArrayList<String>();
         Tg = new AccountClass();
@@ -138,7 +142,6 @@ public class ActivityDetails extends AppCompatActivity {
         tvCoc = findViewById(R.id.tvCoc);
         tvTenP = findViewById(R.id.tvTen);
         tvDiaChi = findViewById(R.id.tvDiaChi);
-        tvChiDuong = findViewById(R.id.tvChiDuong);
         tvSdt = findViewById(R.id.tvSdt);
         tvGiaDien = findViewById(R.id.tvDien);
         tvGiaNuoc = findViewById(R.id.tvNuoc);
@@ -148,6 +151,7 @@ public class ActivityDetails extends AppCompatActivity {
         tvXemThemMT = findViewById(R.id.tvShowMoreMT);
         tvNgayDang = findViewById(R.id.tvNgay);
         rcvTienIch = findViewById(R.id.rcvTienIch);
+        //tvThemTI = findViewById(R.id.tvMoreTI);
         ivTacGia = findViewById(R.id.imageTacGia);
         tvTenTG = findViewById(R.id.tvTenTg);
         tvSoP = findViewById(R.id.tvSoPhong);
@@ -159,6 +163,7 @@ public class ActivityDetails extends AppCompatActivity {
         ibChat = findViewById(R.id.btnToChat);
         btnToDelete = findViewById(R.id.btnToDelete);
         btnToEdit = findViewById(R.id.btnToEdit);
+
 
         preferenceManager = new PreferenceManager(ActivityDetails.this);
 
@@ -185,24 +190,40 @@ public class ActivityDetails extends AppCompatActivity {
         //load thông tin p được chọn
         //gán các thông tin
 
-
-        cbLiked.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        //xét id p này có nằm trong ds thích của user
+        FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
+        FirebaseUser currentUser = firebaseAuth.getCurrentUser();
+        String emaiCur = currentUser.getEmail();
+        DatabaseReference refAc = db.getReference("Accounts");
+        refAc.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked) {
-                    // Nếu checkbox được chọn, them id phòng dzo ds Likedroom
-                    DatabaseReference likedRef = db.getReference("LikedRooms").child(idAC);
-                    String idRoom = room.getId();
-                    likedRef.child(idRoom).setValue(idRoom);
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                String emailAc = null;
+                for (DataSnapshot snapAc : snapshot.getChildren()) {
+                    emailAc = snapAc.child("email").getValue(String.class);
+                    if (emaiCur.equals(emailAc)) {
+                        String idAc = snapAc.getKey();
+                        DatabaseReference refLiked = db.getReference("LikedRooms").child(idAc);
+                        ref.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                if (snapshot.hasChild(room.getId())) {
+                                    cbLiked.setChecked(true);
+                                }
+                            }
 
-                }
-                else {
-                    DatabaseReference likedRef = db.getReference("LikedRooms").child(idAC);
-                    String idRoom = room.getId();
-                    likedRef.child(idRoom).removeValue();
-                    //xóa khỏi ds hiện bên liked room
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError error) {
 
+                            }
+                        });
+                    }
                 }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
             }
         });
 
@@ -257,7 +278,6 @@ public class ActivityDetails extends AppCompatActivity {
 
         rcmRooms = new ArrayList<>();
         RoomAdapter roomAdapter = new RoomAdapter(this, rcmRooms);
-        roomAdapter.setEnableLikeButton(View.INVISIBLE);
 
         rcvDeXuatP.setAdapter(roomAdapter);
 
@@ -266,20 +286,6 @@ public class ActivityDetails extends AppCompatActivity {
         totalRowCount = rcmRooms.size();
 
         //sự kiện các nút
-        tvChiDuong.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String address = tvDiaChi.getText().toString();
-                Uri gmmIntentUri = Uri.parse("geo:0,0?q=" + Uri.encode(address));
-                Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
-                mapIntent.setPackage("com.google.android.apps.maps");
-                if (mapIntent.resolveActivity(getPackageManager()) != null) {
-                    startActivity(mapIntent);
-                } else {
-                    Toast.makeText(getApplicationContext(), "Ứng dụng Google Maps không được cài đặt trên thiết bị của bạn.", Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
         btnPreScreen.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -334,14 +340,9 @@ public class ActivityDetails extends AppCompatActivity {
         btnThemTTtg.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                Intent intent1 = new Intent(ActivityDetails.this, ActivityDetailAccount.class);
-//                Bundle bundle = new Bundle();
-//                bundle.putSerializable("ACCOUNT",Tg);
-//                intent1.putExtras(bundle);
-//                startActivity(intent1);
 
             }
-        });//Chua lam
+        });//chua làm
         tvXemThemMT.setOnClickListener(new View.OnClickListener() {
 
             boolean isExpand = false;
@@ -447,10 +448,13 @@ public class ActivityDetails extends AppCompatActivity {
                     }
                 });
 
-                startActivity(intentChat);
+
+                //startActivity(intentChat);
+
 
             }
-        });
+        });//chưa làm
+
         btnToEdit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -490,12 +494,6 @@ public class ActivityDetails extends AppCompatActivity {
                 confirmDialog.show();
             }
         });
-    }
-    @Override
-    protected void onStart() {
-        super.onStart();
-
-        IsLikedRoom();
     }
 
     private void tinhSoP(AccountClass tg) {
@@ -557,47 +555,4 @@ public class ActivityDetails extends AppCompatActivity {
             }
         }
     }
-    public void IsLikedRoom () {
-        //xét id p này có nằm trong ds thích của user
-        if (preferenceManager.getString(Constants.KEY_USER_KEY) != null) {
-            Log.d("key", preferenceManager.getString(Constants.KEY_USER_KEY));
-        }
-        FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
-        FirebaseUser currentUser = firebaseAuth.getCurrentUser();
-        String emaiCur = currentUser.getEmail();
-
-        DatabaseReference refAc = db.getReference("Accounts");
-        refAc.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                String emailAc = null;
-                for (DataSnapshot snapAc : snapshot.getChildren()) {
-                    emailAc = snapAc.child("email").getValue(String.class);
-                    if (emaiCur.equals(emailAc)) {
-                        idAC = snapAc.getKey();
-                        DatabaseReference refLiked = db.getReference("LikedRooms").child(idAC);
-                        refLiked.addListenerForSingleValueEvent(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                if (snapshot.hasChild(room.getId())) {
-                                    cbLiked.setChecked(true);
-                                }
-                            }
-
-                            @Override
-                            public void onCancelled(@NonNull DatabaseError error) {
-
-                            }
-                        });
-                    }
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
-    }
-
 }

@@ -3,6 +3,8 @@ package com.example.renthouse.Admin.Adapter;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentPagerAdapter;
+import androidx.fragment.app.FragmentStatePagerAdapter;
 import androidx.lifecycle.Lifecycle;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 
@@ -24,8 +26,11 @@ public class TabLayoutNguoiDungAdapter extends FragmentStateAdapter {
             case 1: {
                 return new AdminNguoiDung_Fragment_NguoiDungBiChan();
             }
+            default:{
+                return new AdminNguoiDung_FragmentDanhSachNguoiDung();
+            }
         }
-        return new AdminNguoiDung_FragmentDanhSachNguoiDung();
+
     }
 
     @Override
@@ -33,3 +38,4 @@ public class TabLayoutNguoiDungAdapter extends FragmentStateAdapter {
         return 2;
     }
 }
+
