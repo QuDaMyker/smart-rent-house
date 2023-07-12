@@ -27,6 +27,7 @@ import com.example.renthouse.FragmentPost.FragmentLocation;
 import com.example.renthouse.FragmentPost.FragmentUtilities;
 import com.example.renthouse.OOP.AccountClass;
 import com.example.renthouse.OOP.Notification;
+import com.example.renthouse.OOP.Region;
 import com.example.renthouse.OOP.Room;
 import com.example.renthouse.R;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -53,8 +54,10 @@ import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import id.zelory.compressor.Compressor;
 
@@ -232,6 +235,47 @@ public class ActivityPost extends AppCompatActivity {
             public void onCancelled(DatabaseError databaseError) {
             }
         });
+        // Tạo node PopularRegion
+
+
+        DatabaseReference databaseReference = database.getReference("PopularRegion");
+        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                Log.d("Chạy", "Hehehe");
+
+                String path_with_type = fragmentLocation.getLocation().getDistrict().getPath_with_type();
+                if (snapshot.getChildrenCount() == 0) {
+                    Region region = new Region(
+                            fragmentLocation.getLocation().getDistrict().getName_with_type(),
+                            fragmentLocation.getLocation().getCity().getName_with_type(),
+                            1
+                    );
+                    databaseReference.child(path_with_type).setValue(region);
+                } else {
+                    if (snapshot.hasChild(path_with_type)) {
+                        Region region = snapshot.child(path_with_type).getValue(Region.class);
+                        region.setSoLuong(region.getSoLuong() + 1);
+                        databaseReference.child(path_with_type).setValue(region);
+                    } else {
+                        Region region = new Region(
+                                fragmentLocation.getLocation().getDistrict().getName_with_type(),
+                                fragmentLocation.getLocation().getCity().getName_with_type(),
+                                1
+                        );
+                        databaseReference.child(path_with_type).setValue(region);
+                    }
+                }
+
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
     }
 
     protected void replaceFragmentContent(Fragment fragment) {

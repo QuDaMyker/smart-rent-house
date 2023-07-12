@@ -26,6 +26,8 @@
         android:theme="@style/Theme.RentHouse"
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
+        <activity android:name=".Admin.Activity.Admin_ActivityStatistics"
+            android:exported="false"/>
         <activity
             android:name=".Admin.Activity.Admin_ActivityBaoCaoNguoiDung"
             android:exported="false" />
@@ -88,7 +90,8 @@
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="${MAPS_API_KEY}" />
-
+        <meta-data android:name="firebase_analytics_collection_enabled"
+            android:value="true"/>
         <activity
             android:name=".Activity.ActivityAccountNotification"
             android:exported="false" />
@@ -142,8 +145,10 @@
         <activity
             android:name=".Activity.ActivitySearch"
             android:exported="false" />
-        <activity android:name=".Activity.ActivityRecentSeen"
-            android:exported="false"/>
+        <activity
+            android:name=".Activity.ActivityRecentSeen"
+            android:exported="false" />
+
         <service
             android:name=".Chat.Firebase.MessingService"
             android:exported="false">
