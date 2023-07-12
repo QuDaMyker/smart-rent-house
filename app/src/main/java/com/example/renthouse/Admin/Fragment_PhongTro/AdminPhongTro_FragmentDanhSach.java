@@ -16,6 +16,7 @@ import android.view.ViewGroup;
 import android.widget.SearchView;
 
 import com.example.renthouse.Admin.Adapter.PhongTroAdapter;
+import com.example.renthouse.Admin.OOP.NguoiDung;
 import com.example.renthouse.Interface.ItemClick;
 import com.example.renthouse.OOP.Room;
 import com.example.renthouse.R;
@@ -27,7 +28,12 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
 
 public class AdminPhongTro_FragmentDanhSach extends Fragment {
@@ -35,7 +41,11 @@ public class AdminPhongTro_FragmentDanhSach extends Fragment {
     private RecyclerView recyclerView;
     private SearchView searchView;
     private List<Room> phongtrolist;
+    private List<Room> phongTroSearchList;
     private PhongTroAdapter phongTroAdapter;
+    private boolean giaTang = false;
+    private boolean ngayDangTang = false;
+    private int tinhTrang = 0;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -43,37 +53,136 @@ public class AdminPhongTro_FragmentDanhSach extends Fragment {
         View view = binding.getRoot();
 
         recyclerView = view.findViewById(R.id.recycleView);
-
         searchView = view.findViewById(R.id.search_view);
+
+        phongtrolist = new ArrayList<>();
+        phongTroSearchList = new ArrayList<>();
+
+        //replaceFragment(new AdminPhongTro_FragmentEmpty());
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext(), recyclerView.VERTICAL, false);
+        recyclerView.setLayoutManager(linearLayoutManager);
+        phongTroAdapter = new PhongTroAdapter(getContext(), phongTroSearchList, new ItemClick() {
+            @Override
+            public void onItemClick(Room room) {
+
+            }
+        });
+        recyclerView.setAdapter(phongTroAdapter);
 
         binding.filterGia.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                giaTang = !giaTang;
+                ngayDangTang = false;
+                binding.filterGia.setBackgroundResource(R.drawable.bg_radius_solid_primary_60);
+                binding.filterNgayDang.setBackgroundResource(R.drawable.bg_radius_primary_40);
+                binding.filterTinhTrang.setBackgroundResource(R.drawable.bg_radius_primary_40);
+                if (giaTang) {
+                    binding.imageGia.setImageResource(R.drawable.ic_arrow_downward);
+                    Collections.sort(phongTroSearchList, (obj1, obj2) -> obj2.getPrice() - obj1.getPrice());
+                    phongTroAdapter.notifyDataSetChanged();
+                } else {
+                    binding.imageGia.setImageResource(R.drawable.ic_arrow_upward);
+                    Collections.sort(phongTroSearchList, (obj1, obj2) -> obj1.getPrice() - obj2.getPrice());
+                    phongTroAdapter.notifyDataSetChanged();
+                }
             }
         });
 
         binding.filterNgayDang.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                ngayDangTang = !ngayDangTang;
+                giaTang = false;
+                binding.filterNgayDang.setBackgroundResource(R.drawable.bg_radius_solid_primary_60);
+                binding.filterGia.setBackgroundResource(R.drawable.bg_radius_primary_40);
+                binding.filterTinhTrang.setBackgroundResource(R.drawable.bg_radius_primary_40);
+                if (ngayDangTang){
+                    binding.imageNgayDang.setImageResource(R.drawable.ic_arrow_downward);
+                    Collections.sort(phongTroSearchList, new Comparator<Room>() {
+                        SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm dd/MM/yyyy");                        @Override
+                        public int compare(Room obj1, Room obj2) {
+                            try {
+                                Date date1 = dateFormat.parse(obj1.getDateTime());
+                                Date date2 = dateFormat.parse(obj2.getDateTime());
+                                return date1.compareTo(date2);
+                            } catch (ParseException e) {
+                                e.printStackTrace();
+                            }
+                            return 0;
+                        }
+                    });
+                    phongTroAdapter.notifyDataSetChanged();
+                }
+                else {
+                    binding.imageNgayDang.setImageResource(R.drawable.ic_arrow_upward);
+                    Collections.sort(phongTroSearchList, new Comparator<Room>() {
+                        SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm dd/MM/yyyy");                        @Override
+                        public int compare(Room obj1, Room obj2) {
+                            try {
+                                Date date1 = dateFormat.parse(obj1.getDateTime());
+                                Date date2 = dateFormat.parse(obj2.getDateTime());
+                                return date2.compareTo(date1);
+                            } catch (ParseException e) {
+                                e.printStackTrace();
+                            }
+                            return 0;
+                        }
+                    });
+                    phongTroAdapter.notifyDataSetChanged();
+                }
             }
         });
 
         binding.filterTinhTrang.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                // 0: Tất cả
+                // 1: Còn phòng
+                // 2: Đã thuê
 
+                tinhTrang = (++tinhTrang) % 3;
+                binding.filterTinhTrang.setBackgroundResource(R.drawable.bg_radius_solid_primary_60);
+                binding.filterNgayDang.setBackgroundResource(R.drawable.bg_radius_primary_40);
+                binding.filterGia.setBackgroundResource(R.drawable.bg_radius_primary_40);
+                phongTroSearchList.clear();
+                switch (tinhTrang){
+                    case 0:{
+                        binding.textViewTinhtrang.setText("Tất cả");
+                        phongTroSearchList.addAll(phongtrolist);
+                        phongTroAdapter.notifyDataSetChanged();
+                        break;
+                    }
+                    case 1: {
+                        binding.textViewTinhtrang.setText("Còn phòng");
+                        for (Room obj : phongtrolist){
+                            if (!obj.isRented()){
+                                phongTroSearchList.add(obj);
+                            }
+                        }
+                        phongTroAdapter.notifyDataSetChanged();
+                        break;
+                    }
+                    case 2: {
+                        binding.textViewTinhtrang.setText("Đã thuê");
+                        for (Room obj : phongtrolist){
+                            if (obj.isRented()){
+                                phongTroSearchList.add(obj);
+                            }
+                        }
+                        phongTroAdapter.notifyDataSetChanged();
+                        break;
+                    }
+                }
             }
         });
 
-        //replaceFragment(new AdminPhongTro_FragmentEmpty());
+        loadData();
 
-        phongtrolist = new ArrayList<>();
+        return view;
+    }
 
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext(), recyclerView.VERTICAL, false);
-        recyclerView.setLayoutManager(linearLayoutManager);
-
+    private void loadData(){
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Rooms");
         reference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -92,23 +201,17 @@ public class AdminPhongTro_FragmentDanhSach extends Fragment {
                     replaceFragment(new AdminPhongTro_FragmentEmpty());
                 }
                 else {
-                    phongTroAdapter = new PhongTroAdapter(getContext(), phongtrolist, new ItemClick() {
-                        @Override
-                        public void onItemClick(Room room) {
-
-                        }
-                    });
-                    recyclerView.setAdapter(phongTroAdapter);
+                    phongTroSearchList.clear();
+                    phongTroSearchList.addAll(phongtrolist);
+                    phongTroAdapter.notifyDataSetChanged();
                 }
             }
 
             @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
+            public void onCancelled(@NonNull DatabaseError error) { }
         });
-        return view;
     }
+
     private void replaceFragment(Fragment fragment)
     {
         FragmentManager fragmentManager = getChildFragmentManager();

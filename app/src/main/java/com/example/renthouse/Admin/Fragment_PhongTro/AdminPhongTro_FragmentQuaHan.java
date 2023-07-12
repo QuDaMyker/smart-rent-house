@@ -105,10 +105,9 @@ public class AdminPhongTro_FragmentQuaHan extends Fragment {
         }
         if (room.getStatus().equals("approved")) {
             String dateString = room.getDateTime();
-
-
             SimpleDateFormat format = new SimpleDateFormat("HH:mm dd/MM/yyyy");
             long diffInHours = 0;
+
             try {
                 Date time = format.parse(dateString);
                 Date currentTime = new Date();
@@ -116,6 +115,7 @@ public class AdminPhongTro_FragmentQuaHan extends Fragment {
                 diffInHours = diffInMilliseconds / (24 * 60 * 60 * 1000);
             }
             catch (Exception e) { }
+
             if (diffInHours >= 30){
                 return 2;
             }
