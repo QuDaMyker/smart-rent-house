@@ -3,7 +3,6 @@ package com.example.renthouse.Fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.app.ProgressDialog;
-import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
@@ -13,6 +12,9 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -23,19 +25,20 @@ import android.widget.Toast;
 import com.example.renthouse.Activity.ActivityDetails;
 import com.example.renthouse.Activity.ActivityRecentSeen;
 import com.example.renthouse.Activity.ActivitySearch;
+import com.example.renthouse.Adapter.OutstandingRoomAdapter;
+import com.example.renthouse.Adapter.PhoBienAdapter;
+import com.example.renthouse.Interface.ItemClick;
+import com.example.renthouse.Interface.ItemClickPhoBien;
+import com.example.renthouse.OOP.PhoBien;
+import com.example.renthouse.OOP.Room;
 import com.example.renthouse.R;
-import com.google.android.material.textfield.TextInputEditText;
-import com.google.android.material.textfield.TextInputLayout;
+import com.example.renthouse.utilities.PreferenceManager;
 import com.example.renthouse.Activity.ActivityPost;
 import com.example.renthouse.Activity.FindByMapsActivity;
-import com.example.renthouse.Activity.MapsActivity;
 import com.example.renthouse.Activity.NoficationActivity;
-import com.example.renthouse.Adapter.NotificationAdapter;
-import com.example.renthouse.Adapter.PhoBienAdapter;
 import com.example.renthouse.ITEM.itemPhoBien_HomeFragment;
 import com.example.renthouse.OOP.City;
 import com.example.renthouse.OOP.District;
-import com.example.renthouse.OOP.Notification;
 import com.example.renthouse.OOP.Ward;
 import com.example.renthouse.databinding.FragmentHomeBinding;
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -47,6 +50,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.io.IOException;
@@ -61,7 +65,7 @@ public class FragmentHome extends Fragment {
     private FirebaseAuth firebaseAuth;
     private FirebaseUser currentUser;
     private List<itemPhoBien_HomeFragment> listItemPhoBien_HomeFragment;
-    private PhoBienAdapter phoBienAdapter;
+
     private FusedLocationProviderClient fusedLocationProviderClient;
     double latitude;
     double longitude;
@@ -73,7 +77,13 @@ public class FragmentHome extends Fragment {
     private List<Ward> wardList;
     private List<District> listDis;
     private ProgressDialog progressDialog;
-
+    private List<Room> outstandingList;
+    private OutstandingRoomAdapter outstandingRoomAdapter;
+    private RecyclerView outstanding_recyclerView;
+    private List<PhoBien> phoBienList;
+    private PhoBienAdapter phoBienAdapter;
+    private RecyclerView phobien_recyclerView;
+    private PreferenceManager preferenceManager;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         binding = FragmentHomeBinding.inflate(inflater, container, false);
@@ -81,6 +91,9 @@ public class FragmentHome extends Fragment {
 
         firebaseAuth = FirebaseAuth.getInstance();
         currentUser = firebaseAuth.getCurrentUser();
+        outstanding_recyclerView = view.findViewById(R.id.recycleView_phongnoibat);
+        phobien_recyclerView = view.findViewById(R.id.recycleView_phobien);
+        preferenceManager = new PreferenceManager(getContext());
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(getContext());
 
         progressDialog = new ProgressDialog(getContext());
@@ -91,7 +104,11 @@ public class FragmentHome extends Fragment {
         updateUI();
 //        getLastLocation();
 
+        setDataOutstandingRoom();
+        setDataPhoBien();
+
         progressDialog.dismiss();
+
         binding.linearLayout5.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -131,13 +148,84 @@ public class FragmentHome extends Fragment {
         return view;
     }
 
+    private void setDataPhoBien() {
+        phoBienList = new ArrayList<>();
+        phoBienAdapter = new PhoBienAdapter(getContext(), phoBienList, new ItemClickPhoBien() {
+            @Override
+            public void onItemClick(PhoBien phoBien) {
+                binding.textInputFindRoom.clearFocus();
+                Intent intent = new Intent(getContext(), ActivitySearch.class);
+                intent.putExtra("selectedPhoBien", phoBien);
+                startActivity(intent);
+            }
+        });
 
-    private List<itemPhoBien_HomeFragment> getListItemPhoBien_HomeFragment() {
-        List<itemPhoBien_HomeFragment> list = new ArrayList<>();
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext(), RecyclerView.HORIZONTAL,false);
+        phobien_recyclerView.setLayoutManager(linearLayoutManager);
+        phobien_recyclerView.setAdapter(phoBienAdapter);
+
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference reference = database.getReference("PopularRoom");
+        reference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                List<PhoBien> temPhoBien = new ArrayList<>();
+
+                for (DataSnapshot Snapshot: snapshot.getChildren()){
+                    String idphobien = Snapshot.getKey();
+                    String image = Snapshot.child("Image").getValue(String.class);
+                    String name = Snapshot.child("Name").getValue(String.class);
+                    PhoBien phobien = new PhoBien(image, idphobien,name);
+
+                    temPhoBien.add(phobien);
+                }
+                phoBienList.addAll(temPhoBien);
+                phoBienAdapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
 
 
-        return list;
     }
+
+    private void setDataOutstandingRoom() {
+        outstandingList = new ArrayList<>();
+        outstandingRoomAdapter = new OutstandingRoomAdapter(getContext(), outstandingList, new ItemClick() {
+            @Override
+            public void onItemClick(Room room) {
+                Intent intent = new Intent(getContext(), ActivityDetails.class);
+                intent.putExtra("selectedRoom", room);
+                startActivity(intent);
+            }
+        });
+        GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), 2);
+        outstanding_recyclerView.setLayoutManager(gridLayoutManager);
+        outstanding_recyclerView.setAdapter(outstandingRoomAdapter);
+
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference reference = database.getReference();
+        Query query = reference.child("Rooms");
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                List<Room> temroom = new ArrayList<>();
+                for (DataSnapshot Snapshot : snapshot.getChildren()){
+                    Room room = Snapshot.getValue((Room.class));
+                    temroom.add(room);
+                }
+                outstandingList.addAll(temroom);
+                outstandingRoomAdapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) { }
+        });
+    }
+
 
     private void updateUI() {
         if (currentUser != null) {
