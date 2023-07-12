@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="5dp"
+    android:id="@+id/item_phongchoduyet"
+    android:background="@drawable/bg_radius_secondary90"
+    android:orientation="vertical">
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal"
+        android:paddingTop="10dp"
+        android:paddingLeft="10dp">
+
+
+        <TextView
+            android:id="@+id/textView_tienphong"
+            android:layout_width="115dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="2 000 000 đ"
+            android:textColor="@color/Primary_60"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+
+        <TextView
+            android:id="@+id/textView_tinhtrang"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="20/06/2023"
+            android:textAlignment="textEnd"
+            android:textSize="12sp"
+            android:paddingEnd="10dp"/>
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/textView_tenphong"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="tên phòng"
+        android:paddingLeft="10dp"
+        android:paddingTop="5dp"
+        android:textSize="12sp"/>
+
+    <TextView
+        android:id="@+id/textView_diachiphong"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="địa chỉ"
+        android:paddingLeft="10dp"
+        android:paddingTop="5dp"
+        android:paddingBottom="5dp"
+        android:textSize="12sp"/>
+</LinearLayout>
