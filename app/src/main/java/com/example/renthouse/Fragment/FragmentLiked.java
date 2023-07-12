@@ -38,10 +38,16 @@ public class FragmentLiked extends Fragment {
         View view = binding.getRoot();
         // Inflate the layout for this fragment
 
-        checkListLikedRooms();
+        //checkListLikedRooms();
         //replaceFragment(new FragmentLikedRooms());
         return view;
     }
+   @Override
+    public void onResume() {
+        super.onResume();
+        checkListLikedRooms();
+    }
+
     private void checkListLikedRooms() {
         FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
         FirebaseUser currentUser = firebaseAuth.getCurrentUser();
@@ -85,8 +91,6 @@ public class FragmentLiked extends Fragment {
             }
         });
     }
-
-
     private void replaceFragment(Fragment f)
     {
         FragmentManager fragmentManager = getChildFragmentManager();
