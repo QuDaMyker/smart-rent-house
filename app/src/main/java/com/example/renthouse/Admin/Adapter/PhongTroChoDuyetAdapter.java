@@ -1,6 +1,8 @@
 package com.example.renthouse.Admin.Adapter;
 
 import android.content.Context;
+import android.content.Intent;
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,6 +12,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.renthouse.Admin.Activity.Admin_ActivityThongTinPhong;
 import com.example.renthouse.Interface.ItemClick;
 import com.example.renthouse.OOP.Room;
 import com.example.renthouse.R;
@@ -53,9 +56,17 @@ public class PhongTroChoDuyetAdapter extends RecyclerView.Adapter<PhongTroChoDuy
         holder.item.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                goToThongTinPhong(room);
             }
         });
+    }
+
+    private void goToThongTinPhong(Room room) {
+        Intent intent = new Intent(context, Admin_ActivityThongTinPhong.class);
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("selectedRoom", room);
+        intent.putExtras(bundle);
+        context.startActivity(intent);
     }
 
 

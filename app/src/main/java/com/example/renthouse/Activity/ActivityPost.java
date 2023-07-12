@@ -244,7 +244,7 @@ public class ActivityPost extends AppCompatActivity {
                     myRef.child(pathObject).setValue(room);
                     updateImage(room);
 
-                    pushPopularRoom(room, pathObject);
+
                 }
             }
 
@@ -282,34 +282,7 @@ public class ActivityPost extends AppCompatActivity {
 
     }
 
-    private void pushPopularRoom(Room room, String idRoom) {
-        String roomcode = room.getLocation().getDistrict().getCode();
-        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("PopularRoom").child(roomcode);
 
-        String name = room.getLocation().getDistrict().getName_with_type();
-        reference.child("Name").setValue(name);
-
-        DatabaseReference images_ref = FirebaseDatabase.getInstance().getReference("ImagePhoBien");
-        images_ref.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                List<String> images = new ArrayList<>();
-                for(DataSnapshot Snapshot : snapshot.getChildren()){
-                    images.add(Snapshot.getKey());
-                }
-                Random random = new Random();
-                int randomIndex = random.nextInt(images.size());
-                String image = images.get(randomIndex);
-
-                reference.child("Image").setValue(image);
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
-    }
 
     protected void replaceFragmentContent(Fragment fragment) {
 

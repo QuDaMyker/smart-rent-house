@@ -1,6 +1,7 @@
 package com.example.renthouse.Admin.Fragment_PhongTro;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -15,6 +16,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.SearchView;
 
+import com.example.renthouse.Admin.Activity.Admin_ActivityThongTinPhong;
 import com.example.renthouse.Admin.Adapter.PhongTroAdapter;
 import com.example.renthouse.Admin.Adapter.PhongTroChoDuyetAdapter;
 import com.example.renthouse.Interface.ItemClick;
@@ -80,7 +82,9 @@ public class AdminPhongTro_FragmentChoDuyet extends Fragment {
                     phongTroChoDuyetAdapter = new PhongTroChoDuyetAdapter(getContext(), phongchoduyetlist, new ItemClick() {
                         @Override
                         public void onItemClick(Room room) {
-
+                            Intent intent = new Intent(getContext(), Admin_ActivityThongTinPhong.class);
+                            intent.putExtra("selectedRoom", room);
+                            startActivity(intent);
                         }
                     });
                     recyclerView.setAdapter(phongTroChoDuyetAdapter);

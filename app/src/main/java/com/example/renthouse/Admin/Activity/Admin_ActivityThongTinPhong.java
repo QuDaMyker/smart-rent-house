@@ -55,6 +55,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.Random;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class Admin_ActivityThongTinPhong extends AppCompatActivity {
@@ -337,6 +338,9 @@ public class Admin_ActivityThongTinPhong extends AppCompatActivity {
                 DatabaseReference refRoom =  ref.child(room.getId());
                 refRoom.child("status").setValue(Constants.STATUS_APPROVED);
 
+                String pathObject = String.valueOf(room.getId());
+                pushPopularRoom(room, pathObject);
+
                 Toast.makeText(Admin_ActivityThongTinPhong.this, "Bạn đã duyệt phòng thành công", Toast.LENGTH_SHORT).show();
                 LoadLinearLayoutOption();
             }
@@ -383,6 +387,35 @@ public class Admin_ActivityThongTinPhong extends AppCompatActivity {
                         })
                         .create();
                 confirmDialog.show();
+            }
+        });
+    }
+
+    private void pushPopularRoom(Room room, String idRoom) {
+        String roomcode = room.getLocation().getDistrict().getCode();
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("PopularRoom").child(roomcode);
+
+        String name = room.getLocation().getDistrict().getName_with_type();
+        reference.child("Name").setValue(name);
+
+        DatabaseReference images_ref = FirebaseDatabase.getInstance().getReference("ImagePhoBien");
+        images_ref.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                List<String> images = new ArrayList<>();
+                for(DataSnapshot Snapshot : snapshot.getChildren()){
+                    images.add(Snapshot.getKey());
+                }
+                Random random = new Random();
+                int randomIndex = random.nextInt(images.size());
+                String image = images.get(randomIndex);
+
+                reference.child("Image").setValue(image);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
             }
         });
     }

@@ -1,6 +1,7 @@
 package com.example.renthouse.Admin.Fragment_PhongTro;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -16,6 +17,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.SearchView;
 
+import com.example.renthouse.Activity.ActivityDetails;
+import com.example.renthouse.Admin.Activity.Admin_ActivityThongTinPhong;
 import com.example.renthouse.Admin.Adapter.PhongTroAdapter;
 import com.example.renthouse.Admin.OOP.NguoiDung;
 import com.example.renthouse.Interface.ItemClick;
@@ -67,10 +70,13 @@ public class AdminPhongTro_FragmentDanhSach extends Fragment {
         //replaceFragment(new AdminPhongTro_FragmentEmpty());
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext(), recyclerView.VERTICAL, false);
         recyclerView.setLayoutManager(linearLayoutManager);
+
         phongTroAdapter = new PhongTroAdapter(getContext(), phongTroSearchList, new ItemClick() {
             @Override
             public void onItemClick(Room room) {
-
+                Intent intent = new Intent(getActivity(), Admin_ActivityThongTinPhong.class);
+                intent.putExtra("selectedRoom", room);
+                startActivity(intent);
             }
         });
         recyclerView.setAdapter(phongTroAdapter);
@@ -146,7 +152,6 @@ public class AdminPhongTro_FragmentDanhSach extends Fragment {
                 // 0: Tất cả
                 // 1: Còn phòng
                 // 2: Đã thuê
-
                 tinhTrang = (++tinhTrang) % 3;
                 binding.filterTinhTrang.setBackgroundResource(R.drawable.bg_radius_solid_primary_60);
                 binding.filterNgayDang.setBackgroundResource(R.drawable.bg_radius_primary_40);
@@ -248,4 +253,5 @@ public class AdminPhongTro_FragmentDanhSach extends Fragment {
         fragmentTransaction.replace(R.id.frameLayoutPhongTro, fragment);
         fragmentTransaction.commit();
     }
+
 }
