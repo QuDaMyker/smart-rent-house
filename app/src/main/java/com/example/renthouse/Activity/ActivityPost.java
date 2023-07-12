@@ -50,11 +50,13 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.security.cert.PolicyNode;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.Random;
 
 import id.zelory.compressor.Compressor;
 
@@ -238,11 +240,13 @@ public class ActivityPost extends AppCompatActivity {
                                 false,
                                 STATUS_PENDING);
 
-                        String pathObject = String.valueOf(room.getId());
-                        myRef.child(pathObject).setValue(room);
-                        updateImage(room);
-                    }
+                    String pathObject = String.valueOf(room.getId());
+                    myRef.child(pathObject).setValue(room);
+                    updateImage(room);
+
+                    pushPopularRoom(room, pathObject);
                 }
+            }
 
                 @Override
                 public void onCancelled(DatabaseError databaseError) {
@@ -276,6 +280,35 @@ public class ActivityPost extends AppCompatActivity {
             updateImage(editedRoom);
         }
 
+    }
+
+    private void pushPopularRoom(Room room, String idRoom) {
+        String roomcode = room.getLocation().getDistrict().getCode();
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("PopularRoom").child(roomcode);
+
+        String name = room.getLocation().getDistrict().getName_with_type();
+        reference.child("Name").setValue(name);
+
+        DatabaseReference images_ref = FirebaseDatabase.getInstance().getReference("ImagePhoBien");
+        images_ref.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                List<String> images = new ArrayList<>();
+                for(DataSnapshot Snapshot : snapshot.getChildren()){
+                    images.add(Snapshot.getKey());
+                }
+                Random random = new Random();
+                int randomIndex = random.nextInt(images.size());
+                String image = images.get(randomIndex);
+
+                reference.child("Image").setValue(image);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
     }
 
     protected void replaceFragmentContent(Fragment fragment) {

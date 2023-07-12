@@ -14,6 +14,7 @@ import com.example.renthouse.Adapter.UniAdapter;
 import com.example.renthouse.Chat.Dashboard.ActivityChat;
 import com.example.renthouse.Chat.Messages.MessagesList;
 import com.example.renthouse.OOP.Notification;
+import com.example.renthouse.OOP.Room;
 import com.example.renthouse.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -71,6 +72,7 @@ public class NoficationActivity extends AppCompatActivity {
                                 @Override
                                 public void onNotificationClick(Notification notification) {
                                     MessagesList messagesList = notification.getAttachedMessage();
+                                    Room room = notification.getAttachedRoom();
                                     if(notification.getType().equals("chat") && messagesList != null){
                                         Intent intent = new Intent(NoficationActivity.this, ActivityChat.class);
                                         intent.putExtra("currentKey", messagesList.getCurrentKey());
@@ -78,6 +80,13 @@ public class NoficationActivity extends AppCompatActivity {
                                         intent.putExtra("email", messagesList.getEmail());
                                         intent.putExtra("profile_pic", messagesList.getProfilePic());
                                         intent.putExtra("otherKey", messagesList.getOtherKey());
+                                        startActivity(intent);
+                                    }
+                                    else if(notification.getType().equals("room") && room != null){
+                                        Intent intent = new Intent(NoficationActivity.this, ActivityDetails.class);
+                                        Bundle bundle = new Bundle();
+                                        bundle.putSerializable("selectedRoom", room);
+                                        intent.putExtras(bundle);
                                         startActivity(intent);
                                     }
                                 }

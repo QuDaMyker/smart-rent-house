@@ -113,9 +113,10 @@
             android:clipToPadding="false"
             android:orientation="vertical"
             android:overScrollMode="never"
-            android:paddingStart="20dp"
-            android:paddingEnd="20dp"
-            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+            android:paddingStart="5dp"
+            android:paddingEnd="5dp"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            tools:listitem="@layout/item_container_danhsachnguoidung" />
     </FrameLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

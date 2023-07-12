@@ -165,6 +165,8 @@ public class ActivityDetails extends AppCompatActivity {
 
         preferenceManager = new PreferenceManager(ActivityDetails.this);
 
+
+
         Intent intent = getIntent();
         if (intent == null) {
             return;
@@ -381,10 +383,11 @@ public class ActivityDetails extends AppCompatActivity {
 
                 if (preferenceManager.getString(Constants.KEY_USER_KEY) != null) {
                     Log.d("key", preferenceManager.getString(Constants.KEY_USER_KEY));
+                } else {
+                    Log.d("key", "khong co key");
                 }
 
                 Intent intentChat = new Intent(ActivityDetails.this, ActivityChat.class);
-                Log.d("Key", preferenceManager.getString(Constants.KEY_USER_KEY));
                 intentChat.putExtra("currentKey", preferenceManager.getString(Constants.KEY_USER_KEY));
                 intentChat.putExtra("name", room.getCreatedBy().getFullname());
                 intentChat.putExtra("email", room.getCreatedBy().getEmail());
@@ -393,14 +396,15 @@ public class ActivityDetails extends AppCompatActivity {
                 FirebaseDatabase database = FirebaseDatabase.getInstance();
                 DatabaseReference reference = database.getReference();
 
+
                 Query query = reference.child("Accounts").orderByChild("email").equalTo(room.getCreatedBy().getEmail());
                 query.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
                         for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
                             String otherKey = dataSnapshot.getKey();
+                            Log.d("keyRoom", otherKey);
                             intentChat.putExtra("otherKey", otherKey);
-
                             Query query1 = reference.child("Chat").child(preferenceManager.getString(Constants.KEY_USER_KEY)).orderByKey().equalTo(otherKey);
                             query1.addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
@@ -409,14 +413,14 @@ public class ActivityDetails extends AppCompatActivity {
 
                                         Date data = new Date();
                                         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault());
-                                        SimpleDateFormat simpleTimeFormat = new SimpleDateFormat("hh:mm aa", Locale.getDefault());
+                                        SimpleDateFormat simpleTimeFormatConversaton = new SimpleDateFormat("HH:mm:ss", Locale.getDefault());
 
                                         reference.child("Chat").child(preferenceManager.getString(Constants.KEY_USER_KEY)).child(otherKey).child("1").child("sender").setValue(preferenceManager.getString(Constants.KEY_USER_KEY));
                                         reference.child("Chat").child(preferenceManager.getString(Constants.KEY_USER_KEY)).child(otherKey).child("1").child("msg").setValue("Xin Chào");
                                         reference.child("Chat").child(preferenceManager.getString(Constants.KEY_USER_KEY)).child(otherKey).child("1").child("send-date").setValue(simpleDateFormat.format(data));
-                                        reference.child("Chat").child(preferenceManager.getString(Constants.KEY_USER_KEY)).child(otherKey).child("1").child("send-time").setValue(simpleTimeFormat.format(data));
+                                        reference.child("Chat").child(preferenceManager.getString(Constants.KEY_USER_KEY)).child(otherKey).child("1").child("send-time").setValue(simpleTimeFormatConversaton.format(data));
 
-                                        Conversation conversation = new Conversation(preferenceManager.getString(Constants.KEY_USER_KEY), otherKey, "Xin Chào", simpleDateFormat.format(data).toString(), simpleTimeFormat.format(data).toString());
+                                        Conversation conversation = new Conversation(preferenceManager.getString(Constants.KEY_USER_KEY), otherKey, "Xin Chào", simpleDateFormat.format(data).toString(), simpleTimeFormatConversaton.format(data).toString());
 
                                         reference.child("Conversations").child(preferenceManager.getString(Constants.KEY_USER_KEY)).child(otherKey).setValue(conversation);
 
@@ -424,9 +428,11 @@ public class ActivityDetails extends AppCompatActivity {
                                         reference.child("Chat").child(otherKey).child(preferenceManager.getString(Constants.KEY_USER_KEY)).child("1").child("sender").setValue(preferenceManager.getString(Constants.KEY_USER_KEY));
                                         reference.child("Chat").child(otherKey).child(preferenceManager.getString(Constants.KEY_USER_KEY)).child("1").child("msg").setValue("Xin Chào");
                                         reference.child("Chat").child(otherKey).child(preferenceManager.getString(Constants.KEY_USER_KEY)).child("1").child("send-date").setValue(simpleDateFormat.format(data));
-                                        reference.child("Chat").child(otherKey).child(preferenceManager.getString(Constants.KEY_USER_KEY)).child("1").child("send-time").setValue(simpleTimeFormat.format(data));
+                                        reference.child("Chat").child(otherKey).child(preferenceManager.getString(Constants.KEY_USER_KEY)).child("1").child("send-time").setValue(simpleTimeFormatConversaton.format(data));
 
                                         reference.child("Conversations").child(otherKey).child(preferenceManager.getString(Constants.KEY_USER_KEY)).setValue(conversation);
+
+                                        Log.d("voday", "Co vo day");
                                     }
                                 }
 
@@ -438,6 +444,7 @@ public class ActivityDetails extends AppCompatActivity {
 
 
                         }
+                        startActivity(intentChat);
                     }
 
                     @Override
@@ -447,7 +454,7 @@ public class ActivityDetails extends AppCompatActivity {
                 });
 
 
-                startActivity(intentChat);
+                //startActivity(intentChat);
 
 
             }

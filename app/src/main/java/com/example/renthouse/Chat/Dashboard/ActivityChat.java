@@ -23,6 +23,8 @@ import com.example.renthouse.FCM.SendNotificationTask;
 import com.example.renthouse.OOP.AccountClass;
 import com.example.renthouse.OOP.Notification;
 import com.example.renthouse.R;
+import com.example.renthouse.utilities.Constants;
+import com.example.renthouse.utilities.PreferenceManager;
 import com.google.android.material.button.MaterialButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -44,6 +46,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class ActivityChat extends AppCompatActivity {
     DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
     private final List<ChatList> chatLists = new ArrayList<>();
+    private final List<ChatList> tempChatLists = new ArrayList<>();
     private int generatedChatKey;
     private String otherKey;
     private String currentKey;
@@ -54,6 +57,7 @@ public class ActivityChat extends AppCompatActivity {
     private RecyclerView chattingRecycleView;
     private ChatAdapter chatAdapter;
     private boolean loadingFirstTime = true;
+    private PreferenceManager preferenceManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,6 +75,7 @@ public class ActivityChat extends AppCompatActivity {
         final HorizontalScrollView hintBar = findViewById(R.id.hintBar);
         final View backView = findViewById(R.id.backView);
 
+        preferenceManager = new PreferenceManager(ActivityChat.this);
         mButton1.setOnClickListener(v -> {
             hintBar.setVisibility(View.INVISIBLE);
 
@@ -100,7 +105,7 @@ public class ActivityChat extends AppCompatActivity {
 
 
         // get data form messages adapter class
-        currentKey = getIntent().getStringExtra("currentKey");
+        currentKey = preferenceManager.getString(Constants.KEY_USER_KEY);
         final String getName = getIntent().getStringExtra("name");
         final String getEmail = getIntent().getStringExtra("email");
         final String getProfilePic = getIntent().getStringExtra("profile_pic");
@@ -119,13 +124,16 @@ public class ActivityChat extends AppCompatActivity {
         chatAdapter = new ChatAdapter(chatLists, ActivityChat.this);
         chattingRecycleView.setAdapter(chatAdapter);
 
-        databaseReference.child("Chat").addValueEventListener(new ValueEventListener() {
+        Log.d("key", otherKey);
+
+        databaseReference.child("Chat").child(currentKey).child(otherKey).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                lastIndex = Integer.valueOf((int) snapshot.child(currentKey).child(otherKey).getChildrenCount());
+                lastIndex = (int) snapshot.getChildrenCount();
                 chatLists.clear();
+                tempChatLists.clear();
                 //Toast.makeText(getApplicationContext(), snapshot.getKey(), Toast.LENGTH_SHORT).show();
-                for (DataSnapshot dataSnapshot : snapshot.child(currentKey).child(otherKey).getChildren()) {
+                for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
                     // Toast.makeText(ActivityChat.this, dataSnapshot.getKey(), Toast.LENGTH_SHORT).show();
 
                     if (dataSnapshot.child("sender").getValue(String.class).equals(currentKey)) {
@@ -134,7 +142,7 @@ public class ActivityChat extends AppCompatActivity {
                         String sendTime = dataSnapshot.child("send-time").getValue(String.class);
 
                         ChatList chatList = new ChatList(true, "nguoi dung hien tai", "name", msg, sendDate, sendTime);
-                        chatLists.add(chatList);
+                        tempChatLists.add(chatList);
 
                     } else if (dataSnapshot.child("sender").getValue(String.class).equals(otherKey)) {
                         String msg = dataSnapshot.child("msg").getValue(String.class);
@@ -142,17 +150,19 @@ public class ActivityChat extends AppCompatActivity {
                         String sendTime = dataSnapshot.child("send-time").getValue(String.class);
 
                         ChatList chatList = new ChatList(false, "nguoi dung hien tai", "name", msg, sendDate, sendTime);
-                        chatLists.add(chatList);
+                        tempChatLists.add(chatList);
                     }
                     //lastIndex = Integer.valueOf(dataSnapshot.getKey());
-                    chatAdapter.notifyDataSetChanged();
-                    chattingRecycleView.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            chattingRecycleView.smoothScrollToPosition(chatLists.size() - 1);
-                        }
-                    });
+
                 }
+                chatLists.addAll(tempChatLists);
+                chatAdapter.notifyDataSetChanged();
+                chattingRecycleView.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        chattingRecycleView.smoothScrollToPosition(chatLists.size() - 1);
+                    }
+                });
             }
 
             @Override
@@ -166,9 +176,10 @@ public class ActivityChat extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if (!messageEditText.getText().toString().trim().isEmpty()) {
-                    Date data = new Date();
+                    Date date = new Date();
                     SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault());
                     SimpleDateFormat simpleTimeFormat = new SimpleDateFormat("hh:mm aa", Locale.getDefault());
+                    SimpleDateFormat simpleTimeFormatConversaton = new SimpleDateFormat("HH:mm:ss", Locale.getDefault());
 
                     final String getMessages = messageEditText.getText().toString().trim();
                     lastIndex++;
@@ -176,18 +187,18 @@ public class ActivityChat extends AppCompatActivity {
                     // Set value cho người gửi
                     databaseReference.child("Chat").child(currentKey).child(otherKey).child(String.valueOf(lastIndex)).child("sender").setValue(currentKey);
                     databaseReference.child("Chat").child(currentKey).child(otherKey).child(String.valueOf(lastIndex)).child("msg").setValue(getMessages);
-                    databaseReference.child("Chat").child(currentKey).child(otherKey).child(String.valueOf(lastIndex)).child("send-date").setValue(simpleDateFormat.format(data));
-                    databaseReference.child("Chat").child(currentKey).child(otherKey).child(String.valueOf(lastIndex)).child("send-time").setValue(simpleTimeFormat.format(data));
+                    databaseReference.child("Chat").child(currentKey).child(otherKey).child(String.valueOf(lastIndex)).child("send-date").setValue(simpleDateFormat.format(date));
+                    databaseReference.child("Chat").child(currentKey).child(otherKey).child(String.valueOf(lastIndex)).child("send-time").setValue(simpleTimeFormat.format(date));
 
-                    Conversation conversation = new Conversation(currentKey, otherKey, getMessages, simpleDateFormat.format(data).toString(), simpleTimeFormat.format(data).toString());
+                    Conversation conversation = new Conversation(currentKey, otherKey, getMessages, simpleDateFormat.format(date), simpleTimeFormatConversaton.format(date));
 
                     databaseReference.child("Conversations").child(currentKey).child(otherKey).setValue(conversation);
 
                     // Set value cho người nhận
                     databaseReference.child("Chat").child(otherKey).child(currentKey).child(String.valueOf(lastIndex)).child("sender").setValue(currentKey);
                     databaseReference.child("Chat").child(otherKey).child(currentKey).child(String.valueOf(lastIndex)).child("msg").setValue(getMessages);
-                    databaseReference.child("Chat").child(otherKey).child(currentKey).child(String.valueOf(lastIndex)).child("send-date").setValue(simpleDateFormat.format(data));
-                    databaseReference.child("Chat").child(otherKey).child(currentKey).child(String.valueOf(lastIndex)).child("send-time").setValue(simpleTimeFormat.format(data));
+                    databaseReference.child("Chat").child(otherKey).child(currentKey).child(String.valueOf(lastIndex)).child("send-date").setValue(simpleDateFormat.format(date));
+                    databaseReference.child("Chat").child(otherKey).child(currentKey).child(String.valueOf(lastIndex)).child("send-time").setValue(simpleTimeFormat.format(date));
 
                     databaseReference.child("Conversations").child(otherKey).child(currentKey).setValue(conversation);
 
@@ -216,7 +227,7 @@ public class ActivityChat extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 AccountClass user = snapshot.getValue(AccountClass.class);
-                messagesList = new MessagesList(otherKey, user.getFullname(), user.getEmail(), null, user.getImage(), currentKey, 0);
+                messagesList = new MessagesList(otherKey, user.getFullname(), user.getEmail(), null, user.getImage(), currentKey, 0, null);
             }
 
             @Override

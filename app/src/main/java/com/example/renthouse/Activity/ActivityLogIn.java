@@ -158,6 +158,23 @@ public class ActivityLogIn extends AppCompatActivity {
                             preferenceManager.putString(Constants.KEY_EMAIL, email);
                             preferenceManager.putString(Constants.KEY_PASSWORD, password);
                             preferenceManager.putBoolean(Constants.KEY_IS_SIGNED_IN, true);
+
+                            DatabaseReference ref = database.getReference();
+                            Query query = ref.child("Accounts").orderByChild("email").equalTo(email);
+                            query.addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                    for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                                        preferenceManager.putString(Constants.KEY_USER_KEY, dataSnapshot.getKey());
+                                    }
+                                }
+
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError error) {
+
+                                }
+                            });
+
                             pushNotification();
                             Toast.makeText(getApplicationContext(), "Login Successful", Toast.LENGTH_SHORT).show();
                             Intent intent = new Intent(getApplicationContext(), ActivityMain.class);
@@ -294,6 +311,7 @@ public class ActivityLogIn extends AppCompatActivity {
                                 preferenceManager.putString(Constants.KEY_PHONENUMBER, accountClass.getPhoneNumber());
                                 preferenceManager.putString(Constants.KEY_EMAIL, accountClass.getEmail());
                                 preferenceManager.putString(Constants.KEY_FULLNAME, accountClass.getFullname());
+                                preferenceManager.putString(Constants.KEY_DATECREATEDACCOUNT, accountClass.getNgayTaoTaiKhoan());
 
                                 DatabaseReference accountsRef = reference.child("Accounts");
                                 Query emailQuery = accountsRef.orderByChild("email").equalTo(emailToCheck);
@@ -306,7 +324,7 @@ public class ActivityLogIn extends AppCompatActivity {
                                             String generatedKey = newChildRef.getKey();
                                             preferenceManager.putString(Constants.KEY_USER_KEY, generatedKey);
 
-                                            newChildRef.child(generatedKey).setValue(accountClass)
+                                            newChildRef.setValue(accountClass)
                                                     .addOnCompleteListener(new OnCompleteListener<Void>() {
                                                         @Override
                                                         public void onComplete(@NonNull Task<Void> task) {
@@ -327,9 +345,13 @@ public class ActivityLogIn extends AppCompatActivity {
                                         } else {
                                             for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                                                 AccountClass checkAcc = snapshot.getValue(AccountClass.class);
+                                                preferenceManager.putString(Constants.KEY_USER_KEY, snapshot.getKey());
+                                                preferenceManager.putString(Constants.KEY_IMAGE, checkAcc.getImage());
+
                                                 if (checkAcc.getBlocked()) {
                                                     progressDialog.dismiss();
                                                     preferenceManager.putBoolean(Constants.KEY_IS_SIGNED_IN, true);
+
                                                     startActivity(new Intent(ActivityLogIn.this, ActivityBlocked.class));
                                                 } else {
                                                     pushSuccessFullNotification();

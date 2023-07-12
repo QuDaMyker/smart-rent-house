@@ -7,7 +7,7 @@ public class Conversation {
     private String sendDate;
     private String sendTime;
 
-    public Conversation(String sendId, String receiveId, String lastMessage, String sendDate, String s) {
+    public Conversation(String sendId, String receiveId, String lastMessage, String sendDate, String sendTime) {
         this.sendId = sendId;
         this.receiveId = receiveId;
         this.lastMessage = lastMessage;

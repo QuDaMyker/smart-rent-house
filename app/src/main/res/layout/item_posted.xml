@@ -9,6 +9,7 @@
     android:layout_marginRight="10dp"
     android:layout_marginBottom="5dp"
     android:background="@drawable/bg_radius_secondary90"
+    android:padding="5dp"
     android:paddingLeft="10dp">
 
     <com.google.android.material.imageview.ShapeableImageView
@@ -56,10 +57,10 @@
 
             <TextView
                 android:id="@+id/tv_price"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:ellipsize="end"
+                android:layout_marginRight="5dp"
                 android:maxLines="1"
                 android:text="4.7 triệu"
                 android:textColor="@color/Primary_60"
@@ -84,10 +85,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:ellipsize="end"
-            android:maxLines="1"
+            android:maxLines="2"
             android:text="TextView"
             android:textColor="@color/Secondary_40"
-            android:textSize="16sp"
+            android:textSize="14sp"
             android:textStyle="italic"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

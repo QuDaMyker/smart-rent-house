@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.util.Log;
 
 import com.example.renthouse.Admin.Adapter.BaoCaoNguoiDungAdapter;
+import com.example.renthouse.Admin.OOP.NguoiDung;
 import com.example.renthouse.OOP.Reports;
 import com.example.renthouse.R;
 import com.example.renthouse.databinding.ActivityAdminBaoCaoNguoiDungBinding;
@@ -18,7 +19,12 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
 
 public class Admin_ActivityBaoCaoNguoiDung extends AppCompatActivity {
@@ -61,6 +67,22 @@ public class Admin_ActivityBaoCaoNguoiDung extends AppCompatActivity {
                     Reports reports = snapshot.getValue(Reports.class);
                     tempReports.add(reports);
                 }
+                reportsList.clear();
+                Collections.sort(tempReports, new Comparator<Reports>() {
+                    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+                    @Override
+                    public int compare(Reports obj1, Reports obj2) {
+                        try {
+                            Date date1 = dateFormat.parse(obj2.getNgayBaoCao());
+                            Date date2 = dateFormat.parse(obj1.getNgayBaoCao());
+                            return date1.compareTo(date2);
+                        } catch (ParseException e) {
+                            e.printStackTrace();
+                        }
+                        return 0;
+                    }
+                });
                 reportsList.addAll(tempReports);
                 Log.d("count", reportsList.size()+"");
                 baoCaoNguoiDungAdapter.notifyDataSetChanged();
