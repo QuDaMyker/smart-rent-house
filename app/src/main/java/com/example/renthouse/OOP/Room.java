@@ -6,7 +6,7 @@ import java.util.List;
 
 public class Room implements Serializable {
     private String id;
-    private static String title;
+    private String title;
     private String description;
     private String roomType;
     private int capacity;
@@ -64,7 +64,7 @@ public class Room implements Serializable {
         this.id = id;
     }
 
-    public static String getTitle() {
+    public String getTitle() {
         return title;
     }
 
