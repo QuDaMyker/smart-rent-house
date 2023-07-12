@@ -243,13 +243,29 @@
                     android:layout_height="25dp"
                     android:src="@drawable/outline_location_on_24" />
 
-                <TextView
-                    android:id="@+id/tvDiaChi"
+                <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="10dp"
-                    android:text="320 Nguyễn Văn Linh, Phường Bình Thuận, Quận 7, Hồ Chí Minh"
-                    android:textColor="@color/Secondary_40" />
+                    android:orientation="vertical"
+                    android:layout_gravity="center_vertical"
+                    >
+                    <TextView
+                        android:id="@+id/tvDiaChi"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="10dp"
+                        android:text="320 Nguyễn Văn Linh, Phường Bình Thuận, Quận 7, Hồ Chí Minh"
+                        android:textColor="@color/Secondary_40" />
+                    <TextView
+                        android:id="@+id/tvChiDuong"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Chỉ đường"
+                        android:layout_marginLeft="10dp"
+                        android:textColor="@color/Primary_40"
+                        android:textStyle="bold"
+                        />
+                </LinearLayout>
 
             </LinearLayout>
 

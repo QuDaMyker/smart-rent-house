@@ -61,51 +61,52 @@ public class Admin_ActivityThongTinPhong extends AppCompatActivity {
 
     private FirebaseDatabase db;
     private DatabaseReference ref;
-    Room room;
-    ImageButton btnPreScreen;
-    ImageButton btnNextImage;
-    ImageButton btnPreImage;
-    int curImage = 0;
-    TextView stt;
-    List<String> srcImages;
-    ImageView ivImages;
-    TextView tvLoaiP;
-    TextView tvSoNg;
-    List<String> listImages;
-    TextView tvTinhTrang;
-    TextView tvDienTich;
-    TextView tvCoc;
-    TextView tvTenP;
-    TextView tvDiaChi;
-    TextView tvSdt;
-    TextView tvGiaDien;
-    TextView tvGiaNuoc;
-    TextView tvGiaXe;
-    TextView tvGiaWifi;
-    TextView tvMota;
-    TextView tvNgayDang;
-    TextView tvXemThemMT;
-    List<String> listTI;
-    RecyclerView rcvTienIch;
-    AccountClass Tg;
-    ImageView ivTacGia;
-    TextView tvTenTG;
-    TextView tvSoP;
-    ImageButton btnThemTTtg;
-    RecyclerView rcvDeXuatP;
-    int visibleRowCount = 2;
+    private Room room;
+    private ImageButton btnPreScreen;
+    private ImageButton btnNextImage;
+    private ImageButton btnPreImage;
+    private int curImage = 0;
+    private TextView stt;
+    private List<String> srcImages;
+    private ImageView ivImages;
+    private TextView tvLoaiP;
+    private TextView tvSoNg;
+    private List<String> listImages;
+    private TextView tvTinhTrang;
+    private TextView tvDienTich;
+    private TextView tvCoc;
+    private TextView tvTenP;
+    private TextView tvDiaChi;
+    private TextView tvChiDuong;
+    private TextView tvSdt;
+    private TextView tvGiaDien;
+    private TextView tvGiaNuoc;
+    private TextView tvGiaXe;
+    private TextView tvGiaWifi;
+    private TextView tvMota;
+    private TextView tvNgayDang;
+    private TextView tvXemThemMT;
+    private List<String> listTI;
+    private RecyclerView rcvTienIch;
+    private AccountClass Tg;
+    private ImageView ivTacGia;
+    private TextView tvTenTG;
+    private TextView tvSoP;
+    private ImageButton btnThemTTtg;
+    private RecyclerView rcvDeXuatP;
+    private int visibleRowCount = 2;
     int totalRowCount;
-    List<Room> rcmRooms;
-    TextView tvThemDX;
-    TextView tvGiaP;
+    private List<Room> rcmRooms;
+    private TextView tvThemDX;
+    private TextView tvGiaP;
 
-    String accountPhone;
+    private String accountPhone;
     private PreferenceManager preferenceManager;
-    LinearLayout lnDuyet;
-    LinearLayout lnXoa;
-    Button btnDelete;
-    Button btnAcp;
-    Button btnCancel;
+    private LinearLayout lnDuyet;
+    private LinearLayout lnXoa;
+    private Button btnDelete;
+    private Button btnAcp;
+    private Button btnCancel;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -131,6 +132,7 @@ public class Admin_ActivityThongTinPhong extends AppCompatActivity {
         tvCoc = findViewById(R.id.tvCoc);
         tvTenP = findViewById(R.id.tvTen);
         tvDiaChi = findViewById(R.id.tvDiaChi);
+        tvChiDuong = findViewById(R.id.tvChiDuong);
         tvSdt = findViewById(R.id.tvSdt);
         tvGiaDien = findViewById(R.id.tvDien);
         tvGiaNuoc = findViewById(R.id.tvNuoc);
@@ -233,6 +235,20 @@ public class Admin_ActivityThongTinPhong extends AppCompatActivity {
         totalRowCount = rcmRooms.size();
 
         //sự kiện các nút
+        tvChiDuong.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String address = tvDiaChi.getText().toString();
+                Uri gmmIntentUri = Uri.parse("geo:0,0?q=" + Uri.encode(address));
+                Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
+                mapIntent.setPackage("com.google.android.apps.maps");
+                if (mapIntent.resolveActivity(getPackageManager()) != null) {
+                    startActivity(mapIntent);
+                } else {
+                    Toast.makeText(getApplicationContext(), "Ứng dụng Google Maps không được cài đặt trên thiết bị của bạn.", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
         btnPreScreen.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

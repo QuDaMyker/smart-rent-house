@@ -148,7 +148,6 @@ public class ActivityDetails extends AppCompatActivity {
         tvXemThemMT = findViewById(R.id.tvShowMoreMT);
         tvNgayDang = findViewById(R.id.tvNgay);
         rcvTienIch = findViewById(R.id.rcvTienIch);
-        //tvThemTI = findViewById(R.id.tvMoreTI);
         ivTacGia = findViewById(R.id.imageTacGia);
         tvTenTG = findViewById(R.id.tvTenTg);
         tvSoP = findViewById(R.id.tvSoPhong);
