@@ -16,6 +16,7 @@ import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.renthouse.R;
+import com.squareup.picasso.Picasso;
 
 import java.io.IOException;
 import java.util.List;
@@ -56,13 +57,17 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.PhotoViewHol
         if(uri == null){
             return;
         }
+        Bitmap bitmap = null;
         try {
-            Bitmap bitmap = MediaStore.Images.Media.getBitmap(context.getContentResolver(), uri);
-            if(bitmap != null){
-                holder.imgPhoto.setImageBitmap(bitmap);
-            }
+            bitmap = MediaStore.Images.Media.getBitmap(context.getContentResolver(), uri);
         } catch (IOException e) {
-            throw new RuntimeException(e);
+
+        }
+        if(bitmap != null){
+            holder.imgPhoto.setImageBitmap(bitmap);
+        }
+        else{
+            Picasso.get().load(uri.toString()).into(holder.imgPhoto);
         }
 
         holder.btnRemove.setOnClickListener(new View.OnClickListener() {

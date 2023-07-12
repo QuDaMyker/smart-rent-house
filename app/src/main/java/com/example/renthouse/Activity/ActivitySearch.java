@@ -3,6 +3,7 @@ package com.example.renthouse.Activity;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.widget.AutoCompleteTextView;
@@ -29,9 +30,7 @@ import com.google.common.reflect.TypeToken;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 public class ActivitySearch extends AppCompatActivity {
     private RecyclerView recyclerView;
@@ -64,7 +63,6 @@ public class ActivitySearch extends AppCompatActivity {
         textViewNoneResult = findViewById(R.id.textViewNoneResult);
         textViewNoneResult.setVisibility(View.GONE);
         preferenceManager = new PreferenceManager(getApplicationContext());
-        // Đọc dữ liệu từ file json
 
         Intent intent = getIntent();
         PhoBien phoBien = (PhoBien) intent.getSerializableExtra("selectedPhoBien");
@@ -110,11 +108,13 @@ public class ActivitySearch extends AppCompatActivity {
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                showFragmentFilter(query);
                 locationAdapter.saveHistoryLocation(query);
                 searchView.clearFocus();
+                searchView.setFocusable(false);
+                textViewNoneResult.setVisibility(View.GONE);
                 locationAdapter.getFilter().filter(query);
-                return true;
+                showFragmentFilter(query);
+                return false;
             }
             @Override
             public boolean onQueryTextChange(String newText) {
@@ -140,7 +140,6 @@ public class ActivitySearch extends AppCompatActivity {
         searchView.setOnCloseListener(new SearchView.OnCloseListener() {
             @Override
             public boolean onClose() {
-
                 return false;
             }
         });
@@ -153,6 +152,7 @@ public class ActivitySearch extends AppCompatActivity {
 
     }
     private void showFragmentFilter(String address) {
+        Log.d("Show", "Show is running");
         textViewHistorySearch.setVisibility(View.GONE);
         recyclerView.setVisibility(View.GONE);
 
@@ -164,7 +164,7 @@ public class ActivitySearch extends AppCompatActivity {
         // Xóa tất cả các Fragment đang tồn tại trong LinearLayout trước khi thêm Fragment mới
         fragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
 
-        fragmentTransaction.replace(R.id.linearLayoutHistorySearch, fragmentFilter);
+        fragmentTransaction.replace(R.id.linearLayoutHistory, fragmentFilter);
         fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commit();
     }
@@ -181,14 +181,16 @@ public class ActivitySearch extends AppCompatActivity {
         // Xóa tất cả các Fragment đang tồn tại trong LinearLayout trước khi thêm Fragment mới
         fragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
 
-        fragmentTransaction.replace(R.id.linearLayoutHistorySearch, fragmentFilter);
+        fragmentTransaction.replace(R.id.linearLayoutHistory, fragmentFilter);
         fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commit();
     }
 
     private void hideFragmentFilter() {
+        Log.d("Hide", "Hide is running");
+
         FragmentManager fragmentManager = getSupportFragmentManager();
-        FragmentFilter fragment = (FragmentFilter) fragmentManager.findFragmentById(R.id.linearLayoutHistorySearch);
+        FragmentFilter fragment = (FragmentFilter) fragmentManager.findFragmentById(R.id.linearLayoutHistory);
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         if (fragment!=null){
             fragmentTransaction.remove(fragment);

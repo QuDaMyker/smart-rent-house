@@ -51,10 +51,22 @@
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:layout_marginTop="30dp"
-        android:layout_marginEnd="20dp"
         android:background="@drawable/bg_circle_primary80"
         android:padding="5dp"
         android:src="@drawable/ic_notifications"
+        android:layout_marginEnd="10dp"
+        app:layout_constraintEnd_toStartOf="@+id/imageLogout"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/imageLogout"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="30dp"
+        android:layout_marginEnd="20dp"
+        android:background="@drawable/bg_circle_trans_stroke_primary_60"
+        android:padding="10dp"
+        android:src="@drawable/ic_log_out"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -249,7 +261,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="900"
-                        android:textColor="@color/Primary_10"
+                        android:textColor="@color/Primary_40"
                         android:textSize="32sp"
                         android:textStyle="bold" />
                 </androidx.appcompat.widget.LinearLayoutCompat>
@@ -296,7 +308,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="300"
-                        android:textColor="@color/Primary_10"
+                        android:textColor="@color/Primary_40"
                         android:textSize="32sp"
                         android:textStyle="bold" />
                 </androidx.appcompat.widget.LinearLayoutCompat>
@@ -355,7 +367,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="2.7K"
-                        android:textColor="@color/Primary_10"
+                        android:textColor="@color/Primary_40"
                         android:textSize="32sp"
                         android:textStyle="bold" />
                 </androidx.appcompat.widget.LinearLayoutCompat>
@@ -402,7 +414,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="1.2K"
-                        android:textColor="@color/Primary_10"
+                        android:textColor="@color/Primary_40"
                         android:textSize="32sp"
                         android:textStyle="bold" />
                 </androidx.appcompat.widget.LinearLayoutCompat>

@@ -149,7 +149,7 @@
                 android:inputType="number"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:drawableLeft="@drawable/baseline_local_phone_24"
+                android:drawableStart="@drawable/baseline_local_phone_24"
                 android:drawablePadding="10dp"
                 android:drawableTint="@color/Primary_60"
                 android:singleLine="true"
