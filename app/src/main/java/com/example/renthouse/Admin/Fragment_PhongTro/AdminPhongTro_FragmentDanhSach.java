@@ -1,5 +1,6 @@
 package com.example.renthouse.Admin.Fragment_PhongTro;
 
+import android.app.ProgressDialog;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -46,11 +47,16 @@ public class AdminPhongTro_FragmentDanhSach extends Fragment {
     private boolean giaTang = false;
     private boolean ngayDangTang = false;
     private int tinhTrang = 0;
+    private ProgressDialog progressDialog;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         binding = FragmentAdminPhongTroDanhSachBinding.inflate(inflater, container, false);
         View view = binding.getRoot();
+
+        progressDialog = new ProgressDialog(getContext());
+        progressDialog.setCancelable(false);
+        progressDialog.setMessage("Loading...");
 
         recyclerView = view.findViewById(R.id.recycleView);
         searchView = view.findViewById(R.id.search_view);
@@ -177,12 +183,32 @@ public class AdminPhongTro_FragmentDanhSach extends Fragment {
             }
         });
 
-        loadData();
+        binding.searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String s) {
+                return false;
+            }
 
+            @Override
+            public boolean onQueryTextChange(String s) {
+                phongTroSearchList.clear();
+                for (Room obj : phongtrolist) {
+                    String diachi=obj.getLocation().getWard().getPath_with_type();
+                    if (diachi.toLowerCase().contains(s.toLowerCase())) {
+                        phongTroSearchList.add(obj);
+                    }
+                }
+                phongTroAdapter.notifyDataSetChanged();
+                return true;
+            }
+        });
+
+        loadData();
         return view;
     }
 
     private void loadData(){
+        progressDialog.show();
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Rooms");
         reference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -205,10 +231,13 @@ public class AdminPhongTro_FragmentDanhSach extends Fragment {
                     phongTroSearchList.addAll(phongtrolist);
                     phongTroAdapter.notifyDataSetChanged();
                 }
+                progressDialog.dismiss();
             }
 
             @Override
-            public void onCancelled(@NonNull DatabaseError error) { }
+            public void onCancelled(@NonNull DatabaseError error) {
+                progressDialog.dismiss();
+            }
         });
     }
 

@@ -1,5 +1,6 @@
 package com.example.renthouse.Admin.Fragment_PhongTro;
 
+import android.app.ProgressDialog;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -35,19 +36,29 @@ public class AdminPhongTro_FragmentChoDuyet extends Fragment {
     private RecyclerView recyclerView;
     private List<Room> phongchoduyetlist;
     private PhongTroChoDuyetAdapter phongTroChoDuyetAdapter;
+    private ProgressDialog progressDialog;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         binding = FragmentAdminPhongTroChoDuyetBinding.inflate(inflater, container, false);
         View view = binding.getRoot();
 
+        progressDialog = new ProgressDialog(getContext());
+        progressDialog.setCancelable(false);
+        progressDialog.setMessage("Loading...");
+
         recyclerView = view.findViewById(R.id.recycleView);
 
         phongchoduyetlist = new ArrayList<>();
-
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext(), recyclerView.VERTICAL, false);
         recyclerView.setLayoutManager(linearLayoutManager);
 
+        loadData();
+        return view;
+    }
+
+    private void loadData(){
+        progressDialog.show();
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Rooms");
         reference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -74,15 +85,14 @@ public class AdminPhongTro_FragmentChoDuyet extends Fragment {
                     });
                     recyclerView.setAdapter(phongTroChoDuyetAdapter);
                 }
+                progressDialog.dismiss();
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-
+                progressDialog.dismiss();
             }
         });
-
-        return view;
     }
 
     private void replaceFragment(Fragment fragment)
