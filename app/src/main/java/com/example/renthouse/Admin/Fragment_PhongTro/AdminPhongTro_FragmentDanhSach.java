@@ -39,8 +39,6 @@ public class AdminPhongTro_FragmentDanhSach extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        //View view = inflater.inflate(R.layout.fragment_admin_phong_tro__danh_sach, container, false);
-
         binding = FragmentAdminPhongTroDanhSachBinding.inflate(inflater, container, false);
         View view = binding.getRoot();
 
@@ -109,9 +107,6 @@ public class AdminPhongTro_FragmentDanhSach extends Fragment {
 
             }
         });
-
-
-
         return view;
     }
     private void replaceFragment(Fragment fragment)
