@@ -8,30 +8,32 @@
     tools:context=".Activity.ActivityPhoBien"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-<!--    <TextView-->
-<!--        android:id="@+id/textLiked"-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="40dp"-->
-<!--        app:layout_constraintTop_toTopOf="parent"-->
-<!--        app:layout_constraintLeft_toLeftOf="parent"-->
-<!--        android:text="Khu Vực"-->
-<!--        android:textColor="@color/white"-->
-<!--        android:textSize="20sp"-->
-<!--        android:textStyle="bold"-->
-<!--        android:layout_marginTop="40dp"-->
-<!--        android:layout_marginLeft="25dp"-->
-<!--        >-->
-<!--    </TextView>-->
+    <TextView
+        android:id="@+id/textPhoBien"
+        android:layout_width="wrap_content"
+        android:layout_height="40dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:text="Khu Vực"
+        android:textColor="@color/white"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:layout_marginTop="40dp"
+        android:layout_marginLeft="25dp"
+        >
+    </TextView>
 
-<!--    <androidx.recyclerview.widget.RecyclerView-->
-<!--        android:id="@+id/recycleView_listroom"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:orientation="vertical"-->
-<!--        app:layout_constraintBottom_toBottomOf="parent"-->
-<!--        app:layout_constraintEnd_toEndOf="parent"-->
-<!--        app:layout_constraintStart_toStartOf="parent"-->
-<!--        app:layout_constraintTop_toBottomOf="@id/textLiked">-->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recycleView_listroom_phobien"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/textPhoBien"
+        app:layout_constraintVertical_bias="0.0">
 
-<!--    </androidx.recyclerview.widget.RecyclerView>-->
+    </androidx.recyclerview.widget.RecyclerView>
 </androidx.constraintlayout.widget.ConstraintLayout>

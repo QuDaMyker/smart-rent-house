@@ -1,5 +1,6 @@
 package com.example.renthouse.Activity;
 
+import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.util.Log;
@@ -18,6 +19,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.renthouse.Fragment.FragmentFilter;
 import com.example.renthouse.Interface.IClickItemAddressListener;
+import com.example.renthouse.OOP.PhoBien;
 import com.example.renthouse.R;
 import com.example.renthouse.Test.Location;
 import com.example.renthouse.Test.LocationAdapter;
@@ -63,6 +65,14 @@ public class ActivitySearch extends AppCompatActivity {
         textViewNoneResult.setVisibility(View.GONE);
         preferenceManager = new PreferenceManager(getApplicationContext());
         // Đọc dữ liệu từ file json
+
+        Intent intent = getIntent();
+        PhoBien phoBien = (PhoBien) intent.getSerializableExtra("selectedPhoBien");
+        if (phoBien!=null) {
+            String andress = phoBien.getName();
+            searchView.setQuery(andress,false);
+            showFragmentFilterPhoBien(andress);
+        }
 
         // Đọc lịch sử tìm kiếm
         listHistoryLocation = new ArrayList<Location>();
@@ -158,6 +168,24 @@ public class ActivitySearch extends AppCompatActivity {
         fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commit();
     }
+
+    private void showFragmentFilterPhoBien(String address) {
+        textViewHistorySearch.setVisibility(View.GONE);
+        recyclerView.setVisibility(View.GONE);
+
+
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentFilter fragmentFilter = new FragmentFilter(address, true);
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+
+        // Xóa tất cả các Fragment đang tồn tại trong LinearLayout trước khi thêm Fragment mới
+        fragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+
+        fragmentTransaction.replace(R.id.linearLayoutHistorySearch, fragmentFilter);
+        fragmentTransaction.addToBackStack(null);
+        fragmentTransaction.commit();
+    }
+
     private void hideFragmentFilter() {
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentFilter fragment = (FragmentFilter) fragmentManager.findFragmentById(R.id.linearLayoutHistorySearch);

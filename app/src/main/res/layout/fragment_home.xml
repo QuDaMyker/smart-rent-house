@@ -16,7 +16,7 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/linearLayout1"
             android:layout_width="match_parent"
-            android:layout_height="300dp"
+            android:layout_height="270dp"
             android:background="@drawable/home_bg"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
@@ -27,7 +27,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="35dp"
-                android:layout_marginTop="85dp"
+                android:layout_marginTop="55dp"
                 android:text="Xin Chào,"
                 android:textColor="@color/white"
                 android:textSize="26dp"
@@ -55,9 +55,9 @@
                 android:id="@+id/notificationBtn"
                 android:layout_width="60dp"
                 android:layout_height="60dp"
-                android:layout_marginStart="168dp"
-                android:layout_marginTop="60dp"
-                app:layout_constraintStart_toEndOf="@+id/tv_xinchao"
+                android:layout_marginEnd="30dp"
+                android:layout_marginTop="30dp"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:srcCompat="@drawable/ic_statelayer_home" />
 
@@ -175,15 +175,15 @@
                     android:layout_width="42dp"
                     android:layout_height="42dp"
                     android:layout_marginStart="15dp"
-                    android:layout_marginTop="10dp"
+                    android:layout_marginTop="8dp"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     app:srcCompat="@drawable/ic_seen_home" />
 
                 <TextView
                     android:id="@+id/textView5"
-                    android:layout_width="39dp"
-                    android:layout_height="31dp"
+                    android:layout_width="45dp"
+                    android:layout_height="35dp"
                     android:text="Đã xem gần đây"
                     android:textSize="11sp"
                     app:layout_constraintBottom_toBottomOf="parent"
@@ -227,6 +227,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/textView6" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
+
 
         <TextView
             android:id="@+id/textView7"

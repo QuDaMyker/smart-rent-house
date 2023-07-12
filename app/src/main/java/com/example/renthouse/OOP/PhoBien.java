@@ -4,22 +4,22 @@ import java.io.Serializable;
 import java.util.List;
 
 public class PhoBien implements Serializable {
-    private List<Room> roomList;
+    private String idphobien;
     private String image;
     private String name;
 
-    public PhoBien(String image, List<Room> roomList, String name) {
-        this.roomList = roomList;
+    public PhoBien(String image, String idphobien, String name) {
+        this.idphobien = idphobien;
         this.image = image;
         this.name = name;
     }
 
-    public List<Room> getRoomList() {
-        return roomList;
+    public String getIdphobien() {
+        return idphobien;
     }
 
-    public void setRoomList(List<Room> roomList) {
-        this.roomList = roomList;
+    public void setIdphobien(String idphobien) {
+        this.idphobien = idphobien;
     }
 
     public String getImage() {

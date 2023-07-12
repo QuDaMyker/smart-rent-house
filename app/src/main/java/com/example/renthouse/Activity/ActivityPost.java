@@ -241,7 +241,6 @@ public class ActivityPost extends AppCompatActivity {
     private void pushPopularRoom(Room room, String idRoom) {
         String roomcode = room.getLocation().getDistrict().getCode();
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference("PopularRoom").child(roomcode);
-        reference.child("ListRoom").child(idRoom).setValue(room);
 
         String name = room.getLocation().getDistrict().getName_with_type();
         reference.child("Name").setValue(name);
