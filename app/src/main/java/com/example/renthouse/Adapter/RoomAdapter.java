@@ -36,6 +36,7 @@ public class RoomAdapter extends RecyclerView.Adapter<RoomAdapter.RoomViewHolder
     private Context context;
     FirebaseDatabase firebaseDatabase;
     DatabaseReference reference;
+    private int enableLikeButton = View.VISIBLE;
 
     public RoomAdapter(Context context, List<Room> rooms) {
         this.context = context;
@@ -97,6 +98,7 @@ public class RoomAdapter extends RecyclerView.Adapter<RoomAdapter.RoomViewHolder
 
             }
         });
+        holder.cbLike.setVisibility(enableLikeButton);
         holder.tvName.setText(room.getTitle());
         holder.tvAddress.setText(room.getLocation().LocationToString());
         holder.tvPrice.setText(String.valueOf(room.getPrice()/1000000) + " Tr");
@@ -200,6 +202,12 @@ public class RoomAdapter extends RecyclerView.Adapter<RoomAdapter.RoomViewHolder
         }
         return 0;
     }
+    public void setEnableLikeButton(int enable) {
+
+        enableLikeButton = enable;
+        notifyDataSetChanged();
+    }
+
 
     public class RoomViewHolder extends RecyclerView.ViewHolder{
         private CardView itemRooom;

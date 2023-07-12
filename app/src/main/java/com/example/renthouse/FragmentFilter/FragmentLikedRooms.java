@@ -4,17 +4,14 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.Toast;
+import android.widget.ProgressBar;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.renthouse.Activity.ActivityDetails;
-import com.example.renthouse.Activity.ActivityMain;
 import com.example.renthouse.Adapter.RoomAdapter;
 import com.example.renthouse.OOP.Room;
 import com.example.renthouse.R;
@@ -22,16 +19,15 @@ import com.example.renthouse.utilities.Constants;
 import com.example.renthouse.utilities.PreferenceManager;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.ktx.Firebase;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.PrimitiveIterator;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -52,9 +48,13 @@ public class FragmentLikedRooms extends Fragment {
     private RoomAdapter roomAdapter;
     private List<Room> rooms;
     private List<String> idRoomsLiked;
+    private String idAC;
     private PreferenceManager preferenceManager;
+    private FirebaseDatabase db;
+    private ProgressBar prgLoading;
 
     public FragmentLikedRooms() {
+
 
     }
 
@@ -94,6 +94,7 @@ public class FragmentLikedRooms extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_liked_rooms, container, false);
         recyclerView = (RecyclerView) view.findViewById(R.id.rcv_LikedRooms);
+        prgLoading =  view.findViewById(R.id.loading);
         GridLayoutManager grid = new GridLayoutManager(getActivity(), 2);
 
         recyclerView.setLayoutManager(grid);
@@ -106,19 +107,19 @@ public class FragmentLikedRooms extends Fragment {
         recyclerView.setAdapter(roomAdapter);
 
         //getListLikedRoomFromFB();
-
         //getListRoomFromFB();
 
         return view;
     }
 
     private void getListLikedRoomFromFB() {
+        prgLoading.setVisibility(View.VISIBLE);
         rooms.clear();
         idRoomsLiked.clear();
         roomAdapter.notifyDataSetChanged();
         FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
         FirebaseUser currentUser = firebaseAuth.getCurrentUser();
-        FirebaseDatabase db = FirebaseDatabase.getInstance();
+        db = FirebaseDatabase.getInstance();
 
         String emailCur = currentUser.getEmail();
 
@@ -133,9 +134,10 @@ public class FragmentLikedRooms extends Fragment {
                 for (DataSnapshot snapshotAc : snapshot.getChildren()) {
                     emailAC = snapshotAc.child("email").getValue(String.class);
                     if (emailCur.equals(emailAC)) {
-                        String idAC = snapshotAc.getKey();
+                        idAC = snapshotAc.getKey();
                         //lấy danh sách id phòng user đã thích
                         DatabaseReference refLiked = db.getReference("LikedRooms");
+
                         refLiked.addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
                             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -157,6 +159,8 @@ public class FragmentLikedRooms extends Fragment {
                                                     }
                                                 }
                                                 roomAdapter.notifyDataSetChanged();
+                                                prgLoading.setVisibility(View.GONE);
+
                                             }
 
                                             @Override
@@ -219,3 +223,6 @@ public class FragmentLikedRooms extends Fragment {
 
     }
 }
+
+
+

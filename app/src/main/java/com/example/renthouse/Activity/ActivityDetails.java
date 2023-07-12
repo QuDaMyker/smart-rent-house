@@ -7,7 +7,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.Manifest;
@@ -17,7 +16,6 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
-import android.provider.ContactsContract;
 import android.util.Log;
 import android.view.View;
 import android.widget.CheckBox;
@@ -27,7 +25,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.Toolbar;
 
 import com.example.renthouse.Adapter.RoomAdapter;
 import com.example.renthouse.Adapter.UtilitiesAdapter;
@@ -261,6 +258,7 @@ public class ActivityDetails extends AppCompatActivity {
 
         rcmRooms = new ArrayList<>();
         RoomAdapter roomAdapter = new RoomAdapter(this, rcmRooms);
+        roomAdapter.setEnableLikeButton(View.INVISIBLE);
 
         rcvDeXuatP.setAdapter(roomAdapter);
 
@@ -272,7 +270,15 @@ public class ActivityDetails extends AppCompatActivity {
         tvChiDuong.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                String address = tvDiaChi.getText().toString();
+                Uri gmmIntentUri = Uri.parse("geo:0,0?q=" + Uri.encode(address));
+                Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
+                mapIntent.setPackage("com.google.android.apps.maps");
+                if (mapIntent.resolveActivity(getPackageManager()) != null) {
+                    startActivity(mapIntent);
+                } else {
+                    Toast.makeText(getApplicationContext(), "Ứng dụng Google Maps không được cài đặt trên thiết bị của bạn.", Toast.LENGTH_SHORT).show();
+                }
             }
         });
         btnPreScreen.setOnClickListener(new View.OnClickListener() {
@@ -329,9 +335,14 @@ public class ActivityDetails extends AppCompatActivity {
         btnThemTTtg.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+//                Intent intent1 = new Intent(ActivityDetails.this, ActivityDetailAccount.class);
+//                Bundle bundle = new Bundle();
+//                bundle.putSerializable("ACCOUNT",Tg);
+//                intent1.putExtras(bundle);
+//                startActivity(intent1);
 
             }
-        });//chua làm
+        });//Chua lam
         tvXemThemMT.setOnClickListener(new View.OnClickListener() {
 
             boolean isExpand = false;
@@ -437,13 +448,10 @@ public class ActivityDetails extends AppCompatActivity {
                     }
                 });
 
-
                 startActivity(intentChat);
-
 
             }
         });
-
         btnToEdit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -572,10 +580,7 @@ public class ActivityDetails extends AppCompatActivity {
                         refLiked.addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
                             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                //check lại khúc này
-                                boolean temp = false;
                                 if (snapshot.hasChild(room.getId())) {
-                                    temp = true;
                                     cbLiked.setChecked(true);
                                 }
                             }

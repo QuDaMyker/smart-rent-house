@@ -7,6 +7,14 @@
     android:background="@drawable/layout_bg">
 
     <!-- TODO: Update blank fragment layout -->
+    <ProgressBar
+        android:id="@+id/loading"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_gravity="center"
+        >
+
+    </ProgressBar>
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rcv_LikedRooms"
         android:layout_width="400dp"

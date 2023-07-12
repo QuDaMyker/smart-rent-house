@@ -273,7 +273,7 @@
                         android:layout_height="wrap_content"
                         android:text="Chỉ đường"
                         android:layout_marginLeft="10dp"
-                        android:textColor="@color/Primary_60"
+                        android:textColor="@color/Primary_40"
                         android:textStyle="bold"
                         />
                 </LinearLayout>
