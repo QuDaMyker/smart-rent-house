@@ -51,15 +51,30 @@
                 app:layout_constraintStart_toStartOf="@+id/tv_xinchao"
                 app:layout_constraintTop_toBottomOf="@+id/tv_xinchao" />
 
-            <ImageView
-                android:id="@+id/notificationBtn"
-                android:layout_width="60dp"
-                android:layout_height="60dp"
+            <FrameLayout
+                android:id="@+id/layout"
+                android:clipChildren="false"
+                android:clipToPadding="false"
+                android:layout_height="wrap_content"
+                 android:layout_width="wrap_content"
                 android:layout_marginEnd="30dp"
-                android:layout_marginTop="30dp"
+                android:layout_marginTop="55dp"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/ic_statelayer_home" />
+                app:layout_constraintTop_toTopOf="parent">
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/notificationBtn"
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    style="@style/Widget.Material3.Button.IconButton.Filled"
+                    android:layout_marginStart="10dp"
+                    android:backgroundTint="#33FFFFFF"
+                    android:contentDescription="Delete"
+                    app:icon="@drawable/ic_notifications"
+                    app:iconSize="32dp" />
+
+            </FrameLayout>
+
 
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="350dp"
