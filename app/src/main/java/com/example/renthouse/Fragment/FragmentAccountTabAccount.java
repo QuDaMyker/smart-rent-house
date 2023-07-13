@@ -90,9 +90,15 @@ public class FragmentAccountTabAccount extends Fragment {
 
         if (currentUser != null) {
             //progressDialog.show();
-            Picasso.get().load(preferenceManager.getString(Constants.KEY_IMAGE)).into(imageProfile);
-            nameProfile.setText(preferenceManager.getString(Constants.KEY_FULLNAME));
-            emailProfile.setText(preferenceManager.getString(Constants.KEY_EMAIL));
+            getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    Picasso.get().load(preferenceManager.getString(Constants.KEY_IMAGE)).into(imageProfile);
+                    nameProfile.setText(preferenceManager.getString(Constants.KEY_FULLNAME));
+                    emailProfile.setText(preferenceManager.getString(Constants.KEY_EMAIL));
+                }
+            });
+
 
             /*FirebaseDatabase database = FirebaseDatabase.getInstance();
             DatabaseReference reference = database.getReference("Accounts");
