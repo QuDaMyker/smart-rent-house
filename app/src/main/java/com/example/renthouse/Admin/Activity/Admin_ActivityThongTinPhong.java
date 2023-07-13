@@ -33,7 +33,9 @@ import com.example.renthouse.Adapter.RoomAdapter;
 import com.example.renthouse.Adapter.UtilitiesAdapter;
 import com.example.renthouse.Chat.Dashboard.ActivityChat;
 import com.example.renthouse.Chat.OOP.Conversation;
+import com.example.renthouse.FCM.SendNotificationTask;
 import com.example.renthouse.OOP.AccountClass;
+import com.example.renthouse.OOP.Notification;
 import com.example.renthouse.OOP.Room;
 import com.example.renthouse.R;
 import com.example.renthouse.utilities.Constants;
@@ -342,6 +344,12 @@ public class Admin_ActivityThongTinPhong extends AppCompatActivity {
                 pushPopularRoom(room, pathObject);
 
                 Toast.makeText(Admin_ActivityThongTinPhong.this, "Bạn đã duyệt phòng thành công", Toast.LENGTH_SHORT).show();
+
+                Notification notification = new Notification("Có phòng trọ mới vừa được đăng trên Rent House", "Hãy kiểm tra ngay để không bỏ lỡ cơ hội tuyệt vời này!", "room");
+                notification.setAttachedRoomKey(room.getId());
+                SendNotificationTask task = new SendNotificationTask(Admin_ActivityThongTinPhong.this, notification);
+
+                task.execute();
                 LoadLinearLayoutOption();
             }
         });
