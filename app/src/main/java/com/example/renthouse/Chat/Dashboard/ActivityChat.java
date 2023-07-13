@@ -53,7 +53,6 @@ public class ActivityChat extends AppCompatActivity {
     String getUserMobile = "";
     int lastIndex;
 
-    MessagesList messagesList;
     private RecyclerView chattingRecycleView;
     private ChatAdapter chatAdapter;
     private boolean loadingFirstTime = true;
@@ -111,7 +110,7 @@ public class ActivityChat extends AppCompatActivity {
         final String getProfilePic = getIntent().getStringExtra("profile_pic");
         otherKey = getIntent().getStringExtra("otherKey");
 
-        getMessageList();
+
 
         // get user email from memory
         getUserMobile = MemoryData.getData(ActivityChat.this);
@@ -205,7 +204,7 @@ public class ActivityChat extends AppCompatActivity {
                     messageEditText.setText("");
 
                     Notification notification = new Notification("Bạn có một tin nhắn mới", "Kết nối với người thuê hoặc chủ nhà ngay bây giờ!", "chat");
-                    notification.setAttachedMessage(messagesList);
+                    notification.setAttachedMessageKey(conversation.getReceiveId() + "/" + conversation.getSendId());
                     SendNotificationTask task = new SendNotificationTask(ActivityChat.this, notification);
                     task.execute();
                 }
@@ -220,22 +219,4 @@ public class ActivityChat extends AppCompatActivity {
             }
         });
     }
-
-    public void getMessageList() {
-        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Accounts").child(currentKey);
-        ref.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                AccountClass user = snapshot.getValue(AccountClass.class);
-                messagesList = new MessagesList(otherKey, user.getFullname(), user.getEmail(), null, user.getImage(), currentKey, 0, null);
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
-    }
-
-
 }

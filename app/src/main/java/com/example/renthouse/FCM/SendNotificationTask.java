@@ -52,8 +52,13 @@ public class SendNotificationTask extends AsyncTask<Void, Void, Void> {
                                 if(device.isRoomNoti() && notification.getType().equals("room")){
                                     flag = true;
                                 }
-                                if(device.isChatNoti() && notification.getType().equals("chat") && userKey.equals(notification.getAttachedMessage().getCurrentKey()) ){
-                                    flag = true;
+                                if(device.isChatNoti() && notification.getType().equals("chat")){
+                                    String[] parts = notification.getAttachedMessageKey().split("/");
+                                    String receiveId = parts[0];
+                                    String sendId = parts[1];
+                                    if(userKey.equals(receiveId)){
+                                        flag = true;
+                                    }
                                 }
                                 if(device.isLikeNoti() && notification.getType().equals("like")){
                                     flag = true;
@@ -64,9 +69,8 @@ public class SendNotificationTask extends AsyncTask<Void, Void, Void> {
 
                                 if(flag){
                                     sendNoti(device);
+                                    Log.e("Token send", device.getToken());
                                 }
-
-                                Log.e("Token send", device.getToken());
                             }
                         }
 

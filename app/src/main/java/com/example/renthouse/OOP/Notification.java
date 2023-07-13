@@ -5,8 +5,8 @@ import com.example.renthouse.Chat.Messages.MessagesList;
 public class Notification {
     private String title;
     private String body;
-    private Room attachedRoom;
-    private MessagesList attachedMessage;
+    private String attachedRoomKey;
+    private String attachedMessageKey;
     private String dateTime;
     private String type;
 
@@ -37,14 +37,6 @@ public class Notification {
         this.body = body;
     }
 
-    public Room getAttachedRoom() {
-        return attachedRoom;
-    }
-
-    public void setAttachedRoom(Room attachedRoom) {
-        this.attachedRoom = attachedRoom;
-    }
-
     public String getDateTime() {
         return dateTime;
     }
@@ -69,11 +61,19 @@ public class Notification {
         this.type = type;
     }
 
-    public MessagesList getAttachedMessage() {
-        return attachedMessage;
+    public String getAttachedRoomKey() {
+        return attachedRoomKey;
     }
 
-    public void setAttachedMessage(MessagesList attachedMessage) {
-        this.attachedMessage = attachedMessage;
+    public void setAttachedRoomKey(String attachedRoomKey) {
+        this.attachedRoomKey = attachedRoomKey;
+    }
+
+    public String getAttachedMessageKey() {
+        return attachedMessageKey;
+    }
+
+    public void setAttachedMessageKey(String attachedMessageKey) {
+        this.attachedMessageKey = attachedMessageKey;
     }
 }
