@@ -57,6 +57,7 @@
         android:padding="5dp"
         android:src="@drawable/ic_notifications"
         app:layout_constraintRight_toLeftOf="@id/imageLogout"
+
         app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.appcompat.widget.AppCompatImageView
@@ -261,6 +262,7 @@
                         android:id="@+id/tv_TongSoNguoiDung"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+
                         android:text="..."
                         android:textColor="@color/Primary_40"
                         android:textSize="32sp"

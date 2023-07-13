@@ -4,11 +4,12 @@ public class MessagesList {
     private String currentKey;
     private String name, email, lastMessages, profilePic, otherKey;
     private int unseenMessages;
+    private String sendTime;
 
     public MessagesList() {
     }
 
-    public MessagesList(String currentKey, String name, String email, String lastMessages, String profilePic, String otherKey, int unseenMessages) {
+    public MessagesList(String currentKey, String name, String email, String lastMessages, String profilePic, String otherKey, int unseenMessages, String sendTime) {
         this.currentKey = currentKey;
         this.name = name;
         this.email = email;
@@ -16,6 +17,7 @@ public class MessagesList {
         this.profilePic = profilePic;
         this.otherKey = otherKey;
         this.unseenMessages = unseenMessages;
+        this.sendTime = sendTime;
     }
 
     public String getCurrentKey() {
@@ -72,5 +74,13 @@ public class MessagesList {
 
     public void setUnseenMessages(int unseenMessages) {
         this.unseenMessages = unseenMessages;
+    }
+
+    public String getSendTime() {
+        return sendTime;
+    }
+
+    public void setSendTime(String sendTime) {
+        this.sendTime = sendTime;
     }
 }

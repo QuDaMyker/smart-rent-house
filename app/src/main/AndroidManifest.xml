@@ -13,6 +13,7 @@
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.SET_ALARM"/>
 
     <application
         android:name=".MyApplication"
@@ -28,12 +29,15 @@
         tools:targetApi="31">
         <activity android:name=".Admin.Activity.Admin_ActivityStatistics"
             android:exported="false"/>
+        <receiver android:name=".BroadcastReceiver.MyAlarmReceiver"/>
         <activity
             android:name=".Admin.Activity.Admin_ActivityBaoCaoNguoiDung"
             android:exported="false" />
         <activity
             android:name=".Admin.Activity.Admin_ActivityThongTinNguoiDung"
             android:exported="false" />
+        <activity android:name=".Admin.Activity.Admin_ActivityThongTinPhong"
+            android:exported="false"/>
         <activity
             android:name=".Activity.ActivityContactAdmin"
             android:exported="false" />
@@ -61,9 +65,6 @@
             </intent-filter>
         </service>
 
-        <activity
-            android:name=".Chat.ChatActivity"
-            android:exported="false" />
         <activity
             android:name=".Chat.Dashboard.ActivityChat"
             android:exported="false" />
@@ -116,6 +117,9 @@
             android:name=".Activity.ActivityAccountInformation"
             android:exported="false" />
         <activity
+            android:name=".Activity.FullScreenActivity"
+            android:exported="false" />
+        <activity
             android:name=".Activity.ActivitySplash"
             android:exported="true">
             <intent-filter>
@@ -125,11 +129,14 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".Activity.FullScreenActivity"
-            android:exported="false" />
-        <activity
             android:name=".Activity.ActivityMain"
-            android:exported="false" />
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+           </intent-filter>
+        </activity>
         <activity
             android:name=".Activity.ActivitySignUp"
             android:exported="false" />

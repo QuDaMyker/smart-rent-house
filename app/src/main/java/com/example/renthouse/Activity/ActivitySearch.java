@@ -1,5 +1,6 @@
 package com.example.renthouse.Activity;
 
+import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Handler;
@@ -19,6 +20,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.renthouse.Fragment.FragmentFilter;
 import com.example.renthouse.Interface.IClickItemAddressListener;
+import com.example.renthouse.OOP.PhoBien;
 import com.example.renthouse.R;
 import com.example.renthouse.Test.Location;
 import com.example.renthouse.Test.LocationAdapter;
@@ -61,6 +63,14 @@ public class ActivitySearch extends AppCompatActivity {
         textViewNoneResult = findViewById(R.id.textViewNoneResult);
         textViewNoneResult.setVisibility(View.GONE);
         preferenceManager = new PreferenceManager(getApplicationContext());
+
+        Intent intent = getIntent();
+        PhoBien phoBien = (PhoBien) intent.getSerializableExtra("selectedPhoBien");
+        if (phoBien!=null) {
+            String andress = phoBien.getName();
+            searchView.setQuery(andress,false);
+            showFragmentFilterPhoBien(andress);
+        }
 
         // Đọc lịch sử tìm kiếm
         listHistoryLocation = new ArrayList<Location>();
@@ -149,6 +159,23 @@ public class ActivitySearch extends AppCompatActivity {
 
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentFilter fragmentFilter = new FragmentFilter(address);
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+
+        // Xóa tất cả các Fragment đang tồn tại trong LinearLayout trước khi thêm Fragment mới
+        fragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+
+        fragmentTransaction.replace(R.id.linearLayoutHistory, fragmentFilter);
+        fragmentTransaction.addToBackStack(null);
+        fragmentTransaction.commit();
+    }
+
+    private void showFragmentFilterPhoBien(String address) {
+        textViewHistorySearch.setVisibility(View.GONE);
+        recyclerView.setVisibility(View.GONE);
+
+
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentFilter fragmentFilter = new FragmentFilter(address, true);
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
 
         // Xóa tất cả các Fragment đang tồn tại trong LinearLayout trước khi thêm Fragment mới

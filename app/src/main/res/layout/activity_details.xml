@@ -44,14 +44,13 @@
 
         <CheckBox
             android:id="@+id/cbLike"
-            android:layout_width="35dp"
-            android:layout_height="35dp"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
             android:layout_gravity="right"
             android:layout_marginRight="20dp"
             android:button="@drawable/custom_checkbox_like"
             android:buttonTint="#FF5050"
-            android:checked="false"
-            />
+            android:checked="false" />
     </com.google.android.material.appbar.MaterialToolbar>
 
     <ScrollView
@@ -71,37 +70,35 @@
             android:layout_height="wrap_content"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/detail_tool_bar"
-            >
+            app:layout_constraintTop_toBottomOf="@id/detail_tool_bar">
 
             <ImageView
                 android:id="@+id/ivImages"
                 android:layout_width="match_parent"
                 android:layout_height="250dp"
+                android:scaleType="centerCrop"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="@id/linear2"
-                android:scaleType="centerCrop"
-                >
+                app:layout_constraintTop_toTopOf="@id/linear2">
 
             </ImageView>
+
             <ImageButton
                 android:id="@+id/btnPreImage"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
                 android:layout_marginLeft="20dp"
                 android:background="@drawable/btn_circle_previous"
                 app:layout_constraintBottom_toBottomOf="@id/ivImages"
                 app:layout_constraintLeft_toLeftOf="@id/ivImages"
-                app:layout_constraintTop_toTopOf="@id/ivImages"
-                >
+                app:layout_constraintTop_toTopOf="@id/ivImages">
 
             </ImageButton>
 
             <ImageButton
                 android:id="@+id/btnNextImage"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
                 android:layout_marginRight="20dp"
                 android:background="@drawable/btn_circle_next"
                 app:layout_constraintBottom_toBottomOf="@id/ivImages"
@@ -109,17 +106,18 @@
                 app:layout_constraintTop_toTopOf="@id/ivImages">
 
             </ImageButton>
+
             <TextView
                 android:id="@+id/tvIndex"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="20dp"
                 android:text="1/4"
+                android:textColor="@color/white"
+                android:textSize="15dp"
                 app:layout_constraintBottom_toBottomOf="@id/ivImages"
                 app:layout_constraintLeft_toLeftOf="@id/ivImages"
                 app:layout_constraintRight_toRightOf="@id/ivImages"
-                android:textSize="15dp"
-                android:layout_marginBottom="20dp"
-                android:textColor="@color/white"
 
                 />
 
@@ -256,13 +254,30 @@
                     android:layout_height="25dp"
                     android:src="@drawable/outline_location_on_24" />
 
-                <TextView
-                    android:id="@+id/tvDiaChi"
+                <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="10dp"
-                    android:text="320 Nguyễn Văn Linh, Phường Bình Thuận, Quận 7, Hồ Chí Minh"
-                    android:textColor="@color/Secondary_40" />
+                    android:orientation="vertical"
+                    android:layout_gravity="center_vertical"
+                    >
+                    <TextView
+                        android:id="@+id/tvDiaChi"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="10dp"
+                        android:text="320 Nguyễn Văn Linh, Phường Bình Thuận, Quận 7, Hồ Chí Minh"
+                        android:textColor="@color/Secondary_40" />
+                    <TextView
+                        android:id="@+id/tvChiDuong"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Chỉ đường"
+                        android:layout_marginLeft="10dp"
+                        android:textColor="@color/Primary_40"
+                        android:textStyle="bold"
+                        />
+                </LinearLayout>
+
 
             </LinearLayout>
 
@@ -453,8 +468,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="5dp"
-                        android:maxLines="2"
                         android:ellipsize="end"
+                        android:maxLines="2"
                         android:text="Thông tin mô tả đầy đủ"
                         android:textColor="@color/black"
                         android:textSize="13sp" />
@@ -536,15 +551,15 @@
                     android:rowCount="5"
                     android:useDefaultMargins="true" />
 
-<!--                <TextView-->
-<!--                    android:id="@+id/tvMoreTI"-->
-<!--                    android:layout_width="wrap_content"-->
-<!--                    android:layout_height="wrap_content"-->
-<!--                    android:layout_gravity="center"-->
-<!--                    android:clickable="true"-->
-<!--                    android:text="Xem thêm"-->
-<!--                    android:textColor="@color/Primary_40"-->
-<!--                    android:textStyle="bold" />-->
+                <!--                <TextView-->
+                <!--                    android:id="@+id/tvMoreTI"-->
+                <!--                    android:layout_width="wrap_content"-->
+                <!--                    android:layout_height="wrap_content"-->
+                <!--                    android:layout_gravity="center"-->
+                <!--                    android:clickable="true"-->
+                <!--                    android:text="Xem thêm"-->
+                <!--                    android:textColor="@color/Primary_40"-->
+                <!--                    android:textStyle="bold" />-->
 
             </LinearLayout>
 
@@ -645,15 +660,15 @@
 
                 </androidx.recyclerview.widget.RecyclerView>
 
-<!--                <TextView-->
-<!--                    android:id="@+id/tvMoreRoom"-->
-<!--                    android:layout_width="wrap_content"-->
-<!--                    android:layout_height="wrap_content"-->
-<!--                    android:layout_gravity="center"-->
-<!--                    android:clickable="true"-->
-<!--                    android:text="Xem thêm"-->
-<!--                    android:textColor="@color/Primary_40"-->
-<!--                    android:textStyle="bold" />-->
+                <!--                <TextView-->
+                <!--                    android:id="@+id/tvMoreRoom"-->
+                <!--                    android:layout_width="wrap_content"-->
+                <!--                    android:layout_height="wrap_content"-->
+                <!--                    android:layout_gravity="center"-->
+                <!--                    android:clickable="true"-->
+                <!--                    android:text="Xem thêm"-->
+                <!--                    android:textColor="@color/Primary_40"-->
+                <!--                    android:textStyle="bold" />-->
 
             </LinearLayout>
 
@@ -677,7 +692,7 @@
             android:id="@+id/tvGia"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingLeft="30dp"
+            android:paddingLeft="20dp"
             android:text="20.000.000 đ"
             android:textColor="@color/white"
             android:textSize="23sp" />
@@ -689,19 +704,94 @@
             android:textColor="@color/white"
             android:textSize="15sp" />
 
-        <ImageButton
-            android:id="@+id/btnToChat"
-            android:layout_width="70dp"
-            android:layout_height="40dp"
-            android:layout_marginLeft="25dp"
-            android:src="@drawable/btn_chat" />
+        <LinearLayout
+            android:id="@+id/NormalUserLayout"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="20dp"
+            android:layout_weight="1"
+            android:visibility="gone">
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnToChat"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:paddingHorizontal="5dp"
+                android:paddingVertical="12dp"
+                android:text="Chat"
+                android:textStyle="bold"
+                android:layout_weight="1"
+                app:icon="@drawable/ic_chat_foreground"
+                app:iconTint="@color/Primary_40"
+                android:textColor="@color/Primary_40"
+                android:textSize="16dp"
+                app:iconGravity="textEnd"
+                app:iconSize="22dp"
+                app:cornerRadius="10dp"
+                android:backgroundTint="@color/Primary_98"
+                android:layout_marginEnd="10dp"/>
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnToCall"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:paddingHorizontal="5dp"
+                android:paddingVertical="12dp"
+                android:text="Gọi"
+                android:textStyle="bold"
+                android:layout_weight="1"
+                app:icon="@drawable/ic_phone"
+                app:iconTint="@color/Secondary_40"
+                android:textColor="@color/Secondary_40"
+                android:textSize="16dp"
+                app:iconGravity="textEnd"
+                app:iconSize="22dp"
+                app:cornerRadius="10dp"
+                android:backgroundTint="@color/Secondary_90"/>
+        </LinearLayout>
+        <LinearLayout
+            android:id="@+id/OwnerLayout"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="20dp"
+            android:layout_weight="1"
+            android:visibility="gone">
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnToDelete"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:paddingHorizontal="5dp"
+                android:paddingVertical="12dp"
+                android:text="Xóa"
+                android:textStyle="bold"
+                android:layout_weight="1"
+                app:icon="@drawable/ic_delete"
+                app:iconTint="@color/Red_50"
+                android:textColor="@color/Red_50"
+                android:textSize="16dp"
+                app:iconGravity="textStart"
+                app:iconSize="22dp"
+                app:cornerRadius="10dp"
+                android:backgroundTint="@color/Red_90"
+                android:layout_marginEnd="10dp"/>
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnToEdit"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:paddingHorizontal="5dp"
+                android:paddingVertical="12dp"
+                android:text="Sửa"
+                android:textStyle="bold"
+                android:layout_weight="1"
+                app:icon="@drawable/ic_edit"
+                app:iconTint="@color/Secondary_40"
+                android:textColor="@color/Secondary_40"
+                android:textSize="16dp"
+                app:iconGravity="textStart"
+                app:iconSize="22dp"
+                app:cornerRadius="10dp"
+                android:backgroundTint="@color/Secondary_90"/>
+        </LinearLayout>
 
-        <ImageButton
-            android:id="@+id/btnToCall"
-            android:layout_width="70dp"
-            android:layout_height="40dp"
-            android:layout_marginLeft="18dp"
-            android:src="@drawable/btn_call" />
+
 
     </LinearLayout>
 

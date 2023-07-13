@@ -1,7 +1,7 @@
 package com.example.renthouse.OOP;
 
 public class Device {
-    AccountClass user;
+    String userId;
     String token;
     boolean roomNoti;
     boolean chatNoti;
@@ -11,8 +11,8 @@ public class Device {
     public Device() {
     }
 
-    public Device(AccountClass user, String token, boolean roomNoti, boolean chatNoti, boolean likeNoti, boolean scheduleNoti) {
-        this.user = user;
+    public Device(String userId, String token, boolean roomNoti, boolean chatNoti, boolean likeNoti, boolean scheduleNoti) {
+        this.userId = userId;
         this.token = token;
         this.roomNoti = roomNoti;
         this.chatNoti = chatNoti;
@@ -20,12 +20,12 @@ public class Device {
         this.scheduleNoti = scheduleNoti;
     }
 
-    public AccountClass getUser() {
-        return user;
+    public String getUserId() {
+        return userId;
     }
 
-    public void setUser(AccountClass user) {
-        this.user = user;
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 
     public String getToken() {

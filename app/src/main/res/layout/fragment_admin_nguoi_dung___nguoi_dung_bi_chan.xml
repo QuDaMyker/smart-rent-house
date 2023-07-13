@@ -5,7 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white"
-    tools:context=".Admin.Fragment_NguoiDung.AdminNguoiDung_Fragment_NguoiDungBiChan">
+    tools:context=".Admin.Fragment_NguoiDung.AdminNguoiDung_Fragment_NguoiDungBiChan"
+    android:paddingHorizontal="20dp">
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycleView"
@@ -16,11 +17,12 @@
         android:clipToPadding="false"
         android:orientation="vertical"
         android:overScrollMode="never"
-        android:paddingStart="20dp"
-        android:paddingEnd="20dp"
+        android:paddingStart="5dp"
+        android:paddingEnd="5dp"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        tools:listitem="@layout/item_container_danhsachnguoidungbichan" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -10,9 +10,6 @@
     <string-array name="loop">
         <item>Không bao giờ</item>
         <item>Hàng ngày</item>
-        <item>Hàng tuần</item>
-        <item>Hàng tháng</item>
-        <item>Hàng năm</item>
     </string-array>
     <string-array name="receiver">
         <item>Tất cả</item>
@@ -31,5 +28,6 @@
     <string name="phong_tro">Phòng trọ</string>
     <string name="nguoi_dung">Người dùng</string>
     <string name="loading">Đang tải</string>
+    <string name="title_activity_map_from_detail">ActivityMapFromDetail</string>
 
 </resources>

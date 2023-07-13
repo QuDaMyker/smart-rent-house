@@ -33,6 +33,20 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.example.renthouse.Activity.ActivitySplash;
+import com.example.renthouse.Admin.Activity.Admin_ActivityBaoCaoNguoiDung;
+import com.example.renthouse.Admin.Activity.Admin_ActivityScheduledNotification;
+import com.example.renthouse.R;
+import com.example.renthouse.databinding.FragmentAdminHomeBinding;
+import com.example.renthouse.utilities.PreferenceManager;
+import com.github.mikephil.charting.charts.BarChart;
+import com.github.mikephil.charting.data.BarData;
+import com.github.mikephil.charting.data.BarDataSet;
+import com.github.mikephil.charting.data.BarEntry;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.firebase.auth.FirebaseAuth;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
@@ -63,6 +77,7 @@ public class Admin_FragmentHome extends Fragment {
 
     }
 
+    private PreferenceManager preferenceManager;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -84,7 +99,8 @@ public class Admin_FragmentHome extends Fragment {
         adapter = new HotRegionAdapter(regionListTop3);
         binding.recycleView.hasFixedSize();
         binding.recycleView.setAdapter(adapter);
-
+        init();
+        setListener();
 
 
         addDateInSameWeek();
@@ -94,6 +110,7 @@ public class Admin_FragmentHome extends Fragment {
         //setUpBarChart();
         return view;
     }
+
 
     private void setUpBarChart() {
         BarDataSet barDataSet1 = new BarDataSet(barEntriesAccess(), "Số lượt truy cập");
@@ -162,6 +179,8 @@ public class Admin_FragmentHome extends Fragment {
 
         }
         return barEntries;
+    private void init() {
+        preferenceManager = new PreferenceManager(getContext());
     }
 
     private void setListener() {
@@ -172,6 +191,7 @@ public class Admin_FragmentHome extends Fragment {
                 startActivity(intent);
             }
         });
+
         binding.linearThongKe.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -186,6 +206,30 @@ public class Admin_FragmentHome extends Fragment {
                 startActivity(new Intent(requireContext(), ActivityLogIn.class));
             }
         });
+
+        binding.linearDatLichThongBao.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getContext(), Admin_ActivityScheduledNotification.class);
+                startActivity(intent);
+            }
+        });
+
+        binding.imageLogout.setOnClickListener(v-> logOut());
+
+    }
+
+    private void logOut() {
+        preferenceManager.clear();
+        FirebaseAuth.getInstance().signOut();
+        GoogleSignInOptions gso = new GoogleSignInOptions.
+                Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).
+                build();
+
+        GoogleSignInClient googleSignInClient = GoogleSignIn.getClient(getActivity(), gso);
+        googleSignInClient.signOut();
+        getActivity().finish();
+        startActivity(new Intent(requireContext(), ActivitySplash.class));
     }
     private void loadData() {
         DatabaseReference firebaseDatabase = FirebaseDatabase.getInstance().getReference("Accounts");
