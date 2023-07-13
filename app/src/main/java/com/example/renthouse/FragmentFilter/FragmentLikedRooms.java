@@ -144,7 +144,7 @@ public class FragmentLikedRooms extends Fragment {
                                 for (DataSnapshot userIDSnapshot : snapshot.getChildren()) {
                                     if (userIDSnapshot.getKey().equals(idAC)) {
                                         for (DataSnapshot roomSnapshot : userIDSnapshot.getChildren()) {
-                                            String idRoom = roomSnapshot.getValue(String.class);
+                                            String idRoom = roomSnapshot.getKey();
                                             idRoomsLiked.add(idRoom);
                                         }
                                         DatabaseReference refRoom = db.getReference("Rooms");

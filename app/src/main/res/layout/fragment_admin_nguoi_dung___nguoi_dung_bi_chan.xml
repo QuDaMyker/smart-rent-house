@@ -5,7 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white"
-    tools:context=".Admin.Fragment_NguoiDung.AdminNguoiDung_Fragment_NguoiDungBiChan">
+    tools:context=".Admin.Fragment_NguoiDung.AdminNguoiDung_Fragment_NguoiDungBiChan"
+    android:paddingHorizontal="20dp">
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycleView"

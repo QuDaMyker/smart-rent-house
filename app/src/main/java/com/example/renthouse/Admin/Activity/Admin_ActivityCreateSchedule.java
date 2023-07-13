@@ -13,6 +13,7 @@ import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.View;
 import android.widget.AutoCompleteTextView;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
 import com.example.renthouse.Admin.OOP.NotiSchedule;
@@ -60,6 +61,8 @@ public class Admin_ActivityCreateSchedule extends AppCompatActivity {
     MaterialButton cancelBtn;
     //NotiSchedule editNoti;
 
+    ImageButton backBtn;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,6 +85,14 @@ public class Admin_ActivityCreateSchedule extends AppCompatActivity {
 
         createBtn = findViewById(R.id.createBtn);
         cancelBtn = findViewById(R.id.cancelBtn);
+
+        backBtn = findViewById(R.id.btn_Back);
+        backBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onBackPressed();
+            }
+        });
 //        editNoti = null;
 //        try {
 //            editNoti = (NotiSchedule) getIntent().getExtras().get("notiSchedule");

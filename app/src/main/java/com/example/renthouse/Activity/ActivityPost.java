@@ -17,6 +17,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageButton;
 import android.widget.ScrollView;
 import android.widget.Toast;
 
@@ -76,6 +77,8 @@ public class ActivityPost extends AppCompatActivity {
     AccountClass user;
     public Room roomToEdit;
 
+    ImageButton btnBack;
+
     public interface OnUploadImageCompleteListener {
         void onUploadImageComplete();
     }
@@ -83,6 +86,13 @@ public class ActivityPost extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_post);
+        btnBack = findViewById(R.id.btn_Back);
+        btnBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onBackPressed();
+            }
+        });
 
         roomToEdit = null;
         try {

@@ -34,6 +34,8 @@
         <activity
             android:name=".Admin.Activity.Admin_ActivityThongTinNguoiDung"
             android:exported="false" />
+        <activity android:name=".Admin.Activity.Admin_ActivityThongTinPhong"
+            android:exported="false"/>
         <activity
             android:name=".Activity.ActivityContactAdmin"
             android:exported="false" />
