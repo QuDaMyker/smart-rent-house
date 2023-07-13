@@ -127,47 +127,6 @@ public class FragmentAccountPosted extends Fragment {
                     progressDialog.dismiss();
                 }
             });
-
-            /*reference.addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    listRoomPosted.clear();
-                    for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
-                        Room item = new Room();
-                        String email = dataSnapshot.child("createdBy").child("email").getValue(String.class);
-                        if (email.equals(currentUser.getEmail())) {
-                            String id = dataSnapshot.child("id").getValue(String.class);
-                            String title = dataSnapshot.child("title").getValue(String.class);
-                            int price = dataSnapshot.child("price").getValue(Integer.class);
-                            GenericTypeIndicator<List<String>> typeIndicator = new GenericTypeIndicator<List<String>>() {
-                            };
-                            List<String> images = dataSnapshot.child("images").getValue(typeIndicator);
-                            LocationTemp location = dataSnapshot.child("location").getValue(LocationTemp.class);
-                            item.setId(id);
-                            item.setImages(images);
-                            item.setTitle(title);
-                            item.setPrice(price);
-                            item.setLocation(location);
-
-                            listRoomPosted.add(item);
-                        }
-                    }
-                    postedAdapter.notifyDataSetChanged();
-                    if(listRoomPosted.isEmpty()) {
-                        recyclerView.setVisibility(View.INVISIBLE);
-                        lottieAnimationView.setVisibility(View.VISIBLE);
-                    }else {
-                        recyclerView.setVisibility(View.VISIBLE);
-                        lottieAnimationView.setVisibility(View.INVISIBLE);
-                    }
-                    progressDialog.dismiss();
-                }
-
-                @Override
-                public void onCancelled(@NonNull DatabaseError error) {
-
-                }
-            });*/
         }
 
         return view;

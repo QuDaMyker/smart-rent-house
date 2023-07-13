@@ -13,8 +13,11 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.Editable;
+import android.text.InputType;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.text.method.HideReturnsTransformationMethod;
+import android.text.method.PasswordTransformationMethod;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
@@ -38,6 +41,7 @@ import com.example.renthouse.Admin.Activity.Admin_ActivityMain;
 import com.example.renthouse.OOP.AccountClass;
 import com.example.renthouse.Other.CommonUtils;
 import com.example.renthouse.R;
+import com.example.renthouse.databinding.ActivityLogInBinding;
 import com.example.renthouse.utilities.Constants;
 import com.example.renthouse.utilities.PreferenceManager;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
@@ -65,136 +69,127 @@ import com.google.firebase.storage.FirebaseStorage;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.regex.Pattern;
 
 public class ActivityLogIn extends AppCompatActivity {
+    private ActivityLogInBinding binding;
     private static final int REQUEST_CODE = 1;
-    private boolean showOneTapUI = true;
-    private TextView forgotPasswordBtn;
-    private TextView signUpBtn;
-    private Button loginWithGoogleBtn, login_logInBtn;
     private FirebaseStorage storage;
-    FirebaseAuth mAuth;
-    private TextInputEditText login_email, login_password;
-    GoogleSignInOptions gso;
-    GoogleSignInClient gsc;
-    FirebaseDatabase database;
-    DatabaseReference reference;
-    String imageURL;
+    private FirebaseAuth mAuth;
+    private GoogleSignInOptions gso;
+    private GoogleSignInClient gsc;
+    private FirebaseDatabase database;
+    private DatabaseReference reference;
     private PreferenceManager preferenceManager;
-    ProgressDialog progressDialog;
+    private ProgressDialog progressDialog;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_log_in);
+        binding = ActivityLogInBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
 
+
+        init();
+        setListeners();
+    }
+
+    private void init() {
         preferenceManager = new PreferenceManager(getApplicationContext());
 
         progressDialog = new ProgressDialog(ActivityLogIn.this);
         progressDialog.setCancelable(false);
         progressDialog.setMessage("Loading...");
 
+        mAuth = FirebaseAuth.getInstance();
         database = FirebaseDatabase.getInstance();
         reference = database.getReference();
         storage = FirebaseStorage.getInstance();
-        //
 
-        forgotPasswordBtn = findViewById(R.id.forgotPasswordBtn);
-        signUpBtn = findViewById(R.id.login_signUpBtn);
-        loginWithGoogleBtn = findViewById(R.id.login_loginWithGoogleBtn);
-        login_email = findViewById(R.id.login_email);
-        login_password = findViewById(R.id.login_password);
-        login_logInBtn = findViewById(R.id.login_logInBtn);
-        mAuth = FirebaseAuth.getInstance();
+        binding.inputEmail.setSingleLine();
+        binding.inputPassword.setSingleLine();
+       /* if (binding.inputPassword.getText().toString().isEmpty()) {
+            binding.outlinePassword.setPasswordVisibilityToggleEnabled(false);
+        }*/
 
+        if (binding.inputPassword.getTransformationMethod() instanceof PasswordTransformationMethod) {
+            // Mã hóa mật khẩu
+            binding.inputPassword.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
+        } else {
+            // Không mã hóa mật khẩu
+            binding.inputPassword.setTransformationMethod(PasswordTransformationMethod.getInstance());
+        }
 
-        login_logInBtn.setOnClickListener(new View.OnClickListener() {
+    }
+
+    private void setListeners() {
+        binding.inputEmail.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                binding.outlineEmail.setError("");
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+        binding.inputPassword.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                binding.outlinePassword.setError("");
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+        binding.loginLogInBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String email, password;
-                email = String.valueOf(login_email.getText());
-                password = String.valueOf(login_password.getText());
-
-                if (email.equals("admin") && password.equals("admin")) {
+                if (binding.inputEmail.getText().toString().trim().equals("admin") && binding.inputPassword.getText().toString().trim().equals("admin")) {
                     preferenceManager.putBoolean(Constants.KEY_IS_SIGNED_IN, true);
-                    preferenceManager.putString(Constants.KEY_EMAIL, email);
-                    preferenceManager.putString(Constants.KEY_PASSWORD, password);
+                    preferenceManager.putString(Constants.KEY_EMAIL, binding.inputEmail.getText().toString().trim());
+                    preferenceManager.putString(Constants.KEY_PASSWORD, binding.inputPassword.getText().toString().trim());
                     CommonUtils.showNotification(ActivityLogIn.this, "Thông Báo", "Chào mừng Admin trở lại", R.drawable.ic_phobien_1);
                     startActivity(new Intent(ActivityLogIn.this, Admin_ActivityMain.class));
                     finish();
                     return;
                 }
-                if (TextUtils.isEmpty(email)) {
-                    login_email.setError("Vui lòng điền email");
-                    return;
-                }
-                if (!isValidEmail(email)) {
-                    login_email.setError("Vui lòng điền đúng định dạng email");
-                    return;
+
+                if (checkCondition()) {
+                    logInWithEmailPassword();
                 }
 
-                if (TextUtils.isEmpty(password)) {
-                    login_password.setError("Vui lòng điền mật khẩu");
-                    return;
-                }
-
-
-                mAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()) {
-                            preferenceManager.putString(Constants.KEY_EMAIL, email);
-                            preferenceManager.putString(Constants.KEY_PASSWORD, password);
-                            preferenceManager.putBoolean(Constants.KEY_IS_SIGNED_IN, true);
-
-                            DatabaseReference ref = database.getReference();
-                            Query query = ref.child("Accounts").orderByChild("email").equalTo(email);
-                            query.addListenerForSingleValueEvent(new ValueEventListener() {
-                                @Override
-                                public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                    for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
-                                        preferenceManager.putString(Constants.KEY_USER_KEY, dataSnapshot.getKey());
-                                    }
-                                }
-
-                                @Override
-                                public void onCancelled(@NonNull DatabaseError error) {
-
-                                }
-                            });
-
-                            pushNotification();
-                            Toast.makeText(getApplicationContext(), "Login Successful", Toast.LENGTH_SHORT).show();
-                            Intent intent = new Intent(getApplicationContext(), ActivityMain.class);
-                            startActivity(intent);
-                            finish();
-                        } else {
-                            Toast.makeText(ActivityLogIn.this, "Authentication failed.", Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                });
             }
         });
-
-        forgotPasswordBtn.setOnClickListener(new View.OnClickListener() {
+        binding.forgotPasswordBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getApplicationContext(), ActivityForgotPassword.class);
                 startActivityForResult(intent, REQUEST_CODE);
             }
         });
-
-        signUpBtn.setOnClickListener(new View.OnClickListener() {
+        binding.loginSignUpBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getApplicationContext(), ActivitySignUp.class);
-                startActivityForResult(intent, REQUEST_CODE);
+                startActivity(intent);
             }
         });
-        // login with google
-
-        loginWithGoogleBtn.setOnClickListener(new View.OnClickListener() {
+        binding.loginLoginWithGoogleBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -205,45 +200,60 @@ public class ActivityLogIn extends AppCompatActivity {
                 signInWithGoogle();
             }
         });
+    }
 
-
-        login_password.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+    private void logInWithEmailPassword() {
+        progressDialog.show();
+        String email = binding.inputEmail.getText().toString().trim();
+        String password = binding.inputPassword.getText().toString().trim();
+        mAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
             @Override
-            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                if (actionId == EditorInfo.IME_ACTION_DONE || actionId == EditorInfo.IME_ACTION_GO) {
-                    login_logInBtn.performClick();
-                    return true;
-                }
-                return false;
-            }
-        });
+            public void onComplete(@NonNull Task<AuthResult> task) {
+                if (task.isSuccessful()) {
+                    progressDialog.show();
+                    preferenceManager.putString(Constants.KEY_EMAIL, email);
+                    preferenceManager.putString(Constants.KEY_PASSWORD, password);
+                    preferenceManager.putBoolean(Constants.KEY_IS_SIGNED_IN, true);
 
-        login_password.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                // Trước khi text thay đổi
+                    DatabaseReference ref = database.getReference();
+                    Query query = ref.child("Accounts").orderByChild("email").equalTo(email);
+                    query.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                            AccountClass account = null;
+                            for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                                preferenceManager.putString(Constants.KEY_USER_KEY, dataSnapshot.getKey());
+                                account = dataSnapshot.getValue(AccountClass.class);
+                            }
 
-            }
+                            preferenceManager.putString(Constants.KEY_FULLNAME, account.getFullname());
+                            preferenceManager.putString(Constants.KEY_IMAGE, account.getImage());
+                            preferenceManager.putString(Constants.KEY_PHONENUMBER, account.getPhoneNumber());
+                            preferenceManager.putString(Constants.KEY_PASSWORD, account.getPassword());
+                            preferenceManager.putString(Constants.KEY_DATECREATEDACCOUNT, account.getNgayTaoTaiKhoan());
 
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                // Trong quá trình text thay đổi
-                TextInputLayout pw = findViewById(R.id.textInputPassword);
-                pw.setPasswordVisibilityToggleEnabled(true);
-            }
 
-            @Override
-            public void afterTextChanged(Editable s) {
-                // Sau khi text đã thay đổi
-                if (login_password.getText().toString().isEmpty()) {
-                    TextInputLayout pw = findViewById(R.id.textInputPassword);
-                    pw.setPasswordVisibilityToggleEnabled(false);
+                            CommonUtils.showNotification(getApplicationContext(), "Thông báo", "Chào mừng bạn trở lại, hãy lựa chọn căn phòng ưng ý mình nhé", R.drawable.ic_phobien_1);
+                            Intent intent = new Intent(getApplicationContext(), ActivityMain.class);
+                            startActivity(intent);
+                            finish();
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
+                            progressDialog.dismiss();
+                            Toast.makeText(ActivityLogIn.this, "Có lỗi xảy ra vui lòng thử lại sau", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+
+
                 } else {
-                    TextInputLayout pw = findViewById(R.id.textInputPassword);
-                    pw.setPasswordVisibilityToggleEnabled(true);
+                    Toast.makeText(ActivityLogIn.this, "Authentication failed.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ActivityLogIn.this, "Sai tài khoản hoặc mật khẩu vui lòng thử lại", Toast.LENGTH_SHORT).show();
                 }
             }
         });
+        progressDialog.dismiss();
     }
 
     private void signInWithGoogle() {
@@ -271,7 +281,7 @@ public class ActivityLogIn extends AppCompatActivity {
                                         progressDialog.show();
                                         // Cập nhật thông tin người dùng lên Firebase Authentication
                                         FirebaseUser user = mAuth.getCurrentUser();
-                                        updateUserInfo(user);
+                                        //updateUserInfo(user);
                                         // them thong tin tai khoan vao realtime
                                         if (user != null) {
                                             String personalID = user.getUid();
@@ -309,7 +319,7 @@ public class ActivityLogIn extends AppCompatActivity {
                                                                         if (task.isSuccessful()) {
                                                                             // Data successfully saved
 
-                                                                            pushSuccessFullNotification();
+                                                                            CommonUtils.showNotification(getApplicationContext(), "Thông báo", "Chào mừng bạn đến với chúng tôi, hãy lựa chọn căn phòng ưng ý mình nhé", R.drawable.ic_phobien_1);
                                                                             progressDialog.dismiss();
                                                                             preferenceManager.putBoolean(Constants.KEY_IS_SIGNED_IN, true);
                                                                             startActivity(new Intent(ActivityLogIn.this, ActivityMain.class));
@@ -330,7 +340,7 @@ public class ActivityLogIn extends AppCompatActivity {
 
                                                                 startActivity(new Intent(ActivityLogIn.this, ActivityBlocked.class));
                                                             } else {
-                                                                pushSuccessFullNotification();
+                                                                CommonUtils.showNotification(getApplicationContext(), "Thông báo", "Chào mừng bạn trở lại, hãy lựa chọn căn phòng ưng ý mình nhé", R.drawable.ic_phobien_1);
                                                                 progressDialog.dismiss();
                                                                 preferenceManager.putBoolean(Constants.KEY_IS_SIGNED_IN, true);
                                                                 startActivity(new Intent(ActivityLogIn.this, ActivityMain.class));
@@ -338,8 +348,6 @@ public class ActivityLogIn extends AppCompatActivity {
                                                         }
 
                                                     }
-
-
                                                 }
 
                                                 @Override
@@ -349,9 +357,7 @@ public class ActivityLogIn extends AppCompatActivity {
                                                     progressDialog.dismiss();
                                                 }
                                             });
-
                                         }
-
                                         //pushSuccessFullNotification();
                                         CommonUtils.showNotification(getApplicationContext(), "Trạng thái đăng nhập", "Chào mừng bạn trở lại", R.drawable.ic_phobien_1);
                                         //Toast.makeText(getApplicationContext(), "Đăng nhập thành công", Toast.LENGTH_SHORT).show();
@@ -445,7 +451,7 @@ public class ActivityLogIn extends AppCompatActivity {
                                                             if (task.isSuccessful()) {
                                                                 // Data successfully saved
 
-                                                                pushSuccessFullNotification();
+                                                                //pushSuccessFullNotification();
                                                                 progressDialog.dismiss();
                                                                 preferenceManager.putBoolean(Constants.KEY_IS_SIGNED_IN, true);
                                                                 startActivity(new Intent(ActivityLogIn.this, ActivityMain.class));
@@ -466,7 +472,7 @@ public class ActivityLogIn extends AppCompatActivity {
 
                                                     startActivity(new Intent(ActivityLogIn.this, ActivityBlocked.class));
                                                 } else {
-                                                    pushSuccessFullNotification();
+                                                    //pushSuccessFullNotification();
                                                     progressDialog.dismiss();
                                                     preferenceManager.putBoolean(Constants.KEY_IS_SIGNED_IN, true);
                                                     startActivity(new Intent(ActivityLogIn.this, ActivityMain.class));
@@ -512,106 +518,55 @@ public class ActivityLogIn extends AppCompatActivity {
         user.updateProfile(profileUpdates);
     }
 
-    public boolean isValidEmail(CharSequence email) {
-        return android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches();
+    private boolean checkCondition() {
+        boolean flag = true;
+        if (binding.inputEmail.getText().toString().isEmpty()) {
+            flag = false;
+            binding.outlineEmail.setError("Vui lòng điền email");
+        } else if (!isValidEmail(binding.inputEmail.getText().toString().trim())) {
+            flag = false;
+            binding.outlineEmail.setError("Sai định dạng email");
+        } else if (binding.inputPassword.getText().toString().isEmpty()) {
+            flag = false;
+            binding.outlinePassword.setError("Vui lòng điền mật khẩu");
+            binding.outlinePassword.setPasswordVisibilityToggleEnabled(true);
+        } else if (!isValidPassword(binding.inputPassword.getText().toString().trim())) {
+            flag = false;
+            binding.outlinePassword.setError("Mật khẩu từ 8 đến 20 ký tự, bao gồm chữ cái viết hoa, chữ cái viết thường,số và kí tự đặc biệt");
+            binding.outlinePassword.setPasswordVisibilityToggleEnabled(true);
+        }
+        return flag;
+
     }
 
-    private void pushNotification() {
-        Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher);
+    public static boolean isValidEmail(String email) {
+        String emailRegex = "^[a-zA-Z0-9_+&*-]+(?:\\." +
+                "[a-zA-Z0-9_+&*-]+)*@" +
+                "(?:[a-zA-Z0-9-]+\\.)+[a-z" +
+                "A-Z]{2,7}$";
 
-        // Tạo notification channel nếu ứng dụng chạy trên Android 8.0 trở lên
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            NotificationChannel channel = new NotificationChannel("my_channel_id", "My Channel", NotificationManager.IMPORTANCE_DEFAULT);
-            channel.setDescription("My Channel Description");
-            NotificationManager notificationManager = getSystemService(NotificationManager.class);
-            if (notificationManager != null) {
-                notificationManager.createNotificationChannel(channel);
-            }
-        }
-
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(getApplicationContext(), "my_channel_id")
-                .setContentTitle("Đăng nhập thành công")
-                .setContentText("Cảm ơn bạn đã sử dụng sản phẩm")
-                .setSmallIcon(R.drawable.notification_flat)
-                .setLargeIcon(bitmap);
-
-        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(getApplicationContext());
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
-            return;
-        }
-        notificationManager.notify(0, builder.build());
+        Pattern pat = Pattern.compile(emailRegex);
+        if (email == null)
+            return false;
+        return pat.matcher(email).matches();
     }
 
-    private void pushSuccessFullNotification() {
-        Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher);
-
-        // Tạo notification channel nếu ứng dụng chạy trên Android 8.0 trở lên
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            NotificationChannel channel = new NotificationChannel("my_channel_id", "My Channel", NotificationManager.IMPORTANCE_DEFAULT);
-            channel.setDescription("My Channel Description");
-            NotificationManager notificationManager = getSystemService(NotificationManager.class);
-            if (notificationManager != null) {
-                notificationManager.createNotificationChannel(channel);
-            }
+    public static boolean isValidPassword(String password) {
+        if (password.length() < 8 || password.length() > 15) {
+            return false;
         }
-
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(getApplicationContext(), "my_channel_id")
-                .setContentTitle("Đăng nhập bằng tài khoản Google thành công")
-                .setContentText("Cảm ơn bạn đã sử dụng sản phẩm")
-                .setSmallIcon(R.drawable.notification_flat)
-                .setLargeIcon(bitmap);
-
-        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(getApplicationContext());
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
-            return;
+        if (!password.matches(".*\\d+.*")) {
+            return false;
         }
-        notificationManager.notify(0, builder.build());
-    }
-
-    private void pushFailerNotification() {
-        Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher);
-
-        // Tạo notification channel nếu ứng dụng chạy trên Android 8.0 trở lên
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            NotificationChannel channel = new NotificationChannel("my_channel_id", "My Channel", NotificationManager.IMPORTANCE_DEFAULT);
-            channel.setDescription("My Channel Description");
-            NotificationManager notificationManager = getSystemService(NotificationManager.class);
-            if (notificationManager != null) {
-                notificationManager.createNotificationChannel(channel);
-            }
+        if (!password.matches(".*[a-z]+.*")) {
+            return false;
         }
-
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(getApplicationContext(), "my_channel_id")
-                .setContentTitle("Đăng nhập thất bại")
-                .setContentText("Hãy kiểm tra lại tài khoản của bạn")
-                .setSmallIcon(R.drawable.notification_flat)
-                .setLargeIcon(bitmap);
-
-        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(getApplicationContext());
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
-            return;
+        if (!password.matches(".*[A-Z]+.*")) {
+            return false;
         }
-        notificationManager.notify(0, builder.build());
+        if (!password.matches(".*[!@#$%^&*()\\-=_+\\[\\]{};':\"\\\\|,.<>/?]+.*")) {
+            return false;
+        }
+        return true;
     }
 }

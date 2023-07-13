@@ -1,5 +1,7 @@
 package com.example.renthouse.Fragment;
 
+import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.app.ProgressDialog;
@@ -10,6 +12,7 @@ import android.location.Location;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -46,6 +49,9 @@ import com.example.renthouse.OOP.Ward;
 import com.example.renthouse.databinding.FragmentHomeBinding;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.badge.BadgeDrawable;
 import com.google.android.material.badge.BadgeUtils;
@@ -67,15 +73,21 @@ import java.util.Locale;
 
 
 public class FragmentHome extends Fragment {
-    FragmentHomeBinding binding;
+    // gg map
+    private static final int LOCATION_REQUEST_CODE = 200;
+    private FusedLocationProviderClient fusedLocationProviderClient;
+    private LatLng currentLocation;
+
+
+    private FragmentHomeBinding binding;
     private FirebaseAuth firebaseAuth;
     private FirebaseUser currentUser;
     private List<itemPhoBien_HomeFragment> listItemPhoBien_HomeFragment;
 
-    private FusedLocationProviderClient fusedLocationProviderClient;
+    //private FusedLocationProviderClient fusedLocationProviderClient;
     double latitude;
     double longitude;
-    private String currentLocation = null;
+    //private String currentLocation = null;
     private final static int REQUEST_CODE = 100;
     ;
     private List<City> cityList;
@@ -292,103 +304,11 @@ public class FragmentHome extends Fragment {
 
     private void updateUI() {
         progressDialog.show();
-        if (currentUser != null) {
-            binding.tvXinchao.setText("Hi, " + preferenceManager.getString(Constants.KEY_FULLNAME));
-        }
-
+        binding.tvXinchao.setText("Hi, " + preferenceManager.getString(Constants.KEY_FULLNAME));
+        getCurrentLocation();
         setDataOutstandingRoom();
         setDataPhoBien();
-    }
-
-
-    private void getLastLocation() {
-        Context context = getContext();
-        if (context == null) {
-            return;
-        }
-        if (ContextCompat.checkSelfPermission(context, android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-            fusedLocationProviderClient.getLastLocation().addOnSuccessListener(new OnSuccessListener<Location>() {
-                @Override
-                public void onSuccess(Location location) {
-                    if (location != null) {
-                        try {
-                            Geocoder geocoder = new Geocoder(context, Locale.getDefault());
-                            List<Address> addresses = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
-
-                            latitude = addresses.get(0).getLatitude();
-                            longitude = addresses.get(0).getLongitude();
-
-                            String address = getCompleteAddressString(latitude, longitude);
-                            //Toast.makeText(getContext(), address, Toast.LENGTH_SHORT).show();
-
-                            binding.tvCurrentLocation.setText(address);
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                }
-            });
-        } else {
-            fusedLocationProviderClient.getLastLocation().addOnSuccessListener(new OnSuccessListener<Location>() {
-                @Override
-                public void onSuccess(Location location) {
-                    if (location != null) {
-                        try {
-                            Geocoder geocoder = new Geocoder(context, Locale.getDefault());
-                            List<Address> addresses = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
-
-                            latitude = addresses.get(0).getLatitude();
-                            longitude = addresses.get(0).getLongitude();
-
-                            String address = getCompleteAddressString(latitude, longitude);
-
-                            binding.tvCurrentLocation.setText(address);
-                            currentLocation = address;
-                            Log.d("Current Location", address);
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                }
-            });
-            //askPermission();
-        }
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        if (requestCode == REQUEST_CODE) {
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                getLastLocation();
-            } else {
-                Toast.makeText(getContext(), "Please provide the required permission", Toast.LENGTH_SHORT).show();
-            }
-        }
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-    }
-
-    private String getCompleteAddressString(double LATITUDE, double LONGITUDE) {
-        String strAdd = "";
-        Geocoder geocoder = new Geocoder(getContext(), Locale.getDefault());
-        try {
-            List<Address> addresses = geocoder.getFromLocation(LATITUDE, LONGITUDE, 1);
-            if (addresses != null && addresses.size() > 0) {
-                Address returnedAddress = addresses.get(0);
-                StringBuilder strReturnedAddress = new StringBuilder();
-
-                for (int i = 0; i <= returnedAddress.getMaxAddressLineIndex(); i++) {
-                    strReturnedAddress.append(returnedAddress.getAddressLine(i)).append("\n");
-                }
-                strAdd = strReturnedAddress.toString().trim();
-                Log.d("My Current Location", strReturnedAddress.toString());
-            } else {
-                Log.d("My Current Location", "No Address returned!");
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            Log.d("My Current Location", "Cannot get Address!");
-        }
-        return strAdd;
+        progressDialog.dismiss();
     }
 
     public String loadJSONFromAsset(String filename) {
@@ -407,5 +327,48 @@ public class FragmentHome extends Fragment {
         return json;
     }
 
+    boolean isPermissionGranted() {
+        if (ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, LOCATION_REQUEST_CODE);
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if (requestCode == LOCATION_REQUEST_CODE) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                getCurrentLocation();
+            }
+        }
+    }
+
+    @SuppressLint("MissingPermission")
+    private void getCurrentLocation() {
+        if (isPermissionGranted()) {
+            fusedLocationProviderClient.getLastLocation().addOnSuccessListener(requireActivity(), new OnSuccessListener<Location>() {
+                @Override
+                public void onSuccess(Location location) {
+                    if (location != null) {
+                        // init lat lng
+                        currentLocation = new LatLng(location.getLatitude(), location.getLongitude());
+                        Geocoder geocoder = new Geocoder(getContext());
+                        try {
+                            ArrayList<Address> addresses = (ArrayList<Address>) geocoder.getFromLocation(currentLocation.latitude, currentLocation.longitude, 1);
+                            binding.tvCurrentLocation.setText(addresses.get(0).getAddressLine(0));
+
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        } catch (Exception e) {
+                            Toast.makeText(getContext(), "Không xác định được vị trí", Toast.LENGTH_SHORT).show();
+                            e.printStackTrace();
+                        }
+
+                    }
+                }
+            });
+        }
+    }
 
 }

@@ -1,5 +1,9 @@
 package com.example.renthouse.Activity;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -20,6 +24,7 @@ import com.example.renthouse.Fragment.FragmentAccount;
 import com.example.renthouse.Fragment.FragmentChat;
 import com.example.renthouse.Fragment.FragmentHome;
 import com.example.renthouse.Fragment.FragmentLiked;
+import com.example.renthouse.Interface.OnActivityResultListener;
 import com.example.renthouse.OOP.AccountClass;
 import com.example.renthouse.OOP.Device;
 import com.example.renthouse.R;
@@ -80,5 +85,6 @@ public class ActivityMain extends AppCompatActivity {
         fragmentTransaction.replace(R.id.frame_layout, fragment);
         fragmentTransaction.commit();
     }
+
 
 }

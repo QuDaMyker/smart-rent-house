@@ -21,6 +21,7 @@ import com.example.renthouse.Chat.Messages.MessagesAdapter;
 import com.example.renthouse.Chat.Messages.MessagesList;
 import com.example.renthouse.OOP.AccountClass;
 import com.example.renthouse.R;
+import com.example.renthouse.databinding.FragmentChatBinding;
 import com.example.renthouse.utilities.Constants;
 import com.example.renthouse.utilities.PreferenceManager;
 import com.google.firebase.auth.FirebaseAuth;
@@ -49,11 +50,9 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 
 public class FragmentChat extends Fragment {
+    private FragmentChatBinding binding;
     private final List<MessagesList> messagesLists = new ArrayList<>();
     private final List<MessagesList> tempMessagesLists = new ArrayList<>();
-    private String email;
-    private String name;
-    private RecyclerView messagesRecyclerView;
 
     private MessagesAdapter messagesAdapter;
     private FirebaseAuth mAuth;
@@ -61,15 +60,15 @@ public class FragmentChat extends Fragment {
 
     private ProgressDialog progressDialog;
     private PreferenceManager preferenceManager;
-    private CircleImageView imageCurrentUser;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        binding = FragmentChatBinding.inflate(getLayoutInflater());
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_chat, container, false);
+        View view = binding.getRoot();
 
-        messagesRecyclerView = view.findViewById(R.id.messagesRecyclerView);
+
         // get intent
 
         reference = FirebaseDatabase.getInstance().getReference();
@@ -80,12 +79,12 @@ public class FragmentChat extends Fragment {
 
 
 
-        messagesRecyclerView.setHasFixedSize(true);
-        messagesRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        binding.messagesRecyclerView.setHasFixedSize(true);
+        binding.messagesRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
         //set adapter to recycleview
         messagesAdapter = new MessagesAdapter(messagesLists, getContext());
-        messagesRecyclerView.setAdapter(messagesAdapter);
+        binding.messagesRecyclerView.setAdapter(messagesAdapter);
 
 
         progressDialog = new ProgressDialog(getContext());
@@ -97,73 +96,78 @@ public class FragmentChat extends Fragment {
         reference.child("Conversations").child(preferenceManager.getString(Constants.KEY_USER_KEY)).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                messagesLists.clear();
-                tempMessagesLists.clear();
-                Log.d("count", snapshot.getChildrenCount()+"");
-                for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
-                    String otherKey = dataSnapshot.getKey();
-                    String sendId = dataSnapshot.child("sendId").getValue(String.class);
-                    String lastMessage;
-                    if(sendId.equals(preferenceManager.getString(Constants.KEY_USER_KEY))) {
-                        lastMessage = "Tôi: " + dataSnapshot.child("lastMessage").getValue(String.class);
-                    } else {
-                        lastMessage = dataSnapshot.child("lastMessage").getValue(String.class);
-                    }
+                if(snapshot.exists()) {
+                    messagesLists.clear();
+                    tempMessagesLists.clear();
+                    Log.d("count", snapshot.getChildrenCount()+"");
+                    for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                        String otherKey = dataSnapshot.getKey();
+                        String sendId = dataSnapshot.child("sendId").getValue(String.class);
+                        String lastMessage;
+                        if(sendId.equals(preferenceManager.getString(Constants.KEY_USER_KEY))) {
+                            lastMessage = "Tôi: " + dataSnapshot.child("lastMessage").getValue(String.class);
+                        } else {
+                            lastMessage = dataSnapshot.child("lastMessage").getValue(String.class);
+                        }
 
-                    String time = dataSnapshot.child("sendDate").getValue(String.class) + " " + dataSnapshot.child("sendTime").getValue(String.class);
+                        String time = dataSnapshot.child("sendDate").getValue(String.class) + " " + dataSnapshot.child("sendTime").getValue(String.class);
 
-                    Log.d("thoigian",time);
+                        Log.d("thoigian",time);
 
-                    Query query = reference.child("Accounts").orderByKey().equalTo(otherKey);
-                    query.addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@NonNull DataSnapshot snapshot1) {
-                            for (DataSnapshot dataSnapshot1 : snapshot1.getChildren()) {
-                                AccountClass accountClass = dataSnapshot1.getValue(AccountClass.class);
+                        Query query = reference.child("Accounts").orderByKey().equalTo(otherKey);
+                        query.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot snapshot1) {
+                                for (DataSnapshot dataSnapshot1 : snapshot1.getChildren()) {
+                                    AccountClass accountClass = dataSnapshot1.getValue(AccountClass.class);
 
 
-                                MessagesList messagesList = new MessagesList(
-                                        preferenceManager.getString(Constants.KEY_USER_KEY),
-                                        accountClass.getFullname(),
-                                        accountClass.getEmail(),
-                                        lastMessage,
-                                        accountClass.getImage(),
-                                        otherKey,
-                                        0,
-                                        time
-                                );
-                                tempMessagesLists.add(messagesList);
-                                if (tempMessagesLists.size() == snapshot.getChildrenCount()) {
-                                    messagesLists.addAll(tempMessagesLists);
+                                    MessagesList messagesList = new MessagesList(
+                                            preferenceManager.getString(Constants.KEY_USER_KEY),
+                                            accountClass.getFullname(),
+                                            accountClass.getEmail(),
+                                            lastMessage,
+                                            accountClass.getImage(),
+                                            otherKey,
+                                            0,
+                                            time
+                                    );
+                                    tempMessagesLists.add(messagesList);
+                                    if (tempMessagesLists.size() == snapshot.getChildrenCount()) {
+                                        messagesLists.addAll(tempMessagesLists);
 
-                                    Collections.sort(messagesLists, new Comparator<MessagesList>() {
-                                        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                                        Collections.sort(messagesLists, new Comparator<MessagesList>() {
+                                            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
-                                        @Override
-                                        public int compare(MessagesList obj1, MessagesList obj2) {
+                                            @Override
+                                            public int compare(MessagesList obj1, MessagesList obj2) {
 
-                                            try {
-                                                Date date1 = dateFormat.parse(obj2.getSendTime());
-                                                Date date2 = dateFormat.parse(obj1.getSendTime());
-                                                return date1.compareTo(date2);
-                                            } catch (ParseException e) {
-                                                e.printStackTrace();
+                                                try {
+                                                    Date date1 = dateFormat.parse(obj2.getSendTime());
+                                                    Date date2 = dateFormat.parse(obj1.getSendTime());
+                                                    return date1.compareTo(date2);
+                                                } catch (ParseException e) {
+                                                    e.printStackTrace();
+                                                }
+                                                return 0;
                                             }
-                                            return 0;
-                                        }
-                                    });
-
-                                    messagesAdapter.notifyDataSetChanged();
-                                    progressDialog.dismiss();
+                                        });
+                                        messagesAdapter.notifyDataSetChanged();
+                                        progressDialog.dismiss();
+                                    }
                                 }
                             }
-                        }
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError error) {
-                            progressDialog.dismiss();
-                        }
-                    });
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError error) {
+                                progressDialog.dismiss();
+                            }
+                        });
+                    }
+                } else {
+                    binding.animationView.setVisibility(View.VISIBLE);
+                    binding.messagesRecyclerView.setVisibility(View.VISIBLE);
                 }
+
                 progressDialog.dismiss();
 
             }

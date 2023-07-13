@@ -163,7 +163,9 @@ public class ActivityDetailAccount extends AppCompatActivity {
                     preferenceManager.putString(Constants.KEY_PHONENUMBER, TIETsodienthoai.getText().toString().trim());
                     preferenceManager.putString(Constants.KEY_PASSWORD, TIETMatKhau.getText().toString().trim());
                     preferenceManager.putString(Constants.KEY_USER_KEY, key);
+
                     onBackPressed();
+                    setResult(Activity.RESULT_OK);
                 }
             }
         });
