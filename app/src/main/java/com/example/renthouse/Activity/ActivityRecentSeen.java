@@ -69,7 +69,7 @@ public class ActivityRecentSeen extends AppCompatActivity {
                 Log.d("Loading", "Loading");
                 StaggeredGridLayoutManager staggeredGridLayoutManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
                 recyclerView.setLayoutManager(staggeredGridLayoutManager);
-                roomLatestAdapter = new RoomLatestAdapter(getApplicationContext());
+                roomLatestAdapter = new RoomLatestAdapter(this);
                 roomLatestAdapter.setDuLieu(roomLatestList);
                 recyclerView.setAdapter(roomLatestAdapter);
             }
