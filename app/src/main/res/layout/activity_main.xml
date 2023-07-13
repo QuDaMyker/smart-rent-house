@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/Primary_80"
+    android:background="@color/Primary_98"
     tools:context=".Activity.ActivityMain">
 
     <FrameLayout
@@ -20,7 +20,7 @@
         android:id="@+id/bottomNavigationView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/Primary_80"
+        android:background="@color/Primary_98"
         app:itemRippleColor="@color/black"
         app:itemTextColor="@color/black"
         app:itemIconTint="@color/black"

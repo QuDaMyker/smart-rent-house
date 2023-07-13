@@ -107,7 +107,7 @@ public class FragmentHome extends Fragment {
         progressDialog.setCancelable(false);
         progressDialog.setMessage("Loading...");
 
-        updateNotSeenNumber(view);
+        //updateNotSeenNumber(view);
 
         updateUI();
         //getLastLocation();
@@ -158,7 +158,7 @@ public class FragmentHome extends Fragment {
 //        updateNotSeenNumber(binding.getRoot());
 //    }
 
-    @ExperimentalBadgeUtils
+    /*@ExperimentalBadgeUtils
     private void updateNotSeenNumber(View view) {
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference notiRef = database.getReference("Notifications");
@@ -184,7 +184,7 @@ public class FragmentHome extends Fragment {
 
             }
         });
-    }
+    }*/
 
     @ExperimentalBadgeUtils
     private void handleNotSeenNumber(int notSeenCount, View view) {
