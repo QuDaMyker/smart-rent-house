@@ -112,7 +112,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
-                    android:layout_marginLeft="10dp"
+                    android:layout_marginLeft="5dp"
                     android:layout_marginRight="10dp"
                     android:layout_weight="1"
 
@@ -123,6 +123,7 @@
                     <androidx.appcompat.widget.AppCompatImageView
                         android:layout_width="80dp"
                         android:layout_height="80dp"
+                        android:src="@drawable/ic_statistics"
                         android:background="@drawable/bg_shadow"
                         android:visibility="visible"
                         app:layout_constraintEnd_toEndOf="parent"
@@ -260,7 +261,7 @@
                         android:id="@+id/tv_TongSoNguoiDung"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="900"
+                        android:text="..."
                         android:textColor="@color/Primary_40"
                         android:textSize="32sp"
                         android:textStyle="bold" />
@@ -307,7 +308,7 @@
                         android:id="@+id/tv_SoChuNha"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="300"
+                        android:text="..."
                         android:textColor="@color/Primary_40"
                         android:textSize="32sp"
                         android:textStyle="bold" />
@@ -366,7 +367,7 @@
                         android:id="@+id/tv_TongSoPhongTro"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="2.7K"
+                        android:text="..."
                         android:textColor="@color/Primary_40"
                         android:textSize="32sp"
                         android:textStyle="bold" />
@@ -413,7 +414,7 @@
                         android:id="@+id/tv_SoPhongDuocThue"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="1.2K"
+                        android:text="..."
                         android:textColor="@color/Primary_40"
                         android:textSize="32sp"
                         android:textStyle="bold" />

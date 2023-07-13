@@ -37,8 +37,15 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.MutableData;
+import com.google.firebase.database.Transaction;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.ktx.Firebase;
+
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Locale;
 
 public class ActivitySplash extends AppCompatActivity {
     private final static int REQUEST_CODE = 100;
@@ -85,21 +92,17 @@ public class ActivitySplash extends AppCompatActivity {
                     }
                 }
 
-                mFirebaseAnalytics = FirebaseAnalytics.getInstance(getApplicationContext());
-                Bundle bundle = new Bundle();
-                bundle.putString(FirebaseAnalytics.Param.ITEM_ID, "Log_app");
-                mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.APP_OPEN, bundle);
-                mFirebaseAnalytics.setAnalyticsCollectionEnabled(true);
 
                 preferenceManager = new PreferenceManager(getApplicationContext());
                 if(preferenceManager.getBoolean(Constants.KEY_IS_SIGNED_IN)) {
                     if(preferenceManager.getString(Constants.KEY_EMAIL).equals("admin")) {
                         startActivity(new Intent(ActivitySplash.this, Admin_ActivityMain.class));
                     } else{
+                        putDataAccess();
                         startActivity(new Intent(ActivitySplash.this, ActivityMain.class));
-
                     }
                 } else {
+                    putDataAccess();
                     startActivity(new Intent(ActivitySplash.this, ActivityLogIn.class));
                 }
                 finish();
@@ -168,6 +171,39 @@ public class ActivitySplash extends AppCompatActivity {
 //
 //            }
 //        });
+    }
+
+    private void putDataAccess() {
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference accessRef = database.getReference("Access");
+
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
+        String currentDate = dateFormat.format(new Date());
+
+        // Tăng số lần truy cập cho ngày hiện tại
+        DatabaseReference currentDateRef = accessRef.child(currentDate);
+        currentDateRef.runTransaction(new Transaction.Handler() {
+            @Override
+            public Transaction.Result doTransaction(MutableData mutableData) {
+                Integer accessCount = mutableData.getValue(Integer.class);
+                if (accessCount == null) {
+                    accessCount = 1;
+                } else {
+                    accessCount++;
+                }
+                mutableData.setValue(accessCount);
+                return Transaction.success(mutableData);
+            }
+
+            @Override
+            public void onComplete(DatabaseError databaseError, boolean b, DataSnapshot dataSnapshot) {
+                if (databaseError != null) {
+                    // Xử lý lỗi nếu cần
+                } else {
+                    // Cập nhật số lần truy cập thành công
+                }
+            }
+        });
     }
 
 
