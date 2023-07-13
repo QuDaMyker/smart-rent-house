@@ -27,6 +27,7 @@ import com.example.renthouse.databinding.ActivityAdminStatisticsBinding;
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.charts.PieChart;
 import com.github.mikephil.charting.components.XAxis;
+import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
@@ -194,6 +195,9 @@ public class Admin_ActivityStatistics extends AppCompatActivity {
         xAxis.setAxisMinimum(-0.2f);
         xAxis.setDrawAxisLine(false);
         xAxis.setAxisMaximum(days.length - 0.2f);
+
+        YAxis yAxisLeft = barChart.getAxisLeft();
+        yAxisLeft.setGranularity(1f); // Bước đơn vị trục y
 //        barChart.setVisibleXRangeMaximum(3);
         float barSpace = 0.2f;
         float groupSpace = 0.25f;

@@ -21,9 +21,9 @@ import com.example.renthouse.Admin.Activity.Admin_ActivityBaoCaoNguoiDung;
 import com.example.renthouse.Admin.Activity.Admin_ActivityStatistics;
 import com.example.renthouse.OOP.Region;
 import com.example.renthouse.OOP.Room;
-import com.example.renthouse.R;
 import com.example.renthouse.databinding.FragmentAdminHomeBinding;
 import com.github.mikephil.charting.components.XAxis;
+import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
@@ -34,15 +34,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.example.renthouse.Activity.ActivitySplash;
-import com.example.renthouse.Admin.Activity.Admin_ActivityBaoCaoNguoiDung;
 import com.example.renthouse.Admin.Activity.Admin_ActivityScheduledNotification;
-import com.example.renthouse.R;
-import com.example.renthouse.databinding.FragmentAdminHomeBinding;
 import com.example.renthouse.utilities.PreferenceManager;
-import com.github.mikephil.charting.charts.BarChart;
-import com.github.mikephil.charting.data.BarData;
-import com.github.mikephil.charting.data.BarDataSet;
-import com.github.mikephil.charting.data.BarEntry;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
@@ -53,8 +46,10 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 //import com.github.mikephil.charting.charts.BarChart;
 //import com.github.mikephil.charting.data.BarData;
@@ -73,6 +68,8 @@ public class Admin_FragmentHome extends Fragment {
     private HotRegionAdapter adapter;
     private ProgressDialog mProgressDialog;
     private List<Integer> accessAmountList;
+    private Map<String, Integer> mapAcess;
+
     public Admin_FragmentHome() {
 
     }
@@ -92,7 +89,10 @@ public class Admin_FragmentHome extends Fragment {
         amountRoom = new ArrayList<>();
         accessAmountList = new ArrayList<>();
         regionListTop3 = new ArrayList<>();
-
+        mapAcess = new HashMap<>();
+        mProgressDialog = new ProgressDialog(getContext());
+        mProgressDialog.setCancelable(false);
+        mProgressDialog.setMessage("Loading...");
 
         LinearLayoutManager linearLayoutManager  = new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false);
         binding.recycleView.setLayoutManager(linearLayoutManager);
@@ -106,79 +106,73 @@ public class Admin_FragmentHome extends Fragment {
         addDateInSameWeek();
         setListener();
         loadData();
-        getRegion();
-        //setUpBarChart();
         return view;
     }
 
 
-    private void setUpBarChart() {
-        BarDataSet barDataSet1 = new BarDataSet(barEntriesAccess(), "Số lượt truy cập");
-        barDataSet1.setColor(Color.parseColor("#FFD601"));
-
-        BarData data = new BarData(barDataSet1);
-        binding.barChart.setData(data);
-        XAxis xAxis = binding.barChart.getXAxis();
-        data.setBarWidth(0.15f);
-        String[] days = new String[7];
-        for (int i = 0; i < 7; i++){
-            days[i] = dateInWeek.get(i).substring(0, 5);
-            days[i].replace("-", "/");
-        }
-        xAxis.setValueFormatter(new IndexAxisValueFormatter(days));
-        xAxis.setCenterAxisLabels(true);
-        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
-        xAxis.setGranularityEnabled(true);
-        xAxis.setGranularity(1f); // only intervals of 1 day
-        xAxis.setLabelCount(7);
-
-        binding.barChart.setDragEnabled(true);
-        xAxis.setAxisMinimum(-0.2f);
-        xAxis.setDrawAxisLine(false);
-        xAxis.setAxisMaximum(days.length - 0.2f);
-
-        float barSpace = 0.2f;
-        float groupSpace = 0.25f;
-        binding.barChart.groupBars(0, groupSpace, barSpace);
-
-
-        binding.barChart.setDrawGridBackground(false);
-        binding.barChart.getAxisRight().setTextColor(getResources().getColor(R.color.white));
-        binding.barChart.getXAxis().removeAllLimitLines();
-        binding.barChart.getDescription().setEnabled(false);
-        binding.barChart.invalidate();
-    }
-
-    private List<BarEntry> barEntriesAccess() {
+    private void barEntriesAccess() {
+        Log.d("Trước", "trước");
         ArrayList<BarEntry> barEntries = new ArrayList<>();
-        final boolean[] flag = {false};
         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("Access");
         databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                for(DataSnapshot snapshot1 : snapshot.getChildren()) {
-                    String date = snapshot.getKey();
+                for (DataSnapshot snapshot1 : snapshot.getChildren()) {
+                    String date = snapshot1.getKey();
+                    Log.d("Contains", date);
+                    Integer amount = 0;
                     if (dateInWeek.contains(date)) {
-                        Integer amount = snapshot1.getValue(Integer.class);
-                        int position = dateInWeek.indexOf(date);
-                        accessAmountList.set(position, amount);
+                        amount = snapshot1.getValue(Integer.class);
                     }
+                    mapAcess.put(date, amount);
                 }
-                for (int i = 0; i < dateInWeek.size(); i++) {
-                    barEntries.add(new BarEntry(i + 1, accessAmountList.get(i)));
-                }
-                flag[0] = true;
+                setBarEntries(barEntries);
             }
-
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
 
             }
         });
-        while (!flag[0]){
-
+    }
+    private void setBarEntries(ArrayList<BarEntry> barEntries) {
+        for (int i = 0; i < dateInWeek.size();i ++) {
+            float value = (float) (mapAcess.get(dateInWeek.get(i)));
+            float position = (float) i;
+            barEntries.add(new BarEntry(position, value));
         }
-        return barEntries;
+        BarDataSet dataSet = new BarDataSet(barEntries, "Số lần truy cập");
+        dataSet.setColor(Color.parseColor("#FFD601"));
+
+        Log.d("Số lượng", String.valueOf(barEntries.size()));
+
+        BarData barData = new BarData(dataSet);
+        barData.setBarWidth(0.3f); // Độ rộng của cột
+
+        binding.barChart.setData(barData);
+        binding.barChart.setFitBars(true); // Hiển thị các cột cân đối theo chiều ngang
+        binding.barChart.getDescription().setEnabled(false); // Vô hiệu hóa mô tả biểu đồ
+
+        // Định dạng trục x
+        XAxis xAxis = binding.barChart.getXAxis();
+        String[] days = new String[7];
+        for (int i = 0; i < 7; i++){
+            days[i] = dateInWeek.get(i).substring(0, 5);
+            days[i].replace("-", "/");
+        }
+        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM); // Hiển thị trục x dưới cùng
+        xAxis.setValueFormatter(new IndexAxisValueFormatter(days)); // Định dạng giá trị trục x
+
+        // Định dạng trục y
+        YAxis yAxisLeft = binding.barChart.getAxisLeft();
+        yAxisLeft.setGranularity(1f); // Bước đơn vị trục y
+
+        YAxis yAxisRight = binding.barChart.getAxisRight();
+        yAxisRight.setEnabled(false); // Vô hiệu hóa trục y bên phải
+
+        // Cập nhật biểu đồ
+        binding.barChart.invalidate();
+        mProgressDialog.dismiss();
+    }
     private void init() {
         preferenceManager = new PreferenceManager(getContext());
     }
@@ -232,6 +226,7 @@ public class Admin_FragmentHome extends Fragment {
         startActivity(new Intent(requireContext(), ActivitySplash.class));
     }
     private void loadData() {
+        mProgressDialog.show();
         DatabaseReference firebaseDatabase = FirebaseDatabase.getInstance().getReference("Accounts");
         firebaseDatabase.addValueEventListener(new ValueEventListener() {
             @Override
@@ -272,7 +267,8 @@ public class Admin_FragmentHome extends Fragment {
 
             }
         });
-
+        getRegion();
+        barEntriesAccess();
     }
     public void getRegion() {
         DatabaseReference reference1 = FirebaseDatabase.getInstance().getReference("PopularRegion");
@@ -335,6 +331,7 @@ public class Admin_FragmentHome extends Fragment {
                 ngayFormatted = ngay.format(formatter);
             }
             dateInWeek.add(ngayFormatted);
+            mapAcess.put(ngayFormatted, 0);
         }
     }
 }
