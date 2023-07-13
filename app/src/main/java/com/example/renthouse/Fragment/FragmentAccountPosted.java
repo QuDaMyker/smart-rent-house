@@ -2,6 +2,8 @@ package com.example.renthouse.Fragment;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -9,6 +11,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -100,9 +103,23 @@ public class FragmentAccountPosted extends Fragment {
                         Room room = snapshot.getValue(Room.class);
                         tempRoom.add(room);
                     }
-                    listRoomPosted.addAll(tempRoom);
-                    postedAdapter.notifyDataSetChanged();
-                    progressDialog.dismiss();
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            listRoomPosted.addAll(tempRoom);
+                            postedAdapter.notifyDataSetChanged();
+                            if(listRoomPosted.isEmpty()) {
+                                recyclerView.setVisibility(View.INVISIBLE);
+                                lottieAnimationView.setVisibility(View.VISIBLE);
+                            }else {
+                                recyclerView.setVisibility(View.VISIBLE);
+                                lottieAnimationView.setVisibility(View.INVISIBLE);
+                            }
+                            progressDialog.dismiss();
+                        }
+                    });
+
+
                 }
 
                 @Override

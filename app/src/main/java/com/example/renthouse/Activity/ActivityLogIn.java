@@ -285,6 +285,7 @@ public class ActivityLogIn extends AppCompatActivity {
     }
 
     private void firebaseAuthWithGoogle(String idToken) {
+        progressDialog.show();
         AuthCredential credential = GoogleAuthProvider.getCredential(idToken, null);
         mAuth.signInWithCredential(credential)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
@@ -292,6 +293,7 @@ public class ActivityLogIn extends AppCompatActivity {
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         String TAG;
                         if (task.isSuccessful()) {
+                            progressDialog.show();
                             // Cập nhật thông tin người dùng lên Firebase Authentication
                             FirebaseUser user = mAuth.getCurrentUser();
                             updateUserInfo(user);
@@ -370,19 +372,21 @@ public class ActivityLogIn extends AppCompatActivity {
                                     @Override
                                     public void onCancelled(@NonNull DatabaseError databaseError) {
                                         // Handle the error here
+                                        CommonUtils.showNotification(getApplicationContext(), "Trạng thái đăng nhập", "Thất bại", R.drawable.ic_phobien_1);
                                         progressDialog.dismiss();
                                     }
                                 });
 
                             }
 
-                            /*// Đăng nhập thành công
-                            pushSuccessFullNotification();
-                            Toast.makeText(getApplicationContext(), "Đăng nhập thành công", Toast.LENGTH_SHORT).show();*/
+                            //pushSuccessFullNotification();
+                            CommonUtils.showNotification(getApplicationContext(), "Trạng thái đăng nhập", "Chào mừng bạn trở lại", R.drawable.ic_phobien_1);
+                            //Toast.makeText(getApplicationContext(), "Đăng nhập thành công", Toast.LENGTH_SHORT).show();
                         } else {
                             // Đăng nhập thất bại
-                            pushFailerNotification();
-                            Toast.makeText(getApplicationContext(), "Thất bại", Toast.LENGTH_SHORT).show();
+                            //pushFailerNotification();
+                            CommonUtils.showNotification(getApplicationContext(), "Trạng thái đăng nhập", "Thất bại", R.drawable.ic_phobien_1);
+                            //Toast.makeText(getApplicationContext(), "Thất bại", Toast.LENGTH_SHORT).show();
 
                         }
                     }

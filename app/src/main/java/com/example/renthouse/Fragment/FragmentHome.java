@@ -101,7 +101,7 @@ public class FragmentHome extends Fragment {
         progressDialog.setMessage("Loading...");
 
         updateUI();
-//        getLastLocation();
+        //getLastLocation();
 
         binding.linearLayout5.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -217,6 +217,7 @@ public class FragmentHome extends Fragment {
                 outstandingList.addAll(temroom);
                 outstandingRoomAdapter.notifyDataSetChanged();
                 progressDialog.dismiss();
+
             }
 
             @Override
@@ -257,6 +258,7 @@ public class FragmentHome extends Fragment {
 
                             String address = getCompleteAddressString(latitude, longitude);
                             //Toast.makeText(getContext(), address, Toast.LENGTH_SHORT).show();
+
                             binding.tvCurrentLocation.setText(address);
                         } catch (IOException e) {
                             e.printStackTrace();
