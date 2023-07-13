@@ -90,6 +90,7 @@ public class FragmentHome extends Fragment {
     private PhoBienAdapter phoBienAdapter;
     private RecyclerView phobien_recyclerView;
     private PreferenceManager preferenceManager;
+
     @Override
     @ExperimentalBadgeUtils
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -215,7 +216,7 @@ public class FragmentHome extends Fragment {
             }
         });
 
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext(), RecyclerView.HORIZONTAL,false);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext(), RecyclerView.HORIZONTAL, false);
         phobien_recyclerView.setLayoutManager(linearLayoutManager);
         phobien_recyclerView.setAdapter(phoBienAdapter);
 
@@ -226,11 +227,11 @@ public class FragmentHome extends Fragment {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 List<PhoBien> temPhoBien = new ArrayList<>();
 
-                for (DataSnapshot Snapshot: snapshot.getChildren()){
+                for (DataSnapshot Snapshot : snapshot.getChildren()) {
                     String idphobien = Snapshot.getKey();
                     String image = Snapshot.child("Image").getValue(String.class);
                     String name = Snapshot.child("Name").getValue(String.class);
-                    PhoBien phobien = new PhoBien(image, idphobien,name);
+                    PhoBien phobien = new PhoBien(image, idphobien, name);
 
                     temPhoBien.add(phobien);
                 }
@@ -269,7 +270,7 @@ public class FragmentHome extends Fragment {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 List<Room> temroom = new ArrayList<>();
-                for (DataSnapshot Snapshot : snapshot.getChildren()){
+                for (DataSnapshot Snapshot : snapshot.getChildren()) {
                     Room room = Snapshot.getValue((Room.class));
                     if (room.getStatus().equals("approved")) {
                         temroom.add(room);
@@ -292,7 +293,7 @@ public class FragmentHome extends Fragment {
     private void updateUI() {
         progressDialog.show();
         if (currentUser != null) {
-            binding.tvXinchao.setText("Hi, " + currentUser.getDisplayName());
+            binding.tvXinchao.setText("Hi, " + preferenceManager.getString(Constants.KEY_FULLNAME));
         }
 
         setDataOutstandingRoom();
@@ -302,7 +303,7 @@ public class FragmentHome extends Fragment {
 
     private void getLastLocation() {
         Context context = getContext();
-        if(context == null) {
+        if (context == null) {
             return;
         }
         if (ContextCompat.checkSelfPermission(context, android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {

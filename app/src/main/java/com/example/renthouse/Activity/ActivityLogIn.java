@@ -1,6 +1,7 @@
 package com.example.renthouse.Activity;
 
 import android.Manifest;
+import android.app.Activity;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.ProgressDialog;
@@ -14,6 +15,7 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
@@ -21,6 +23,10 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -76,7 +82,6 @@ public class ActivityLogIn extends AppCompatActivity {
     String imageURL;
     private PreferenceManager preferenceManager;
     ProgressDialog progressDialog;
-
 
 
     @Override
@@ -139,15 +144,6 @@ public class ActivityLogIn extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
-
-//                            // Event log app
-//                            Bundle bundle = new Bundle();
-//                            bundle.putString(FirebaseAnalytics.Param.ITEM_ID, "APP_OPEN");
-//                            FirebaseAnalytics analytics = FirebaseAnalytics.getInstance(getApplicationContext());
-//                            analytics.logEvent(FirebaseAnalytics.Event.LOGIN, bundle);
-//                            analytics.setAnalyticsCollectionEnabled(true);
-
-
                             preferenceManager.putString(Constants.KEY_EMAIL, email);
                             preferenceManager.putString(Constants.KEY_PASSWORD, password);
                             preferenceManager.putBoolean(Constants.KEY_IS_SIGNED_IN, true);
@@ -252,8 +248,130 @@ public class ActivityLogIn extends AppCompatActivity {
 
     private void signInWithGoogle() {
         Intent signInIntent = gsc.getSignInIntent();
-        startActivityForResult(signInIntent, 100);
+        //startActivityForResult(signInIntent, 100);
+        callIntentGoogle.launch(signInIntent);
     }
+
+    private ActivityResultLauncher<Intent> callIntentGoogle = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
+        @Override
+        public void onActivityResult(ActivityResult result) {
+            if (result.getResultCode() == Activity.RESULT_OK) {
+                progressDialog.show();
+                Task<GoogleSignInAccount> signInAccountTask = GoogleSignIn.getSignedInAccountFromIntent(result.getData());
+                if (signInAccountTask.isSuccessful()) {
+                    Log.d("status", "Receive data from GG successfully");
+                    try {
+                        GoogleSignInAccount googleSignInAccount = signInAccountTask.getResult(ApiException.class);
+                        if (googleSignInAccount != null) {
+                            AuthCredential authCredential = GoogleAuthProvider.getCredential(googleSignInAccount.getIdToken(), null);
+                            mAuth.signInWithCredential(authCredential).addOnCompleteListener(ActivityLogIn.this, new OnCompleteListener<AuthResult>() {
+                                @Override
+                                public void onComplete(@NonNull Task<AuthResult> task) {
+                                    if (task.isSuccessful()) {
+                                        progressDialog.show();
+                                        // Cập nhật thông tin người dùng lên Firebase Authentication
+                                        FirebaseUser user = mAuth.getCurrentUser();
+                                        updateUserInfo(user);
+                                        // them thong tin tai khoan vao realtime
+                                        if (user != null) {
+                                            String personalID = user.getUid();
+                                            String personName = user.getDisplayName();
+                                            String personEmail = user.getEmail();
+                                            Uri personPhoto = user.getPhotoUrl();
+
+                                            Date now = new Date();
+                                            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                                            String formattedDate = dateFormat.format(now);
+                                            AccountClass accountClass = new AccountClass(personName, personEmail, "+84", "********", personPhoto.toString(), formattedDate, false, null);
+                                            String emailToCheck = personEmail;
+
+                                            preferenceManager.putString(Constants.KEY_IMAGE, accountClass.getImage());
+                                            preferenceManager.putString(Constants.KEY_PHONENUMBER, accountClass.getPhoneNumber());
+                                            preferenceManager.putString(Constants.KEY_EMAIL, accountClass.getEmail());
+                                            preferenceManager.putString(Constants.KEY_FULLNAME, accountClass.getFullname());
+                                            preferenceManager.putString(Constants.KEY_DATECREATEDACCOUNT, accountClass.getNgayTaoTaiKhoan());
+
+                                            DatabaseReference accountsRef = reference.child("Accounts");
+                                            Query emailQuery = accountsRef.orderByChild("email").equalTo(emailToCheck);
+
+                                            emailQuery.addListenerForSingleValueEvent(new ValueEventListener() {
+                                                @Override
+                                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                                    if (!dataSnapshot.exists()) {
+                                                        DatabaseReference newChildRef = reference.child("Accounts").push();
+                                                        String generatedKey = newChildRef.getKey();
+                                                        preferenceManager.putString(Constants.KEY_USER_KEY, generatedKey);
+
+                                                        newChildRef.setValue(accountClass)
+                                                                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                                    @Override
+                                                                    public void onComplete(@NonNull Task<Void> task) {
+                                                                        if (task.isSuccessful()) {
+                                                                            // Data successfully saved
+
+                                                                            pushSuccessFullNotification();
+                                                                            progressDialog.dismiss();
+                                                                            preferenceManager.putBoolean(Constants.KEY_IS_SIGNED_IN, true);
+                                                                            startActivity(new Intent(ActivityLogIn.this, ActivityMain.class));
+                                                                        } else {
+                                                                            // Handle the error here
+                                                                        }
+                                                                    }
+                                                                });
+                                                    } else {
+                                                        for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                                                            AccountClass checkAcc = snapshot.getValue(AccountClass.class);
+                                                            preferenceManager.putString(Constants.KEY_USER_KEY, snapshot.getKey());
+                                                            preferenceManager.putString(Constants.KEY_IMAGE, checkAcc.getImage());
+
+                                                            if (checkAcc.getBlocked()) {
+                                                                progressDialog.dismiss();
+                                                                preferenceManager.putBoolean(Constants.KEY_IS_SIGNED_IN, true);
+
+                                                                startActivity(new Intent(ActivityLogIn.this, ActivityBlocked.class));
+                                                            } else {
+                                                                pushSuccessFullNotification();
+                                                                progressDialog.dismiss();
+                                                                preferenceManager.putBoolean(Constants.KEY_IS_SIGNED_IN, true);
+                                                                startActivity(new Intent(ActivityLogIn.this, ActivityMain.class));
+                                                            }
+                                                        }
+
+                                                    }
+
+
+                                                }
+
+                                                @Override
+                                                public void onCancelled(@NonNull DatabaseError databaseError) {
+                                                    // Handle the error here
+                                                    CommonUtils.showNotification(getApplicationContext(), "Trạng thái đăng nhập", "Thất bại", R.drawable.ic_phobien_1);
+                                                    progressDialog.dismiss();
+                                                }
+                                            });
+
+                                        }
+
+                                        //pushSuccessFullNotification();
+                                        CommonUtils.showNotification(getApplicationContext(), "Trạng thái đăng nhập", "Chào mừng bạn trở lại", R.drawable.ic_phobien_1);
+                                        //Toast.makeText(getApplicationContext(), "Đăng nhập thành công", Toast.LENGTH_SHORT).show();
+                                    } else {
+                                        // Đăng nhập thất bại
+                                        //pushFailerNotification();
+                                        CommonUtils.showNotification(getApplicationContext(), "Trạng thái đăng nhập", "Thất bại", R.drawable.ic_phobien_1);
+                                        //Toast.makeText(getApplicationContext(), "Thất bại", Toast.LENGTH_SHORT).show();
+
+                                    }
+                                }
+                            });
+                        }
+                    } catch (ApiException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+            }
+        }
+    });
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
@@ -326,8 +444,6 @@ public class ActivityLogIn extends AppCompatActivity {
                                                         public void onComplete(@NonNull Task<Void> task) {
                                                             if (task.isSuccessful()) {
                                                                 // Data successfully saved
-
-
 
                                                                 pushSuccessFullNotification();
                                                                 progressDialog.dismiss();

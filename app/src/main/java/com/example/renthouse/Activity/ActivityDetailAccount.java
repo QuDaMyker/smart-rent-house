@@ -124,7 +124,6 @@ public class ActivityDetailAccount extends AppCompatActivity {
         account.setThoiGianKhoa("Khong khoa");
 
 
-
         btnBack.setOnClickListener(v -> onBackPressed());
 
         btnUpdate.setOnClickListener(new View.OnClickListener() {
@@ -210,7 +209,7 @@ public class ActivityDetailAccount extends AppCompatActivity {
                     @Override
                     public void onSuccess(Uri uri) {
                         preferenceManager.putString(Constants.KEY_IMAGE, uri.toString());
-                        Toast.makeText(ActivityDetailAccount.this, preferenceManager.getString(Constants.KEY_IMAGE), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(ActivityDetailAccount.this, key, Toast.LENGTH_SHORT).show();
                         databaseReference.child(key).child("image").setValue(preferenceManager.getString(Constants.KEY_IMAGE));
                         progressDialog.dismiss();
 
@@ -254,7 +253,7 @@ public class ActivityDetailAccount extends AppCompatActivity {
                 } else {
                     TILsodienthoai.setError(null);
                     if (!isValidPassword(TIETMatKhau.getText().toString())) {
-                        TILmatkhau.setError("Mật khẩu từ 8 đến 20 ký tự, bao gồm chữ cái viết hoa, chữ cái viết thường và số");
+                        TILmatkhau.setError("Mật khẩu từ 8 đến 20 ký tự, bao gồm chữ cái viết hoa, chữ cái viết thường,số và kí tự đặc biệt");
                         return false;
                     } else {
                         TILmatkhau.setError(null);
