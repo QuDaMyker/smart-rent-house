@@ -58,10 +58,6 @@ public class RoomLatestAdapter extends RecyclerView.Adapter<RoomLatestAdapter.Ro
         if(room == null) {
             return;
         }
-        for (Room room1 : listRoomLatest) {
-            Log.d("Room Adapter", String.valueOf(room.getLocation().getWard().getPath()));
-            Log.d("Room price", String.valueOf(room.getTitle()));
-        }
         FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
         FirebaseUser currentUser = firebaseAuth.getCurrentUser();
         String emaiCur = currentUser.getEmail();
@@ -118,7 +114,7 @@ public class RoomLatestAdapter extends RecyclerView.Adapter<RoomLatestAdapter.Ro
         holder.itemRoom.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                goToDetails (room);
+                //nClickGoDetail(room);
             }
         });
 
@@ -183,9 +179,12 @@ public class RoomLatestAdapter extends RecyclerView.Adapter<RoomLatestAdapter.Ro
         });
     }
 
-    private void goToDetails(Room room) {
+    private void onClickGoDetail(Room room) {
+        if (mContext == null) {
+            return;
+        }
         Intent intent = new Intent(mContext, ActivityDetails.class);
-        Bundle bundle = new Bundle();
+        Bundle bundle  = new Bundle();
         bundle.putSerializable("selectedRoom", room);
         intent.putExtras(bundle);
         mContext.startActivity(intent);
