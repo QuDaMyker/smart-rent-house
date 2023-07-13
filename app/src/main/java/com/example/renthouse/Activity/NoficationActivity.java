@@ -3,6 +3,8 @@ package com.example.renthouse.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.ImageButton;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -32,6 +34,7 @@ public class NoficationActivity extends AppCompatActivity {
     NotificationAdapter notificationAdapter;
     List<Notification> notificationList = new ArrayList<>();
     DatabaseReference userRef;
+    ImageButton btnBack;
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -40,6 +43,13 @@ public class NoficationActivity extends AppCompatActivity {
 
         recyclerView = findViewById(R.id.recycleViewNoti);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        btnBack = findViewById(R.id.btn_Back);
+        btnBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onBackPressed();
+            }
+        });
 
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference notificationsRef = database.getReference("Notifications");

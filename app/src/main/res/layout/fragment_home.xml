@@ -95,7 +95,7 @@
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/btn_Maps"
                 android:layout_width="75dp"
-                android:layout_height="80dp"
+                android:layout_height="90dp"
                 android:layout_marginStart="17dp"
                 android:background="@drawable/blue_bg_home"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -105,13 +105,13 @@
 
                 <ImageView
                     android:id="@+id/imageView2"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:layout_marginStart="18dp"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
                     android:layout_marginTop="10dp"
                     app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:srcCompat="@drawable/ic_map_home" />
+                    app:srcCompat="@drawable/map" />
 
                 <TextView
                     android:id="@+id/textView3"
@@ -120,6 +120,7 @@
                     android:layout_marginStart="18dp"
                     android:layout_marginTop="5dp"
                     android:text="Bản đồ"
+                    android:textStyle="bold"
                     android:textSize="12sp"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/imageView2" />
@@ -128,7 +129,7 @@
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/btn_DangBai"
                 android:layout_width="75dp"
-                android:layout_height="80dp"
+                android:layout_height="90dp"
                 android:layout_marginStart="100dp"
                 android:background="@drawable/blue_bg_home"
                 android:orientation="vertical"
@@ -138,13 +139,13 @@
 
                 <ImageView
                     android:id="@+id/imageView3"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:layout_marginStart="18dp"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
                     android:layout_marginTop="10dp"
+                    app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:srcCompat="@drawable/ic_new_home" />
+                    app:srcCompat="@drawable/post" />
 
                 <TextView
                     android:id="@+id/textView4"
@@ -152,6 +153,7 @@
                     android:layout_height="wrap_content"
                     android:text="Đăng bài"
                     android:textSize="12sp"
+                    android:textStyle="bold"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -162,7 +164,7 @@
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/linearLayout5"
                 android:layout_width="75dp"
-                android:layout_height="80dp"
+                android:layout_height="90dp"
                 android:layout_marginStart="100dp"
                 android:background="@drawable/blue_bg_home"
                 android:orientation="vertical"
@@ -172,13 +174,13 @@
 
                 <ImageView
                     android:id="@+id/imageView4"
-                    android:layout_width="42dp"
-                    android:layout_height="42dp"
-                    android:layout_marginStart="15dp"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
                     android:layout_marginTop="8dp"
+                    app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:srcCompat="@drawable/ic_seen_home" />
+                    app:srcCompat="@drawable/recent" />
 
                 <TextView
                     android:id="@+id/textView5"
@@ -186,6 +188,8 @@
                     android:layout_height="35dp"
                     android:text="Đã xem gần đây"
                     android:textSize="11sp"
+                    android:textStyle="bold"
+                    android:textAlignment="center"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"

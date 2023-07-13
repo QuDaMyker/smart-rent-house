@@ -16,6 +16,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
 import com.example.renthouse.Adapter.UniAdapter;
@@ -40,6 +41,8 @@ public class Admin_ActivityScheduledNotification extends AppCompatActivity {
     List<NotiSchedule> notiScheduleList = new ArrayList<>();
     ActivityResultLauncher<Intent> launcher;
 
+    ImageButton btnBack;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,6 +52,14 @@ public class Admin_ActivityScheduledNotification extends AppCompatActivity {
         scheduleRecycleView = findViewById(R.id.scheduleRecycleView);
         scheduleRecycleView.setLayoutManager(new LinearLayoutManager(this));
         notiScheduleAdapter = new NotiScheduleAdapter(notiScheduleList);
+
+        btnBack = findViewById(R.id.btn_Back);
+        btnBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onBackPressed();
+            }
+        });
 //        notiScheduleAdapter.setOnEditButtonClickListener(new NotiScheduleAdapter.OnEditButtonClickListener() {
 //            @Override
 //            public void onEditButtonClick(int position) {

@@ -47,18 +47,6 @@
         app:layout_constraintTop_toBottomOf="@id/textView1" />
 
     <androidx.appcompat.widget.AppCompatImageView
-        android:id="@+id/imageNotification"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:layout_marginTop="30dp"
-        android:background="@drawable/bg_circle_primary80"
-        android:padding="5dp"
-        android:src="@drawable/ic_notifications"
-        android:layout_marginEnd="10dp"
-        app:layout_constraintEnd_toStartOf="@+id/imageLogout"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/imageLogout"
         android:layout_width="50dp"
         android:layout_height="50dp"
