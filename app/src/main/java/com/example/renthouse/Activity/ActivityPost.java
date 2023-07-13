@@ -390,10 +390,6 @@ public class ActivityPost extends AppCompatActivity {
         }
         if(roomToEdit == null){
             Toast.makeText(ActivityPost.this, "Tải lên thành công!", Toast.LENGTH_SHORT).show();
-            Notification notification = new Notification("Có phòng trọ mới vừa được đăng trên Rent House", "Hãy kiểm tra ngay để không bỏ lỡ cơ hội tuyệt vời này!", "room");
-            notification.setAttachedRoom(room);
-            SendNotificationTask task = new SendNotificationTask(ActivityPost.this, notification);
-            task.execute();
         }
         else {
             Toast.makeText(ActivityPost.this, "Cập nhật thành công!", Toast.LENGTH_SHORT).show();
