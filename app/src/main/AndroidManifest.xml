@@ -34,6 +34,8 @@
         <activity
             android:name=".Admin.Activity.Admin_ActivityThongTinNguoiDung"
             android:exported="false" />
+        <activity android:name=".Admin.Activity.Admin_ActivityThongTinPhong"
+            android:exported="false"/>
         <activity
             android:name=".Activity.ActivityContactAdmin"
             android:exported="false" />
@@ -125,7 +127,13 @@
         </activity>
         <activity
             android:name=".Activity.ActivityMain"
-            android:exported="false" />
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+           </intent-filter>
+        </activity>
         <activity
             android:name=".Activity.ActivitySignUp"
             android:exported="false" />

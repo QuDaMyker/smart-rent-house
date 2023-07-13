@@ -16,7 +16,7 @@
         android:layout_marginLeft="20dp"
         android:layout_marginTop="20dp"
         android:gravity="center"
-        android:text="Tài khoản"
+        android:text="Tin nhắn"
         android:textColor="@color/white"
         android:textSize="30sp"
         android:textStyle="bold"

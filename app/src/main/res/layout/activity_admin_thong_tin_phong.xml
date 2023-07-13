@@ -4,9 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Activity.ActivityDetails">
-
-
+    tools:context=".Admin.Activity.Admin_ActivityThongTinPhong">
     <com.google.android.material.appbar.MaterialToolbar
         android:id="@+id/detail_tool_bar"
         android:layout_width="match_parent"
@@ -42,15 +40,6 @@
             app:layout_constraintTop_toTopOf="@id/detail_tool_bar" />
 
 
-        <CheckBox
-            android:id="@+id/cbLike"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:layout_gravity="right"
-            android:layout_marginRight="20dp"
-            android:button="@drawable/custom_checkbox_like"
-            android:buttonTint="#FF5050"
-            android:checked="false" />
     </com.google.android.material.appbar.MaterialToolbar>
 
     <ScrollView
@@ -277,7 +266,6 @@
                         android:textStyle="bold"
                         />
                 </LinearLayout>
-
 
             </LinearLayout>
 
@@ -544,22 +532,13 @@
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/rcvTienIch"
                     android:layout_width="match_parent"
-                    android:layout_height="90dp"
+                    android:layout_height="100dp"
                     android:layout_marginStart="10dp"
                     android:layout_marginBottom="10dp"
                     android:columnCount="3"
                     android:rowCount="5"
                     android:useDefaultMargins="true" />
 
-                <!--                <TextView-->
-                <!--                    android:id="@+id/tvMoreTI"-->
-                <!--                    android:layout_width="wrap_content"-->
-                <!--                    android:layout_height="wrap_content"-->
-                <!--                    android:layout_gravity="center"-->
-                <!--                    android:clickable="true"-->
-                <!--                    android:text="Xem thêm"-->
-                <!--                    android:textColor="@color/Primary_40"-->
-                <!--                    android:textStyle="bold" />-->
 
             </LinearLayout>
 
@@ -688,110 +667,111 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent">
 
-        <TextView
-            android:id="@+id/tvGia"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:paddingLeft="20dp"
-            android:text="20.000.000 đ"
-            android:textColor="@color/white"
-            android:textSize="23sp" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="/phòng"
-            android:textColor="@color/white"
-            android:textSize="15sp" />
-
         <LinearLayout
-            android:id="@+id/NormalUserLayout"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="20dp"
+            android:layout_height="match_parent"
+            android:id="@+id/lnGiaP"
             android:layout_weight="1"
-            android:visibility="gone">
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btnToChat"
-                android:layout_width="0dp"
+            android:gravity="center"
+            android:orientation="horizontal"
+            >
+            <TextView
+                android:id="@+id/tvGia"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:paddingHorizontal="5dp"
-                android:paddingVertical="12dp"
-                android:text="Chat"
-                android:textStyle="bold"
-                android:layout_weight="1"
-                app:icon="@drawable/ic_chat_foreground"
-                app:iconTint="@color/Primary_40"
-                android:textColor="@color/Primary_40"
-                android:textSize="16dp"
-                app:iconGravity="textEnd"
-                app:iconSize="22dp"
-                app:cornerRadius="10dp"
-                android:backgroundTint="@color/Primary_98"
-                android:layout_marginEnd="10dp"/>
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btnToCall"
-                android:layout_width="0dp"
+                android:paddingLeft="20dp"
+                android:text="20.000.000 đ"
+                android:textColor="@color/white"
+                android:textSize="23sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:paddingHorizontal="5dp"
-                android:paddingVertical="12dp"
-                android:text="Gọi"
-                android:textStyle="bold"
-                android:layout_weight="1"
-                app:icon="@drawable/ic_phone"
-                app:iconTint="@color/Secondary_40"
-                android:textColor="@color/Secondary_40"
-                android:textSize="16dp"
-                app:iconGravity="textEnd"
-                app:iconSize="22dp"
-                app:cornerRadius="10dp"
-                android:backgroundTint="@color/Secondary_90"/>
-        </LinearLayout>
-        <LinearLayout
-            android:id="@+id/OwnerLayout"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="20dp"
-            android:layout_weight="1"
-            android:visibility="gone">
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btnToDelete"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:paddingHorizontal="5dp"
-                android:paddingVertical="12dp"
-                android:text="Xóa"
-                android:textStyle="bold"
-                android:layout_weight="1"
-                app:icon="@drawable/ic_delete"
-                app:iconTint="@color/Red_50"
-                android:textColor="@color/Red_50"
-                android:textSize="16dp"
-                app:iconGravity="textStart"
-                app:iconSize="22dp"
-                app:cornerRadius="10dp"
-                android:backgroundTint="@color/Red_90"
-                android:layout_marginEnd="10dp"/>
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btnToEdit"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:paddingHorizontal="5dp"
-                android:paddingVertical="12dp"
-                android:text="Sửa"
-                android:textStyle="bold"
-                android:layout_weight="1"
-                app:icon="@drawable/ic_edit"
-                app:iconTint="@color/Secondary_40"
-                android:textColor="@color/Secondary_40"
-                android:textSize="16dp"
-                app:iconGravity="textStart"
-                app:iconSize="22dp"
-                app:cornerRadius="10dp"
-                android:backgroundTint="@color/Secondary_90"/>
+                android:text="/phòng"
+                android:textColor="@color/white"
+                android:textSize="15sp" />
         </LinearLayout>
 
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:id="@+id/lnAdmin"
+            android:visibility="visible"
+            android:layout_weight="1"
+            >
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical"
+                android:id="@+id/lnDelete"
+                android:visibility="gone"
+                >
+                <Button
+                    style="@style/Widget.Material3.Button.ElevatedButton.Icon"
+                    android:id="@+id/btnDelete"
+                    android:layout_width="80dp"
+                    android:layout_height="52dp"
+                    android:text="Xóa"
+                    android:textSize="17dp"
+                    android:textColor="@color/Red_60"
+                    android:layout_marginLeft="60dp"
+                    app:icon="@drawable/ic_delete"
+                    app:iconTint= "@color/Red_60"
+                    app:iconSize="22dp"
+                    app:cornerRadius="10dp"
+                    android:paddingHorizontal="10dp"
+                    />
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/lnDuyet"
+                android:gravity="center"
+                android:visibility="visible"
 
+                >
+                <Button
+                    style="@style/Widget.Material3.Button.ElevatedButton.Icon"
+                    android:id="@+id/btnCancel"
+                    android:layout_width="0dp"
+                    android:layout_height="52dp"
+                    android:layout_weight="1"
+                    android:text="Hủy"
+                    android:textSize="16sp"
+                    android:textColor="@color/Red_60"
+                    android:layout_marginLeft="3dp"
+                    android:textStyle="bold"
+                    app:icon="@drawable/ic_close"
+                    app:iconTint= "@color/Red_60"
+                    app:cornerRadius="10dp"
+                    android:layout_gravity="center_vertical"
+                    android:paddingHorizontal="13dp"
+                    app:iconSize="22dp"
+                    />
+                <Button
+                    style="@style/Widget.Material3.Button.ElevatedButton.Icon"
+                    android:id="@+id/btnAcp"
+                    android:layout_width="0dp"
+                    android:layout_height="52dp"
+                    android:layout_weight="1.05"
+                    android:text="Duyệt"
+                    android:paddingLeft="8dp"
+                    android:paddingRight="9dp"
+                    android:textSize="16sp"
+                    android:textAlignment="center"
+                    android:textColor="#3FA836"
+                    android:textStyle="bold"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginRight="14dp"
+                    app:icon="@drawable/baseline_check_24"
+                    app:iconTint= "#3FA836"
+                    app:iconSize="22dp"
+                    app:cornerRadius="10dp"
+                    android:layout_gravity="center"
+
+                    />
+            </LinearLayout>
+        </androidx.appcompat.widget.LinearLayoutCompat>
 
     </LinearLayout>
 

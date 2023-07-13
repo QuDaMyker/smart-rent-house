@@ -1,4 +1,4 @@
-package com.example.renthouse.Activity;
+package com.example.renthouse.Admin.Activity;
 
 import static com.gun0912.tedpermission.provider.TedPermissionProvider.context;
 
@@ -7,7 +7,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.Manifest;
@@ -17,18 +16,19 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
-import android.provider.ContactsContract;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.Toolbar;
 
+import com.example.renthouse.Activity.ActivityDetails;
+import com.example.renthouse.Activity.ActivityFullImage;
+import com.example.renthouse.Activity.ActivityPost;
 import com.example.renthouse.Adapter.RoomAdapter;
 import com.example.renthouse.Adapter.UtilitiesAdapter;
 import com.example.renthouse.Chat.Dashboard.ActivityChat;
@@ -55,74 +55,66 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.Random;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class ActivityDetails extends AppCompatActivity {
-    private static final int REQUEST_CALL = 1;
+public class Admin_ActivityThongTinPhong extends AppCompatActivity {
+
     private FirebaseDatabase db;
     private DatabaseReference ref;
-    private  String idAC = null;
-    Room room;
-    ImageButton btnPreScreen;
-    CheckBox cbLiked;
-    ImageButton btnNextImage;
-    ImageButton btnPreImage;
-    int curImage = 0;
-    TextView stt;
-    List<String> srcImages;
-    ImageView ivImages;
-    TextView tvLoaiP;
-    TextView tvSoNg;
-    List<String> listImages;
-    TextView tvTinhTrang;
-    TextView tvDienTich;
-    TextView tvCoc;
-    TextView tvTenP;
-    TextView tvDiaChi;
-    TextView tvSdt;
-    TextView tvGiaDien;
-    TextView tvGiaNuoc;
-    TextView tvGiaXe;
-    TextView tvGiaWifi;
-    TextView tvMota;
-    TextView tvNgayDang;
-    TextView tvXemThemMT;
-    List<String> listTI;
-    RecyclerView rcvTienIch;
-    TextView tvThemTI;
-    AccountClass Tg;
-    ImageView ivTacGia;
-    TextView tvTenTG;
-    TextView tvSoP;
-    ImageButton btnThemTTtg;
-    RecyclerView rcvDeXuatP;
-    int visibleRowCount = 2;
+    private Room room;
+    private ImageButton btnPreScreen;
+    private ImageButton btnNextImage;
+    private ImageButton btnPreImage;
+    private int curImage = 0;
+    private TextView stt;
+    private List<String> srcImages;
+    private ImageView ivImages;
+    private TextView tvLoaiP;
+    private TextView tvSoNg;
+    private List<String> listImages;
+    private TextView tvTinhTrang;
+    private TextView tvDienTich;
+    private TextView tvCoc;
+    private TextView tvTenP;
+    private TextView tvDiaChi;
+    private TextView tvChiDuong;
+    private TextView tvSdt;
+    private TextView tvGiaDien;
+    private TextView tvGiaNuoc;
+    private TextView tvGiaXe;
+    private TextView tvGiaWifi;
+    private TextView tvMota;
+    private TextView tvNgayDang;
+    private TextView tvXemThemMT;
+    private List<String> listTI;
+    private RecyclerView rcvTienIch;
+    private AccountClass Tg;
+    private ImageView ivTacGia;
+    private TextView tvTenTG;
+    private TextView tvSoP;
+    private ImageButton btnThemTTtg;
+    private RecyclerView rcvDeXuatP;
+    private int visibleRowCount = 2;
     int totalRowCount;
-    List<Room> rcmRooms;
-    TextView tvThemDX;
-    TextView tvGiaP;
-//    ImageButton ibChat;
-//    ImageButton ibCall;
-    MaterialButton ibChat;
-    MaterialButton ibCall;
-    MaterialButton btnToDelete;
-    MaterialButton btnToEdit;
-    String accountPhone;
+    private List<Room> rcmRooms;
+    private TextView tvThemDX;
+    private TextView tvGiaP;
+
+    private String accountPhone;
     private PreferenceManager preferenceManager;
-    LinearLayout NormalUserLayout;
-    LinearLayout OwnerLayout;
-
-
+    private LinearLayout lnDuyet;
+    private LinearLayout lnXoa;
+    private Button btnDelete;
+    private Button btnAcp;
+    private Button btnCancel;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_details);
+        setContentView(R.layout.activity_admin_thong_tin_phong);
 
         db = FirebaseDatabase.getInstance();
         ref = db.getReference("Rooms");
-
-        NormalUserLayout = findViewById(R.id.NormalUserLayout);
-        OwnerLayout = findViewById(R.id.OwnerLayout);
 
         listImages = new ArrayList<String>();
         listTI = new ArrayList<String>();
@@ -130,7 +122,6 @@ public class ActivityDetails extends AppCompatActivity {
 
         //gán id
         btnPreScreen = findViewById(R.id.btnBack);
-        cbLiked = findViewById(R.id.cbLike);
         btnNextImage = findViewById(R.id.btnNextImage);
         btnPreImage = findViewById(R.id.btnPreImage);
         ivImages = findViewById(R.id.ivImages);
@@ -142,6 +133,7 @@ public class ActivityDetails extends AppCompatActivity {
         tvCoc = findViewById(R.id.tvCoc);
         tvTenP = findViewById(R.id.tvTen);
         tvDiaChi = findViewById(R.id.tvDiaChi);
+        tvChiDuong = findViewById(R.id.tvChiDuong);
         tvSdt = findViewById(R.id.tvSdt);
         tvGiaDien = findViewById(R.id.tvDien);
         tvGiaNuoc = findViewById(R.id.tvNuoc);
@@ -151,7 +143,6 @@ public class ActivityDetails extends AppCompatActivity {
         tvXemThemMT = findViewById(R.id.tvShowMoreMT);
         tvNgayDang = findViewById(R.id.tvNgay);
         rcvTienIch = findViewById(R.id.rcvTienIch);
-        //tvThemTI = findViewById(R.id.tvMoreTI);
         ivTacGia = findViewById(R.id.imageTacGia);
         tvTenTG = findViewById(R.id.tvTenTg);
         tvSoP = findViewById(R.id.tvSoPhong);
@@ -159,27 +150,23 @@ public class ActivityDetails extends AppCompatActivity {
         rcvDeXuatP = findViewById(R.id.rcvDeXuatPhong);
         //tvThemDX = findViewById(R.id.tvMoreRoom);
         tvGiaP = findViewById(R.id.tvGia);
-        ibCall = findViewById(R.id.btnToCall);
-        ibChat = findViewById(R.id.btnToChat);
-        btnToDelete = findViewById(R.id.btnToDelete);
-        btnToEdit = findViewById(R.id.btnToEdit);
 
+        lnDuyet = findViewById(R.id.lnDuyet);
+        lnXoa = findViewById(R.id.lnDelete);
 
-        preferenceManager = new PreferenceManager(ActivityDetails.this);
+        btnDelete = findViewById(R.id.btnDelete);
+        btnAcp = findViewById(R.id.btnAcp);
+        btnCancel = findViewById(R.id.btnCancel);
+
+        preferenceManager = new PreferenceManager(Admin_ActivityThongTinPhong.this);
 
         Intent intent = getIntent();
         if (intent == null) {
             return;
         }
         room = (Room) intent.getSerializableExtra("selectedRoom");
-        if (room.getCreatedBy().getEmail().equals(preferenceManager.getString(Constants.KEY_EMAIL))) {
-            OwnerLayout.setVisibility(View.VISIBLE);
-            NormalUserLayout.setVisibility(View.GONE);
-        }
-        else{
-            OwnerLayout.setVisibility(View.GONE);
-            NormalUserLayout.setVisibility(View.VISIBLE);
-        }
+
+        LoadLinearLayoutOption();
 
         /*Bundle bundle = getIntent().getExtras();
         if (bundle == null) {
@@ -189,43 +176,6 @@ public class ActivityDetails extends AppCompatActivity {
 
         //load thông tin p được chọn
         //gán các thông tin
-
-        //xét id p này có nằm trong ds thích của user
-        FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
-        FirebaseUser currentUser = firebaseAuth.getCurrentUser();
-        String emaiCur = currentUser.getEmail();
-        DatabaseReference refAc = db.getReference("Accounts");
-        refAc.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                String emailAc = null;
-                for (DataSnapshot snapAc : snapshot.getChildren()) {
-                    emailAc = snapAc.child("email").getValue(String.class);
-                    if (emaiCur.equals(emailAc)) {
-                        String idAc = snapAc.getKey();
-                        DatabaseReference refLiked = db.getReference("LikedRooms").child(idAc);
-                        ref.addListenerForSingleValueEvent(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                if (snapshot.hasChild(room.getId())) {
-                                    cbLiked.setChecked(true);
-                                }
-                            }
-
-                            @Override
-                            public void onCancelled(@NonNull DatabaseError error) {
-
-                            }
-                        });
-                    }
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
 
         srcImages = room.getImages();
         String src = srcImages.get(curImage);
@@ -286,6 +236,20 @@ public class ActivityDetails extends AppCompatActivity {
         totalRowCount = rcmRooms.size();
 
         //sự kiện các nút
+        tvChiDuong.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String address = tvDiaChi.getText().toString();
+                Uri gmmIntentUri = Uri.parse("geo:0,0?q=" + Uri.encode(address));
+                Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
+                mapIntent.setPackage("com.google.android.apps.maps");
+                if (mapIntent.resolveActivity(getPackageManager()) != null) {
+                    startActivity(mapIntent);
+                } else {
+                    Toast.makeText(getApplicationContext(), "Ứng dụng Google Maps không được cài đặt trên thiết bị của bạn.", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
         btnPreScreen.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -344,7 +308,6 @@ public class ActivityDetails extends AppCompatActivity {
             }
         });//chua làm
         tvXemThemMT.setOnClickListener(new View.OnClickListener() {
-
             boolean isExpand = false;
 
             @Override
@@ -366,110 +329,42 @@ public class ActivityDetails extends AppCompatActivity {
 
             }
         });//chưa làm*/
-        ibCall.setOnClickListener(new View.OnClickListener() {
+
+        //nhấn nút ACP thì đổi trạng thái phobgf thành Approved
+        btnAcp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (ContextCompat.checkSelfPermission(ActivityDetails.this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
-                    ActivityCompat.requestPermissions(ActivityDetails.this, new String[]{android.Manifest.permission.CALL_PHONE}, REQUEST_CALL);
-                } else {
-                    Intent intent = new Intent(Intent.ACTION_DIAL, Uri.fromParts("tel", accountPhone, null));
-                    startActivity(intent);
-                }
+                room.setStatus(Constants.STATUS_APPROVED);
+                DatabaseReference refRoom =  ref.child(room.getId());
+                refRoom.child("status").setValue(Constants.STATUS_APPROVED);
+
+                String pathObject = String.valueOf(room.getId());
+                pushPopularRoom(room, pathObject);
+
+                Toast.makeText(Admin_ActivityThongTinPhong.this, "Bạn đã duyệt phòng thành công", Toast.LENGTH_SHORT).show();
+                LoadLinearLayoutOption();
             }
         });
-        ibChat.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
 
-                if (preferenceManager.getString(Constants.KEY_USER_KEY) != null) {
-                    Log.d("key", preferenceManager.getString(Constants.KEY_USER_KEY));
-                }
-
-                Intent intentChat = new Intent(ActivityDetails.this, ActivityChat.class);
-                Log.d("Key", preferenceManager.getString(Constants.KEY_USER_KEY));
-                intentChat.putExtra("currentKey", preferenceManager.getString(Constants.KEY_USER_KEY));
-                intentChat.putExtra("name", room.getCreatedBy().getFullname());
-                intentChat.putExtra("email", room.getCreatedBy().getEmail());
-                intentChat.putExtra("profile_pic", room.getCreatedBy().getImage());
-
-                FirebaseDatabase database = FirebaseDatabase.getInstance();
-                DatabaseReference reference = database.getReference();
-
-                Query query = reference.child("Accounts").orderByChild("email").equalTo(room.getCreatedBy().getEmail());
-                query.addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
-                            String otherKey = dataSnapshot.getKey();
-                            intentChat.putExtra("otherKey", otherKey);
-
-                            Query query1 = reference.child("Chat").child(preferenceManager.getString(Constants.KEY_USER_KEY)).orderByKey().equalTo(otherKey);
-                            query1.addListenerForSingleValueEvent(new ValueEventListener() {
-                                @Override
-                                public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                    if (!snapshot.exists()) {
-
-                                        Date data = new Date();
-                                        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault());
-                                        SimpleDateFormat simpleTimeFormat = new SimpleDateFormat("hh:mm aa", Locale.getDefault());
-
-                                        reference.child("Chat").child(preferenceManager.getString(Constants.KEY_USER_KEY)).child(otherKey).child("1").child("sender").setValue(preferenceManager.getString(Constants.KEY_USER_KEY));
-                                        reference.child("Chat").child(preferenceManager.getString(Constants.KEY_USER_KEY)).child(otherKey).child("1").child("msg").setValue("Xin Chào");
-                                        reference.child("Chat").child(preferenceManager.getString(Constants.KEY_USER_KEY)).child(otherKey).child("1").child("send-date").setValue(simpleDateFormat.format(data));
-                                        reference.child("Chat").child(preferenceManager.getString(Constants.KEY_USER_KEY)).child(otherKey).child("1").child("send-time").setValue(simpleTimeFormat.format(data));
-
-                                        Conversation conversation = new Conversation(preferenceManager.getString(Constants.KEY_USER_KEY), otherKey, "Xin Chào", simpleDateFormat.format(data).toString(), simpleTimeFormat.format(data).toString());
-
-                                        reference.child("Conversations").child(preferenceManager.getString(Constants.KEY_USER_KEY)).child(otherKey).setValue(conversation);
-
-                                        // Set value cho người nhận
-                                        reference.child("Chat").child(otherKey).child(preferenceManager.getString(Constants.KEY_USER_KEY)).child("1").child("sender").setValue(preferenceManager.getString(Constants.KEY_USER_KEY));
-                                        reference.child("Chat").child(otherKey).child(preferenceManager.getString(Constants.KEY_USER_KEY)).child("1").child("msg").setValue("Xin Chào");
-                                        reference.child("Chat").child(otherKey).child(preferenceManager.getString(Constants.KEY_USER_KEY)).child("1").child("send-date").setValue(simpleDateFormat.format(data));
-                                        reference.child("Chat").child(otherKey).child(preferenceManager.getString(Constants.KEY_USER_KEY)).child("1").child("send-time").setValue(simpleTimeFormat.format(data));
-
-                                        reference.child("Conversations").child(otherKey).child(preferenceManager.getString(Constants.KEY_USER_KEY)).setValue(conversation);
-                                    }
-                                }
-
-                                @Override
-                                public void onCancelled(@NonNull DatabaseError error) {
-
-                                }
-                            });
-
-
-                        }
-                    }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError error) {
-
-                    }
-                });
-
-
-                //startActivity(intentChat);
-
-
-            }
-        });//chưa làm
-
-        btnToEdit.setOnClickListener(new View.OnClickListener() {
+        //nhấn nút HỦY thì xóa thì cập nhập lại status
+        btnCancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent =new Intent(ActivityDetails.this, ActivityPost.class);
-                Bundle bundle = new Bundle();
-                bundle.putSerializable("roomToEdit", room);
-                intent.putExtras(bundle);
-                startActivity(intent);
-                finish();
+                room.setStatus(Constants.STATUS_DELETED);
+                DatabaseReference refRoom =  ref.child(room.getId());
+                refRoom.child("status").setValue(Constants.STATUS_DELETED);
+
+                Toast.makeText(Admin_ActivityThongTinPhong.this, "Bạn đã hủy yêu cầu duyệt của phòng này", Toast.LENGTH_SHORT).show();
+                btnAcp.setEnabled(false);
+                btnCancel.setEnabled(false);
+
             }
         });
-        btnToDelete.setOnClickListener(new View.OnClickListener() {
+        //nhấn nút xáo thì xóa phòng khỏi danh sách
+        btnDelete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                AlertDialog confirmDialog = new AlertDialog.Builder(ActivityDetails.this)
+                AlertDialog confirmDialog = new AlertDialog.Builder(Admin_ActivityThongTinPhong.this)
                         .setTitle("Xóa phòng trọ")
                         .setMessage("Bạn có chắc chắn muốn xóa phòng trọ này?")
                         .setPositiveButton("Xóa", new DialogInterface.OnClickListener() {
@@ -479,7 +374,7 @@ public class ActivityDetails extends AppCompatActivity {
                                 notiSchedulesRef.child(room.getId()).removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
                                     @Override
                                     public void onSuccess(Void unused) {
-                                        Toast.makeText(ActivityDetails.this, "Xóa phòng trọ thành công", Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(Admin_ActivityThongTinPhong.this, "Xóa phòng trọ thành công", Toast.LENGTH_SHORT).show();
                                         finish();
                                     }
                                 });
@@ -494,6 +389,48 @@ public class ActivityDetails extends AppCompatActivity {
                 confirmDialog.show();
             }
         });
+    }
+
+    private void pushPopularRoom(Room room, String idRoom) {
+        String roomcode = room.getLocation().getDistrict().getCode();
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("PopularRoom").child(roomcode);
+
+        String name = room.getLocation().getDistrict().getName_with_type();
+        reference.child("Name").setValue(name);
+
+        DatabaseReference images_ref = FirebaseDatabase.getInstance().getReference("ImagePhoBien");
+        images_ref.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                List<String> images = new ArrayList<>();
+                for(DataSnapshot Snapshot : snapshot.getChildren()){
+                    images.add(Snapshot.getKey());
+                }
+                Random random = new Random();
+                int randomIndex = random.nextInt(images.size());
+                String image = images.get(randomIndex);
+
+                reference.child("Image").setValue(image);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
+
+    private void LoadLinearLayoutOption() {
+        if (room.getStatus().equals(Constants.STATUS_PENDING)) {
+            lnDuyet.setVisibility(View.VISIBLE);
+            lnXoa.setVisibility(View.GONE);
+        }
+        else{
+            if (room.getStatus().equals(Constants.STATUS_APPROVED)) {
+                lnDuyet.setVisibility(View.GONE);
+                lnXoa.setVisibility(View.VISIBLE);
+            }
+        }
     }
 
     private void tinhSoP(AccountClass tg) {
@@ -541,18 +478,5 @@ public class ActivityDetails extends AppCompatActivity {
 
             }
         });
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == REQUEST_CALL) {
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                Intent intent = new Intent(Intent.ACTION_DIAL, Uri.fromParts("tel", accountPhone, null));
-                startActivity(intent);
-            } else {
-                Toast.makeText(this, "Ứng dụng không được phép gọi", Toast.LENGTH_SHORT).show();
-            }
-        }
     }
 }

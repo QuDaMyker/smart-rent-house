@@ -16,6 +16,7 @@ import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.renthouse.Activity.ActivityDetails;
+import com.example.renthouse.Admin.Activity.Admin_ActivityThongTinPhong;
 import com.example.renthouse.OOP.Room;
 import com.example.renthouse.R;
 import com.google.firebase.auth.FirebaseAuth;
@@ -35,6 +36,7 @@ public class RoomAdapter extends RecyclerView.Adapter<RoomAdapter.RoomViewHolder
     private Context context;
     FirebaseDatabase firebaseDatabase;
     DatabaseReference reference;
+    private int enableLikeButton = View.VISIBLE;
 
     public RoomAdapter(Context context, List<Room> rooms) {
         this.context = context;
@@ -96,6 +98,7 @@ public class RoomAdapter extends RecyclerView.Adapter<RoomAdapter.RoomViewHolder
 
             }
         });
+        holder.cbLike.setVisibility(enableLikeButton);
         holder.tvName.setText(room.getTitle());
         holder.tvAddress.setText(room.getLocation().LocationToString());
         holder.tvPrice.setText(String.valueOf(room.getPrice()/1000000) + " Tr");
@@ -107,7 +110,7 @@ public class RoomAdapter extends RecyclerView.Adapter<RoomAdapter.RoomViewHolder
         holder.itemRooom.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                goToDetails (room);
+                goToDetails(room);
             }
         });
         //cbliked thay đổi
@@ -117,7 +120,7 @@ public class RoomAdapter extends RecyclerView.Adapter<RoomAdapter.RoomViewHolder
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
-                    // Nếu checkbox được chọn, them dzo thích
+                    // Nếu checkbox được chọn, them id phòng dzo ds Likedroom
                     String emailCur = currentUser.getEmail();
                     firebaseDatabase = FirebaseDatabase.getInstance();
                     reference = firebaseDatabase.getReference("Accounts");
@@ -132,7 +135,8 @@ public class RoomAdapter extends RecyclerView.Adapter<RoomAdapter.RoomViewHolder
                                     String idAC = snapshotAc.getKey();
                                     DatabaseReference likedRef = firebaseDatabase.getReference("LikedRooms").child(idAC);
                                     String idRoom = room.getId();
-                                    likedRef.child(idRoom).setValue(room);
+                                    likedRef.child(idRoom).setValue(idRoom);
+
                                 }
                             }
                         }
@@ -141,7 +145,6 @@ public class RoomAdapter extends RecyclerView.Adapter<RoomAdapter.RoomViewHolder
 
                         }
                     });
-
 
                 } else {
                     // Nếu bỏ like thì xóa khỏi thích
@@ -178,6 +181,7 @@ public class RoomAdapter extends RecyclerView.Adapter<RoomAdapter.RoomViewHolder
     }
     private  void goToDetails (Room r)
     {
+        //Intent intent = new Intent(context, ActivityDetails.class);
         Intent intent = new Intent(context, ActivityDetails.class);
         Bundle bundle = new Bundle();
         bundle.putSerializable("selectedRoom", r);
@@ -198,6 +202,12 @@ public class RoomAdapter extends RecyclerView.Adapter<RoomAdapter.RoomViewHolder
         }
         return 0;
     }
+    public void setEnableLikeButton(int enable) {
+
+        enableLikeButton = enable;
+        notifyDataSetChanged();
+    }
+
 
     public class RoomViewHolder extends RecyclerView.ViewHolder{
         private CardView itemRooom;

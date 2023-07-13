@@ -17,6 +17,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageButton;
 import android.widget.ScrollView;
 import android.widget.Toast;
 
@@ -50,11 +51,13 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.security.cert.PolicyNode;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.Random;
 
 import id.zelory.compressor.Compressor;
 
@@ -74,6 +77,8 @@ public class ActivityPost extends AppCompatActivity {
     AccountClass user;
     public Room roomToEdit;
 
+    ImageButton btnBack;
+
     public interface OnUploadImageCompleteListener {
         void onUploadImageComplete();
     }
@@ -81,6 +86,13 @@ public class ActivityPost extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_post);
+        btnBack = findViewById(R.id.btn_Back);
+        btnBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onBackPressed();
+            }
+        });
 
         roomToEdit = null;
         try {
@@ -238,11 +250,13 @@ public class ActivityPost extends AppCompatActivity {
                                 false,
                                 STATUS_PENDING);
 
-                        String pathObject = String.valueOf(room.getId());
-                        myRef.child(pathObject).setValue(room);
-                        updateImage(room);
-                    }
+                    String pathObject = String.valueOf(room.getId());
+                    myRef.child(pathObject).setValue(room);
+                    updateImage(room);
+
+
                 }
+            }
 
                 @Override
                 public void onCancelled(DatabaseError databaseError) {
@@ -277,6 +291,8 @@ public class ActivityPost extends AppCompatActivity {
         }
 
     }
+
+
 
     protected void replaceFragmentContent(Fragment fragment) {
 

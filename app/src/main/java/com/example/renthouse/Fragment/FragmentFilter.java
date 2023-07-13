@@ -59,12 +59,20 @@ public class FragmentFilter extends Fragment {
     private AppCompatButton buttonApply;
     private LinearLayout linearLayoutControl;
 
+    private boolean phobien;
+
     public FragmentFilter(String address) {
         objectFilter = new ObjectFilter();
         objectSearch = new ObjectSearch();
         objectSearch.setPath(address);
+        phobien = false;
     }
-
+    public FragmentFilter(String address, boolean phobien) {
+        objectFilter = new ObjectFilter();
+        objectSearch = new ObjectSearch();
+        objectSearch.setPath(address);
+        this.phobien = phobien;
+    }
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
@@ -94,7 +102,7 @@ public class FragmentFilter extends Fragment {
         buttonApply = view.findViewById(R.id.buttonApply);
 
 
-        fragmentResult = new FragmentResult();
+
 
         fragmentPrice = new FragmentPrice(new IPriceValueChangeListener() {
             @Override
@@ -328,7 +336,22 @@ public class FragmentFilter extends Fragment {
             }
         });
         linearLayoutControl = view.findViewById(R.id.linearLayoutControl);
+
+        fragmentResult = new FragmentResult();
+        if (phobien) {
+            ShowFragmentResultPhoBien();
+        }
+
         return view;
+    }
+
+    private void ShowFragmentResultPhoBien() {
+        linearLayoutControl.setVisibility(View.GONE);
+        fragmentResult.setObjectSearch(objectSearch);
+        FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.replace(R.id.linearLayoutFragment, fragmentResult);
+        fragmentTransaction.commit();
     }
 
     public void _initSetButtonPrice() {
