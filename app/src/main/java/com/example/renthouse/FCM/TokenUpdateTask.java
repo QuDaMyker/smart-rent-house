@@ -19,7 +19,6 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.messaging.FirebaseMessaging;
 
 public class TokenUpdateTask extends AsyncTask<Void, Void, Void> {
-    AccountClass user;
 
     @Override
     protected Void doInBackground(Void... voids) {
@@ -43,7 +42,7 @@ public class TokenUpdateTask extends AsyncTask<Void, Void, Void> {
                                 @Override
                                 public void onDataChange(DataSnapshot dataSnapshot) {
                                     for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                                        user = snapshot.getValue(AccountClass.class);
+                                        String currUserId = snapshot.getKey();
                                         DatabaseReference devicesRef = database.getReference().child("Devices");
 
                                         devicesRef.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -52,15 +51,15 @@ public class TokenUpdateTask extends AsyncTask<Void, Void, Void> {
                                                 for (DataSnapshot deviceSnapshot : dataSnapshot.getChildren()) {
                                                     Device device = deviceSnapshot.getValue(Device.class);
 
-                                                    if (device.getUser().getEmail().equals(user.getEmail()) && device.getToken().equals(token)) {
+                                                    if (device.getUserId().equals(currUserId) && device.getToken().equals(token)) {
                                                         return;
-                                                    } else if (device.getUser().getEmail().equals(user.getEmail())) {
+                                                    } else if (device.getUserId().equals(currUserId)) {
                                                         deviceSnapshot.getRef().child("token").setValue(token);
                                                         return;
                                                     }
                                                 }
                                                 DatabaseReference newDeviceRef = devicesRef.push();
-                                                newDeviceRef.child("user").setValue(user);
+                                                newDeviceRef.child("userId").setValue(currUserId);
                                                 newDeviceRef.child("token").setValue(token);
                                                 newDeviceRef.child("roomNoti").setValue(true);
                                                 newDeviceRef.child("chatNoti").setValue(true);

@@ -41,43 +41,29 @@ public class SendNotificationTask extends AsyncTask<Void, Void, Void> {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for (DataSnapshot deviceSnapshot : dataSnapshot.getChildren()) {
                     Device device = deviceSnapshot.getValue(Device.class);
-                    Query query = database.getReference("Accounts").orderByChild("email").equalTo(device.getUser().getEmail());
-
-                    query.addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(DataSnapshot dataSnapshot) {
-                            for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                                String userKey = snapshot.getKey();
-                                boolean flag = false;
-                                if(device.isRoomNoti() && notification.getType().equals("room")){
-                                    flag = true;
-                                }
-                                if(device.isChatNoti() && notification.getType().equals("chat")){
-                                    String[] parts = notification.getAttachedMessageKey().split("/");
-                                    String receiveId = parts[0];
-                                    String sendId = parts[1];
-                                    if(userKey.equals(receiveId)){
-                                        flag = true;
-                                    }
-                                }
-                                if(device.isLikeNoti() && notification.getType().equals("like")){
-                                    flag = true;
-                                }
-                                if(device.isScheduleNoti() && notification.getType().equals("schedule")){
-                                    flag = true;
-                                }
-
-                                if(flag){
-                                    sendNoti(device);
-                                    Log.e("Token send", device.getToken());
-                                }
-                            }
+                    boolean flag = false;
+                    if(device.isRoomNoti() && notification.getType().equals("room")){
+                        flag = true;
+                    }
+                    if(device.isChatNoti() && notification.getType().equals("chat")){
+                        String[] parts = notification.getAttachedMessageKey().split("/");
+                        String receiveId = parts[0];
+                        String sendId = parts[1];
+                        if(device.getUserId().equals(receiveId)){
+                            flag = true;
                         }
+                    }
+                    if(device.isLikeNoti() && notification.getType().equals("like")){
+                        flag = true;
+                    }
+                    if(device.isScheduleNoti() && notification.getType().equals("schedule")){
+                        flag = true;
+                    }
 
-                        @Override
-                        public void onCancelled(DatabaseError databaseError) {
-                        }
-                    });
+                    if(flag){
+                        sendNoti(device);
+                        Log.e("Token send", device.getToken());
+                    }
 
                 }
             }
@@ -101,23 +87,9 @@ public class SendNotificationTask extends AsyncTask<Void, Void, Void> {
         //Save to db
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference notificationsRef = database.getReference("Notifications");
-        DatabaseReference accountsRef = database.getReference("Accounts");
-        accountsRef.orderByChild("email").equalTo(device.getUser().getEmail()).addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for (DataSnapshot accountSnapshot : dataSnapshot.getChildren()) {
-                    String accountKey = accountSnapshot.getKey();
-
-                    DatabaseReference userRef = notificationsRef.child(accountKey);
-                    DatabaseReference notificationRef = userRef.push();
-                    notificationRef.setValue(notification);
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-                // Xử lý khi có lỗi xảy ra
-            }
-        });
+        
+        DatabaseReference userRef = notificationsRef.child(device.getUserId());
+        DatabaseReference notificationRef = userRef.push();
+        notificationRef.setValue(notification);
     }
 }

@@ -11,6 +11,8 @@ import com.example.renthouse.FCM.TokenUpdateTask;
 import com.example.renthouse.OOP.AccountClass;
 import com.example.renthouse.OOP.Device;
 import com.example.renthouse.R;
+import com.example.renthouse.utilities.Constants;
+import com.example.renthouse.utilities.PreferenceManager;
 import com.google.android.material.materialswitch.MaterialSwitch;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -29,6 +31,8 @@ public class ActivityAccountNotification extends AppCompatActivity {
 
     String deviceKey;
 
+    private PreferenceManager preferenceManager;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,6 +42,8 @@ public class ActivityAccountNotification extends AppCompatActivity {
         chatNoti = findViewById(R.id.chatNoti);
         likeNoti = findViewById(R.id.likeNoti);
         scheduleNoti = findViewById(R.id.scheduleNoti);
+        preferenceManager = new PreferenceManager(ActivityAccountNotification.this);
+
 
         DatabaseReference devicesRef = FirebaseDatabase.getInstance().getReference().child("Devices");
         devicesRef.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -47,7 +53,7 @@ public class ActivityAccountNotification extends AppCompatActivity {
                     Device device = deviceSnapshot.getValue(Device.class);
                     deviceKey = deviceSnapshot.getKey();
 
-                    if (device.getUser().getEmail().equals(FirebaseAuth.getInstance().getCurrentUser().getEmail())) {
+                    if (device.getUserId().equals(preferenceManager.getString(Constants.KEY_USER_KEY))) {
                         roomNoti.setChecked(device.isRoomNoti());
                         chatNoti.setChecked(device.isChatNoti());
                         likeNoti.setChecked(device.isLikeNoti());
