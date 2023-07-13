@@ -1,8 +1,12 @@
 package com.example.renthouse.Activity;
 
+import static com.example.renthouse.utilities.Constants.KEY_FULLNAME;
+import static com.example.renthouse.utilities.Constants.KEY_USER_KEY;
+
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -12,6 +16,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.ProgressBar;
 
 import androidx.annotation.NonNull;
@@ -19,21 +24,39 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
 import com.example.renthouse.Admin.Activity.Admin_ActivityMain;
+import com.example.renthouse.OOP.Region;
+import com.example.renthouse.OOP.Room;
 import com.example.renthouse.R;
 import com.example.renthouse.utilities.Constants;
 import com.example.renthouse.utilities.PreferenceManager;
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.MutableData;
+import com.google.firebase.database.Transaction;
+import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.ktx.Firebase;
+
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Locale;
 
 public class ActivitySplash extends AppCompatActivity {
     private final static int REQUEST_CODE = 100;
     private PreferenceManager preferenceManager;
+    private FirebaseAnalytics mFirebaseAnalytics;
+    private boolean isCompleteAdd = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
-
 
         getPermission();
 
@@ -75,10 +98,11 @@ public class ActivitySplash extends AppCompatActivity {
                     if(preferenceManager.getString(Constants.KEY_EMAIL).equals("admin")) {
                         startActivity(new Intent(ActivitySplash.this, Admin_ActivityMain.class));
                     } else{
+                        putDataAccess();
                         startActivity(new Intent(ActivitySplash.this, ActivityMain.class));
-
                     }
                 } else {
+                    putDataAccess();
                     startActivity(new Intent(ActivitySplash.this, ActivityLogIn.class));
                 }
                 finish();
@@ -104,6 +128,82 @@ public class ActivitySplash extends AppCompatActivity {
                 });*/
             }
         }).start();
+
+//        // Tạo node PopularRegion
+//        FirebaseDatabase database = FirebaseDatabase.getInstance();
+//        DatabaseReference myRef = database.getReference("Rooms");
+//        DatabaseReference databaseReference = database.getReference("PopularRegion");
+//        myRef.addListenerForSingleValueEvent(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(@NonNull DataSnapshot snapshot) {
+//                for (DataSnapshot snapshot1 : snapshot.getChildren()) {
+//                    Room room = snapshot1.getValue(Room.class);
+//                    String path_with_type = snapshot1.getValue(Room.class).getLocation().getDistrict().getPath_with_type();
+//                    databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+//                        @Override
+//                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+//                            Log.d("Số lượng", String.valueOf(snapshot.getChildrenCount()));
+//                            if (snapshot.hasChild(path_with_type)) {
+//                                Region region = snapshot.child(path_with_type).getValue(Region.class);
+//                                region.setSoLuong(region.getSoLuong() + 1);
+//                                databaseReference.child(path_with_type).setValue(region);
+//                                Log.d("Trùng thông tin", String.valueOf(region));
+//                            } else {
+//                                Region region = new Region(
+//                                        room.getLocation().getDistrict().getName_with_type(),
+//                                        room.getLocation().getCity().getName_with_type(),
+//                                        1
+//                                );
+//                                databaseReference.child(path_with_type).setValue(region);
+//                            }
+//                        }
+//
+//                        @Override
+//                        public void onCancelled(@NonNull DatabaseError error) {
+//
+//                        }
+//                    });
+//                }
+//            }
+//
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError error) {
+//
+//            }
+//        });
+    }
+
+    private void putDataAccess() {
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference accessRef = database.getReference("Access");
+
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
+        String currentDate = dateFormat.format(new Date());
+
+        // Tăng số lần truy cập cho ngày hiện tại
+        DatabaseReference currentDateRef = accessRef.child(currentDate);
+        currentDateRef.runTransaction(new Transaction.Handler() {
+            @Override
+            public Transaction.Result doTransaction(MutableData mutableData) {
+                Integer accessCount = mutableData.getValue(Integer.class);
+                if (accessCount == null) {
+                    accessCount = 1;
+                } else {
+                    accessCount++;
+                }
+                mutableData.setValue(accessCount);
+                return Transaction.success(mutableData);
+            }
+
+            @Override
+            public void onComplete(DatabaseError databaseError, boolean b, DataSnapshot dataSnapshot) {
+                if (databaseError != null) {
+                    // Xử lý lỗi nếu cần
+                } else {
+                    // Cập nhật số lần truy cập thành công
+                }
+            }
+        });
     }
 
 

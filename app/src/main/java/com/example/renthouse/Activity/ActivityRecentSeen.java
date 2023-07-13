@@ -118,6 +118,8 @@ public class ActivityRecentSeen extends AppCompatActivity {
 
             }
         });
+
+
     }
 
     private void addLatestRoom(List<String> keyRoomList) {

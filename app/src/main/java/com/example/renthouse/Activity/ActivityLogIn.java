@@ -54,6 +54,7 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
@@ -93,6 +94,7 @@ public class ActivityLogIn extends AppCompatActivity {
     String imageURL;
     private PreferenceManager preferenceManager;
     ProgressDialog progressDialog;
+
 
 
     @Override
@@ -155,6 +157,15 @@ public class ActivityLogIn extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
+
+//                            // Event log app
+//                            Bundle bundle = new Bundle();
+//                            bundle.putString(FirebaseAnalytics.Param.ITEM_ID, "APP_OPEN");
+//                            FirebaseAnalytics analytics = FirebaseAnalytics.getInstance(getApplicationContext());
+//                            analytics.logEvent(FirebaseAnalytics.Event.LOGIN, bundle);
+//                            analytics.setAnalyticsCollectionEnabled(true);
+
+
                             preferenceManager.putString(Constants.KEY_EMAIL, email);
                             preferenceManager.putString(Constants.KEY_PASSWORD, password);
                             preferenceManager.putBoolean(Constants.KEY_IS_SIGNED_IN, true);
