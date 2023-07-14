@@ -52,7 +52,7 @@ import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
-public class ActivityDetailAccount extends AppCompatActivity {
+public class ActivityDetailAccount extends BaseActivity {
     private TextInputLayout TILfullname, TILemail, TILsodienthoai, TILmatkhau;
     private TextInputEditText TIETfullname, TIETemail, TIETsodienthoai, TIETMatKhau;
 

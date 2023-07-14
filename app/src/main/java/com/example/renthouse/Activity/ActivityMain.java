@@ -12,6 +12,8 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import android.Manifest;
+import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
@@ -24,6 +26,7 @@ import com.example.renthouse.Fragment.FragmentAccount;
 import com.example.renthouse.Fragment.FragmentChat;
 import com.example.renthouse.Fragment.FragmentHome;
 import com.example.renthouse.Fragment.FragmentLiked;
+import com.example.renthouse.Interface.DialogListener;
 import com.example.renthouse.Interface.OnActivityResultListener;
 import com.example.renthouse.OOP.AccountClass;
 import com.example.renthouse.OOP.Device;
@@ -43,8 +46,9 @@ import com.google.firebase.messaging.FirebaseMessaging;
 
 import io.reactivex.annotations.NonNull;
 
-public class ActivityMain extends AppCompatActivity {
+public class ActivityMain extends BaseActivity implements DialogListener {
     private ActivityMainBinding binding;
+    private ProgressDialog progressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,6 +74,19 @@ public class ActivityMain extends AppCompatActivity {
 
         TokenUpdateTask task = new TokenUpdateTask();
         task.execute();
+
+
+        progressDialog = new ProgressDialog(ActivityMain.this);
+        progressDialog.setCancelable(false);
+        progressDialog.setMessage("Loading...");
+
+    }
+    public void showProgressDialog() {
+        progressDialog.show();
+    }
+
+    public void dismissProgressDialog() {
+        progressDialog.dismiss();
     }
 
 
@@ -87,4 +104,13 @@ public class ActivityMain extends AppCompatActivity {
     }
 
 
+    @Override
+    public void showDialog() {
+        progressDialog.show();
+    }
+
+    @Override
+    public void dismissDialog() {
+        progressDialog.dismiss();
+    }
 }

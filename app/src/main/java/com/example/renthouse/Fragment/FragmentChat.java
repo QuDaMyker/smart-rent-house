@@ -1,6 +1,7 @@
 package com.example.renthouse.Fragment;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -15,10 +16,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.example.renthouse.Activity.ActivityMain;
 import com.example.renthouse.Admin.OOP.NguoiDung;
 import com.example.renthouse.Chat.MemoryData;
 import com.example.renthouse.Chat.Messages.MessagesAdapter;
 import com.example.renthouse.Chat.Messages.MessagesList;
+import com.example.renthouse.Interface.DialogListener;
 import com.example.renthouse.OOP.AccountClass;
 import com.example.renthouse.R;
 import com.example.renthouse.databinding.FragmentChatBinding;
@@ -53,13 +56,21 @@ public class FragmentChat extends Fragment {
     private FragmentChatBinding binding;
     private final List<MessagesList> messagesLists = new ArrayList<>();
     private final List<MessagesList> tempMessagesLists = new ArrayList<>();
-
     private MessagesAdapter messagesAdapter;
     private FirebaseAuth mAuth;
     private DatabaseReference reference;
-
-    private ProgressDialog progressDialog;
     private PreferenceManager preferenceManager;
+    private DialogListener dialogListener;
+
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        try {
+            dialogListener = (DialogListener) context;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(context.toString() + " must implement DialogListener");
+        }
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -78,7 +89,6 @@ public class FragmentChat extends Fragment {
         FirebaseUser currentUser = mAuth.getCurrentUser();
 
 
-
         binding.messagesRecyclerView.setHasFixedSize(true);
         binding.messagesRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
@@ -87,24 +97,20 @@ public class FragmentChat extends Fragment {
         binding.messagesRecyclerView.setAdapter(messagesAdapter);
 
 
-        progressDialog = new ProgressDialog(getContext());
-        progressDialog.setCancelable(false);
-        progressDialog.setMessage("Loading...");
-        progressDialog.show();
-        //  get profile pic from firebase database
+        dialogListener.showDialog();
 
         reference.child("Conversations").child(preferenceManager.getString(Constants.KEY_USER_KEY)).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if(snapshot.exists()) {
+                if (snapshot.exists()) {
                     messagesLists.clear();
                     tempMessagesLists.clear();
-                    Log.d("count", snapshot.getChildrenCount()+"");
+                    Log.d("count", snapshot.getChildrenCount() + "");
                     for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
                         String otherKey = dataSnapshot.getKey();
                         String sendId = dataSnapshot.child("sendId").getValue(String.class);
                         String lastMessage;
-                        if(sendId.equals(preferenceManager.getString(Constants.KEY_USER_KEY))) {
+                        if (sendId.equals(preferenceManager.getString(Constants.KEY_USER_KEY))) {
                             lastMessage = "Tôi: " + dataSnapshot.child("lastMessage").getValue(String.class);
                         } else {
                             lastMessage = dataSnapshot.child("lastMessage").getValue(String.class);
@@ -112,7 +118,7 @@ public class FragmentChat extends Fragment {
 
                         String time = dataSnapshot.child("sendDate").getValue(String.class) + " " + dataSnapshot.child("sendTime").getValue(String.class);
 
-                        Log.d("thoigian",time);
+                        Log.d("thoigian", time);
 
                         Query query = reference.child("Accounts").orderByKey().equalTo(otherKey);
                         query.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -153,13 +159,15 @@ public class FragmentChat extends Fragment {
                                             }
                                         });
                                         messagesAdapter.notifyDataSetChanged();
-                                        progressDialog.dismiss();
+                                        //progressDialog.dismiss();
+                                        dialogListener.dismissDialog();
                                     }
                                 }
                             }
+
                             @Override
                             public void onCancelled(@NonNull DatabaseError error) {
-                                progressDialog.dismiss();
+                                dialogListener.dismissDialog();
                             }
                         });
                     }
@@ -168,13 +176,13 @@ public class FragmentChat extends Fragment {
                     binding.messagesRecyclerView.setVisibility(View.VISIBLE);
                 }
 
-                progressDialog.dismiss();
+                dialogListener.dismissDialog();
 
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-                progressDialog.dismiss();
+                dialogListener.dismissDialog();
             }
         });
 

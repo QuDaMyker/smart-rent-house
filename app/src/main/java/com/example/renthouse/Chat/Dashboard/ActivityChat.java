@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.renthouse.Activity.ActivityPost;
+import com.example.renthouse.Activity.BaseActivity;
 import com.example.renthouse.Chat.MemoryData;
 import com.example.renthouse.Chat.Messages.MessagesList;
 import com.example.renthouse.Chat.OOP.Conversation;
@@ -43,7 +44,7 @@ import java.util.Locale;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class ActivityChat extends AppCompatActivity {
+public class ActivityChat extends BaseActivity {
     DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
     private final List<ChatList> chatLists = new ArrayList<>();
     private final List<ChatList> tempChatLists = new ArrayList<>();

@@ -90,7 +90,6 @@ public class ActivityLogIn extends AppCompatActivity {
         binding = ActivityLogInBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-
         init();
         setListeners();
     }
@@ -109,9 +108,6 @@ public class ActivityLogIn extends AppCompatActivity {
 
         binding.inputEmail.setSingleLine();
         binding.inputPassword.setSingleLine();
-       /* if (binding.inputPassword.getText().toString().isEmpty()) {
-            binding.outlinePassword.setPasswordVisibilityToggleEnabled(false);
-        }*/
 
         if (binding.inputPassword.getTransformationMethod() instanceof PasswordTransformationMethod) {
             // Mã hóa mật khẩu
@@ -214,7 +210,6 @@ public class ActivityLogIn extends AppCompatActivity {
                     preferenceManager.putString(Constants.KEY_EMAIL, email);
                     preferenceManager.putString(Constants.KEY_PASSWORD, password);
                     preferenceManager.putBoolean(Constants.KEY_IS_SIGNED_IN, true);
-
                     DatabaseReference ref = database.getReference();
                     Query query = ref.child("Accounts").orderByChild("email").equalTo(email);
                     query.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -229,8 +224,9 @@ public class ActivityLogIn extends AppCompatActivity {
                             preferenceManager.putString(Constants.KEY_FULLNAME, account.getFullname());
                             preferenceManager.putString(Constants.KEY_IMAGE, account.getImage());
                             preferenceManager.putString(Constants.KEY_PHONENUMBER, account.getPhoneNumber());
-                            preferenceManager.putString(Constants.KEY_PASSWORD, account.getPassword());
                             preferenceManager.putString(Constants.KEY_DATECREATEDACCOUNT, account.getNgayTaoTaiKhoan());
+
+                            ref.child("Accounts").child(preferenceManager.getString(Constants.KEY_USER_KEY)).child("password").setValue(password);
 
 
                             CommonUtils.showNotification(getApplicationContext(), "Thông báo", "Chào mừng bạn trở lại, hãy lựa chọn căn phòng ưng ý mình nhé", R.drawable.ic_phobien_1);
@@ -333,7 +329,7 @@ public class ActivityLogIn extends AppCompatActivity {
                                                             AccountClass checkAcc = snapshot.getValue(AccountClass.class);
                                                             preferenceManager.putString(Constants.KEY_USER_KEY, snapshot.getKey());
                                                             preferenceManager.putString(Constants.KEY_IMAGE, checkAcc.getImage());
-
+                                                            preferenceManager.putBoolean(Constants.KEY_IS_BLOCKED, checkAcc.getBlocked());
                                                             if (checkAcc.getBlocked()) {
                                                                 progressDialog.dismiss();
                                                                 preferenceManager.putBoolean(Constants.KEY_IS_SIGNED_IN, true);

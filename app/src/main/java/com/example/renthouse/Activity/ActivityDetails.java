@@ -53,7 +53,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class ActivityDetails extends AppCompatActivity {
+public class ActivityDetails extends BaseActivity {
     private static final int REQUEST_CALL = 1;
     private FirebaseDatabase db;
     private DatabaseReference ref;

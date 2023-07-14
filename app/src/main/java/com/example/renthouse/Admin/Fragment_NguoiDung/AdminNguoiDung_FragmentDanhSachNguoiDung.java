@@ -17,6 +17,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.SearchView;
 import android.widget.Toast;
 
@@ -37,6 +38,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
+import java.text.Normalizer;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -45,6 +47,7 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.regex.Pattern;
 
 public class AdminNguoiDung_FragmentDanhSachNguoiDung extends Fragment implements ItemNguoiDungListener, LoadDataFragment {
     private FragmentAdminNguoiDungDanhSachNguoiDungBinding binding;
@@ -79,6 +82,7 @@ public class AdminNguoiDung_FragmentDanhSachNguoiDung extends Fragment implement
     }
 
     private void loadData() {
+        binding.searchView.setQuery("", false);
         progressDialog.show();
         DatabaseReference reference = database.getReference();
         Query query = reference.child("Accounts").orderByChild("blocked").equalTo(false);
@@ -209,23 +213,65 @@ public class AdminNguoiDung_FragmentDanhSachNguoiDung extends Fragment implement
                 return true;
             }
         });
-    }
 
+        binding.searchView.setOnQueryTextFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (hasFocus) {
+                    hideKeyboard();
+                }
+            }
+        });
+    }
+    private void hideKeyboard() {
+        InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(getContext().INPUT_METHOD_SERVICE);
+        if (imm != null) {
+            imm.hideSoftInputFromWindow(binding.searchView.getWindowToken(), 0);
+        }
+    }
 
     private void loadObjects() {
         filterSearch.clear();
         filterSearch.addAll(nguoiDungs);
         nguoiDungAdapter.notifyDataSetChanged();
     }
+    public boolean searchWithAccent(String query, String data) {
+        // Bỏ dấu từ chuỗi tìm kiếm
+        String queryNoAccent = removeAccent(query.toLowerCase());
+        // Bỏ dấu từ dữ liệu
+        String dataNoAccent = removeAccent(data.toLowerCase());
+
+        // Kiểm tra xem chuỗi tìm kiếm có tồn tại trong dữ liệu bỏ dấu hay không
+        return dataNoAccent.contains(queryNoAccent);
+    }
+
+    public String removeAccent(String str) {
+        String normalizedStr = Normalizer.normalize(str, Normalizer.Form.NFD);
+        Pattern pattern = Pattern.compile("\\p{InCombiningDiacriticalMarks}+");
+        return pattern.matcher(normalizedStr).replaceAll("").toLowerCase();
+    }
 
     private void filterObjects(String query) {
         filterSearch.clear();
         for (NguoiDung obj : nguoiDungs) {
-            if (obj.getAccountClass().getFullname().toLowerCase().contains(query.toLowerCase())) {
+            if (searchWithAccent(query, obj.getAccountClass().getFullname())) {
                 filterSearch.add(obj);
             }
         }
-        nguoiDungAdapter.notifyDataSetChanged();
+
+        /*filterSearch.clear();
+        for (NguoiDung obj : nguoiDungs) {
+            if (obj.getAccountClass().getFullname().toLowerCase().contains(query.toLowerCase())) {
+                filterSearch.add(obj);
+            }
+        }*/
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                nguoiDungAdapter.notifyDataSetChanged();
+
+            }
+        });
     }
 
     @Override
