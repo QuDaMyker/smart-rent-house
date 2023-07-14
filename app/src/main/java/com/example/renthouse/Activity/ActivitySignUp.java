@@ -292,6 +292,8 @@ public class ActivitySignUp extends AppCompatActivity {
                             public void onComplete(@NonNull Task<Void> task) {
                                 if (task.isSuccessful()) {
                                     preferenceManager.putBoolean(Constants.KEY_IS_SIGNED_IN, true);
+                                    preferenceManager.putString(Constants.KEY_USER_KEY, generatedKey);
+                                    preferenceManager.putString(Constants.KEY_FULLNAME, accountCurrent.getFullname());
                                     preferenceManager.putString(Constants.KEY_EMAIL, accountCurrent.getEmail());
                                     preferenceManager.putString(Constants.KEY_PASSWORD, accountCurrent.getPassword());
                                     preferenceManager.putString(Constants.KEY_IMAGE, accountCurrent.getImage());

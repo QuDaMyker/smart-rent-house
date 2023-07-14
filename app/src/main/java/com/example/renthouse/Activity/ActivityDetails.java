@@ -168,6 +168,9 @@ public class ActivityDetails extends AppCompatActivity {
             return;
         }
         room = (Room) intent.getSerializableExtra("selectedRoom");
+        if (room != null) {
+            addSeenRoom(room);
+        }
         if (room.getCreatedBy().getEmail().equals(preferenceManager.getString(Constants.KEY_EMAIL))) {
             OwnerLayout.setVisibility(View.VISIBLE);
             NormalUserLayout.setVisibility(View.GONE);
@@ -490,7 +493,56 @@ public class ActivityDetails extends AppCompatActivity {
             }
         });
     }
+    private void addSeenRoom(Room room) {
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference accRef = database.getReference("Accounts");
+        FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
+        FirebaseUser user = firebaseAuth.getCurrentUser();
+        //DatabaseReference roomRef = database.getReference("Rooms");
+        Query query = accRef.orderByChild("email").equalTo(user.getEmail());
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
 
+                for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                    // Lấy được id của user
+                    String idUser = dataSnapshot.getKey();
+
+                    // Tạo node SeenRoom và add node idUser vô
+                    DatabaseReference refSeen = database.getReference("SeenRoom").child(idUser);
+                    refSeen.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                            List<String> listRoom = new ArrayList<>();
+                            if (snapshot.getChildrenCount() == 0) {
+                                listRoom.add(room.getId());
+                            } else {
+                                for (DataSnapshot snapshot1 : snapshot.getChildren()) {
+                                    listRoom.add(snapshot1.getValue(String.class));
+                                }
+                                if (listRoom.contains(room.getId())) {
+                                    listRoom.remove(room.getId());
+                                }
+                                listRoom.add(0, room.getId());
+                                if (listRoom.size() > 10) {
+                                    listRoom.remove(listRoom.size() - 1);
+                                }
+                            }
+                            refSeen.setValue(listRoom);
+                        }
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
+
+                        }
+                    });
+                }
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
     private void tinhSoP(AccountClass tg) {
         final AtomicInteger count = new AtomicInteger(0); // Sử dụng AtomicInteger để đảm bảo tính đồng bộ
 
