@@ -26,10 +26,8 @@ public class TabLayoutNguoiDungAdapter extends FragmentStateAdapter {
             case 1: {
                 return new AdminNguoiDung_Fragment_NguoiDungBiChan();
             }
-            default:{
-                return new AdminNguoiDung_FragmentDanhSachNguoiDung();
-            }
         }
+        return new AdminNguoiDung_FragmentDanhSachNguoiDung();
 
     }
 

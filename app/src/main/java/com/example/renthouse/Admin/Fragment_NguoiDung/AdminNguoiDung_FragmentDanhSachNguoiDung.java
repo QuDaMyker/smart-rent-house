@@ -2,6 +2,7 @@ package com.example.renthouse.Admin.Fragment_NguoiDung;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -12,6 +13,7 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -26,6 +28,7 @@ import com.example.renthouse.Admin.Adapter.NguoiDungAdapter;
 import com.example.renthouse.Admin.OOP.NguoiDung;
 import com.example.renthouse.Admin.listeners.ItemNguoiDungListener;
 import com.example.renthouse.Admin.listeners.LoadDataFragment;
+import com.example.renthouse.Interface.DialogListener;
 import com.example.renthouse.OOP.AccountClass;
 import com.example.renthouse.R;
 import com.example.renthouse.databinding.FragmentAdminNguoiDungDanhSachNguoiDungBinding;
@@ -52,13 +55,25 @@ import java.util.regex.Pattern;
 public class AdminNguoiDung_FragmentDanhSachNguoiDung extends Fragment implements ItemNguoiDungListener, LoadDataFragment {
     private FragmentAdminNguoiDungDanhSachNguoiDungBinding binding;
     private List<NguoiDung> nguoiDungs;
+    private List<NguoiDung> tempNguoiDung;
     private List<NguoiDung> filterSearch;
     private PreferenceManager preferenceManager;
     private NguoiDungAdapter nguoiDungAdapter;
     private FirebaseDatabase database;
     private Boolean filtersoPhongTang = true;
     private Boolean filterNgayThamgia = false;
-    private ProgressDialog progressDialog;
+    private DialogListener dialogListener;
+    private DatabaseReference reference;
+
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        try {
+            dialogListener = (DialogListener) context;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(context.toString() + " must implement DialogListener");
+        }
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -68,30 +83,44 @@ public class AdminNguoiDung_FragmentDanhSachNguoiDung extends Fragment implement
         View view = binding.getRoot();
 
 
-        progressDialog = new ProgressDialog(getContext());
-        progressDialog.setCancelable(false);
-        progressDialog.setMessage("Loading...");
-
         init();
-        preferenceManager = new PreferenceManager(getContext());
-        setListeners();
         loadData();
+        setListeners();
 
 
         return view;
     }
 
+
+    private void init() {
+        nguoiDungs = new ArrayList<>();
+        tempNguoiDung = new ArrayList<>();
+        filterSearch = new ArrayList<>();
+
+        preferenceManager = new PreferenceManager(getContext());
+
+        nguoiDungAdapter = new NguoiDungAdapter(getContext(), filterSearch, this);
+        binding.recycleView.setAdapter(nguoiDungAdapter);
+        database = FirebaseDatabase.getInstance();
+        reference = database.getReference();
+    }
+
     private void loadData() {
         binding.searchView.setQuery("", false);
-        progressDialog.show();
+        dialogListener.showDialog();
+
+        nguoiDungs.clear();
+        tempNguoiDung.clear();
+        filterSearch.clear();
+
         DatabaseReference reference = database.getReference();
-        Query query = reference.child("Accounts").orderByChild("blocked").equalTo(false);
+        Query query = reference.child("Accounts").orderByChild("blocked").equalTo(true);
         query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                List<NguoiDung> tempNguoiDungs = new ArrayList<>(); // Danh sách tạm thời để lưu trữ các NguoiDung
-                int dataSnapshotCount = (int) dataSnapshot.getChildrenCount(); // Số lượng dữ liệu trong DataSnapshot
-                AtomicInteger count = new AtomicInteger(0); // Biến đếm để kiểm tra khi nào dữ liệu đã được tải xong
+                List<NguoiDung> tempNguoiDungs = new ArrayList<>();
+                int dataSnapshotCount = (int) dataSnapshot.getChildrenCount();
+                AtomicInteger count = new AtomicInteger(0);
 
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     String key = snapshot.getKey();
@@ -102,41 +131,35 @@ public class AdminNguoiDung_FragmentDanhSachNguoiDung extends Fragment implement
                         public void onDataChange(@NonNull DataSnapshot snapshot) {
                             int countRoom = (int) snapshot.getChildrenCount();
                             tempNguoiDungs.add(new NguoiDung(key, account, countRoom));
-                            Log.d("count danh sach", "Count = " + count);
-                            // Kiểm tra khi nào dữ liệu đã được tải xong
+
                             if (count.incrementAndGet() == dataSnapshotCount) {
                                 nguoiDungs.addAll(tempNguoiDungs);
-                                // them data tu nguoi dung vao filter
-                                loadObjects();
-                                progressDialog.dismiss();
-                                Toast.makeText(getContext(), "Load Du Lieu Thanh Cong", Toast.LENGTH_SHORT).show();
+                                filterSearch.addAll(tempNguoiDungs);
+                                getActivity().runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        nguoiDungAdapter.notifyDataSetChanged();
+                                        dialogListener.dismissDialog();
+                                    }
+                                });
+                                dialogListener.dismissDialog();
                             }
                         }
 
                         @Override
                         public void onCancelled(@NonNull DatabaseError error) {
-                            // Xử lý khi có lỗi xảy ra
+                            dialogListener.dismissDialog();
                         }
                     });
                 }
-                progressDialog.dismiss();
+                dialogListener.dismissDialog();
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-                // Xử lý khi có lỗi xảy ra
-                progressDialog.dismiss();
+                dialogListener.dismissDialog();
             }
         });
-    }
-
-
-    private void init() {
-        nguoiDungs = new ArrayList<>();
-        filterSearch = new ArrayList<>();
-        nguoiDungAdapter = new NguoiDungAdapter(getContext(), filterSearch, this);
-        binding.recycleView.setAdapter(nguoiDungAdapter);
-        database = FirebaseDatabase.getInstance();
     }
 
     private void setListeners() {
@@ -222,7 +245,16 @@ public class AdminNguoiDung_FragmentDanhSachNguoiDung extends Fragment implement
                 }
             }
         });
+
+        binding.swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                loadData();
+                binding.swipeRefreshLayout.setRefreshing(false);
+            }
+        });
     }
+
     private void hideKeyboard() {
         InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(getContext().INPUT_METHOD_SERVICE);
         if (imm != null) {
@@ -235,6 +267,7 @@ public class AdminNguoiDung_FragmentDanhSachNguoiDung extends Fragment implement
         filterSearch.addAll(nguoiDungs);
         nguoiDungAdapter.notifyDataSetChanged();
     }
+
     public boolean searchWithAccent(String query, String data) {
         // Bỏ dấu từ chuỗi tìm kiếm
         String queryNoAccent = removeAccent(query.toLowerCase());
@@ -259,12 +292,6 @@ public class AdminNguoiDung_FragmentDanhSachNguoiDung extends Fragment implement
             }
         }
 
-        /*filterSearch.clear();
-        for (NguoiDung obj : nguoiDungs) {
-            if (obj.getAccountClass().getFullname().toLowerCase().contains(query.toLowerCase())) {
-                filterSearch.add(obj);
-            }
-        }*/
         getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -276,6 +303,7 @@ public class AdminNguoiDung_FragmentDanhSachNguoiDung extends Fragment implement
 
     @Override
     public void onItemNguoiDungClick(NguoiDung nguoiDung) {
+        Toast.makeText(getContext(), "Click", Toast.LENGTH_SHORT).show();
         Intent intent = new Intent(getActivity(), Admin_ActivityThongTinNguoiDung.class);
         intent.putExtra(Constants.KEY_NGUOIDUNG, nguoiDung);
         mStartForResult.launch(intent);

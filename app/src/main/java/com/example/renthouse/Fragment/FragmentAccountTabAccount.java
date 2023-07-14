@@ -15,6 +15,7 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -88,7 +89,15 @@ public class FragmentAccountTabAccount extends Fragment {
     }
 
     private void setListeners() {
-
+        binding.swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                // Thực hiện cập nhật dữ liệu ở đây
+                updateUI();
+                // Sau khi hoàn thành cập nhật, gọi phương thức setRefreshing(false) để kết thúc hiệu ứng làm mới
+                binding.swipeRefreshLayout.setRefreshing(false);
+            }
+        });
         binding.accountPersonalInfomationButtonProfile.setOnClickListener(v -> {
             Intent intent = new Intent(getContext(), ActivityDetailAccount.class);
             launcherDetailAccount.launch(intent);

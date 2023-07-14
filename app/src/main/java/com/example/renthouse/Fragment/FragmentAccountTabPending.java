@@ -3,50 +3,39 @@ package com.example.renthouse.Fragment;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ProgressBar;
-import android.widget.Toast;
 
-import com.airbnb.lottie.LottieAnimationView;
 import com.example.renthouse.Activity.ActivityDetails;
 import com.example.renthouse.Adapter.PostedAdapter;
 import com.example.renthouse.Interface.DialogListener;
 import com.example.renthouse.Interface.ItemClick;
-import com.example.renthouse.OOP.LocationTemp;
 import com.example.renthouse.OOP.Room;
 import com.example.renthouse.R;
 import com.example.renthouse.databinding.FragmentAccountPostedBinding;
+import com.example.renthouse.databinding.FragmentAccountTabPendingBinding;
 import com.example.renthouse.utilities.Constants;
 import com.example.renthouse.utilities.PreferenceManager;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.GenericTypeIndicator;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
-public class FragmentAccountPosted extends Fragment {
-    private FragmentAccountPostedBinding binding;
+public class FragmentAccountTabPending extends Fragment {
+    private FragmentAccountTabPendingBinding binding;
     private List<Room> listRoomPosted;
     private List<Room> tempRoom;
     private PostedAdapter postedAdapter;
@@ -64,9 +53,9 @@ public class FragmentAccountPosted extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        binding = FragmentAccountPostedBinding.inflate(getLayoutInflater());
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        binding = FragmentAccountTabPendingBinding.inflate(getLayoutInflater());
         View view = binding.getRoot();
 
 
@@ -77,7 +66,6 @@ public class FragmentAccountPosted extends Fragment {
 
         return view;
     }
-
 
     private void init() {
         preferenceManager = new PreferenceManager(getContext());
@@ -113,7 +101,7 @@ public class FragmentAccountPosted extends Fragment {
                 if (dataSnapshot.exists()) {
                     for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                         Room room = snapshot.getValue(Room.class);
-                        if (room.getStatus().equals("approved")) {
+                        if (room.getStatus().equals("pending")) {
                             tempRoom.add(room);
                         }
                     }
@@ -150,9 +138,7 @@ public class FragmentAccountPosted extends Fragment {
                     dialogListener.dismissDialog();
                 }
 
-
-
-
+                dialogListener.dismissDialog();
             }
 
             @Override
@@ -172,5 +158,6 @@ public class FragmentAccountPosted extends Fragment {
                 binding.swipeRefreshLayout.setRefreshing(false);
             }
         });
+
     }
 }

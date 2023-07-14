@@ -9,6 +9,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -54,8 +55,8 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class FragmentChat extends Fragment {
     private FragmentChatBinding binding;
-    private final List<MessagesList> messagesLists = new ArrayList<>();
-    private final List<MessagesList> tempMessagesLists = new ArrayList<>();
+    private List<MessagesList> messagesLists;
+    private List<MessagesList> tempMessagesLists;
     private MessagesAdapter messagesAdapter;
     private FirebaseAuth mAuth;
     private DatabaseReference reference;
@@ -76,35 +77,44 @@ public class FragmentChat extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         binding = FragmentChatBinding.inflate(getLayoutInflater());
-        // Inflate the layout for this fragment
         View view = binding.getRoot();
 
 
-        // get intent
+        init();
+        loadData();
+        setListeners();
+
+
+        return view;
+    }
+
+    private void init() {
+        messagesLists = new ArrayList<>();
+        tempMessagesLists = new ArrayList<>();
 
         reference = FirebaseDatabase.getInstance().getReference();
         preferenceManager = new PreferenceManager(getContext());
 
         mAuth = FirebaseAuth.getInstance();
-        FirebaseUser currentUser = mAuth.getCurrentUser();
-
 
         binding.messagesRecyclerView.setHasFixedSize(true);
         binding.messagesRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
-        //set adapter to recycleview
         messagesAdapter = new MessagesAdapter(messagesLists, getContext());
         binding.messagesRecyclerView.setAdapter(messagesAdapter);
 
 
-        dialogListener.showDialog();
+    }
 
+    private void loadData() {
+        dialogListener.showDialog();
+        messagesLists.clear();
+        tempMessagesLists.clear();
         reference.child("Conversations").child(preferenceManager.getString(Constants.KEY_USER_KEY)).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if (snapshot.exists()) {
-                    messagesLists.clear();
-                    tempMessagesLists.clear();
+
                     Log.d("count", snapshot.getChildrenCount() + "");
                     for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
                         String otherKey = dataSnapshot.getKey();
@@ -159,7 +169,6 @@ public class FragmentChat extends Fragment {
                                             }
                                         });
                                         messagesAdapter.notifyDataSetChanged();
-                                        //progressDialog.dismiss();
                                         dialogListener.dismissDialog();
                                     }
                                 }
@@ -185,10 +194,18 @@ public class FragmentChat extends Fragment {
                 dialogListener.dismissDialog();
             }
         });
-
-
-        return view;
     }
 
+    private void setListeners() {
+        binding.swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                // Thực hiện cập nhật dữ liệu ở đây
+                loadData();
+                // Sau khi hoàn thành cập nhật, gọi phương thức setRefreshing(false) để kết thúc hiệu ứng làm mới
+                binding.swipeRefreshLayout.setRefreshing(false);
+            }
+        });
+    }
 
 }

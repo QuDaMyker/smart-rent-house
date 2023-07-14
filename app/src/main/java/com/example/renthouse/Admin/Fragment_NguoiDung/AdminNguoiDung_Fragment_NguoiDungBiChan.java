@@ -2,6 +2,7 @@ package com.example.renthouse.Admin.Fragment_NguoiDung;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -12,9 +13,12 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
@@ -25,6 +29,7 @@ import com.example.renthouse.Admin.Adapter.NguoiDungBiChanAdapter;
 import com.example.renthouse.Admin.OOP.NguoiDung;
 import com.example.renthouse.Admin.listeners.ItemNguoiDungListener;
 import com.example.renthouse.Admin.listeners.LoadDataFragment;
+import com.example.renthouse.Interface.DialogListener;
 import com.example.renthouse.OOP.AccountClass;
 import com.example.renthouse.databinding.FragmentAdminNguoiDungNguoiDungBiChanBinding;
 import com.example.renthouse.utilities.Constants;
@@ -45,43 +50,73 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class AdminNguoiDung_Fragment_NguoiDungBiChan extends Fragment implements ItemNguoiDungListener, LoadDataFragment {
     private FragmentAdminNguoiDungNguoiDungBiChanBinding binding;
     private List<NguoiDung> nguoiDungs;
+    private List<NguoiDung> tempNguoiDung;
     private PreferenceManager preferenceManager;
     private NguoiDungBiChanAdapter nguoiDungBiChanAdapter;
     private FirebaseDatabase database;
-    private ProgressDialog progressDialog;
+    private DialogListener dialogListener;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        try {
+            dialogListener = (DialogListener) context;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(context.toString() + " must implement DialogListener");
+        }
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        binding = FragmentAdminNguoiDungNguoiDungBiChanBinding.inflate(inflater, container, false);
+        binding = FragmentAdminNguoiDungNguoiDungBiChanBinding.inflate(getLayoutInflater());
         View view = binding.getRoot();
 
-        progressDialog = new ProgressDialog(getContext());
-        progressDialog.setCancelable(false);
-        progressDialog.setMessage("Loading...");
 
         database = FirebaseDatabase.getInstance();
 
         preferenceManager = new PreferenceManager(getContext());
 
 
-
         init();
-        //loadData();
+        loadData();
+        setListeners();
         return view;
     }
 
+    private void setListeners() {
+                binding.swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                loadData();
+                binding.swipeRefreshLayout.setRefreshing(false);
+            }
+        });
+    }
+
+
+    private void init() {
+        nguoiDungs = new ArrayList<>();
+        tempNguoiDung = new ArrayList<>();
+        nguoiDungBiChanAdapter = new NguoiDungBiChanAdapter(getContext(), nguoiDungs, this);
+        binding.recycleView.setAdapter(nguoiDungBiChanAdapter);
+        database = FirebaseDatabase.getInstance();
+    }
+
     private void loadData() {
-        progressDialog.show();
+        dialogListener.showDialog();
+
+        nguoiDungs.clear();
+        tempNguoiDung.clear();
+
         DatabaseReference reference = database.getReference();
         Query query = reference.child("Accounts").orderByChild("blocked").equalTo(true);
         query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                List<NguoiDung> tempNguoiDungs = new ArrayList<>(); // Danh sách tạm thời để lưu trữ các NguoiDung
-                int dataSnapshotCount = (int) dataSnapshot.getChildrenCount(); // Số lượng dữ liệu trong DataSnapshot
-                AtomicInteger count = new AtomicInteger(0); // Biến đếm để kiểm tra khi nào dữ liệu đã được tải xong
+                List<NguoiDung> tempNguoiDungs = new ArrayList<>();
+                int dataSnapshotCount = (int) dataSnapshot.getChildrenCount();
+                AtomicInteger count = new AtomicInteger(0);
 
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     String key = snapshot.getKey();
@@ -93,39 +128,34 @@ public class AdminNguoiDung_Fragment_NguoiDungBiChan extends Fragment implements
                             int countRoom = (int) snapshot.getChildrenCount();
                             tempNguoiDungs.add(new NguoiDung(key, account, countRoom));
 
-
-                            // Kiểm tra khi nào dữ liệu đã được tải xong
                             if (count.incrementAndGet() == dataSnapshotCount) {
                                 nguoiDungs.addAll(tempNguoiDungs);
-                                Log.d("count", "Count temp = " + tempNguoiDungs.size() + "Countnguoidungs = " + nguoiDungs.size());
-                                nguoiDungBiChanAdapter.notifyDataSetChanged();
-                                progressDialog.dismiss();
-                                Toast.makeText(getContext(), "Load Du Lieu Thanh Cong", Toast.LENGTH_SHORT).show();
+                                getActivity().runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        nguoiDungBiChanAdapter.notifyDataSetChanged();
+                                        dialogListener.dismissDialog();
+                                    }
+                                });
+                                dialogListener.dismissDialog();
                             }
                         }
 
                         @Override
                         public void onCancelled(@NonNull DatabaseError error) {
-                            // Xử lý khi có lỗi xảy ra
+                            dialogListener.dismissDialog();
                         }
                     });
                 }
-                progressDialog.dismiss();
+                dialogListener.dismissDialog();
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
                 // Xử lý khi có lỗi xảy ra
-                progressDialog.dismiss();
+                dialogListener.dismissDialog();
             }
         });
-    }
-
-    private void init() {
-        nguoiDungs = new ArrayList<>();
-        nguoiDungBiChanAdapter = new NguoiDungBiChanAdapter(getContext(), nguoiDungs, this);
-        binding.recycleView.setAdapter(nguoiDungBiChanAdapter);
-        database = FirebaseDatabase.getInstance();
     }
 
     @Override
@@ -134,19 +164,19 @@ public class AdminNguoiDung_Fragment_NguoiDungBiChan extends Fragment implements
         intent.putExtra(Constants.KEY_NGUOIDUNG, nguoiDung);
         mStartForResult.launch(intent);
     }
-    private ActivityResultLauncher<Intent> mStartForResult = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
-            new ActivityResultCallback<ActivityResult>() {
-                @Override
-                public void onActivityResult(ActivityResult result) {
-                    if (result.getResultCode() == Activity.RESULT_OK) {
-                        Intent intent = result.getData();
-                        // Handle the Intent
-                        nguoiDungs.clear();
-                        nguoiDungBiChanAdapter.notifyDataSetChanged();
-                        loadData();
-                    }
-                }
-            });
+
+    private ActivityResultLauncher<Intent> mStartForResult = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
+        @Override
+        public void onActivityResult(ActivityResult result) {
+            if (result.getResultCode() == Activity.RESULT_OK) {
+                Intent intent = result.getData();
+                // Handle the Intent
+                nguoiDungs.clear();
+                nguoiDungBiChanAdapter.notifyDataSetChanged();
+                loadData();
+            }
+        }
+    });
 
     @Override
     public void loadDataFragment() {

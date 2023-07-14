@@ -14,6 +14,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.renthouse.Activity.ActivityPost;
 import com.example.renthouse.Activity.BaseActivity;
@@ -24,6 +25,7 @@ import com.example.renthouse.FCM.SendNotificationTask;
 import com.example.renthouse.OOP.AccountClass;
 import com.example.renthouse.OOP.Notification;
 import com.example.renthouse.R;
+import com.example.renthouse.databinding.ActivityChatBinding;
 import com.example.renthouse.utilities.Constants;
 import com.example.renthouse.utilities.PreferenceManager;
 import com.google.android.material.button.MaterialButton;
@@ -45,16 +47,14 @@ import java.util.Locale;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class ActivityChat extends BaseActivity {
-    DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
-    private final List<ChatList> chatLists = new ArrayList<>();
-    private final List<ChatList> tempChatLists = new ArrayList<>();
-    private int generatedChatKey;
+    private ActivityChatBinding binding;
+    private DatabaseReference databaseReference;
+    private List<ChatList> chatLists;
+    private List<ChatList> tempChatLists;
     private String otherKey;
     private String currentKey;
-    String getUserMobile = "";
-    int lastIndex;
-
-    private RecyclerView chattingRecycleView;
+    private String getUserMobile = "";
+    private int lastIndex;
     private ChatAdapter chatAdapter;
     private boolean loadingFirstTime = true;
     private PreferenceManager preferenceManager;
@@ -62,48 +62,33 @@ public class ActivityChat extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_chat);
-        final ImageView backBtn = findViewById(R.id.backBtn);
-        final TextView nameTV = findViewById(R.id.name);
-        final EditText messageEditText = findViewById(R.id.messageEditTxt);
-        final CircleImageView profilePic = findViewById(R.id.profilePic);
-        final MaterialButton sendBtn = findViewById(R.id.sendBtn);
-        final MaterialButton mButton1 = findViewById(R.id.mButton1);
-        final MaterialButton mButton2 = findViewById(R.id.mButton2);
-        final MaterialButton mButton3 = findViewById(R.id.mButton3);
-        final MaterialButton mButton4 = findViewById(R.id.mButton4);
-        final HorizontalScrollView hintBar = findViewById(R.id.hintBar);
-        final View backView = findViewById(R.id.backView);
+        binding = ActivityChatBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
 
+        init();
+        updateUI();
+        loadMessages();
+        setListeners();
+
+    }
+
+
+    private void init() {
         preferenceManager = new PreferenceManager(ActivityChat.this);
-        mButton1.setOnClickListener(v -> {
-            hintBar.setVisibility(View.INVISIBLE);
 
+        databaseReference = FirebaseDatabase.getInstance().getReference();
 
-            /*ConstraintLayout.LayoutParams layoutParams = (ConstraintLayout.LayoutParams) messageEditText.getLayoutParams();
-            layoutParams.topToTop = R.id.chattingRecycleView;
-            messageEditText.setLayoutParams(layoutParams);*/
+        chatLists = new ArrayList<>();
+        tempChatLists = new ArrayList<>();
 
-            ConstraintLayout.LayoutParams layoutParams1 = (ConstraintLayout.LayoutParams) backView.getLayoutParams();
-            layoutParams1.bottomToTop = R.id.messageEditTxt;
-            backView.setLayoutParams(layoutParams1);
+        binding.chattingRecycleView.setHasFixedSize(true);
+        binding.chattingRecycleView.setLayoutManager(new LinearLayoutManager(ActivityChat.this));
 
+        chatAdapter = new ChatAdapter(chatLists, ActivityChat.this);
+        binding.chattingRecycleView.setAdapter(chatAdapter);
+    }
 
-        });
-        mButton2.setOnClickListener(v -> {
-            messageEditText.setText(mButton2.getText());
-        });
-        mButton3.setOnClickListener(v -> {
-            messageEditText.setText(mButton3.getText());
-        });
-        mButton4.setOnClickListener(v -> {
-            messageEditText.setText(mButton4.getText());
-        });
-
-
-        chattingRecycleView = findViewById(R.id.chattingRecycleView);
-
-
+    private void updateUI() {
         // get data form messages adapter class
         currentKey = preferenceManager.getString(Constants.KEY_USER_KEY);
         final String getName = getIntent().getStringExtra("name");
@@ -112,30 +97,20 @@ public class ActivityChat extends BaseActivity {
         otherKey = getIntent().getStringExtra("otherKey");
 
 
-
         // get user email from memory
         getUserMobile = MemoryData.getData(ActivityChat.this);
-        nameTV.setText(getName);
-        Picasso.get().load(getProfilePic).into(profilePic);
+        binding.name.setText(getName);
+        Picasso.get().load(getProfilePic).into(binding.profilePic);
+    }
 
-        chattingRecycleView.setHasFixedSize(true);
-        chattingRecycleView.setLayoutManager(new LinearLayoutManager(ActivityChat.this));
-
-        chatAdapter = new ChatAdapter(chatLists, ActivityChat.this);
-        chattingRecycleView.setAdapter(chatAdapter);
-
-        Log.d("key", otherKey);
-
+    private void loadMessages() {
         databaseReference.child("Chat").child(currentKey).child(otherKey).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 lastIndex = (int) snapshot.getChildrenCount();
                 chatLists.clear();
                 tempChatLists.clear();
-                //Toast.makeText(getApplicationContext(), snapshot.getKey(), Toast.LENGTH_SHORT).show();
                 for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
-                    // Toast.makeText(ActivityChat.this, dataSnapshot.getKey(), Toast.LENGTH_SHORT).show();
-
                     if (dataSnapshot.child("sender").getValue(String.class).equals(currentKey)) {
                         String msg = dataSnapshot.child("msg").getValue(String.class);
                         String sendDate = dataSnapshot.child("send-date").getValue(String.class);
@@ -152,15 +127,13 @@ public class ActivityChat extends BaseActivity {
                         ChatList chatList = new ChatList(false, "nguoi dung hien tai", "name", msg, sendDate, sendTime);
                         tempChatLists.add(chatList);
                     }
-                    //lastIndex = Integer.valueOf(dataSnapshot.getKey());
-
                 }
                 chatLists.addAll(tempChatLists);
                 chatAdapter.notifyDataSetChanged();
-                chattingRecycleView.post(new Runnable() {
+                binding.chattingRecycleView.post(new Runnable() {
                     @Override
                     public void run() {
-                        chattingRecycleView.smoothScrollToPosition(chatLists.size() - 1);
+                        binding.chattingRecycleView.smoothScrollToPosition(chatLists.size() - 1);
                     }
                 });
             }
@@ -170,18 +143,43 @@ public class ActivityChat extends BaseActivity {
 
             }
         });
+    }
 
+    private void setListeners() {
+        binding.mButton1.setOnClickListener(v -> {
+            binding.hintBar.setVisibility(View.INVISIBLE);
 
-        sendBtn.setOnClickListener(new View.OnClickListener() {
+            ConstraintLayout.LayoutParams layoutParams1 = (ConstraintLayout.LayoutParams) binding.backView.getLayoutParams();
+            layoutParams1.bottomToTop = R.id.messageEditTxt;
+
+            binding.backView.setLayoutParams(layoutParams1);
+        });
+        binding.mButton2.setOnClickListener(v -> {
+            binding.messageEditTxt.setText(binding.mButton2.getText());
+        });
+        binding.mButton3.setOnClickListener(v -> {
+            binding.messageEditTxt.setText(binding.mButton3.getText());
+        });
+        binding.mButton4.setOnClickListener(v -> {
+            binding.messageEditTxt.setText(binding.mButton4.getText());
+        });
+
+        binding.backBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (!messageEditText.getText().toString().trim().isEmpty()) {
+                onBackPressed();
+            }
+        });
+        binding.sendBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (!binding.messageEditTxt.getText().toString().trim().isEmpty()) {
                     Date date = new Date();
                     SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault());
                     SimpleDateFormat simpleTimeFormat = new SimpleDateFormat("hh:mm aa", Locale.getDefault());
                     SimpleDateFormat simpleTimeFormatConversaton = new SimpleDateFormat("HH:mm:ss", Locale.getDefault());
 
-                    final String getMessages = messageEditText.getText().toString().trim();
+                    final String getMessages = binding.messageEditTxt.getText().toString().trim();
                     lastIndex++;
 
                     // Set value cho người gửi
@@ -202,7 +200,7 @@ public class ActivityChat extends BaseActivity {
 
                     databaseReference.child("Conversations").child(otherKey).child(currentKey).setValue(conversation);
 
-                    messageEditText.setText("");
+                    binding.messageEditTxt.setText("");
 
                     Notification notification = new Notification("Bạn có một tin nhắn mới", "Kết nối với người thuê hoặc chủ nhà ngay bây giờ!", "chat");
                     notification.setAttachedMessageKey(conversation.getReceiveId() + "/" + conversation.getSendId());
@@ -212,11 +210,13 @@ public class ActivityChat extends BaseActivity {
             }
         });
 
-
-        backBtn.setOnClickListener(new View.OnClickListener() {
+        binding.swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
-            public void onClick(View v) {
-                finish();
+            public void onRefresh() {
+                // Thực hiện cập nhật dữ liệu ở đây
+                loadMessages();
+                // Sau khi hoàn thành cập nhật, gọi phương thức setRefreshing(false) để kết thúc hiệu ứng làm mới
+                binding.swipeRefreshLayout.setRefreshing(false);
             }
         });
     }
