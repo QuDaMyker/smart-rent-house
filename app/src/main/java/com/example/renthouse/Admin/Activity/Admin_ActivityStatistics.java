@@ -23,7 +23,7 @@ import com.example.renthouse.Adapter.RoomLatestAdapter;
 import com.example.renthouse.OOP.Region;
 import com.example.renthouse.OOP.Room;
 import com.example.renthouse.R;
-import com.example.renthouse.databinding.ActivityAdminStatisticsBinding;
+
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.charts.PieChart;
 import com.github.mikephil.charting.components.XAxis;
@@ -122,11 +122,15 @@ public class Admin_ActivityStatistics extends AppCompatActivity {
         }
         ArrayList<Integer> colors = new ArrayList<>();
 
-        colors.add(getResources().getColor(R.color.Primary_95));
-        colors.add(getResources().getColor(R.color.Primary_80));
-        colors.add(getResources().getColor(R.color.Primary_60));
-        colors.add(getResources().getColor(R.color.Primary_40));
+
+
+
+
         colors.add(getResources().getColor(R.color.Primary_10));
+        colors.add(getResources().getColor(R.color.Primary_40));
+        colors.add(getResources().getColor(R.color.Primary_60));
+        colors.add(getResources().getColor(R.color.Primary_80));
+        colors.add(getResources().getColor(R.color.Primary_95));
 
 //        ArrayList<Integer> colorsText = new ArrayList<>();
 //        colors.add(getColor(R.color.Secondary_20));
@@ -137,7 +141,7 @@ public class Admin_ActivityStatistics extends AppCompatActivity {
 
         PieDataSet pieDataSet = new PieDataSet(region, "");
         pieDataSet.setColors(colors);;
-        pieDataSet.setValueTextColor(getColor(R.color.Secondary_20));
+        pieDataSet.setValueTextColor(Color.parseColor("#FFFF00"));
         pieDataSet.setValueTextSize(10f);
 
         pieDataSet.setSelectionShift(5f); // Độ phóng to khi entry được chọn

@@ -213,7 +213,6 @@ public class ActivityDetailAccount extends AppCompatActivity {
                         Toast.makeText(ActivityDetailAccount.this, preferenceManager.getString(Constants.KEY_IMAGE), Toast.LENGTH_SHORT).show();
                         databaseReference.child(key).child("image").setValue(preferenceManager.getString(Constants.KEY_IMAGE));
                         progressDialog.dismiss();
-
                     }
                 });
             }
