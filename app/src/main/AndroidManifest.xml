@@ -59,6 +59,8 @@
         <activity
             android:name=".Admin.Activity.Admin_ActivityMain"
             android:exported="false" />
+        <activity android:name=".Activity.ActivityMain"
+            android:exported="false"/>
 
         <service
             android:name=".FCM.MyFirebaseMessagingService"
