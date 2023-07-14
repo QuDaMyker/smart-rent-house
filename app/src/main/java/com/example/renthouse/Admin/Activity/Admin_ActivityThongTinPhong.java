@@ -54,6 +54,7 @@ import com.squareup.picasso.Picasso;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -64,6 +65,11 @@ public class Admin_ActivityThongTinPhong extends AppCompatActivity {
 
     private FirebaseDatabase db;
     private DatabaseReference ref;
+
+    private String moTaP = null;
+    private int itemsTI = 6;
+
+    private int minItemRomRcm = 4;
     private Room room;
     private ImageButton btnPreScreen;
     private ImageButton btnNextImage;
@@ -207,11 +213,41 @@ public class Admin_ActivityThongTinPhong extends AppCompatActivity {
         //tvNgayDang.setText(R.id.tvNgayDang);
 
         listTI = room.getUtilities();
-        UtilitiesAdapter utilitiesAdapter = new UtilitiesAdapter(listTI, this);
+        if (listTI != null)
+        {
+            UtilitiesAdapter utilitiesAdapter = new UtilitiesAdapter(listTI, this);
+            utilitiesAdapter.setLimit(Math.min(itemsTI, listTI.size()));
 
-        GridLayoutManager grid1 = new GridLayoutManager(this, 3);
-        rcvTienIch.setLayoutManager(grid1);
-        rcvTienIch.setAdapter(utilitiesAdapter);
+            GridLayoutManager grid1 = new GridLayoutManager(this, 3);
+            rcvTienIch.setLayoutManager(grid1);
+            rcvTienIch.setAdapter(utilitiesAdapter);
+            if (itemsTI >= listTI.size())
+            {
+                tvThemTI.setVisibility(View.GONE);
+            }
+            tvThemTI.setOnClickListener(new View.OnClickListener() {
+                boolean isExpand = false;
+                @Override
+                public void onClick(View v) {
+                    isExpand = !isExpand;
+                    if (isExpand) {
+                        utilitiesAdapter.setLimit(listTI.size());
+                        tvThemTI.setText("Thu gọn");
+                    } else {
+                        utilitiesAdapter.setLimit(Math.min(itemsTI, listTI.size()));
+                        utilitiesAdapter.notifyDataSetChanged();
+                        tvThemTI.setText("Xem thêm");
+                    }
+                }
+            });
+        }
+        else
+        {
+            rcvTienIch.setVisibility(View.GONE);
+            tvThemTI.setText("Phòng chưa được cập nhập các tiện ích");
+            int color = ContextCompat.getColor(this, R.color.Secondary_40);
+            tvThemTI.setTextColor(color);
+        }
 
 
         Tg = room.getCreatedBy();
@@ -378,10 +414,11 @@ public class Admin_ActivityThongTinPhong extends AppCompatActivity {
                         .setPositiveButton("Xóa", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int whichButton) {
                                 FirebaseDatabase database = FirebaseDatabase.getInstance();
-                                DatabaseReference notiSchedulesRef = database.getReference("Rooms");
-                                notiSchedulesRef.child(room.getId()).removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
+                                DatabaseReference notiSchedulesRef = database.getReference("Rooms").child(room.getId());
+                                notiSchedulesRef.updateChildren(Collections.singletonMap("status", Constants.STATUS_DELETED)).addOnSuccessListener(new OnSuccessListener<Void>() {
                                     @Override
                                     public void onSuccess(Void unused) {
+                                        room.setStatus(Constants.STATUS_DELETED);
                                         Toast.makeText(Admin_ActivityThongTinPhong.this, "Xóa phòng trọ thành công", Toast.LENGTH_SHORT).show();
                                         finish();
                                     }
@@ -455,7 +492,6 @@ public class Admin_ActivityThongTinPhong extends AppCompatActivity {
                 }
                 tvSoP.setText(String.valueOf(count) + " phòng");
             }
-
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
 

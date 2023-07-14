@@ -14,6 +14,7 @@
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.SET_ALARM"/>
+    <uses-permission android:name="android.permission.CALL_PHONE" />
 
     <application
         android:name=".MyApplication"
@@ -56,7 +57,6 @@
         <activity
             android:name=".Admin.Activity.Admin_ActivityMain"
             android:exported="false" />
-
         <service
             android:name=".FCM.MyFirebaseMessagingService"
             android:exported="false">
@@ -131,11 +131,7 @@
         <activity
             android:name=".Activity.ActivityMain"
             android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-           </intent-filter>
         </activity>
         <activity
             android:name=".Activity.ActivitySignUp"

@@ -37,6 +37,7 @@ public class RoomAdapter extends RecyclerView.Adapter<RoomAdapter.RoomViewHolder
     FirebaseDatabase firebaseDatabase;
     DatabaseReference reference;
     private int enableLikeButton = View.VISIBLE;
+    private int minItemShowed = 0;
 
     public RoomAdapter(Context context, List<Room> rooms) {
         this.context = context;
@@ -196,18 +197,22 @@ public class RoomAdapter extends RecyclerView.Adapter<RoomAdapter.RoomViewHolder
 
     @Override
     public int getItemCount() {
-        if (rooms != null)
+        if (minItemShowed > 0)
         {
-            return rooms.size();
+            return minItemShowed;
         }
         return 0;
     }
-    public void setEnableLikeButton(int enable) {
-
-        enableLikeButton = enable;
+    public void setLimit (int limit)
+    {
+        minItemShowed = limit;
         notifyDataSetChanged();
     }
 
+    public void setEnableLikeButton(int enable) {
+        enableLikeButton = enable;
+        notifyDataSetChanged();
+    }
 
     public class RoomViewHolder extends RecyclerView.ViewHolder{
         private CardView itemRooom;

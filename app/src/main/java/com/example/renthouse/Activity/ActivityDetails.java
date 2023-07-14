@@ -7,10 +7,12 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Paint;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -27,6 +29,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.renthouse.Adapter.RoomAdapter;
 import com.example.renthouse.Adapter.UtilitiesAdapter;
+import com.example.renthouse.Admin.Activity.Admin_ActivityThongTinPhong;
 import com.example.renthouse.Chat.Dashboard.ActivityChat;
 import com.example.renthouse.Chat.OOP.Conversation;
 import com.example.renthouse.OOP.AccountClass;
@@ -48,6 +51,7 @@ import com.squareup.picasso.Picasso;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -58,6 +62,10 @@ public class ActivityDetails extends AppCompatActivity {
     private FirebaseDatabase db;
     private DatabaseReference ref;
     private  String idAC = null;
+    private String moTaP = null;
+    private int itemsTI = 6;
+
+    private int minItemRomRcm = 4;
     Room room;
     ImageButton btnPreScreen;
     CheckBox cbLiked;
@@ -75,6 +83,7 @@ public class ActivityDetails extends AppCompatActivity {
     TextView tvCoc;
     TextView tvTenP;
     TextView tvDiaChi;
+    TextView tvChiDuong;
     TextView tvSdt;
     TextView tvGiaDien;
     TextView tvGiaNuoc;
@@ -92,13 +101,9 @@ public class ActivityDetails extends AppCompatActivity {
     TextView tvSoP;
     ImageButton btnThemTTtg;
     RecyclerView rcvDeXuatP;
-    int visibleRowCount = 2;
-    int totalRowCount;
     List<Room> rcmRooms;
     TextView tvThemDX;
     TextView tvGiaP;
-//    ImageButton ibChat;
-//    ImageButton ibCall;
     MaterialButton ibChat;
     MaterialButton ibCall;
     MaterialButton btnToDelete;
@@ -138,6 +143,7 @@ public class ActivityDetails extends AppCompatActivity {
         tvCoc = findViewById(R.id.tvCoc);
         tvTenP = findViewById(R.id.tvTen);
         tvDiaChi = findViewById(R.id.tvDiaChi);
+        tvChiDuong = findViewById(R.id.tvChiDuong);
         tvSdt = findViewById(R.id.tvSdt);
         tvGiaDien = findViewById(R.id.tvDien);
         tvGiaNuoc = findViewById(R.id.tvNuoc);
@@ -147,20 +153,18 @@ public class ActivityDetails extends AppCompatActivity {
         tvXemThemMT = findViewById(R.id.tvShowMoreMT);
         tvNgayDang = findViewById(R.id.tvNgay);
         rcvTienIch = findViewById(R.id.rcvTienIch);
-        //tvThemTI = findViewById(R.id.tvMoreTI);
+        tvThemTI = findViewById(R.id.tvMoreTI);
         ivTacGia = findViewById(R.id.imageTacGia);
         tvTenTG = findViewById(R.id.tvTenTg);
         tvSoP = findViewById(R.id.tvSoPhong);
         btnThemTTtg = findViewById(R.id.btnMoreTg);
         rcvDeXuatP = findViewById(R.id.rcvDeXuatPhong);
-        //tvThemDX = findViewById(R.id.tvMoreRoom);
+        tvThemDX = findViewById(R.id.tvMoreRoom);
         tvGiaP = findViewById(R.id.tvGia);
         ibCall = findViewById(R.id.btnToCall);
         ibChat = findViewById(R.id.btnToChat);
         btnToDelete = findViewById(R.id.btnToDelete);
         btnToEdit = findViewById(R.id.btnToEdit);
-
-
         preferenceManager = new PreferenceManager(ActivityDetails.this);
 
         Intent intent = getIntent();
@@ -247,16 +251,59 @@ public class ActivityDetails extends AppCompatActivity {
         tvGiaNuoc.setText(String.valueOf(room.getWaterCost() / 1000) + "K");
         tvGiaXe.setText(String.valueOf(room.getParkingFee() / 1000) + "K");
         tvGiaWifi.setText(String.valueOf(room.getInternetCost() / 1000) + "K");
-        tvMota.setText(room.getDescription());
-        //tvNgayDang.setText(R.id.tvNgayDang);
+
+        //Xử lý ô mô tả
+        moTaP = room.getDescription();
+        int widthTv = fromDptoInt(360);
+        int temp = getTextWidth(moTaP);
+        if (getTextWidth(moTaP) >  3*widthTv)
+        {
+            tvXemThemMT.setVisibility(View.VISIBLE);
+            tvMota.setText(moTaP);
+        }
+        else
+        {
+            tvXemThemMT.setVisibility(View.GONE);
+            tvMota.setText(moTaP);
+        }
+        tvNgayDang.setText(room.getDateTime());
 
         listTI = room.getUtilities();
-        UtilitiesAdapter utilitiesAdapter = new UtilitiesAdapter(listTI, this);
+        if (listTI != null)
+        {
+            UtilitiesAdapter utilitiesAdapter = new UtilitiesAdapter(listTI, this);
+            utilitiesAdapter.setLimit(Math.min(itemsTI, listTI.size()));
 
-        GridLayoutManager grid1 = new GridLayoutManager(this, 3);
-        rcvTienIch.setLayoutManager(grid1);
-        rcvTienIch.setAdapter(utilitiesAdapter);
-
+            GridLayoutManager grid1 = new GridLayoutManager(this, 3);
+            rcvTienIch.setLayoutManager(grid1);
+            rcvTienIch.setAdapter(utilitiesAdapter);
+            if (itemsTI >= listTI.size())
+            {
+                tvThemTI.setVisibility(View.GONE);
+            }
+            tvThemTI.setOnClickListener(new View.OnClickListener() {
+                boolean isExpand = false;
+                @Override
+                public void onClick(View v) {
+                    isExpand = !isExpand;
+                    if (isExpand) {
+                        utilitiesAdapter.setLimit(listTI.size());
+                        tvThemTI.setText("Thu gọn");
+                    } else {
+                        utilitiesAdapter.setLimit(Math.min(itemsTI, listTI.size()));
+                        utilitiesAdapter.notifyDataSetChanged();
+                        tvThemTI.setText("Xem thêm");
+                    }
+                }
+            });
+        }
+        else
+        {
+            rcvTienIch.setVisibility(View.GONE);
+            tvThemTI.setText("Phòng chưa được cập nhập các tiện ích");
+            int color = ContextCompat.getColor(this, R.color.Secondary_40);
+            tvThemTI.setTextColor(color);
+        }
 
         Tg = room.getCreatedBy();
         String sourceImageAccount = Tg.getImage();
@@ -273,15 +320,61 @@ public class ActivityDetails extends AppCompatActivity {
         rcvDeXuatP.setLayoutManager(grid);
 
         rcmRooms = new ArrayList<>();
-        RoomAdapter roomAdapter = new RoomAdapter(this, rcmRooms);
+        rcmRooms = getListRcmRoomFromFB();
+        if (rcmRooms.size() != 0)
+        {
+            RoomAdapter roomAdapter = new RoomAdapter(this, rcmRooms);
+            minItemRomRcm = Math.min(minItemRomRcm, rcmRooms.size());
+            roomAdapter.setLimit(minItemRomRcm);
+            rcvDeXuatP.setAdapter(roomAdapter);
+            tvThemDX.setOnClickListener(new View.OnClickListener() {
+                boolean isTheLast = false;
+                int itemShowed = minItemRomRcm;
+                @Override
+                public void onClick(View v) {
+                    while (!isTheLast)
+                    {
+                        itemShowed +=4;
+                        itemShowed = (itemShowed <= rcmRooms.size())? itemShowed : rcmRooms.size();
+                        roomAdapter.setLimit(itemShowed);
+                        if (itemShowed == rcmRooms.size())
+                        {
+                            isTheLast = true;
+                            tvThemDX.setText("Thu gọn");
+                        }
+                    }
 
-        rcvDeXuatP.setAdapter(roomAdapter);
+                    roomAdapter.setLimit(minItemRomRcm);
+                    itemShowed = minItemRomRcm;
+                    tvThemDX.setText("Xem thêm");
 
-        getListRoomFromFB();
-        visibleRowCount = 2;
-        totalRowCount = rcmRooms.size();
+                }
+            });
+        }
+        else
+        {
+            rcvDeXuatP.setVisibility(View.GONE);
+            tvThemDX.setText("Chưa tìm thấy phòng phù hợp");
+            int color = ContextCompat.getColor(this, R.color.Secondary_40);
+            tvThemDX.setTextColor(color);
+        }
+
 
         //sự kiện các nút
+        tvChiDuong.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String address = tvDiaChi.getText().toString();
+                Uri gmmIntentUri = Uri.parse("geo:0,0?q=" + Uri.encode(address));
+                Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
+                mapIntent.setPackage("com.google.android.apps.maps");
+                if (mapIntent.resolveActivity(getPackageManager()) != null) {
+                    startActivity(mapIntent);
+                } else {
+                    Toast.makeText(getApplicationContext(), "Ứng dụng Google Maps không được cài đặt trên thiết bị của bạn.", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
         btnPreScreen.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -340,9 +433,7 @@ public class ActivityDetails extends AppCompatActivity {
             }
         });//chua làm
         tvXemThemMT.setOnClickListener(new View.OnClickListener() {
-
             boolean isExpand = false;
-
             @Override
             public void onClick(View v) {
                 isExpand = !isExpand;
@@ -350,12 +441,12 @@ public class ActivityDetails extends AppCompatActivity {
                     tvMota.setMaxLines(Integer.MAX_VALUE);
                     tvXemThemMT.setText("Thu gọn");
                 } else {
-                    tvMota.setMaxLines(2);
+                    tvMota.setMaxLines(3);
                     tvXemThemMT.setText("Xem thêm");
                 }
-
             }
         });
+
        /* tvThemDX.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -471,9 +562,10 @@ public class ActivityDetails extends AppCompatActivity {
                             public void onClick(DialogInterface dialog, int whichButton) {
                                 FirebaseDatabase database = FirebaseDatabase.getInstance();
                                 DatabaseReference notiSchedulesRef = database.getReference("Rooms");
-                                notiSchedulesRef.child(room.getId()).removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
+                                notiSchedulesRef.updateChildren(Collections.singletonMap("status", Constants.STATUS_DELETED)).addOnSuccessListener(new OnSuccessListener<Void>() {
                                     @Override
                                     public void onSuccess(Void unused) {
+                                        room.setStatus(Constants.STATUS_DELETED);
                                         Toast.makeText(ActivityDetails.this, "Xóa phòng trọ thành công", Toast.LENGTH_SHORT).show();
                                         finish();
                                     }
@@ -488,7 +580,7 @@ public class ActivityDetails extends AppCompatActivity {
                         .create();
                 confirmDialog.show();
             }
-        });
+        });//chưa đổi lại thành update status
     }
 
     private void tinhSoP(AccountClass tg) {
@@ -514,7 +606,9 @@ public class ActivityDetails extends AppCompatActivity {
     }
 
     //cùng quận thì cho vô rcm
-    private void getListRoomFromFB() {
+    @NonNull
+    private List<Room> getListRcmRoomFromFB() {
+        List<Room> rcmRooms = new ArrayList<Room>();
 
         FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
         DatabaseReference databaseReference = firebaseDatabase.getReference("Rooms");
@@ -536,8 +630,15 @@ public class ActivityDetails extends AppCompatActivity {
 
             }
         });
-    }
 
+        return rcmRooms;
+    }
+    private int getTextWidth(String text) {
+        // Đo chiều rộng của chuỗi được hiển thị trên TextView
+        Paint paint = new Paint();
+        paint.setTextSize(tvMota.getTextSize());
+        return (int) paint.measureText(text);
+    }
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
@@ -550,4 +651,11 @@ public class ActivityDetails extends AppCompatActivity {
             }
         }
     }
+    public int fromDptoInt ( float dpValue)
+    {
+        float density = getResources().getDisplayMetrics().density; // Lấy tỷ lệ mật độ của màn hình
+        int dpToPx = (int) (dpValue * density + 0.5f);
+        return dpToPx;
+    }
+
 }
