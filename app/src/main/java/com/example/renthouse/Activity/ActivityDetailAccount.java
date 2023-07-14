@@ -214,7 +214,6 @@ public class ActivityDetailAccount extends BaseActivity {
                         Toast.makeText(ActivityDetailAccount.this, key, Toast.LENGTH_SHORT).show();
                         databaseReference.child(key).child("image").setValue(preferenceManager.getString(Constants.KEY_IMAGE));
                         progressDialog.dismiss();
-
                     }
                 });
             }

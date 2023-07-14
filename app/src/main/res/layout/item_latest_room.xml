@@ -6,7 +6,7 @@
     android:layout_width="wrap_content"
     android:id="@+id/item_latest_room"
     android:layout_marginStart="15dp"
-    android:layout_marginEnd="15dp"
+    android:layout_marginEnd="10dp"
     android:layout_marginTop="15dp"
     android:background="@drawable/rounded_background_item_result"
     android:layout_height="wrap_content"
@@ -21,8 +21,8 @@
             app:cardCornerRadius="20dp">
             <ImageView
                 android:id="@+id/imageViewImageRoomLatest"
-                android:layout_width="160dp"
-                android:layout_height="100dp"
+                android:layout_width="190dp"
+                android:layout_height="120dp"
                 android:scaleType="centerCrop"
                 android:src="@drawable/image_room_result"/>
         </androidx.cardview.widget.CardView>
@@ -45,10 +45,12 @@
         android:layout_gravity="center"
         android:layout_height="wrap_content">
         <TextView
+            android:maxLines="2"
+            android:textStyle="bold"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textColor="@color/Secondary_20"
-            android:textSize="11sp"
+            android:textSize="15sp"
             android:text="Phòng cho thuê, Quận 7"
             android:id="@+id/textViewRoomNameLatest"/>
         <TextView
@@ -56,7 +58,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="4.7 triệu VND/phòng"
-            android:textSize="10sp"
+            android:textSize="12sp"
             android:textStyle="bold"
             android:id="@+id/textViewPriceLatesRoom"
             android:textColor="@color/Primary_40"/>
@@ -65,7 +67,7 @@
             android:layout_width="match_parent"
             android:id="@+id/textViewAddressLatestRoom"
             android:text="KTX khu B, Đường Vành Đai"
-            android:textSize="8sp"
+            android:textSize="11sp"
             android:layout_height="wrap_content"/>
     </LinearLayout>
 </LinearLayout>

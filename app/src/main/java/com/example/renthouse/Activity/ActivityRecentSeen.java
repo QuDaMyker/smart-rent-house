@@ -40,7 +40,14 @@ public class ActivityRecentSeen extends AppCompatActivity {
         setContentView(R.layout.activity_recent_seen);
         textViewEmptyRoom = findViewById(R.id.textViewEmptyRoom);
         roomLatestList = new ArrayList<>();
-        setDuLieu();
+
+//        mProgressDialog = new ProgressDialog(getApplicationContext());
+//        mProgressDialog.setCancelable(false);
+//        mProgressDialog.setMessage("Loading...");
+
+
+
+
         //mCheckInforInServer();
         btnBack = findViewById(R.id.btn_Back);
         recyclerView = findViewById(R.id.recycleViewRecentSeen);
@@ -50,32 +57,40 @@ public class ActivityRecentSeen extends AppCompatActivity {
                 finish();
             }
         });
-        Log.d("onCreate", "Running");
+
+        StaggeredGridLayoutManager staggeredGridLayoutManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
+        recyclerView.setLayoutManager(staggeredGridLayoutManager);
+        roomLatestAdapter = new RoomLatestAdapter(this);
+        roomLatestAdapter.setDuLieu(roomLatestList);
+        recyclerView.setAdapter(roomLatestAdapter);
+
+
+        setDuLieu();
     }
-    @Override
-    public void onWindowFocusChanged(boolean hasFocus) {
-        super.onWindowFocusChanged(hasFocus);
-        if (hasFocus) {
-            if (mProgressDialog == null) {
-                mProgressDialog = new ProgressDialog(ActivityRecentSeen.this);
-                mProgressDialog.setMessage(getString(R.string.loading));
-                mProgressDialog.setIndeterminate(true);
-                mProgressDialog.show();
-            }
-            else {
-                if(roomLatestList.isEmpty()) {
-                    textViewEmptyRoom.setVisibility(View.VISIBLE);
-                }
-                Log.d("Loading", "Loading");
-                StaggeredGridLayoutManager staggeredGridLayoutManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
-                recyclerView.setLayoutManager(staggeredGridLayoutManager);
-                roomLatestAdapter = new RoomLatestAdapter(this);
-                roomLatestAdapter.setDuLieu(roomLatestList);
-                recyclerView.setAdapter(roomLatestAdapter);
-            }
-        }
-    }
+//    @Override
+//    public void onWindowFocusChanged(boolean hasFocus) {
+//        super.onWindowFocusChanged(hasFocus);
+//        if (hasFocus) {
+//            if (mProgressDialog == null) {
+//                mProgressDialog = new ProgressDialog(ActivityRecentSeen.this);
+//                mProgressDialog.setMessage(getString(R.string.loading));
+//                mProgressDialog.setIndeterminate(true);
+//                mProgressDialog.show();
+//            }
+//            else {
+//                if(roomLatestList.isEmpty()) {
+//                    textViewEmptyRoom.setVisibility(View.VISIBLE);
+//                }
+//                StaggeredGridLayoutManager staggeredGridLayoutManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
+//                recyclerView.setLayoutManager(staggeredGridLayoutManager);
+//                roomLatestAdapter = new RoomLatestAdapter(this);
+//                roomLatestAdapter.setDuLieu(roomLatestList);
+//                recyclerView.setAdapter(roomLatestAdapter);
+//            }
+//        }
+//    }
     public void setDuLieu(){
+        //mProgressDialog.show();
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference accRef = database.getReference("Accounts");
         FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
@@ -98,6 +113,7 @@ public class ActivityRecentSeen extends AppCompatActivity {
                         public void onDataChange(@NonNull DataSnapshot snapshot) {
                             if (snapshot.getChildrenCount() == 0) {
                                 mProgressDialog.dismiss();
+                                textViewEmptyRoom.setVisibility(View.VISIBLE);
                                 return;
                             } else {
                                 for (DataSnapshot snapshot1 : snapshot.getChildren()) {
@@ -134,10 +150,10 @@ public class ActivityRecentSeen extends AppCompatActivity {
                     // Kiểm tra điều kiện nè
                     if (keyRoomList.contains(room.getId())) {
                         roomLatestList.add(room);
-                        Log.d("Do", room.getId());
                     }
                 }
-                mProgressDialog.dismiss();
+                roomLatestAdapter.notifyDataSetChanged();
+                //mProgressDialog.dismiss();
             }
             @Override
             public void onCancelled(DatabaseError databaseError) {
