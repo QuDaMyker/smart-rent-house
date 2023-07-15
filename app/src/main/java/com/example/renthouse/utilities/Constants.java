@@ -10,6 +10,7 @@ public class Constants {
     public static final String KEY_DATECREATEDACCOUNT = "ngayTaoTaiKhoan";
     public static final String KEY_PHONENUMBER = "phoneNumber";
     public static final String KEY_IS_SIGNED_IN = "isSignedIn";
+    public static final String KEY_IS_BLOCKED = "isBlocked";
     public static final String KEY_NGUOIDUNG = "nguoidung";
     public static final String KEY_HISTORY_SEARCH = "historySearch";
     public static final String STATUS_PENDING = "pending";

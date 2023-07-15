@@ -1,6 +1,7 @@
 package com.example.renthouse.Activity;
 
 import android.Manifest;
+import android.app.Activity;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.ProgressDialog;
@@ -12,8 +13,12 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.Editable;
+import android.text.InputType;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.text.method.HideReturnsTransformationMethod;
+import android.text.method.PasswordTransformationMethod;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
@@ -21,6 +26,10 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -32,6 +41,7 @@ import com.example.renthouse.Admin.Activity.Admin_ActivityMain;
 import com.example.renthouse.OOP.AccountClass;
 import com.example.renthouse.Other.CommonUtils;
 import com.example.renthouse.R;
+import com.example.renthouse.databinding.ActivityLogInBinding;
 import com.example.renthouse.utilities.Constants;
 import com.example.renthouse.utilities.PreferenceManager;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
@@ -59,146 +69,143 @@ import com.google.firebase.storage.FirebaseStorage;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.regex.Pattern;
 
 public class ActivityLogIn extends AppCompatActivity {
+    private ActivityLogInBinding binding;
     private static final int REQUEST_CODE = 1;
-    private boolean showOneTapUI = true;
-    private TextView forgotPasswordBtn;
-    private TextView signUpBtn;
-    private Button loginWithGoogleBtn, login_logInBtn;
     private FirebaseStorage storage;
-    FirebaseAuth mAuth;
-    private TextInputEditText login_email, login_password;
-    GoogleSignInOptions gso;
-    GoogleSignInClient gsc;
-    FirebaseDatabase database;
-    DatabaseReference reference;
-    String imageURL;
+    private FirebaseAuth mAuth;
+    private GoogleSignInOptions gso;
+    private GoogleSignInClient gsc;
+    private FirebaseDatabase database;
+    private DatabaseReference reference;
     private PreferenceManager preferenceManager;
-    ProgressDialog progressDialog;
-
+    private ProgressDialog progressDialog;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_log_in);
+        binding = ActivityLogInBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
 
+        init();
+        setListeners();
+    }
+
+    private void init() {
         preferenceManager = new PreferenceManager(getApplicationContext());
 
         progressDialog = new ProgressDialog(ActivityLogIn.this);
         progressDialog.setCancelable(false);
         progressDialog.setMessage("Loading...");
 
+        mAuth = FirebaseAuth.getInstance();
         database = FirebaseDatabase.getInstance();
         reference = database.getReference();
         storage = FirebaseStorage.getInstance();
-        //
 
-        forgotPasswordBtn = findViewById(R.id.forgotPasswordBtn);
-        signUpBtn = findViewById(R.id.login_signUpBtn);
-        loginWithGoogleBtn = findViewById(R.id.login_loginWithGoogleBtn);
-        login_email = findViewById(R.id.login_email);
-        login_password = findViewById(R.id.login_password);
-        login_logInBtn = findViewById(R.id.login_logInBtn);
-        mAuth = FirebaseAuth.getInstance();
+        binding.inputEmail.setSingleLine();
+        binding.inputPassword.setSingleLine();
 
+        if (binding.inputPassword.getTransformationMethod() instanceof PasswordTransformationMethod) {
+            // Mã hóa mật khẩu
+            binding.inputPassword.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
+        } else {
+            // Không mã hóa mật khẩu
+            binding.inputPassword.setTransformationMethod(PasswordTransformationMethod.getInstance());
+        }
 
-        login_logInBtn.setOnClickListener(new View.OnClickListener() {
+    }
+
+    private void setListeners() {
+        binding.inputEmail.addTextChangedListener(new TextWatcher() {
             @Override
-            public void onClick(View view) {
-                String email, password;
-                email = String.valueOf(login_email.getText());
-                password = String.valueOf(login_password.getText());
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
-                if (email.equals("admin") && password.equals("admin")) {
-                    preferenceManager.putBoolean(Constants.KEY_IS_SIGNED_IN, true);
-                    preferenceManager.putString(Constants.KEY_EMAIL, email);
-                    preferenceManager.putString(Constants.KEY_PASSWORD, password);
-                    CommonUtils.showNotification(ActivityLogIn.this, "Thông Báo", "Chào mừng Admin trở lại", R.drawable.ic_phobien_1);
-                    startActivity(new Intent(ActivityLogIn.this, Admin_ActivityMain.class));
-                    finish();
-                    return;
-                }
-                if (TextUtils.isEmpty(email)) {
-                    login_email.setError("Vui lòng điền email");
-                    return;
-                }
-                if (!isValidEmail(email)) {
-                    login_email.setError("Vui lòng điền đúng định dạng email");
-                    return;
-                }
+            }
 
-                if (TextUtils.isEmpty(password)) {
-                    login_password.setError("Vui lòng điền mật khẩu");
-                    return;
-                }
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                binding.outlineEmail.setError("");
+            }
 
+            @Override
+            public void afterTextChanged(Editable s) {
 
-                mAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()) {
-
-//                            // Event log app
-//                            Bundle bundle = new Bundle();
-//                            bundle.putString(FirebaseAnalytics.Param.ITEM_ID, "APP_OPEN");
-//                            FirebaseAnalytics analytics = FirebaseAnalytics.getInstance(getApplicationContext());
-//                            analytics.logEvent(FirebaseAnalytics.Event.LOGIN, bundle);
-//                            analytics.setAnalyticsCollectionEnabled(true);
-
-
-                            preferenceManager.putString(Constants.KEY_EMAIL, email);
-                            preferenceManager.putString(Constants.KEY_PASSWORD, password);
-                            preferenceManager.putBoolean(Constants.KEY_IS_SIGNED_IN, true);
-
-                            DatabaseReference ref = database.getReference();
-                            Query query = ref.child("Accounts").orderByChild("email").equalTo(email);
-                            query.addListenerForSingleValueEvent(new ValueEventListener() {
-                                @Override
-                                public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                    for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
-                                        preferenceManager.putString(Constants.KEY_USER_KEY, dataSnapshot.getKey());
-                                    }
-                                }
-
-                                @Override
-                                public void onCancelled(@NonNull DatabaseError error) {
-
-                                }
-                            });
-
-                            pushNotification();
-                            Toast.makeText(getApplicationContext(), "Login Successful", Toast.LENGTH_SHORT).show();
-                            Intent intent = new Intent(getApplicationContext(), ActivityMain.class);
-                            startActivity(intent);
-                            finish();
-                        } else {
-                            Toast.makeText(ActivityLogIn.this, "Authentication failed.", Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                });
             }
         });
+        binding.inputPassword.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
-        forgotPasswordBtn.setOnClickListener(new View.OnClickListener() {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                binding.outlinePassword.setError("");
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+        binding.loginLogInBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                if (binding.inputEmail.getText().toString().trim().equals("admin") && binding.inputPassword.getText().toString().trim().equals("admin")) {
+                    progressDialog.show();
+                    Query query = reference.child("DashboardAdmin").child("Account").child("1").orderByChild("available").equalTo("1");
+
+                    query.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                            if (!snapshot.exists()) {
+                                reference.child("DashboardAdmin").child("Account").child("1").child("available").setValue("1");
+                                preferenceManager.putBoolean(Constants.KEY_IS_SIGNED_IN, true);
+                                preferenceManager.putString(Constants.KEY_EMAIL, binding.inputEmail.getText().toString().trim());
+                                preferenceManager.putString(Constants.KEY_PASSWORD, binding.inputPassword.getText().toString().trim());
+                                CommonUtils.showNotification(ActivityLogIn.this, "Thông Báo", "Chào mừng Admin trở lại", R.drawable.ic_phobien_1);
+                                progressDialog.dismiss();
+                                startActivity(new Intent(ActivityLogIn.this, Admin_ActivityMain.class));
+                                finish();
+                                return;
+                            } else {
+                                Toast.makeText(ActivityLogIn.this, "tk dang dang nhap", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
+                            progressDialog.dismiss();
+                        }
+                    });
+
+                } else if (checkCondition()) {
+                    logInWithEmailPassword();
+                }
+
+
+            }
+        });
+        binding.forgotPasswordBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getApplicationContext(), ActivityForgotPassword.class);
                 startActivityForResult(intent, REQUEST_CODE);
             }
         });
-
-        signUpBtn.setOnClickListener(new View.OnClickListener() {
+        binding.loginSignUpBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getApplicationContext(), ActivitySignUp.class);
-                startActivityForResult(intent, REQUEST_CODE);
+                startActivity(intent);
             }
         });
-        // login with google
-
-        loginWithGoogleBtn.setOnClickListener(new View.OnClickListener() {
+        binding.loginLoginWithGoogleBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -209,183 +216,186 @@ public class ActivityLogIn extends AppCompatActivity {
                 signInWithGoogle();
             }
         });
+    }
 
-
-        login_password.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+    private void logInWithEmailPassword() {
+        progressDialog.show();
+        String email = binding.inputEmail.getText().toString().trim();
+        String password = binding.inputPassword.getText().toString().trim();
+        mAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
             @Override
-            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                if (actionId == EditorInfo.IME_ACTION_DONE || actionId == EditorInfo.IME_ACTION_GO) {
-                    login_logInBtn.performClick();
-                    return true;
-                }
-                return false;
-            }
-        });
+            public void onComplete(@NonNull Task<AuthResult> task) {
+                if (task.isSuccessful()) {
+                    progressDialog.show();
+                    preferenceManager.putString(Constants.KEY_EMAIL, email);
+                    preferenceManager.putString(Constants.KEY_PASSWORD, password);
+                    preferenceManager.putBoolean(Constants.KEY_IS_SIGNED_IN, true);
+                    DatabaseReference ref = database.getReference();
+                    Query query = ref.child("Accounts").orderByChild("email").equalTo(email);
+                    query.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                            AccountClass account = null;
+                            for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                                preferenceManager.putString(Constants.KEY_USER_KEY, dataSnapshot.getKey());
+                                account = dataSnapshot.getValue(AccountClass.class);
+                            }
 
-        login_password.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                // Trước khi text thay đổi
+                            preferenceManager.putString(Constants.KEY_FULLNAME, account.getFullname());
+                            preferenceManager.putString(Constants.KEY_IMAGE, account.getImage());
+                            preferenceManager.putString(Constants.KEY_PHONENUMBER, account.getPhoneNumber());
+                            preferenceManager.putString(Constants.KEY_DATECREATEDACCOUNT, account.getNgayTaoTaiKhoan());
 
-            }
+                            ref.child("Accounts").child(preferenceManager.getString(Constants.KEY_USER_KEY)).child("password").setValue(password);
 
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                // Trong quá trình text thay đổi
-                TextInputLayout pw = findViewById(R.id.textInputPassword);
-                pw.setPasswordVisibilityToggleEnabled(true);
-            }
 
-            @Override
-            public void afterTextChanged(Editable s) {
-                // Sau khi text đã thay đổi
-                if (login_password.getText().toString().isEmpty()) {
-                    TextInputLayout pw = findViewById(R.id.textInputPassword);
-                    pw.setPasswordVisibilityToggleEnabled(false);
+                            CommonUtils.showNotification(getApplicationContext(), "Thông báo", "Chào mừng bạn trở lại, hãy lựa chọn căn phòng ưng ý mình nhé", R.drawable.ic_phobien_1);
+                            Intent intent = new Intent(getApplicationContext(), ActivityMain.class);
+                            startActivity(intent);
+                            finish();
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
+                            progressDialog.dismiss();
+                            Toast.makeText(ActivityLogIn.this, "Có lỗi xảy ra vui lòng thử lại sau", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+
+
                 } else {
-                    TextInputLayout pw = findViewById(R.id.textInputPassword);
-                    pw.setPasswordVisibilityToggleEnabled(true);
+                    Toast.makeText(ActivityLogIn.this, "Authentication failed.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ActivityLogIn.this, "Sai tài khoản hoặc mật khẩu vui lòng thử lại", Toast.LENGTH_SHORT).show();
                 }
             }
         });
+        progressDialog.dismiss();
     }
 
     private void signInWithGoogle() {
         Intent signInIntent = gsc.getSignInIntent();
-        startActivityForResult(signInIntent, 100);
+        //startActivityForResult(signInIntent, 100);
+        callIntentGoogle.launch(signInIntent);
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == 100) {
-            Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
-            try {
+    private ActivityResultLauncher<Intent> callIntentGoogle = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
+        @Override
+        public void onActivityResult(ActivityResult result) {
+            if (result.getResultCode() == Activity.RESULT_OK) {
                 progressDialog.show();
-                task.getResult(ApiException.class);
-                GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(getApplicationContext());
-                firebaseAuthWithGoogle(account.getIdToken());
+                Task<GoogleSignInAccount> signInAccountTask = GoogleSignIn.getSignedInAccountFromIntent(result.getData());
+                if (signInAccountTask.isSuccessful()) {
+                    progressDialog.show();
+                    Log.d("status", "Receive data from GG successfully");
+                    try {
+                        GoogleSignInAccount googleSignInAccount = signInAccountTask.getResult(ApiException.class);
+                        if (googleSignInAccount != null) {
+                            AuthCredential authCredential = GoogleAuthProvider.getCredential(googleSignInAccount.getIdToken(), null);
+                            mAuth.signInWithCredential(authCredential).addOnCompleteListener(ActivityLogIn.this, new OnCompleteListener<AuthResult>() {
+                                @Override
+                                public void onComplete(@NonNull Task<AuthResult> task) {
+                                    if (task.isSuccessful()) {
+                                        progressDialog.show();
+                                        // Cập nhật thông tin người dùng lên Firebase Authentication
+                                        FirebaseUser user = mAuth.getCurrentUser();
+                                        //updateUserInfo(user);
+                                        // them thong tin tai khoan vao realtime
+                                        if (user != null) {
+                                            String personalID = user.getUid();
+                                            String personName = user.getDisplayName();
+                                            String personEmail = user.getEmail();
+                                            Uri personPhoto = user.getPhotoUrl();
 
+                                            Date now = new Date();
+                                            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                                            String formattedDate = dateFormat.format(now);
+                                            AccountClass accountClass = new AccountClass(personName, personEmail, "+84", "********", personPhoto.toString(), formattedDate, false, null);
+                                            String emailToCheck = personEmail;
 
-            } catch (ApiException e) {
-                Toast.makeText(ActivityLogIn.this, "Error", Toast.LENGTH_SHORT).show();
-                progressDialog.dismiss();
-            }
-        } else {
-            progressDialog.dismiss();
-        }
+                                            preferenceManager.putString(Constants.KEY_IMAGE, accountClass.getImage());
+                                            preferenceManager.putString(Constants.KEY_PHONENUMBER, accountClass.getPhoneNumber());
+                                            preferenceManager.putString(Constants.KEY_EMAIL, accountClass.getEmail());
+                                            preferenceManager.putString(Constants.KEY_FULLNAME, accountClass.getFullname());
+                                            preferenceManager.putString(Constants.KEY_DATECREATEDACCOUNT, accountClass.getNgayTaoTaiKhoan());
 
-    }
+                                            DatabaseReference accountsRef = reference.child("Accounts");
+                                            Query emailQuery = accountsRef.orderByChild("email").equalTo(emailToCheck);
 
-    private void firebaseAuthWithGoogle(String idToken) {
-        progressDialog.show();
-        AuthCredential credential = GoogleAuthProvider.getCredential(idToken, null);
-        mAuth.signInWithCredential(credential)
-                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        String TAG;
-                        if (task.isSuccessful()) {
-                            progressDialog.show();
-                            // Cập nhật thông tin người dùng lên Firebase Authentication
-                            FirebaseUser user = mAuth.getCurrentUser();
-                            updateUserInfo(user);
-                            // them thong tin tai khoan vao realtime
-                            if (user != null) {
-                                String personalID = user.getUid();
-                                String personName = user.getDisplayName();
-                                String personEmail = user.getEmail();
-                                Uri personPhoto = user.getPhotoUrl();
+                                            emailQuery.addListenerForSingleValueEvent(new ValueEventListener() {
+                                                @Override
+                                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                                    if (!dataSnapshot.exists()) {
+                                                        DatabaseReference newChildRef = reference.child("Accounts").push();
+                                                        String generatedKey = newChildRef.getKey();
+                                                        preferenceManager.putString(Constants.KEY_USER_KEY, generatedKey);
 
-                                Date now = new Date();
-                                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                                String formattedDate = dateFormat.format(now);
-                                AccountClass accountClass = new AccountClass(personName, personEmail, "+84", "********", personPhoto.toString(), formattedDate, false, null);
-                                String emailToCheck = personEmail;
+                                                        newChildRef.setValue(accountClass)
+                                                                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                                    @Override
+                                                                    public void onComplete(@NonNull Task<Void> task) {
+                                                                        if (task.isSuccessful()) {
+                                                                            // Data successfully saved
 
-                                preferenceManager.putString(Constants.KEY_IMAGE, accountClass.getImage());
-                                preferenceManager.putString(Constants.KEY_PHONENUMBER, accountClass.getPhoneNumber());
-                                preferenceManager.putString(Constants.KEY_EMAIL, accountClass.getEmail());
-                                preferenceManager.putString(Constants.KEY_FULLNAME, accountClass.getFullname());
-                                preferenceManager.putString(Constants.KEY_DATECREATEDACCOUNT, accountClass.getNgayTaoTaiKhoan());
+                                                                            CommonUtils.showNotification(getApplicationContext(), "Thông báo", "Chào mừng bạn đến với chúng tôi, hãy lựa chọn căn phòng ưng ý mình nhé", R.drawable.ic_phobien_1);
+                                                                            progressDialog.dismiss();
+                                                                            preferenceManager.putBoolean(Constants.KEY_IS_SIGNED_IN, true);
+                                                                            startActivity(new Intent(ActivityLogIn.this, ActivityMain.class));
+                                                                        } else {
+                                                                            // Handle the error here
+                                                                        }
+                                                                    }
+                                                                });
+                                                    } else {
+                                                        for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                                                            AccountClass checkAcc = snapshot.getValue(AccountClass.class);
+                                                            preferenceManager.putString(Constants.KEY_USER_KEY, snapshot.getKey());
+                                                            preferenceManager.putString(Constants.KEY_IMAGE, checkAcc.getImage());
+                                                            preferenceManager.putBoolean(Constants.KEY_IS_BLOCKED, checkAcc.getBlocked());
+                                                            if (checkAcc.getBlocked()) {
+                                                                progressDialog.dismiss();
+                                                                preferenceManager.putBoolean(Constants.KEY_IS_SIGNED_IN, true);
 
-                                DatabaseReference accountsRef = reference.child("Accounts");
-                                Query emailQuery = accountsRef.orderByChild("email").equalTo(emailToCheck);
-
-                                emailQuery.addListenerForSingleValueEvent(new ValueEventListener() {
-                                    @Override
-                                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                        if (!dataSnapshot.exists()) {
-                                            DatabaseReference newChildRef = reference.child("Accounts").push();
-                                            String generatedKey = newChildRef.getKey();
-                                            preferenceManager.putString(Constants.KEY_USER_KEY, generatedKey);
-
-                                            newChildRef.setValue(accountClass)
-                                                    .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                                        @Override
-                                                        public void onComplete(@NonNull Task<Void> task) {
-                                                            if (task.isSuccessful()) {
-                                                                // Data successfully saved
-
-
-
-                                                                pushSuccessFullNotification();
+                                                                startActivity(new Intent(ActivityLogIn.this, ActivityBlocked.class));
+                                                            } else {
+                                                                CommonUtils.showNotification(getApplicationContext(), "Thông báo", "Chào mừng bạn trở lại, hãy lựa chọn căn phòng ưng ý mình nhé", R.drawable.ic_phobien_1);
                                                                 progressDialog.dismiss();
                                                                 preferenceManager.putBoolean(Constants.KEY_IS_SIGNED_IN, true);
                                                                 startActivity(new Intent(ActivityLogIn.this, ActivityMain.class));
-                                                            } else {
-                                                                // Handle the error here
                                                             }
                                                         }
-                                                    });
-                                        } else {
-                                            for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                                                AccountClass checkAcc = snapshot.getValue(AccountClass.class);
-                                                preferenceManager.putString(Constants.KEY_USER_KEY, snapshot.getKey());
-                                                preferenceManager.putString(Constants.KEY_IMAGE, checkAcc.getImage());
 
-                                                if (checkAcc.getBlocked()) {
-                                                    progressDialog.dismiss();
-                                                    preferenceManager.putBoolean(Constants.KEY_IS_SIGNED_IN, true);
-
-                                                    startActivity(new Intent(ActivityLogIn.this, ActivityBlocked.class));
-                                                } else {
-                                                    pushSuccessFullNotification();
-                                                    progressDialog.dismiss();
-                                                    preferenceManager.putBoolean(Constants.KEY_IS_SIGNED_IN, true);
-                                                    startActivity(new Intent(ActivityLogIn.this, ActivityMain.class));
+                                                    }
                                                 }
-                                            }
 
+                                                @Override
+                                                public void onCancelled(@NonNull DatabaseError databaseError) {
+                                                    // Handle the error here
+                                                    CommonUtils.showNotification(getApplicationContext(), "Trạng thái đăng nhập", "Thất bại", R.drawable.ic_phobien_1);
+                                                    progressDialog.dismiss();
+                                                }
+                                            });
                                         }
-
-
-                                    }
-
-                                    @Override
-                                    public void onCancelled(@NonNull DatabaseError databaseError) {
-                                        // Handle the error here
+                                    } else {
+                                        // Đăng nhập thất bại
+                                        //pushFailerNotification();
                                         CommonUtils.showNotification(getApplicationContext(), "Trạng thái đăng nhập", "Thất bại", R.drawable.ic_phobien_1);
-                                        progressDialog.dismiss();
+                                        //Toast.makeText(getApplicationContext(), "Thất bại", Toast.LENGTH_SHORT).show();
+
                                     }
-                                });
-
-                            }
-
-                            //pushSuccessFullNotification();
-                            CommonUtils.showNotification(getApplicationContext(), "Trạng thái đăng nhập", "Chào mừng bạn trở lại", R.drawable.ic_phobien_1);
-                            //Toast.makeText(getApplicationContext(), "Đăng nhập thành công", Toast.LENGTH_SHORT).show();
-                        } else {
-                            // Đăng nhập thất bại
-                            //pushFailerNotification();
-                            CommonUtils.showNotification(getApplicationContext(), "Trạng thái đăng nhập", "Thất bại", R.drawable.ic_phobien_1);
-                            //Toast.makeText(getApplicationContext(), "Thất bại", Toast.LENGTH_SHORT).show();
-
+                                }
+                            });
                         }
+                    } catch (ApiException e) {
+                        throw new RuntimeException(e);
                     }
-                });
-        progressDialog.dismiss();
-    }
+                }else {
+                    progressDialog.dismiss();
+                    Toast.makeText(ActivityLogIn.this, "Error", Toast.LENGTH_SHORT).show();
+                }
+            }
+        }
+    });
+
 
     private void updateUserInfo(FirebaseUser user) {
         // Cập nhật thông tin người dùng lên Firebase Authentication
@@ -396,106 +406,55 @@ public class ActivityLogIn extends AppCompatActivity {
         user.updateProfile(profileUpdates);
     }
 
-    public boolean isValidEmail(CharSequence email) {
-        return android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches();
+    private boolean checkCondition() {
+        boolean flag = true;
+        if (binding.inputEmail.getText().toString().isEmpty()) {
+            flag = false;
+            binding.outlineEmail.setError("Vui lòng điền email");
+        } else if (!isValidEmail(binding.inputEmail.getText().toString().trim())) {
+            flag = false;
+            binding.outlineEmail.setError("Sai định dạng email");
+        } else if (binding.inputPassword.getText().toString().isEmpty()) {
+            flag = false;
+            binding.outlinePassword.setError("Vui lòng điền mật khẩu");
+            binding.outlinePassword.setPasswordVisibilityToggleEnabled(true);
+        } else if (!isValidPassword(binding.inputPassword.getText().toString().trim())) {
+            flag = false;
+            binding.outlinePassword.setError("Mật khẩu từ 8 đến 20 ký tự, bao gồm chữ cái viết hoa, chữ cái viết thường,số và kí tự đặc biệt");
+            binding.outlinePassword.setPasswordVisibilityToggleEnabled(true);
+        }
+        return flag;
+
     }
 
-    private void pushNotification() {
-        Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher);
+    public static boolean isValidEmail(String email) {
+        String emailRegex = "^[a-zA-Z0-9_+&*-]+(?:\\." +
+                "[a-zA-Z0-9_+&*-]+)*@" +
+                "(?:[a-zA-Z0-9-]+\\.)+[a-z" +
+                "A-Z]{2,7}$";
 
-        // Tạo notification channel nếu ứng dụng chạy trên Android 8.0 trở lên
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            NotificationChannel channel = new NotificationChannel("my_channel_id", "My Channel", NotificationManager.IMPORTANCE_DEFAULT);
-            channel.setDescription("My Channel Description");
-            NotificationManager notificationManager = getSystemService(NotificationManager.class);
-            if (notificationManager != null) {
-                notificationManager.createNotificationChannel(channel);
-            }
-        }
-
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(getApplicationContext(), "my_channel_id")
-                .setContentTitle("Đăng nhập thành công")
-                .setContentText("Cảm ơn bạn đã sử dụng sản phẩm")
-                .setSmallIcon(R.drawable.notification_flat)
-                .setLargeIcon(bitmap);
-
-        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(getApplicationContext());
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
-            return;
-        }
-        notificationManager.notify(0, builder.build());
+        Pattern pat = Pattern.compile(emailRegex);
+        if (email == null)
+            return false;
+        return pat.matcher(email).matches();
     }
 
-    private void pushSuccessFullNotification() {
-        Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher);
-
-        // Tạo notification channel nếu ứng dụng chạy trên Android 8.0 trở lên
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            NotificationChannel channel = new NotificationChannel("my_channel_id", "My Channel", NotificationManager.IMPORTANCE_DEFAULT);
-            channel.setDescription("My Channel Description");
-            NotificationManager notificationManager = getSystemService(NotificationManager.class);
-            if (notificationManager != null) {
-                notificationManager.createNotificationChannel(channel);
-            }
+    public static boolean isValidPassword(String password) {
+        if (password.length() < 8 || password.length() > 15) {
+            return false;
         }
-
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(getApplicationContext(), "my_channel_id")
-                .setContentTitle("Đăng nhập bằng tài khoản Google thành công")
-                .setContentText("Cảm ơn bạn đã sử dụng sản phẩm")
-                .setSmallIcon(R.drawable.notification_flat)
-                .setLargeIcon(bitmap);
-
-        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(getApplicationContext());
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
-            return;
+        if (!password.matches(".*\\d+.*")) {
+            return false;
         }
-        notificationManager.notify(0, builder.build());
-    }
-
-    private void pushFailerNotification() {
-        Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher);
-
-        // Tạo notification channel nếu ứng dụng chạy trên Android 8.0 trở lên
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            NotificationChannel channel = new NotificationChannel("my_channel_id", "My Channel", NotificationManager.IMPORTANCE_DEFAULT);
-            channel.setDescription("My Channel Description");
-            NotificationManager notificationManager = getSystemService(NotificationManager.class);
-            if (notificationManager != null) {
-                notificationManager.createNotificationChannel(channel);
-            }
+        if (!password.matches(".*[a-z]+.*")) {
+            return false;
         }
-
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(getApplicationContext(), "my_channel_id")
-                .setContentTitle("Đăng nhập thất bại")
-                .setContentText("Hãy kiểm tra lại tài khoản của bạn")
-                .setSmallIcon(R.drawable.notification_flat)
-                .setLargeIcon(bitmap);
-
-        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(getApplicationContext());
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
-            return;
+        if (!password.matches(".*[A-Z]+.*")) {
+            return false;
         }
-        notificationManager.notify(0, builder.build());
+        if (!password.matches(".*[!@#$%^&*()\\-=_+\\[\\]{};':\"\\\\|,.<>/?]+.*")) {
+            return false;
+        }
+        return true;
     }
 }

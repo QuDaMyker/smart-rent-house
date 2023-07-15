@@ -1,5 +1,6 @@
 package com.example.renthouse.Fragment;
 
+import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -8,8 +9,13 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -22,11 +28,14 @@ import android.widget.TextView;
 
 import com.example.renthouse.Activity.ActivityAccountNotification;
 import com.example.renthouse.Activity.ActivityDetailAccount;
+import com.example.renthouse.Activity.ActivityMain;
 import com.example.renthouse.Activity.ActivityReportError;
 import com.example.renthouse.Activity.ActivitySplash;
 import com.example.renthouse.Interface.Callback;
+import com.example.renthouse.Interface.OnActivityResultListener;
 import com.example.renthouse.OOP.AccountClass;
 import com.example.renthouse.R;
+import com.example.renthouse.databinding.FragmentAccountTabAccountBinding;
 import com.example.renthouse.utilities.Constants;
 import com.example.renthouse.utilities.PreferenceManager;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
@@ -48,131 +57,119 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 
 public class FragmentAccountTabAccount extends Fragment {
-    private CircleImageView imageProfile;
-    private TextView nameProfile;
-    private TextView emailProfile;
-    private Button btnThongTinCanhan;
-    private Button btnDieuKhoanChinhSach;
-    private Button btnThongBao;
-    private Button btnBaoCaoSuCo;
-    private Button btnDangXuat;
+    private FragmentAccountTabAccountBinding binding;
     private FirebaseAuth mAuth;
     private FirebaseUser currentUser;
-    private String key;
-    private AccountClass account;
     private ProgressDialog progressDialog;
     private PreferenceManager preferenceManager;
+    private OnActivityResultListener onActivityResultListener;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_account_tab_account, container, false);
+        binding = FragmentAccountTabAccountBinding.inflate(getLayoutInflater());
+        View view = binding.getRoot();
 
+        init();
+        updateUI();
+        setListeners();
+
+        return view;
+    }
+
+
+    private void init() {
         preferenceManager = new PreferenceManager(getActivity());
-
-        imageProfile = view.findViewById(R.id.account_personal_imageProfile);
-        nameProfile = view.findViewById(R.id.account_personal_nameProfile);
-        emailProfile = view.findViewById(R.id.account_personal_emailProfile);
-        btnThongTinCanhan = view.findViewById(R.id.account_personal_infomationButtonProfile);
-        btnDieuKhoanChinhSach = view.findViewById(R.id.account_personal_policyButtonProfile);
-        btnThongBao = view.findViewById(R.id.account_personal_notificationButtonProfile);
-        btnBaoCaoSuCo = view.findViewById(R.id.account_personal_reportErrorButtonProfile);
-        btnDangXuat = view.findViewById(R.id.account_personal_logoutButtonProfile);
-
-
         mAuth = FirebaseAuth.getInstance();
         currentUser = mAuth.getCurrentUser();
 
         progressDialog = new ProgressDialog(getContext());
         progressDialog.setCancelable(false);
         progressDialog.setMessage("Loading...");
-
-        if (currentUser != null) {
-            //progressDialog.show();
-            getActivity().runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    Picasso.get().load(preferenceManager.getString(Constants.KEY_IMAGE)).into(imageProfile);
-                    nameProfile.setText(preferenceManager.getString(Constants.KEY_FULLNAME));
-                    emailProfile.setText(preferenceManager.getString(Constants.KEY_EMAIL));
-                }
-            });
-
-
-            /*FirebaseDatabase database = FirebaseDatabase.getInstance();
-            DatabaseReference reference = database.getReference("Accounts");
-
-            reference.addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
-                        key = dataSnapshot.getKey();
-                        if (dataSnapshot.child("email").getValue().equals(currentUser.getEmail())) {
-                            account = dataSnapshot.getValue(AccountClass.class);
-                            break;
-                        }
-                    }
-
-                    nameProfile.setText(account.getFullname());
-                    emailProfile.setText(account.getEmail());
-                    Picasso.get().load(account.getImage()).into(imageProfile);
-                }
-
-                @Override
-                public void onCancelled(@NonNull DatabaseError error) {
-
-                }
-            });
-            progressDialog.dismiss();*/
-        }
-        btnThongTinCanhan.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getActivity(), ActivityDetailAccount.class);
-                intent.putExtra("ACCOUNT", account);
-                intent.putExtra("KEY", key);
-                startActivity(intent);
-            }
-        });
-
-
-        btnBaoCaoSuCo.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getActivity(), ActivityReportError.class);
-                startActivity(intent);
-            }
-        });
-
-        btnThongBao.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startActivity(new Intent(getActivity(), ActivityAccountNotification.class));
-            }
-        });
-
-        btnDangXuat.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-
-                preferenceManager.clear();
-                FirebaseAuth.getInstance().signOut();
-                GoogleSignInOptions gso = new GoogleSignInOptions.
-                        Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).
-                        build();
-
-                GoogleSignInClient googleSignInClient = GoogleSignIn.getClient(getActivity(), gso);
-                googleSignInClient.signOut();
-                getActivity().finish();
-                startActivity(new Intent(requireContext(), ActivitySplash.class));
-
-
-            }
-        });
-
-
-        return view;
     }
+
+    private void setListeners() {
+        binding.swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                // Thực hiện cập nhật dữ liệu ở đây
+                updateUI();
+                // Sau khi hoàn thành cập nhật, gọi phương thức setRefreshing(false) để kết thúc hiệu ứng làm mới
+                binding.swipeRefreshLayout.setRefreshing(false);
+            }
+        });
+        binding.accountPersonalInfomationButtonProfile.setOnClickListener(v -> {
+            Intent intent = new Intent(getContext(), ActivityDetailAccount.class);
+            launcherDetailAccount.launch(intent);
+        });
+
+        binding.accountPersonalPolicyButtonProfile.setOnClickListener(v -> {
+
+        });
+        binding.accountPersonalNotificationButtonProfile.setOnClickListener(v -> {
+            startActivity(new Intent(getActivity(), ActivityAccountNotification.class));
+        });
+        binding.accountPersonalReportErrorButtonProfile.setOnClickListener(v -> {
+            Intent intent = new Intent(getActivity(), ActivityReportError.class);
+            startActivity(intent);
+        });
+        binding.accountPersonalLogoutButtonProfile.setOnClickListener(v -> {
+
+            logOut();
+        });
+    }
+
+    private void updateUI() {
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                progressDialog.show();
+                Picasso.get().load(preferenceManager.getString(Constants.KEY_IMAGE)).into(binding.accountPersonalImageProfile);
+                binding.accountPersonalNameProfile.setText(preferenceManager.getString(Constants.KEY_FULLNAME));
+                binding.accountPersonalEmailProfile.setText(preferenceManager.getString(Constants.KEY_EMAIL));
+                progressDialog.dismiss();
+            }
+        });
+    }
+
+    private ActivityResultLauncher<Intent> launcherDetailAccount = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
+        @Override
+        public void onActivityResult(ActivityResult result) {
+            if (result.getResultCode() == Activity.RESULT_OK) {
+                updateUI();
+            }
+        }
+    });
+
+    public void setOnActivityResultListener(OnActivityResultListener listener) {
+        this.onActivityResultListener = listener;
+    }
+
+    private void logOut() {
+        preferenceManager.clear();
+
+        Intent intent = new Intent(getContext(), ActivitySplash.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+
+
+        FirebaseAuth.getInstance().signOut();
+        GoogleSignInOptions gso = new GoogleSignInOptions.
+                Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).
+                build();
+
+        GoogleSignInClient googleSignInClient = GoogleSignIn.getClient(getActivity(), gso);
+        googleSignInClient.signOut();
+
+
+        if (preferenceManager.getBoolean(Constants.KEY_IS_SIGNED_IN)) {
+            Log.d("status", "sign");
+        } else {
+            Log.d("status", "out");
+        }
+        startActivity(intent);
+        getActivity().finish();
+        getActivity().finishAffinity();
+    }
+
+
 }

@@ -10,6 +10,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
@@ -20,6 +21,7 @@ import android.widget.Toast;
 
 import com.example.renthouse.OOP.AccountClass;
 import com.example.renthouse.R;
+import com.example.renthouse.databinding.ActivitySignUpBinding;
 import com.example.renthouse.utilities.Constants;
 import com.example.renthouse.utilities.PreferenceManager;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -50,6 +52,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class ActivitySignUp extends AppCompatActivity {
+    private ActivitySignUpBinding binding;
     private ImageButton backToLoginBtn;
     private Button signUpBtn;
     private TextView tv_backToLoginBtn;
@@ -59,42 +62,82 @@ public class ActivitySignUp extends AppCompatActivity {
     private FirebaseDatabase database;
     private DatabaseReference reference;
     private FirebaseAuth mAuth;
-    private ValueEventListener eventListener;
     private PreferenceManager preferenceManager;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_sign_up);
+        binding = ActivitySignUpBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
 
+        init();
+        setListeners();
+    }
+
+    private void init() {
         preferenceManager = new PreferenceManager(ActivitySignUp.this);
 
         mAuth = FirebaseAuth.getInstance();
 
         database = FirebaseDatabase.getInstance();
-        reference = database.getReference("Accounts");
+        reference = database.getReference();
 
-        backToLoginBtn = findViewById(R.id.backToLoginBtn);
-        signUpBtn = findViewById(R.id.signup_signUpBtn);
-        tv_backToLoginBtn = findViewById(R.id.tv_backToLoginBtn);
-        signup_fullName = findViewById(R.id.signup_fullName);
-        signup_email = findViewById(R.id.signup_email);
-        signup_phoneNumber = findViewById(R.id.signup_phoneNumber);
-        signup_password = findViewById(R.id.signup_password);
-
-        signUpFullname = findViewById(R.id.tiploFullName);
-        signUpEmail = findViewById(R.id.tiploEmail);
-        signUpPhoneNumber = findViewById(R.id.tiploPhoneNumber);
-        signUpPassword = findViewById(R.id.tiploPassword);
-
-        // Ẩn hiện toggle
-        if (signup_password.getText().toString().isEmpty()) {
-            TextInputLayout pw = findViewById(R.id.tiploPassword);
-            pw.setPasswordVisibilityToggleEnabled(false);
+        if (binding.inputPassword.getText().toString().isEmpty()) {
+            binding.outlinePassword.setPasswordVisibilityToggleEnabled(false);
         }
+    }
 
-        signup_password.addTextChangedListener(new TextWatcher() {
+    private void setListeners() {
+        binding.inputFullname.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                binding.outlineFullname.setError("");
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+        binding.inputEmail.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                binding.outlineEmail.setError("");
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+        binding.inputPhoneNumber.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                binding.outlinePhoneNumber.setError("");
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+        binding.inputPassword.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
                 // Trước khi text thay đổi
@@ -104,115 +147,64 @@ public class ActivitySignUp extends AppCompatActivity {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 // Trong quá trình text thay đổi
-                TextInputLayout pw = findViewById(R.id.tiploPassword);
-                pw.setPasswordVisibilityToggleEnabled(true);
+                binding.outlinePassword.setPasswordVisibilityToggleEnabled(true);
+                binding.outlinePassword.setError("");
             }
 
             @Override
             public void afterTextChanged(Editable s) {
                 // Sau khi text đã thay đổi
-                if (signup_password.getText().toString().isEmpty()) {
-                    TextInputLayout pw = findViewById(R.id.tiploPassword);
-                    pw.setPasswordVisibilityToggleEnabled(false);
+                if (binding.inputPassword.getText().toString().isEmpty()) {
+                    binding.outlinePassword.setPasswordVisibilityToggleEnabled(false);
                 } else {
-                    TextInputLayout pw = findViewById(R.id.tiploPassword);
-                    pw.setPasswordVisibilityToggleEnabled(true);
+                    binding.outlinePassword.setPasswordVisibilityToggleEnabled(true);
                 }
             }
         });
-
-        // nut bam dang ki
-        signUpBtn.setOnClickListener(new View.OnClickListener() {
+        binding.signupSignUpBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                saveData();
-            }
-        });
-
-        backToLoginBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onBackPressed();
-            }
-        });
-        //
-        //
-        tv_backToLoginBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onBackPressed();
-            }
-        });
-        //
-        //
-        signup_password.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                if (actionId == EditorInfo.IME_ACTION_DONE || actionId == EditorInfo.IME_ACTION_GO) {
-                    signUpBtn.performClick();
-                    return true;
+                if (checkTrueCondition()) {
+                    signUpWithEmailPassword();
                 }
-                return false;
             }
         });
-
-
+        binding.backToLoginBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
+        binding.tvBackToLoginBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
     }
 
-    public static boolean isValidPassword(String password) {
-        // Kiểm tra độ dài của mật khẩu
-        if (password.length() < 8 || password.length() > 15) {
-            return false;
-        }
+    private void signUpWithEmailPassword() {
+        String email = binding.inputEmail.getText().toString().trim();
+        String password = binding.inputPassword.getText().toString().trim();
+        Toast.makeText(this, email, Toast.LENGTH_SHORT).show();
+        mAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+            @Override
+            public void onComplete(@NonNull Task<AuthResult> task) {
+                if (task.isSuccessful()) {
+                    // Sign in success, update UI with the signed-in user's information
 
-        // Kiểm tra có ít nhất một số
-        if (!password.matches(".*\\d+.*")) {
-            return false;
-        }
-
-        // Kiểm tra có ít nhất một chữ thường
-        if (!password.matches(".*[a-z]+.*")) {
-            return false;
-        }
-
-        // Kiểm tra có ít nhất một chữ in hoa
-        if (!password.matches(".*[A-Z]+.*")) {
-            return false;
-        }
-
-        // Kiểm tra có ít nhất một ký tự đặc biệt
-        if (!password.matches(".*[!@#$%^&*()\\-=_+\\[\\]{};':\"\\\\|,.<>/?]+.*")) {
-            return false;
-        }
-
-        // Mật khẩu hợp lệ
-        return true;
-    }
-
-
-    private boolean checkTrueCondition() {
-        if (signup_fullName.getText().toString().matches("[0-9\\p{Punct}]+")) {
-            signUpFullname.setError("Không đúng định dạng");
-            return false;
-        } else {
-            if (!signup_email.getText().toString().matches("^[\\w.-]+@[a-zA-Z]+\\.[a-zA-Z]{2,3}$")) {
-                signUpEmail.setError("Không đúng định dạng");
-                return false;
-            } else {
-                if (!signup_phoneNumber.getText().toString().matches("^\\d{10}$")) {
-                    signUpPhoneNumber.setError("Không đúng định dạng");
-                    return false;
+                    FirebaseUser user = mAuth.getCurrentUser();
+                    loadAccountToDataBase();
                 } else {
-                    if (!isValidPassword(signup_password.getText().toString())) {
-                        signUpPassword.setError("Mật khẩu từ 8 đến 20 ký tự, bao gồm chữ cái viết hoa, chữ cái viết thường và số");
-                        return false;
-                    } else {
-                        return true;
-                    }
+                    // If sign in fails, display a message to the user.
+
+                    Toast.makeText(ActivitySignUp.this, "Authentication failed.", Toast.LENGTH_SHORT).show();
+
                 }
             }
-        }
+        });
     }
+
 
     private void saveData() {
         if (checkTrueCondition()) {
@@ -231,9 +223,9 @@ public class ActivitySignUp extends AppCompatActivity {
         FirebaseUser currentUser = mAuth.getCurrentUser();
         if (currentUser != null) {
             String id = currentUser.getUid();
-            String name = signup_fullName.getText().toString();
-            String email = currentUser.getEmail();
-            String phonenumber = signup_phoneNumber.getText().toString().trim();
+            String name = binding.inputFullname.getText().toString();
+            String email = binding.inputEmail.getText().toString();
+            String phonenumber = binding.inputPhoneNumber.getText().toString().trim();
 
             if (currentUser.getPhotoUrl() == null) {
                 Uri uriImage = Uri.parse("android.resource://" + getPackageName() + "/" + R.drawable.ic_default_profile);
@@ -271,7 +263,7 @@ public class ActivitySignUp extends AppCompatActivity {
             if (imageURL == null) {
                 imageURL = "https://cdn.pixabay.com/photo/2023/06/02/14/12/woman-8035772_1280.jpg";
             }
-            AccountClass accountCurrent = new AccountClass(name, email, "+84", "********", imageURL, formattedDate, false, "khong khoa");
+            AccountClass accountCurrent = new AccountClass(name, email, "+84", binding.inputPassword.getText().toString().trim(), imageURL, formattedDate, false, "khong khoa");
             String emailToCheck = email;
             DatabaseReference accountsRef = reference.child("Accounts");
             Query emailQuery = accountsRef.orderByChild("email").equalTo(emailToCheck);
@@ -291,6 +283,7 @@ public class ActivitySignUp extends AppCompatActivity {
                             @Override
                             public void onComplete(@NonNull Task<Void> task) {
                                 if (task.isSuccessful()) {
+                                    preferenceManager.putString(Constants.KEY_USER_KEY, generatedKey);
                                     preferenceManager.putBoolean(Constants.KEY_IS_SIGNED_IN, true);
                                     preferenceManager.putString(Constants.KEY_USER_KEY, generatedKey);
                                     preferenceManager.putString(Constants.KEY_FULLNAME, accountCurrent.getFullname());
@@ -326,6 +319,81 @@ public class ActivitySignUp extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    private boolean checkTrueCondition() {
+        boolean flag = true;
+        if (binding.inputFullname.getText().toString().isEmpty()) {
+            flag = false;
+            binding.outlineFullname.setError("Vui lòng điền họ tên");
+        } else if (!isVietnameseString(binding.inputFullname.getText().toString().trim())) {
+            flag = false;
+            binding.outlineFullname.setError("Vui lòng điền đúng định dạng tên");
+        } else if (binding.inputEmail.getText().toString().isEmpty()) {
+            flag = false;
+            binding.outlineEmail.setError("Vui lòng điền email");
+        } else if (!isValidEmail(binding.inputEmail.getText().toString().trim())) {
+            flag = false;
+            binding.outlineEmail.setError("Sai định dạng email");
+        } else if (binding.inputPhoneNumber.getText().toString().isEmpty()) {
+            flag = false;
+            binding.outlinePhoneNumber.setError("Vui lòng điền số điện thoại");
+        } else if (!isVietnamesePhoneNumber(binding.inputPhoneNumber.getText().toString())) {
+            flag = false;
+            binding.outlinePhoneNumber.setError("Vui lòng điền đúng định dạng số điện thoại");
+        } else if (binding.inputPassword.getText().toString().isEmpty()) {
+            flag = false;
+            binding.outlinePassword.setError("Vui lòng điền mật khẩu");
+            binding.outlinePassword.setPasswordVisibilityToggleEnabled(true);
+        } else if (!isValidPassword(binding.inputPassword.getText().toString())) {
+            flag = false;
+            binding.outlinePassword.setError("Mật khẩu từ 8 đến 20 ký tự, bao gồm chữ cái viết hoa, chữ cái viết thường,số và kí tự đặc biệt");
+            binding.outlinePassword.setPasswordVisibilityToggleEnabled(true);
+        }
+        return flag;
+    }
+
+    public static boolean isValidEmail(String email) {
+        String emailRegex = "^[a-zA-Z0-9_+&*-]+(?:\\." + "[a-zA-Z0-9_+&*-]+)*@" + "(?:[a-zA-Z0-9-]+\\.)+[a-z" + "A-Z]{2,7}$";
+
+        Pattern pat = Pattern.compile(emailRegex);
+        if (email == null) return false;
+        return pat.matcher(email).matches();
+    }
+
+    public static boolean isValidPassword(String password) {
+        if (password.length() < 8 || password.length() > 15) {
+            return false;
+        }
+        if (!password.matches(".*\\d+.*")) {
+            return false;
+        }
+        if (!password.matches(".*[a-z]+.*")) {
+            return false;
+        }
+        if (!password.matches(".*[A-Z]+.*")) {
+            return false;
+        }
+        if (!password.matches(".*[!@#$%^&*()\\-=_+\\[\\]{};':\"\\\\|,.<>/?]+.*")) {
+            return false;
+        }
+        return true;
+    }
+
+    public static boolean isVietnameseString(String input) {
+        // Biểu thức chính quy để kiểm tra các ký tự tiếng Việt
+        String vietnameseRegex = "^[\\p{L}\\p{M} ]+$";
+
+        // Kiểm tra chuỗi với biểu thức chính quy
+        return Pattern.matches(vietnameseRegex, input);
+    }
+
+    public static boolean isVietnamesePhoneNumber(String phoneNumber) {
+        // Biểu thức chính quy để kiểm tra số điện thoại Việt Nam
+        String vietnamesePhoneNumberRegex = "^0[35789]\\d{8}$";
+
+        // Kiểm tra chuỗi số điện thoại với biểu thức chính quy
+        return Pattern.matches(vietnamesePhoneNumberRegex, phoneNumber);
     }
 
 

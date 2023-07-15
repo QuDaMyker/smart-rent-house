@@ -53,7 +53,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class ActivityDetails extends AppCompatActivity {
+public class ActivityDetails extends BaseActivity {
     private static final int REQUEST_CALL = 1;
     private FirebaseDatabase db;
     private DatabaseReference ref;
@@ -396,7 +396,7 @@ public class ActivityDetails extends AppCompatActivity {
                 DatabaseReference reference = database.getReference();
 
 
-                Query query = reference.child("Accounts").orderByChild("email").equalTo("quocdanhmyker@gmail.com");
+                Query query = reference.child("Accounts").orderByChild("email").equalTo(room.getCreatedBy().getEmail());
                 query.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -419,7 +419,7 @@ public class ActivityDetails extends AppCompatActivity {
                                         reference.child("Chat").child(preferenceManager.getString(Constants.KEY_USER_KEY)).child(otherKey).child("1").child("send-date").setValue(simpleDateFormat.format(data));
                                         reference.child("Chat").child(preferenceManager.getString(Constants.KEY_USER_KEY)).child(otherKey).child("1").child("send-time").setValue(simpleTimeFormatConversaton.format(data));
 
-                                        Conversation conversation = new Conversation(preferenceManager.getString(Constants.KEY_USER_KEY), otherKey, "Xin Chào", simpleDateFormat.format(data).toString(), simpleTimeFormatConversaton.format(data).toString());
+                                        Conversation conversation = new Conversation(preferenceManager.getString(Constants.KEY_USER_KEY), otherKey, "Xin Chào", simpleDateFormat.format(data).toString(), simpleTimeFormatConversaton.format(data).toString(), false);
 
                                         reference.child("Conversations").child(preferenceManager.getString(Constants.KEY_USER_KEY)).child(otherKey).setValue(conversation);
 

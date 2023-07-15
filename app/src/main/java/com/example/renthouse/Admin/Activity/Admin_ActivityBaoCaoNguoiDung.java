@@ -3,6 +3,7 @@ package com.example.renthouse.Admin.Activity;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.app.ProgressDialog;
 import android.os.Bundle;
@@ -33,29 +34,44 @@ public class Admin_ActivityBaoCaoNguoiDung extends AppCompatActivity {
     private List<Reports> reportsList;
     private BaoCaoNguoiDungAdapter baoCaoNguoiDungAdapter;
     private ProgressDialog progressDialog;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = ActivityAdminBaoCaoNguoiDungBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        progressDialog = new ProgressDialog(Admin_ActivityBaoCaoNguoiDung.this);
-        progressDialog.setCancelable(false);
-        progressDialog.setMessage("Loading...");
-
         init();
-        setListeners();
         loadData();
+        setListeners();
+
     }
+
     private void init() {
         database = FirebaseDatabase.getInstance();
         reportsList = new ArrayList<>();
         baoCaoNguoiDungAdapter = new BaoCaoNguoiDungAdapter(getApplicationContext(), reportsList);
         binding.recycleView.setAdapter(baoCaoNguoiDungAdapter);
+
+        progressDialog = new ProgressDialog(Admin_ActivityBaoCaoNguoiDung.this);
+        progressDialog.setCancelable(false);
+        progressDialog.setMessage("Loading...");
     }
+
     private void setListeners() {
-        binding.btnBack.setOnClickListener(v-> onBackPressed());
+        binding.btnBack.setOnClickListener(v -> onBackPressed());
+
+        binding.swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                // Thực hiện cập nhật dữ liệu ở đây
+                loadData();
+                // Sau khi hoàn thành cập nhật, gọi phương thức setRefreshing(false) để kết thúc hiệu ứng làm mới
+                binding.swipeRefreshLayout.setRefreshing(false);
+            }
+        });
     }
+
     private void loadData() {
         progressDialog.show();
         DatabaseReference reference = database.getReference();
@@ -84,7 +100,7 @@ public class Admin_ActivityBaoCaoNguoiDung extends AppCompatActivity {
                     }
                 });
                 reportsList.addAll(tempReports);
-                Log.d("count", reportsList.size()+"");
+                Log.d("count", reportsList.size() + "");
                 baoCaoNguoiDungAdapter.notifyDataSetChanged();
                 progressDialog.dismiss();
             }

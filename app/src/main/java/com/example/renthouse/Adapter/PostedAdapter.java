@@ -12,13 +12,14 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.renthouse.Interface.ItemClick;
-import com.example.renthouse.OOP.Posted;
+
 import com.example.renthouse.OOP.Room;
-import com.example.renthouse.R;
-import com.example.renthouse.databinding.ItemPostedBinding;
-import com.google.android.material.imageview.ShapeableImageView;
+
+import com.example.renthouse.databinding.ItemLatestRoomBinding;
 import com.squareup.picasso.Picasso;
 
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.util.List;
 
 public class PostedAdapter extends RecyclerView.Adapter<PostedAdapter.ViewHolder> {
@@ -35,7 +36,7 @@ public class PostedAdapter extends RecyclerView.Adapter<PostedAdapter.ViewHolder
     @NonNull
     @Override
     public PostedAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        return new ViewHolder(ItemPostedBinding.inflate(LayoutInflater.from(parent.getContext()), parent, false));
+        return new ViewHolder(ItemLatestRoomBinding.inflate(LayoutInflater.from(parent.getContext()), parent, false));
     }
 
     @Override
@@ -49,25 +50,39 @@ public class PostedAdapter extends RecyclerView.Adapter<PostedAdapter.ViewHolder
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        private ItemPostedBinding binding;
+        private ItemLatestRoomBinding binding;
 
-        public ViewHolder(ItemPostedBinding itemPostedBinding) {
-            super(itemPostedBinding.getRoot());
-            binding = itemPostedBinding;
+        public ViewHolder(ItemLatestRoomBinding itemLatestRoomBinding) {
+            super(itemLatestRoomBinding.getRoot());
+            binding = itemLatestRoomBinding;
         }
 
         void setData(Room room) {
             List<String> images = room.getImages();
-            Picasso.get().load(images.get(0)).into(binding.image);
-            binding.tvTitle.setText(room.getTitle()+"");
-            binding.tvPrice.setText(room.getPrice()+"");
-            String address = room.getLocation().getAddress() + room.getLocation().getStreet() + room.getLocation().getDistrict().getPath_with_type();
-            binding.tvAddress.setText(address);
+            Picasso.get().load(images.get(0)).into(binding.imageViewImageRoomLatest);
+            binding.textViewRoomNameLatest.setText(room.getTitle() + "");
+            int price = room.getPrice();
+            binding.textViewPriceLatesRoom.setText(room.getPrice() + " VND/ Tháng");
+            String address = "Số " + room.getLocation().getAddress() + " đường " + room.getLocation().getStreet() + room.getLocation().getDistrict().getPath_with_type();
+            binding.textViewAddressLatestRoom.setText(address);
             binding.getRoot().setOnClickListener(v -> {
                 Room roomIntent = room;
                 itemClick.onItemClick(roomIntent);
             });
 
         }
+
+        public String convertCurrency(int amount) {
+            if (amount < 1000000) {
+                return String.valueOf(amount);
+            } else {
+                double convertedAmount = amount / 1000000.0;
+                DecimalFormatSymbols symbols = new DecimalFormatSymbols();
+                symbols.setGroupingSeparator('.');
+                DecimalFormat decimalFormat = new DecimalFormat("#,##0.##", symbols);
+                return decimalFormat.format(convertedAmount) + " triệu";
+            }
+        }
+
     }
 }
