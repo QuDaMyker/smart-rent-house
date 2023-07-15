@@ -100,7 +100,7 @@ public class RoomLatestAdapter extends RecyclerView.Adapter<RoomLatestAdapter.Ro
 
             }
         });
-        holder.textViewAddress.setText(room.getLocation().getWard().getPath());
+        holder.textViewAddress.setText(room.getLocation().getWard().getPath_with_type());
         holder.textViewNameRoom.setText(room.getTitle());
         long price = (long)listRoomLatest.get(position).getPrice();
         DecimalFormat decimalFormat = new DecimalFormat("#,###");

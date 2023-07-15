@@ -70,6 +70,7 @@
             android:textStyle="bold" />
 
         <TextView
+            android:maxLines="2"
             android:id="@+id/textViewAddressLatestRoom"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
