@@ -64,6 +64,7 @@
             android:textColor="@color/Primary_40"/>
         <TextView
             android:layout_marginTop="3dp"
+            android:maxLines="2"
             android:layout_width="match_parent"
             android:id="@+id/textViewAddressLatestRoom"
             android:text="KTX khu B, Đường Vành Đai"
