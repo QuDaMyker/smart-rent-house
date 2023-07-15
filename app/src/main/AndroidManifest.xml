@@ -30,8 +30,12 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
+            android:name=".Activity.ActivityOwnerInformation"
+            android:exported="false" />
+        <activity
             android:name=".Admin.Activity.Admin_ActivityStatistics"
             android:exported="false" />
+
         <receiver android:name=".BroadcastReceiver.MyAlarmReceiver" />
 
         <activity
@@ -60,10 +64,11 @@
             android:exported="false" />
         <activity
             android:name=".Admin.Activity.Admin_ActivityMain"
-            android:windowSoftInputMode="adjustPan"
+            android:exported="false"
+            android:windowSoftInputMode="adjustPan" />
+        <activity
+            android:name=".Activity.ActivityMain"
             android:exported="false" />
-        <activity android:name=".Activity.ActivityMain"
-            android:exported="false"/>
 
         <service
             android:name=".FCM.MyFirebaseMessagingService"
@@ -170,13 +175,13 @@
             android:enabled="true"
             android:exported="true">
             <intent-filter>
+
                 <!-- Intent filters for broadcast receiver -->
                 <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
                 <action android:name="android.net.wifi.WIFI_STATE_CHANGED" />
                 <action android:name="android.net.wifi.STATE_CHANGE" />
             </intent-filter>
         </receiver>
-
     </application>
 
 </manifest>

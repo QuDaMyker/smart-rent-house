@@ -65,6 +65,7 @@ public class PostedAdapter extends RecyclerView.Adapter<PostedAdapter.ViewHolder
             binding.textViewPriceLatesRoom.setText(room.getPrice() + " VND/ Tháng");
             String address = "Số " + room.getLocation().getAddress() + " đường " + room.getLocation().getStreet() + room.getLocation().getDistrict().getPath_with_type();
             binding.textViewAddressLatestRoom.setText(address);
+            binding.likedCheckBoxLatestRoom.setVisibility(View.INVISIBLE);
             binding.getRoot().setOnClickListener(v -> {
                 Room roomIntent = room;
                 itemClick.onItemClick(roomIntent);

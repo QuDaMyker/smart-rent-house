@@ -32,6 +32,7 @@ import com.example.renthouse.Chat.OOP.Conversation;
 import com.example.renthouse.OOP.AccountClass;
 import com.example.renthouse.OOP.Room;
 import com.example.renthouse.R;
+import com.example.renthouse.databinding.ActivityDetailsBinding;
 import com.example.renthouse.utilities.Constants;
 import com.example.renthouse.utilities.PreferenceManager;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -54,6 +55,7 @@ import java.util.Locale;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class ActivityDetails extends BaseActivity {
+    private ActivityDetailsBinding binding;
     private static final int REQUEST_CALL = 1;
     private FirebaseDatabase db;
     private DatabaseReference ref;
@@ -112,7 +114,8 @@ public class ActivityDetails extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_details);
+        binding = ActivityDetailsBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
 
         db = FirebaseDatabase.getInstance();
         ref = db.getReference("Rooms");
@@ -492,6 +495,22 @@ public class ActivityDetails extends BaseActivity {
                 confirmDialog.show();
             }
         });
+
+        binding.lnTacGia.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Toast.makeText(ActivityDetails.this, "bam vao day", Toast.LENGTH_SHORT).show();
+                Intent roomToOwner = new Intent(ActivityDetails.this, ActivityOwnerInformation.class);
+                roomToOwner.putExtra("roomToOwer", room);
+                startActivity(roomToOwner);
+            }
+        });
+
+
+
+
+
     }
     private void addSeenRoom(Room room) {
         FirebaseDatabase database = FirebaseDatabase.getInstance();
