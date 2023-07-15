@@ -14,12 +14,12 @@
         android:id="@+id/textLiked"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="20dp"
-        android:layout_marginTop="20dp"
+        android:layout_marginLeft="28dp"
+        android:layout_marginTop="25dp"
         android:gravity="center"
         android:text="Yêu thích"
         android:textColor="@color/white"
-        android:textSize="30sp"
+        android:textSize="25dp"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -36,18 +36,4 @@
         app:layout_constraintTop_toBottomOf="@+id/textLiked"
         android:background="@drawable/layout_bg"></FrameLayout>
 
-<!--    <com.google.android.material.bottomnavigation.BottomNavigationView-->
-<!--        android:id="@+id/navigation"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:background="@color/Primary_98"-->
-<!--        app:elevation="3dp"-->
-<!--        app:itemIconSize="18dp"-->
-<!--        app:itemIconTint="@color/black"-->
-<!--        app:labelVisibilityMode="labeled"-->
-<!--        app:layout_constraintBottom_toBottomOf="parent"-->
-<!--        app:layout_constraintEnd_toEndOf="parent"-->
-<!--        app:layout_constraintStart_toStartOf="parent"-->
-<!--        app:menu="@menu/menu_nav_button"-->
-<!--        />-->
 </androidx.constraintlayout.widget.ConstraintLayout>

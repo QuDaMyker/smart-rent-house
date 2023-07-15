@@ -35,7 +35,8 @@
             android:button="@drawable/heart_checkbox_selector"
             app:buttonTint="@color/white"
             android:buttonTintMode="multiply"
-            android:layout_margin="0dp" />
+            android:layout_margin="0dp"
+            />
     </FrameLayout>
 
     <LinearLayout

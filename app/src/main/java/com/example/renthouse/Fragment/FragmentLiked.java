@@ -30,6 +30,7 @@ public class FragmentLiked extends Fragment {
     boolean isEmpty = true;
 
     private FragmentLikedBinding binding;
+    //private DialogListener dialogListener;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,

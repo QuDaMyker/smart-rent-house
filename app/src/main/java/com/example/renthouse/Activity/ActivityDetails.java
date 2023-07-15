@@ -14,6 +14,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -115,6 +116,13 @@ public class ActivityDetails extends AppCompatActivity {
 
 
     @Override
+    protected void onStart() {
+        super.onStart();
+
+        IsLikedRoom();
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_details);
@@ -181,51 +189,9 @@ public class ActivityDetails extends AppCompatActivity {
             NormalUserLayout.setVisibility(View.VISIBLE);
         }
 
-        /*Bundle bundle = getIntent().getExtras();
-        if (bundle == null) {
-            return;
-        }
-        room = (Room) bundle.get("selectedRoom");*/
 
         //load thông tin p được chọn
         //gán các thông tin
-
-        //xét id p này có nằm trong ds thích của user
-        FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
-        FirebaseUser currentUser = firebaseAuth.getCurrentUser();
-        String emaiCur = currentUser.getEmail();
-        DatabaseReference refAc = db.getReference("Accounts");
-        refAc.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                String emailAc = null;
-                for (DataSnapshot snapAc : snapshot.getChildren()) {
-                    emailAc = snapAc.child("email").getValue(String.class);
-                    if (emaiCur.equals(emailAc)) {
-                        String idAc = snapAc.getKey();
-                        DatabaseReference refLiked = db.getReference("LikedRooms").child(idAc);
-                        ref.addListenerForSingleValueEvent(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                if (snapshot.hasChild(room.getId())) {
-                                    cbLiked.setChecked(true);
-                                }
-                            }
-
-                            @Override
-                            public void onCancelled(@NonNull DatabaseError error) {
-
-                            }
-                        });
-                    }
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
 
         srcImages = room.getImages();
         String src = srcImages.get(curImage);
@@ -266,7 +232,9 @@ public class ActivityDetails extends AppCompatActivity {
             tvXemThemMT.setVisibility(View.GONE);
             tvMota.setText(moTaP);
         }
-        tvNgayDang.setText(room.getDateTime());
+
+        String ngayDang = room.getDateTime();
+        tvNgayDang.setText(getAfterSpace(ngayDang));
 
         listTI = room.getUtilities();
         if (listTI != null)
@@ -359,8 +327,24 @@ public class ActivityDetails extends AppCompatActivity {
             tvThemDX.setTextColor(color);
         }
 
-
         //sự kiện các nút
+        cbLiked.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    // Nếu checkbox được chọn, them id phòng dzo ds Likedroom
+                    DatabaseReference likedRef = db.getReference("LikedRooms").child(idAC);
+                    String idRoom = room.getId();
+                    likedRef.child(idRoom).setValue(idRoom);
+
+                }
+                else {
+                    DatabaseReference likedRef = db.getReference("LikedRooms").child(idAC);
+                    String idRoom = room.getId();
+                    likedRef.child(idRoom).removeValue();
+                }
+            }
+        });
         tvChiDuong.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -539,7 +523,7 @@ public class ActivityDetails extends AppCompatActivity {
                     }
                 });
             }
-        });//chưa làm
+        });
 
         btnToEdit.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -580,7 +564,52 @@ public class ActivityDetails extends AppCompatActivity {
                         .create();
                 confirmDialog.show();
             }
-        });//chưa đổi lại thành update status
+        });
+    }
+    public void IsLikedRoom () {
+        //xét id p này có nằm trong ds thích của user
+        if (preferenceManager.getString(Constants.KEY_USER_KEY) != null) {
+            Log.d("key", preferenceManager.getString(Constants.KEY_USER_KEY));
+        }
+        FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
+        FirebaseUser currentUser = firebaseAuth.getCurrentUser();
+        String emaiCur = currentUser.getEmail();
+
+        DatabaseReference refAc = db.getReference("Accounts");
+        refAc.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                String emailAc = null;
+                for (DataSnapshot snapAc : snapshot.getChildren()) {
+                    emailAc = snapAc.child("email").getValue(String.class);
+                    if (emaiCur.equals(emailAc)) {
+                        idAC = snapAc.getKey();
+                        DatabaseReference refLiked = db.getReference("LikedRooms").child(idAC);
+                        refLiked.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                //check lại khúc này
+                                boolean temp = false;
+                                if (snapshot.hasChild(room.getId())) {
+                                    temp = true;
+                                    cbLiked.setChecked(true);
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError error) {
+
+                            }
+                        });
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
     }
 
     private void tinhSoP(AccountClass tg) {
@@ -604,6 +633,14 @@ public class ActivityDetails extends AppCompatActivity {
             }
         });
     }
+    public String getAfterSpace(String input) {
+        int spaceIndex = input.indexOf(" ");
+        if (spaceIndex != -1 && spaceIndex < input.length() - 1) {
+            return input.substring(spaceIndex + 1);
+        } else {
+            return "";
+        }
+    }
 
     //cùng quận thì cho vô rcm
     @NonNull
@@ -624,7 +661,6 @@ public class ActivityDetails extends AppCompatActivity {
                 }
 
             }
-
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
 

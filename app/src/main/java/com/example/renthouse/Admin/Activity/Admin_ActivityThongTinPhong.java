@@ -97,6 +97,7 @@ public class Admin_ActivityThongTinPhong extends AppCompatActivity {
     private TextView tvXemThemMT;
     private List<String> listTI;
     private RecyclerView rcvTienIch;
+    private TextView tvThemTI;
     private AccountClass Tg;
     private ImageView ivTacGia;
     private TextView tvTenTG;
@@ -151,6 +152,7 @@ public class Admin_ActivityThongTinPhong extends AppCompatActivity {
         tvXemThemMT = findViewById(R.id.tvShowMoreMT);
         tvNgayDang = findViewById(R.id.tvNgay);
         rcvTienIch = findViewById(R.id.rcvTienIch);
+        tvThemTI = findViewById(R.id.tvMoreTI);
         ivTacGia = findViewById(R.id.imageTacGia);
         tvTenTG = findViewById(R.id.tvTenTg);
         tvSoP = findViewById(R.id.tvSoPhong);
@@ -210,7 +212,10 @@ public class Admin_ActivityThongTinPhong extends AppCompatActivity {
         tvGiaXe.setText(String.valueOf(room.getParkingFee() / 1000) + "K");
         tvGiaWifi.setText(String.valueOf(room.getInternetCost() / 1000) + "K");
         tvMota.setText(room.getDescription());
-        //tvNgayDang.setText(R.id.tvNgayDang);
+
+        String ngayDang = room.getDateTime();
+
+        tvNgayDang.setText(getAfterSpace(ngayDang));
 
         listTI = room.getUtilities();
         if (listTI != null)
@@ -475,6 +480,15 @@ public class Admin_ActivityThongTinPhong extends AppCompatActivity {
                 lnDuyet.setVisibility(View.GONE);
                 lnXoa.setVisibility(View.VISIBLE);
             }
+        }
+    }
+
+    public String getAfterSpace(String input) {
+        int spaceIndex = input.indexOf(" ");
+        if (spaceIndex != -1 && spaceIndex < input.length() - 1) {
+            return input.substring(spaceIndex + 1);
+        } else {
+            return "";
         }
     }
 

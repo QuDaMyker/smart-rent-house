@@ -166,6 +166,7 @@ public class RoomAdapter extends RecyclerView.Adapter<RoomAdapter.RoomViewHolder
                                     likedRef.child(idRoom).removeValue();
                                     //xóa khỏi ds hiện bên liked room
                                     rooms.remove(room);
+                                    setLimit(rooms.size());
                                     notifyDataSetChanged();
                                 }
                             }

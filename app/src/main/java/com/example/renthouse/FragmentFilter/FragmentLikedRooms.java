@@ -51,7 +51,6 @@ public class FragmentLikedRooms extends Fragment {
     private String idAC;
     private PreferenceManager preferenceManager;
     private FirebaseDatabase db;
-    private ProgressBar prgLoading;
 
     public FragmentLikedRooms() {
 
@@ -94,29 +93,20 @@ public class FragmentLikedRooms extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_liked_rooms, container, false);
         recyclerView = (RecyclerView) view.findViewById(R.id.rcv_LikedRooms);
-        prgLoading =  view.findViewById(R.id.loading);
         GridLayoutManager grid = new GridLayoutManager(getActivity(), 2);
-
         recyclerView.setLayoutManager(grid);
-
-
         idRoomsLiked = new ArrayList<String>();
         rooms = new ArrayList<>();
         roomAdapter = new RoomAdapter(this.getContext(), rooms);
-
         recyclerView.setAdapter(roomAdapter);
 
-        //getListLikedRoomFromFB();
-        //getListRoomFromFB();
 
         return view;
     }
 
     private void getListLikedRoomFromFB() {
-        prgLoading.setVisibility(View.VISIBLE);
         rooms.clear();
         idRoomsLiked.clear();
-        roomAdapter.notifyDataSetChanged();
         FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
         FirebaseUser currentUser = firebaseAuth.getCurrentUser();
         db = FirebaseDatabase.getInstance();
@@ -158,8 +148,8 @@ public class FragmentLikedRooms extends Fragment {
                                                         rooms.add(room);
                                                     }
                                                 }
+                                                roomAdapter.setLimit(rooms.size());
                                                 roomAdapter.notifyDataSetChanged();
-                                                prgLoading.setVisibility(View.GONE);
 
                                             }
 
@@ -219,8 +209,6 @@ public class FragmentLikedRooms extends Fragment {
     public void onResume() {
         super.onResume();
         getListLikedRoomFromFB();
-        roomAdapter.notifyDataSetChanged();
-
     }
 }
 

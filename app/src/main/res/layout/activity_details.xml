@@ -44,13 +44,13 @@
 
         <CheckBox
             android:id="@+id/cbLike"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:layout_gravity="right"
-            android:layout_marginRight="20dp"
-            android:button="@drawable/custom_checkbox_like"
-            android:buttonTint="#FF5050"
-            android:checked="false" />
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="top|end"
+            android:button="@drawable/heart_checkbox_selector"
+            app:buttonTint="@color/white"
+            android:buttonTintMode="multiply"
+            android:layout_marginRight="10dp"/>
     </com.google.android.material.appbar.MaterialToolbar>
 
     <ScrollView
