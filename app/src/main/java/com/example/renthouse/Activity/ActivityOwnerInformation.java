@@ -90,7 +90,7 @@ public class ActivityOwnerInformation extends AppCompatActivity {
     private void updateUI() {
         binding.txtName.setText(roomIntent.getCreatedBy().getFullname());
         binding.txtPhoneNumber.setText(roomIntent.getPhoneNumber());
-        Picasso.get().load(roomIntent.getCreatedBy().getImage());
+        Picasso.get().load(roomIntent.getCreatedBy().getImage()).into(binding.imageUser);
     }
 
     private void setListener() {
