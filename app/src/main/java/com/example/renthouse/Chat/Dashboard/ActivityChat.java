@@ -1,6 +1,8 @@
 package com.example.renthouse.Chat.Dashboard;
 
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -86,6 +88,8 @@ public class ActivityChat extends BaseActivity {
 
         chatAdapter = new ChatAdapter(chatLists, ActivityChat.this);
         binding.chattingRecycleView.setAdapter(chatAdapter);
+
+
     }
 
     private void updateUI() {
@@ -101,6 +105,11 @@ public class ActivityChat extends BaseActivity {
         getUserMobile = MemoryData.getData(ActivityChat.this);
         binding.name.setText(getName);
         Picasso.get().load(getProfilePic).into(binding.profilePic);
+
+        databaseReference.child("Conversations").child(currentKey).child(otherKey).child("seenMsg").setValue(true);
+        databaseReference.child("Conversations").child(otherKey).child(currentKey).child("seenMsg").setValue(true);
+
+
     }
 
     private void loadMessages() {
@@ -128,12 +137,21 @@ public class ActivityChat extends BaseActivity {
                         tempChatLists.add(chatList);
                     }
                 }
-                chatLists.addAll(tempChatLists);
-                chatAdapter.notifyDataSetChanged();
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        chatLists.addAll(tempChatLists);
+                        chatAdapter.notifyDataSetChanged();
+                    }
+                });
+
                 binding.chattingRecycleView.post(new Runnable() {
                     @Override
                     public void run() {
+
                         binding.chattingRecycleView.smoothScrollToPosition(chatLists.size() - 1);
+
+
                     }
                 });
             }
@@ -143,6 +161,7 @@ public class ActivityChat extends BaseActivity {
 
             }
         });
+
     }
 
     private void setListeners() {
@@ -170,6 +189,24 @@ public class ActivityChat extends BaseActivity {
                 onBackPressed();
             }
         });
+
+        binding.messageEditTxt.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+
         binding.sendBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -188,7 +225,7 @@ public class ActivityChat extends BaseActivity {
                     databaseReference.child("Chat").child(currentKey).child(otherKey).child(String.valueOf(lastIndex)).child("send-date").setValue(simpleDateFormat.format(date));
                     databaseReference.child("Chat").child(currentKey).child(otherKey).child(String.valueOf(lastIndex)).child("send-time").setValue(simpleTimeFormat.format(date));
 
-                    Conversation conversation = new Conversation(currentKey, otherKey, getMessages, simpleDateFormat.format(date), simpleTimeFormatConversaton.format(date));
+                    Conversation conversation = new Conversation(currentKey, otherKey, getMessages, simpleDateFormat.format(date), simpleTimeFormatConversaton.format(date), true);
 
                     databaseReference.child("Conversations").child(currentKey).child(otherKey).setValue(conversation);
 
@@ -198,6 +235,7 @@ public class ActivityChat extends BaseActivity {
                     databaseReference.child("Chat").child(otherKey).child(currentKey).child(String.valueOf(lastIndex)).child("send-date").setValue(simpleDateFormat.format(date));
                     databaseReference.child("Chat").child(otherKey).child(currentKey).child(String.valueOf(lastIndex)).child("send-time").setValue(simpleTimeFormat.format(date));
 
+                    conversation = new Conversation(currentKey, otherKey, getMessages, simpleDateFormat.format(date), simpleTimeFormatConversaton.format(date), false);
                     databaseReference.child("Conversations").child(otherKey).child(currentKey).setValue(conversation);
 
                     binding.messageEditTxt.setText("");

@@ -12,10 +12,10 @@ import android.view.View;
 import com.example.renthouse.Activity.BaseActivity;
 
 public class InternetBroadcastReceiver extends BroadcastReceiver {
-    private BaseActivity activity;
+    private ProgressDialog progressDialog;
 
-    public InternetBroadcastReceiver(BaseActivity activity) {
-        this.activity = activity;
+    public InternetBroadcastReceiver(ProgressDialog progressDialog) {
+        this.progressDialog = progressDialog;
     }
 
     @Override
@@ -28,9 +28,9 @@ public class InternetBroadcastReceiver extends BroadcastReceiver {
             boolean isConnected = networkInfo != null && networkInfo.isConnectedOrConnecting();
 
             if (isConnected) {
-                activity.dismissProgressDialog();
+                progressDialog.dismiss();
             } else {
-                activity.showProgressDialog();
+                progressDialog.show();
             }
         }
     }

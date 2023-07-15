@@ -193,13 +193,6 @@ public class Admin_FragmentHome extends Fragment {
                 startActivity(intent);
             }
         });
-        binding.imageLogout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                getActivity().finish();
-                startActivity(new Intent(requireContext(), ActivityLogIn.class));
-            }
-        });
 
         binding.linearDatLichThongBao.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -215,6 +208,8 @@ public class Admin_FragmentHome extends Fragment {
 
     private void logOut() {
         preferenceManager.clear();
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
+        reference.child("DashboardAdmin").child("Account").child("1").child("available").setValue("0");
         FirebaseAuth.getInstance().signOut();
         GoogleSignInOptions gso = new GoogleSignInOptions.
                 Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).

@@ -155,19 +155,39 @@ public class ActivityLogIn extends AppCompatActivity {
         binding.loginLogInBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (binding.inputEmail.getText().toString().trim().equals("admin") && binding.inputPassword.getText().toString().trim().equals("admin")) {
-                    preferenceManager.putBoolean(Constants.KEY_IS_SIGNED_IN, true);
-                    preferenceManager.putString(Constants.KEY_EMAIL, binding.inputEmail.getText().toString().trim());
-                    preferenceManager.putString(Constants.KEY_PASSWORD, binding.inputPassword.getText().toString().trim());
-                    CommonUtils.showNotification(ActivityLogIn.this, "Thông Báo", "Chào mừng Admin trở lại", R.drawable.ic_phobien_1);
-                    startActivity(new Intent(ActivityLogIn.this, Admin_ActivityMain.class));
-                    finish();
-                    return;
-                }
 
-                if (checkCondition()) {
+                if (binding.inputEmail.getText().toString().trim().equals("admin") && binding.inputPassword.getText().toString().trim().equals("admin")) {
+                    progressDialog.show();
+                    Query query = reference.child("DashboardAdmin").child("Account").child("1").orderByChild("available").equalTo("1");
+
+                    query.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                            if (!snapshot.exists()) {
+                                reference.child("DashboardAdmin").child("Account").child("1").child("available").setValue("1");
+                                preferenceManager.putBoolean(Constants.KEY_IS_SIGNED_IN, true);
+                                preferenceManager.putString(Constants.KEY_EMAIL, binding.inputEmail.getText().toString().trim());
+                                preferenceManager.putString(Constants.KEY_PASSWORD, binding.inputPassword.getText().toString().trim());
+                                CommonUtils.showNotification(ActivityLogIn.this, "Thông Báo", "Chào mừng Admin trở lại", R.drawable.ic_phobien_1);
+                                progressDialog.dismiss();
+                                startActivity(new Intent(ActivityLogIn.this, Admin_ActivityMain.class));
+                                finish();
+                                return;
+                            } else {
+                                Toast.makeText(ActivityLogIn.this, "tk dang dang nhap", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
+                            progressDialog.dismiss();
+                        }
+                    });
+
+                } else if (checkCondition()) {
                     logInWithEmailPassword();
                 }
+
 
             }
         });
@@ -265,6 +285,7 @@ public class ActivityLogIn extends AppCompatActivity {
                 progressDialog.show();
                 Task<GoogleSignInAccount> signInAccountTask = GoogleSignIn.getSignedInAccountFromIntent(result.getData());
                 if (signInAccountTask.isSuccessful()) {
+                    progressDialog.show();
                     Log.d("status", "Receive data from GG successfully");
                     try {
                         GoogleSignInAccount googleSignInAccount = signInAccountTask.getResult(ApiException.class);
@@ -354,9 +375,6 @@ public class ActivityLogIn extends AppCompatActivity {
                                                 }
                                             });
                                         }
-                                        //pushSuccessFullNotification();
-                                        CommonUtils.showNotification(getApplicationContext(), "Trạng thái đăng nhập", "Chào mừng bạn trở lại", R.drawable.ic_phobien_1);
-                                        //Toast.makeText(getApplicationContext(), "Đăng nhập thành công", Toast.LENGTH_SHORT).show();
                                     } else {
                                         // Đăng nhập thất bại
                                         //pushFailerNotification();
@@ -370,140 +388,14 @@ public class ActivityLogIn extends AppCompatActivity {
                     } catch (ApiException e) {
                         throw new RuntimeException(e);
                     }
+                }else {
+                    progressDialog.dismiss();
+                    Toast.makeText(ActivityLogIn.this, "Error", Toast.LENGTH_SHORT).show();
                 }
             }
         }
     });
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == 100) {
-            Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
-            try {
-                progressDialog.show();
-                task.getResult(ApiException.class);
-                GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(getApplicationContext());
-                firebaseAuthWithGoogle(account.getIdToken());
-
-
-            } catch (ApiException e) {
-                Toast.makeText(ActivityLogIn.this, "Error", Toast.LENGTH_SHORT).show();
-                progressDialog.dismiss();
-            }
-        } else {
-            progressDialog.dismiss();
-        }
-
-    }
-
-    private void firebaseAuthWithGoogle(String idToken) {
-        progressDialog.show();
-        AuthCredential credential = GoogleAuthProvider.getCredential(idToken, null);
-        mAuth.signInWithCredential(credential)
-                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        String TAG;
-                        if (task.isSuccessful()) {
-                            progressDialog.show();
-                            // Cập nhật thông tin người dùng lên Firebase Authentication
-                            FirebaseUser user = mAuth.getCurrentUser();
-                            updateUserInfo(user);
-                            // them thong tin tai khoan vao realtime
-                            if (user != null) {
-                                String personalID = user.getUid();
-                                String personName = user.getDisplayName();
-                                String personEmail = user.getEmail();
-                                Uri personPhoto = user.getPhotoUrl();
-
-                                Date now = new Date();
-                                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                                String formattedDate = dateFormat.format(now);
-                                AccountClass accountClass = new AccountClass(personName, personEmail, "+84", "********", personPhoto.toString(), formattedDate, false, null);
-                                String emailToCheck = personEmail;
-
-                                preferenceManager.putString(Constants.KEY_IMAGE, accountClass.getImage());
-                                preferenceManager.putString(Constants.KEY_PHONENUMBER, accountClass.getPhoneNumber());
-                                preferenceManager.putString(Constants.KEY_EMAIL, accountClass.getEmail());
-                                preferenceManager.putString(Constants.KEY_FULLNAME, accountClass.getFullname());
-                                preferenceManager.putString(Constants.KEY_DATECREATEDACCOUNT, accountClass.getNgayTaoTaiKhoan());
-
-                                DatabaseReference accountsRef = reference.child("Accounts");
-                                Query emailQuery = accountsRef.orderByChild("email").equalTo(emailToCheck);
-
-                                emailQuery.addListenerForSingleValueEvent(new ValueEventListener() {
-                                    @Override
-                                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                        if (!dataSnapshot.exists()) {
-                                            DatabaseReference newChildRef = reference.child("Accounts").push();
-                                            String generatedKey = newChildRef.getKey();
-                                            preferenceManager.putString(Constants.KEY_USER_KEY, generatedKey);
-
-                                            newChildRef.setValue(accountClass)
-                                                    .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                                        @Override
-                                                        public void onComplete(@NonNull Task<Void> task) {
-                                                            if (task.isSuccessful()) {
-                                                                // Data successfully saved
-
-                                                                //pushSuccessFullNotification();
-                                                                progressDialog.dismiss();
-                                                                preferenceManager.putBoolean(Constants.KEY_IS_SIGNED_IN, true);
-                                                                startActivity(new Intent(ActivityLogIn.this, ActivityMain.class));
-                                                            } else {
-                                                                // Handle the error here
-                                                            }
-                                                        }
-                                                    });
-                                        } else {
-                                            for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                                                AccountClass checkAcc = snapshot.getValue(AccountClass.class);
-                                                preferenceManager.putString(Constants.KEY_USER_KEY, snapshot.getKey());
-                                                preferenceManager.putString(Constants.KEY_IMAGE, checkAcc.getImage());
-
-                                                if (checkAcc.getBlocked()) {
-                                                    progressDialog.dismiss();
-                                                    preferenceManager.putBoolean(Constants.KEY_IS_SIGNED_IN, true);
-
-                                                    startActivity(new Intent(ActivityLogIn.this, ActivityBlocked.class));
-                                                } else {
-                                                    //pushSuccessFullNotification();
-                                                    progressDialog.dismiss();
-                                                    preferenceManager.putBoolean(Constants.KEY_IS_SIGNED_IN, true);
-                                                    startActivity(new Intent(ActivityLogIn.this, ActivityMain.class));
-                                                }
-                                            }
-
-                                        }
-
-
-                                    }
-
-                                    @Override
-                                    public void onCancelled(@NonNull DatabaseError databaseError) {
-                                        // Handle the error here
-                                        CommonUtils.showNotification(getApplicationContext(), "Trạng thái đăng nhập", "Thất bại", R.drawable.ic_phobien_1);
-                                        progressDialog.dismiss();
-                                    }
-                                });
-
-                            }
-
-                            //pushSuccessFullNotification();
-                            CommonUtils.showNotification(getApplicationContext(), "Trạng thái đăng nhập", "Chào mừng bạn trở lại", R.drawable.ic_phobien_1);
-                            //Toast.makeText(getApplicationContext(), "Đăng nhập thành công", Toast.LENGTH_SHORT).show();
-                        } else {
-                            // Đăng nhập thất bại
-                            //pushFailerNotification();
-                            CommonUtils.showNotification(getApplicationContext(), "Trạng thái đăng nhập", "Thất bại", R.drawable.ic_phobien_1);
-                            //Toast.makeText(getApplicationContext(), "Thất bại", Toast.LENGTH_SHORT).show();
-
-                        }
-                    }
-                });
-        progressDialog.dismiss();
-    }
 
     private void updateUserInfo(FirebaseUser user) {
         // Cập nhật thông tin người dùng lên Firebase Authentication

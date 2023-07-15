@@ -7,6 +7,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -108,27 +109,23 @@ public class FragmentChat extends Fragment {
 
     private void loadData() {
         dialogListener.showDialog();
+
         messagesLists.clear();
         tempMessagesLists.clear();
+
         reference.child("Conversations").child(preferenceManager.getString(Constants.KEY_USER_KEY)).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if (snapshot.exists()) {
 
+                    messagesLists.clear();
+                    tempMessagesLists.clear();
+
+                    Toast.makeText(getContext(), "Update", Toast.LENGTH_SHORT).show();
                     Log.d("count", snapshot.getChildrenCount() + "");
+
                     for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
                         String otherKey = dataSnapshot.getKey();
-                        String sendId = dataSnapshot.child("sendId").getValue(String.class);
-                        String lastMessage;
-                        if (sendId.equals(preferenceManager.getString(Constants.KEY_USER_KEY))) {
-                            lastMessage = "Tôi: " + dataSnapshot.child("lastMessage").getValue(String.class);
-                        } else {
-                            lastMessage = dataSnapshot.child("lastMessage").getValue(String.class);
-                        }
-
-                        String time = dataSnapshot.child("sendDate").getValue(String.class) + " " + dataSnapshot.child("sendTime").getValue(String.class);
-
-                        Log.d("thoigian", time);
 
                         Query query = reference.child("Accounts").orderByKey().equalTo(otherKey);
                         query.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -137,7 +134,20 @@ public class FragmentChat extends Fragment {
                                 for (DataSnapshot dataSnapshot1 : snapshot1.getChildren()) {
                                     AccountClass accountClass = dataSnapshot1.getValue(AccountClass.class);
 
+                                    String sendId = dataSnapshot.child("sendId").getValue(String.class);
+                                    String lastMessage;
+                                    if (sendId.equals(preferenceManager.getString(Constants.KEY_USER_KEY))) {
+                                        lastMessage = "Tôi: " + dataSnapshot.child("lastMessage").getValue(String.class);
+                                    } else {
+                                        lastMessage = dataSnapshot.child("lastMessage").getValue(String.class);
+                                    }
 
+                                    String time = dataSnapshot.child("sendDate").getValue(String.class) + " " + dataSnapshot.child("sendTime").getValue(String.class);
+
+                                    Boolean seen = dataSnapshot.child("seenMsg").getValue(Boolean.class);
+                                    Log.d("seen", seen + "");
+
+                                    Log.d("thoigian", time);
                                     MessagesList messagesList = new MessagesList(
                                             preferenceManager.getString(Constants.KEY_USER_KEY),
                                             accountClass.getFullname(),
@@ -145,7 +155,7 @@ public class FragmentChat extends Fragment {
                                             lastMessage,
                                             accountClass.getImage(),
                                             otherKey,
-                                            0,
+                                            seen,
                                             time
                                     );
                                     tempMessagesLists.add(messagesList);
@@ -168,8 +178,14 @@ public class FragmentChat extends Fragment {
                                                 return 0;
                                             }
                                         });
-                                        messagesAdapter.notifyDataSetChanged();
-                                        dialogListener.dismissDialog();
+                                        getActivity().runOnUiThread(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                messagesAdapter.notifyDataSetChanged();
+                                                dialogListener.dismissDialog();
+                                            }
+                                        });
+
                                     }
                                 }
                             }

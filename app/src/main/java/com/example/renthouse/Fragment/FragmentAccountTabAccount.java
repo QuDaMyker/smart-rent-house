@@ -103,27 +103,19 @@ public class FragmentAccountTabAccount extends Fragment {
             launcherDetailAccount.launch(intent);
         });
 
-        binding.accountPersonalPolicyButtonProfile.setOnClickListener(v->{
+        binding.accountPersonalPolicyButtonProfile.setOnClickListener(v -> {
 
         });
-        binding.accountPersonalNotificationButtonProfile.setOnClickListener(v->{
+        binding.accountPersonalNotificationButtonProfile.setOnClickListener(v -> {
             startActivity(new Intent(getActivity(), ActivityAccountNotification.class));
         });
-        binding.accountPersonalReportErrorButtonProfile.setOnClickListener(v->{
+        binding.accountPersonalReportErrorButtonProfile.setOnClickListener(v -> {
             Intent intent = new Intent(getActivity(), ActivityReportError.class);
             startActivity(intent);
         });
         binding.accountPersonalLogoutButtonProfile.setOnClickListener(v -> {
-            preferenceManager.clear();
-            FirebaseAuth.getInstance().signOut();
-            GoogleSignInOptions gso = new GoogleSignInOptions.
-                    Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).
-                    build();
 
-            GoogleSignInClient googleSignInClient = GoogleSignIn.getClient(getActivity(), gso);
-            googleSignInClient.signOut();
-            getActivity().finish();
-            startActivity(new Intent(requireContext(), ActivitySplash.class));
+            logOut();
         });
     }
 
@@ -143,13 +135,40 @@ public class FragmentAccountTabAccount extends Fragment {
     private ActivityResultLauncher<Intent> launcherDetailAccount = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
         @Override
         public void onActivityResult(ActivityResult result) {
-            if(result.getResultCode() == Activity.RESULT_OK) {
+            if (result.getResultCode() == Activity.RESULT_OK) {
                 updateUI();
             }
         }
     });
+
     public void setOnActivityResultListener(OnActivityResultListener listener) {
         this.onActivityResultListener = listener;
+    }
+
+    private void logOut() {
+        preferenceManager.clear();
+
+        Intent intent = new Intent(getContext(), ActivitySplash.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+
+
+        FirebaseAuth.getInstance().signOut();
+        GoogleSignInOptions gso = new GoogleSignInOptions.
+                Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).
+                build();
+
+        GoogleSignInClient googleSignInClient = GoogleSignIn.getClient(getActivity(), gso);
+        googleSignInClient.signOut();
+
+
+        if (preferenceManager.getBoolean(Constants.KEY_IS_SIGNED_IN)) {
+            Log.d("status", "sign");
+        } else {
+            Log.d("status", "out");
+        }
+        startActivity(intent);
+        getActivity().finish();
+        getActivity().finishAffinity();
     }
 
 

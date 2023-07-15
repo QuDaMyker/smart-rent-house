@@ -49,7 +49,7 @@ public class BaseActivity extends AppCompatActivity {
         progressDialogInternetChange.setMessage("Disconnected Internet");
 
 
-        receiver = new InternetBroadcastReceiver(this);
+        receiver = new InternetBroadcastReceiver(progressDialogInternetChange);
         IntentFilter intentFilter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
 
 

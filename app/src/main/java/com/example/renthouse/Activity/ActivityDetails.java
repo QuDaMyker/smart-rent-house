@@ -419,7 +419,7 @@ public class ActivityDetails extends BaseActivity {
                                         reference.child("Chat").child(preferenceManager.getString(Constants.KEY_USER_KEY)).child(otherKey).child("1").child("send-date").setValue(simpleDateFormat.format(data));
                                         reference.child("Chat").child(preferenceManager.getString(Constants.KEY_USER_KEY)).child(otherKey).child("1").child("send-time").setValue(simpleTimeFormatConversaton.format(data));
 
-                                        Conversation conversation = new Conversation(preferenceManager.getString(Constants.KEY_USER_KEY), otherKey, "Xin Chào", simpleDateFormat.format(data).toString(), simpleTimeFormatConversaton.format(data).toString());
+                                        Conversation conversation = new Conversation(preferenceManager.getString(Constants.KEY_USER_KEY), otherKey, "Xin Chào", simpleDateFormat.format(data).toString(), simpleTimeFormatConversaton.format(data).toString(), false);
 
                                         reference.child("Conversations").child(preferenceManager.getString(Constants.KEY_USER_KEY)).child(otherKey).setValue(conversation);
 
