@@ -81,13 +81,7 @@ public class ActivityMain extends BaseActivity implements DialogListener {
         progressDialog.setMessage("Loading...");
 
     }
-    public void showProgressDialog() {
-        progressDialog.show();
-    }
 
-    public void dismissProgressDialog() {
-        progressDialog.dismiss();
-    }
 
 
     private void setDefaultFragment() {

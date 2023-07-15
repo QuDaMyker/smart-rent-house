@@ -25,12 +25,19 @@ public class Admin_FragmentNguoiDung extends Fragment {
     private ViewPager2 fragNguoiDung_viewPager2;
     private TabLayoutNguoiDungAdapter tabLayoutNguoiDungAdapter;
     private Fragment selectedFragment = null;
+    private List<Fragment> fragments;
 
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_admin__nguoi_dung, container, false);
+
+        fragments = new ArrayList<>();
+
+
+        fragments.add(new AdminNguoiDung_FragmentDanhSachNguoiDung());
+        fragments.add(new AdminNguoiDung_Fragment_NguoiDungBiChan());
 
         fragNguoiDung_tab_layout = view.findViewById(R.id.fragNguoiDung_tabLayout);
         fragNguoiDung_viewPager2 = view.findViewById(R.id.fragNguoiDung_viewPager2);
@@ -48,14 +55,16 @@ public class Admin_FragmentNguoiDung extends Fragment {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
                 fragNguoiDung_viewPager2.setCurrentItem(tab.getPosition());
+                if(fragmentManager.getFragments().size() == 2) {
+                    selectedFragment = fragmentManager.getFragments().get(tab.getPosition());
 
-                /*selectedFragment = fragmentManager.getFragments().get(tab.getPosition());
+                    if (selectedFragment instanceof AdminNguoiDung_FragmentDanhSachNguoiDung) {
+                        ((AdminNguoiDung_FragmentDanhSachNguoiDung) selectedFragment).loadDataFragment();
+                    } else if (selectedFragment instanceof  AdminNguoiDung_Fragment_NguoiDungBiChan){
+                        ((AdminNguoiDung_Fragment_NguoiDungBiChan) selectedFragment).loadDataFragment();
+                    }
+                }
 
-                if (selectedFragment instanceof AdminNguoiDung_FragmentDanhSachNguoiDung) {
-                    ((AdminNguoiDung_FragmentDanhSachNguoiDung) selectedFragment).loadDataFragment();
-                } else if (selectedFragment instanceof  AdminNguoiDung_Fragment_NguoiDungBiChan){
-                    ((AdminNguoiDung_Fragment_NguoiDungBiChan) selectedFragment).loadDataFragment();
-                }*/
 
             }
 

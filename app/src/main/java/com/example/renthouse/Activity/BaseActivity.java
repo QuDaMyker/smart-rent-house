@@ -1,6 +1,9 @@
 package com.example.renthouse.Activity;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.util.Log;
 
@@ -8,6 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.renthouse.BroadcastReceiver.InternetBroadcastReceiver;
 import com.example.renthouse.utilities.Constants;
 import com.example.renthouse.utilities.PreferenceManager;
 import com.google.firebase.auth.FirebaseAuth;
@@ -23,6 +27,8 @@ public class BaseActivity extends AppCompatActivity {
     private PreferenceManager preferenceManager;
     private FirebaseDatabase database;
     private DatabaseReference reference;
+    private InternetBroadcastReceiver receiver;
+    private ProgressDialog progressDialogInternetChange;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -37,6 +43,17 @@ public class BaseActivity extends AppCompatActivity {
 
         preferenceManager = new PreferenceManager(getApplicationContext());
         loadDataUser();
+
+        progressDialogInternetChange = new ProgressDialog(this);
+        progressDialogInternetChange.setCancelable(false);
+        progressDialogInternetChange.setMessage("Disconnected Internet");
+
+
+        receiver = new InternetBroadcastReceiver(this);
+        IntentFilter intentFilter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
+
+
+        registerReceiver(receiver, intentFilter);
 
     }
 
@@ -77,5 +94,23 @@ public class BaseActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         loadDataUser();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unregisterReceiver(receiver);
+    }
+
+    public void showProgressDialog() {
+        if (progressDialogInternetChange != null && !progressDialogInternetChange.isShowing()) {
+            progressDialogInternetChange.show();
+        }
+    }
+
+    public void dismissProgressDialog() {
+        if (progressDialogInternetChange != null && progressDialogInternetChange.isShowing()) {
+            progressDialogInternetChange.dismiss();
+        }
     }
 }

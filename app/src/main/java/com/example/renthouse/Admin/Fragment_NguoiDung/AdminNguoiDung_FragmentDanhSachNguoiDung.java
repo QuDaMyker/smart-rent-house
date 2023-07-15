@@ -76,17 +76,13 @@ public class AdminNguoiDung_FragmentDanhSachNguoiDung extends Fragment implement
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         binding = FragmentAdminNguoiDungDanhSachNguoiDungBinding.inflate(inflater, container, false);
         View view = binding.getRoot();
-
 
         init();
         loadData();
         setListeners();
-
 
         return view;
     }
@@ -114,7 +110,7 @@ public class AdminNguoiDung_FragmentDanhSachNguoiDung extends Fragment implement
         filterSearch.clear();
 
         DatabaseReference reference = database.getReference();
-        Query query = reference.child("Accounts").orderByChild("blocked").equalTo(true);
+        Query query = reference.child("Accounts").orderByChild("blocked").equalTo(false);
         query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -246,13 +242,13 @@ public class AdminNguoiDung_FragmentDanhSachNguoiDung extends Fragment implement
             }
         });
 
-        binding.swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+        /*binding.swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
                 loadData();
                 binding.swipeRefreshLayout.setRefreshing(false);
             }
-        });
+        });*/
     }
 
     private void hideKeyboard() {

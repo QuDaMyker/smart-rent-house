@@ -12,6 +12,7 @@ import com.example.renthouse.Activity.ActivityMain;
 import com.example.renthouse.Admin.Fragment.Admin_FragmentHome;
 import com.example.renthouse.Admin.Fragment.Admin_FragmentNguoiDung;
 import com.example.renthouse.Admin.Fragment.Admin_FragmentPhongTro;
+import com.example.renthouse.BroadcastReceiver.InternetBroadcastReceiver;
 import com.example.renthouse.Fragment.FragmentHome;
 import com.example.renthouse.Interface.DialogListener;
 import com.example.renthouse.R;
@@ -20,6 +21,7 @@ import com.example.renthouse.databinding.ActivityAdminMainBinding;
 public class Admin_ActivityMain extends AppCompatActivity implements DialogListener {
     private ActivityAdminMainBinding binding;
     private ProgressDialog progressDialog;
+    private InternetBroadcastReceiver receiver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

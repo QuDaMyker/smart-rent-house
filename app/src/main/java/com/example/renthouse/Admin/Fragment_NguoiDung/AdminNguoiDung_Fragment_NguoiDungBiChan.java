@@ -85,13 +85,13 @@ public class AdminNguoiDung_Fragment_NguoiDungBiChan extends Fragment implements
     }
 
     private void setListeners() {
-                binding.swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+       /* binding.swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
                 loadData();
                 binding.swipeRefreshLayout.setRefreshing(false);
             }
-        });
+        });*/
     }
 
 
