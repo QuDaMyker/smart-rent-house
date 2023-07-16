@@ -281,7 +281,7 @@ public class FragmentHome extends Fragment {
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.replace(R.id.phong_noi_bat, new FragmentPhongNoiBat());
         fragmentTransaction.commit();
-
+    }
 
     private void updateUI() {
         progressDialog.show();
