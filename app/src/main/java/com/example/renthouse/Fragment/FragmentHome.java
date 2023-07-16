@@ -12,6 +12,8 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -28,6 +30,7 @@ import com.example.renthouse.Activity.ActivityRecentSeen;
 import com.example.renthouse.Activity.ActivitySearch;
 import com.example.renthouse.Adapter.OutstandingRoomAdapter;
 import com.example.renthouse.Adapter.PhoBienAdapter;
+import com.example.renthouse.FragmentFilter.FragmentPhongNoiBat;
 import com.example.renthouse.Interface.ItemClick;
 import com.example.renthouse.Interface.ItemClickPhoBien;
 import com.example.renthouse.OOP.Notification;
@@ -98,7 +101,7 @@ public class FragmentHome extends Fragment {
 
         firebaseAuth = FirebaseAuth.getInstance();
         currentUser = firebaseAuth.getCurrentUser();
-        outstanding_recyclerView = view.findViewById(R.id.recycleView_phongnoibat);
+
         phobien_recyclerView = view.findViewById(R.id.recycleView_phobien);
         preferenceManager = new PreferenceManager(getContext());
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(getContext());
@@ -249,43 +252,48 @@ public class FragmentHome extends Fragment {
     }
 
     private void setDataOutstandingRoom() {
-        outstandingList = new ArrayList<>();
-        outstandingRoomAdapter = new OutstandingRoomAdapter(getContext(), outstandingList, new ItemClick() {
-            @Override
-            public void onItemClick(Room room) {
-                Intent intent = new Intent(getContext(), ActivityDetails.class);
-                intent.putExtra("selectedRoom", room);
-                startActivity(intent);
-            }
-        });
-        GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), 2);
-        outstanding_recyclerView.setLayoutManager(gridLayoutManager);
-        outstanding_recyclerView.setAdapter(outstandingRoomAdapter);
+        FragmentManager fragmentManager = getChildFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.replace(R.id.phong_noi_bat, new FragmentPhongNoiBat());
+        fragmentTransaction.commit();
 
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference reference = database.getReference();
-        Query query = reference.child("Rooms");
-        query.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                List<Room> temroom = new ArrayList<>();
-                for (DataSnapshot Snapshot : snapshot.getChildren()){
-                    Room room = Snapshot.getValue((Room.class));
-                    if (room.getStatus().equals("approved")) {
-                        temroom.add(room);
-                    }
-                }
-                outstandingList.addAll(temroom);
-                outstandingRoomAdapter.notifyDataSetChanged();
-                progressDialog.dismiss();
-
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                progressDialog.dismiss();
-            }
-        });
+//        outstandingList = new ArrayList<>();
+//        outstandingRoomAdapter = new OutstandingRoomAdapter(getContext(), outstandingList, new ItemClick() {
+//            @Override
+//            public void onItemClick(Room room) {
+//                Intent intent = new Intent(getContext(), ActivityDetails.class);
+//                intent.putExtra("selectedRoom", room);
+//                startActivity(intent);
+//            }
+//        });
+//        GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), 2);
+//        outstanding_recyclerView.setLayoutManager(gridLayoutManager);
+//        outstanding_recyclerView.setAdapter(outstandingRoomAdapter);
+//
+//        FirebaseDatabase database = FirebaseDatabase.getInstance();
+//        DatabaseReference reference = database.getReference();
+//        Query query = reference.child("Rooms");
+//        query.addListenerForSingleValueEvent(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(@NonNull DataSnapshot snapshot) {
+//                List<Room> temroom = new ArrayList<>();
+//                for (DataSnapshot Snapshot : snapshot.getChildren()){
+//                    Room room = Snapshot.getValue((Room.class));
+//                    if (room.getStatus().equals("approved")) {
+//                        temroom.add(room);
+//                    }
+//                }
+//                outstandingList.addAll(temroom);
+//                outstandingRoomAdapter.notifyDataSetChanged();
+//                progressDialog.dismiss();
+//
+//            }
+//
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError error) {
+//                progressDialog.dismiss();
+//            }
+//        });
     }
 
 

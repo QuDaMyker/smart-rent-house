@@ -15,7 +15,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.SearchView;
+import android.widget.TextView;
 
 import com.example.renthouse.Activity.ActivityDetails;
 import com.example.renthouse.Admin.Activity.Admin_ActivityThongTinPhong;
@@ -32,6 +34,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.text.Normalizer;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -39,11 +42,14 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
+import java.util.regex.Pattern;
 
 public class AdminPhongTro_FragmentDanhSach extends Fragment {
     FragmentAdminPhongTroDanhSachBinding binding;
     private RecyclerView recyclerView;
     private SearchView searchView;
+    private FrameLayout frameLayout;
+    private TextView empty_tv;
     private List<Room> phongtrolist;
     private List<Room> phongTroSearchList;
     private PhongTroAdapter phongTroAdapter;
@@ -63,11 +69,12 @@ public class AdminPhongTro_FragmentDanhSach extends Fragment {
 
         recyclerView = view.findViewById(R.id.recycleView);
         searchView = view.findViewById(R.id.search_view);
+        frameLayout = view.findViewById(R.id.frame_Layout1);
+        empty_tv = view.findViewById(R.id.textView_empty);
 
         phongtrolist = new ArrayList<>();
         phongTroSearchList = new ArrayList<>();
 
-        //replaceFragment(new AdminPhongTro_FragmentEmpty());
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext(), recyclerView.VERTICAL, false);
         recyclerView.setLayoutManager(linearLayoutManager);
 
@@ -198,8 +205,9 @@ public class AdminPhongTro_FragmentDanhSach extends Fragment {
             public boolean onQueryTextChange(String s) {
                 phongTroSearchList.clear();
                 for (Room obj : phongtrolist) {
-                    String diachi=obj.getLocation().getWard().getPath_with_type();
-                    if (diachi.toLowerCase().contains(s.toLowerCase())) {
+                    String diachi = obj.getLocation().getWard().getPath_with_type();
+                    String diachi_un = convertToUnsigned(diachi);
+                    if (diachi.toLowerCase().contains(s.toLowerCase()) || diachi_un.toLowerCase().contains(s.toLowerCase())) {
                         phongTroSearchList.add(obj);
                     }
                 }
@@ -208,8 +216,21 @@ public class AdminPhongTro_FragmentDanhSach extends Fragment {
             }
         });
 
-        loadData();
         return view;
+    }
+
+    @Override
+    public void onResume() {
+        phongtrolist.clear();
+        phongTroSearchList.clear();
+        loadData();
+        super.onResume();
+    }
+
+    public static String convertToUnsigned(String input) {
+        String regex = "\\p{InCombiningDiacriticalMarks}+";
+        String temp = Normalizer.normalize(input, Normalizer.Form.NFD);
+        return Pattern.compile(regex).matcher(temp).replaceAll("");
     }
 
     private void loadData(){
@@ -229,9 +250,12 @@ public class AdminPhongTro_FragmentDanhSach extends Fragment {
                 phongtrolist.addAll(temphongtro);
 
                 if (phongtrolist.isEmpty()) {
-                    replaceFragment(new AdminPhongTro_FragmentEmpty());
+                    empty_tv.setVisibility(View.VISIBLE);
+                    frameLayout.setVisibility(View.INVISIBLE);
                 }
                 else {
+                    empty_tv.setVisibility(View.INVISIBLE);
+                    frameLayout.setVisibility(View.VISIBLE);
                     phongTroSearchList.clear();
                     phongTroSearchList.addAll(phongtrolist);
                     phongTroAdapter.notifyDataSetChanged();
@@ -245,13 +269,4 @@ public class AdminPhongTro_FragmentDanhSach extends Fragment {
             }
         });
     }
-
-    private void replaceFragment(Fragment fragment)
-    {
-        FragmentManager fragmentManager = getChildFragmentManager();
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.replace(R.id.frameLayoutPhongTro, fragment);
-        fragmentTransaction.commit();
-    }
-
 }

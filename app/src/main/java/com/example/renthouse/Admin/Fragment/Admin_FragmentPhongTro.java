@@ -11,6 +11,9 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.renthouse.Admin.Adapter.TabLayoutPhongTroAdapter;
+import com.example.renthouse.Admin.Fragment_PhongTro.AdminPhongTro_FragmentChoDuyet;
+import com.example.renthouse.Admin.Fragment_PhongTro.AdminPhongTro_FragmentDanhSach;
+import com.example.renthouse.Admin.Fragment_PhongTro.AdminPhongTro_FragmentQuaHan;
 import com.example.renthouse.R;
 import com.google.android.material.tabs.TabLayout;
 
@@ -50,7 +53,7 @@ public class Admin_FragmentPhongTro extends Fragment {
 
             @Override
             public void onTabReselected(TabLayout.Tab tab) {
-
+                //fragPhongtro_viewPager2.setCurrentItem(tab.getPosition());
             }
         });
 

@@ -31,7 +31,6 @@ public class TabLayoutPhongTroAdapter extends FragmentStateAdapter {
         return new AdminPhongTro_FragmentDanhSach();
     }
 
-
     @Override
     public int getItemCount() {
         return 3;
