@@ -11,7 +11,11 @@ import androidx.viewpager2.adapter.FragmentStateAdapter;
 import com.example.renthouse.Admin.Fragment_NguoiDung.AdminNguoiDung_FragmentDanhSachNguoiDung;
 import com.example.renthouse.Admin.Fragment_NguoiDung.AdminNguoiDung_Fragment_NguoiDungBiChan;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class TabLayoutNguoiDungAdapter extends FragmentStateAdapter {
+
     public TabLayoutNguoiDungAdapter(@NonNull FragmentManager fragmentManager, @NonNull Lifecycle lifecycle) {
         super(fragmentManager, lifecycle);
     }
@@ -26,10 +30,17 @@ public class TabLayoutNguoiDungAdapter extends FragmentStateAdapter {
             case 1: {
                 return new AdminNguoiDung_Fragment_NguoiDungBiChan();
             }
-            default:{
-                return new AdminNguoiDung_FragmentDanhSachNguoiDung();
+        }
+        return new AdminNguoiDung_FragmentDanhSachNguoiDung();
+        /*switch (position) {
+            case 0: {
+                return fragments.get(0);
+            }
+            case 1: {
+                return fragments.get(1);
             }
         }
+        return fragments.get(0);*/
 
     }
 

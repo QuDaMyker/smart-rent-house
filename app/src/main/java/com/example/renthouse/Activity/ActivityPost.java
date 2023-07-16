@@ -214,6 +214,9 @@ public class ActivityPost extends AppCompatActivity {
     }
 
     private void pushRoomData() {
+        ProgressDialog progressDialog = new ProgressDialog(this);
+        progressDialog.setTitle("Đang tải lên...");
+        progressDialog.show();
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference myRef = database.getReference("Rooms");
         DatabaseReference accRef = database.getReference("Accounts");
@@ -255,7 +258,7 @@ public class ActivityPost extends AppCompatActivity {
 
                     String pathObject = String.valueOf(room.getId());
                     myRef.child(pathObject).setValue(room);
-                    updateImage(room);
+                    updateImage(room, progressDialog);
 
 
                 }
@@ -328,7 +331,7 @@ public class ActivityPost extends AppCompatActivity {
                     roomToEdit.isRented(),
                     roomToEdit.getStatus());
             editRef.setValue(editedRoom);
-            updateImage(editedRoom);
+            updateImage(editedRoom, progressDialog);
         }
 
     }
@@ -350,11 +353,9 @@ public class ActivityPost extends AppCompatActivity {
         }
     }
 
-    private void updateImage(Room room){
+    private void updateImage(Room room, ProgressDialog progressDialog){
         List<String> uriImageStringList = new ArrayList<>();
-        ProgressDialog progressDialog = new ProgressDialog(this);
-        progressDialog.setTitle("Đang tải lên...");
-        progressDialog.show();
+
         OnUploadImageCompleteListener listener = new OnUploadImageCompleteListener() {
             @Override
             public void onUploadImageComplete() {

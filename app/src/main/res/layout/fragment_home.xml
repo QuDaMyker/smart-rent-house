@@ -2,12 +2,12 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/homefragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/layout_bg"
     android:orientation="vertical"
-    tools:context=".Fragment.FragmentHome"
-    android:id="@+id/homefragment">
+    tools:context=".Fragment.FragmentHome">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -24,49 +24,51 @@
 
             <TextView
                 android:id="@+id/tv_xinchao"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="35dp"
                 android:layout_marginTop="55dp"
+                android:ellipsize="end"
+                android:maxLines="1"
                 android:text="Xin Chào,"
                 android:textColor="@color/white"
                 android:textSize="26dp"
+                app:layout_constraintEnd_toStartOf="@id/layout"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
                 android:id="@+id/tv_current_Location"
-                android:layout_width="match_parent"
-                android:layout_height="19dp"
-                android:layout_marginStart="30dp"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
                 android:layout_marginTop="3dp"
-                android:layout_marginEnd="30dp"
                 android:drawableLeft="@drawable/ic_gps_home"
                 android:drawablePadding="5dp"
                 android:ellipsize="end"
-                android:maxLines="1"
+                android:maxLines="2"
                 android:text="Hồ Chí Minh"
                 android:textColor="@color/white"
                 android:textSize="14sp"
+                app:layout_constraintEnd_toStartOf="@+id/layout"
                 app:layout_constraintStart_toStartOf="@+id/tv_xinchao"
                 app:layout_constraintTop_toBottomOf="@+id/tv_xinchao" />
 
             <FrameLayout
                 android:id="@+id/layout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="55dp"
+                android:layout_marginEnd="30dp"
                 android:clipChildren="false"
                 android:clipToPadding="false"
-                android:layout_height="wrap_content"
-                 android:layout_width="wrap_content"
-                android:layout_marginEnd="30dp"
-                android:layout_marginTop="55dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/notificationBtn"
+                    style="@style/Widget.Material3.Button.IconButton.Filled"
                     android:layout_width="60dp"
                     android:layout_height="60dp"
-                    style="@style/Widget.Material3.Button.IconButton.Filled"
                     android:layout_marginStart="10dp"
                     android:backgroundTint="#33FFFFFF"
                     android:contentDescription="Delete"
@@ -85,13 +87,13 @@
                 app:layout_constraintTop_toBottomOf="@+id/tv_current_Location">
 
                 <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/textInputFindRoom"
                     android:layout_width="350dp"
                     android:layout_height="55dp"
                     android:background="@drawable/white_bg_home"
-                    android:id="@+id/textInputFindRoom"
-                    android:focusableInTouchMode="false"
                     android:drawableLeft="@drawable/ic_search_home"
                     android:drawablePadding="10dp"
+                    android:focusableInTouchMode="false"
                     android:hint="Tìm theo quận, tên đường, địa chỉ" />
 
             </com.google.android.material.textfield.TextInputLayout>
@@ -123,8 +125,8 @@
                     android:layout_width="50dp"
                     android:layout_height="50dp"
                     android:layout_marginTop="10dp"
-                    app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     app:srcCompat="@drawable/map" />
 
@@ -135,8 +137,8 @@
                     android:layout_marginStart="18dp"
                     android:layout_marginTop="5dp"
                     android:text="Bản đồ"
-                    android:textStyle="bold"
                     android:textSize="12sp"
+                    android:textStyle="bold"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/imageView2" />
             </androidx.constraintlayout.widget.ConstraintLayout>
@@ -202,9 +204,9 @@
                     android:layout_width="45dp"
                     android:layout_height="35dp"
                     android:text="Đã xem gần đây"
+                    android:textAlignment="center"
                     android:textSize="11sp"
                     android:textStyle="bold"
-                    android:textAlignment="center"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"

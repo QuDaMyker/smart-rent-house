@@ -42,7 +42,9 @@ public class ActivityBlocked extends AppCompatActivity {
         binding.backToLoginBtn.setOnClickListener(v-> {
             // go bo thong tin dang nhap va clear SharedPrefence
             clearCacheAccount();
-            onBackPressed();
+            startActivity(new Intent(ActivityBlocked.this, ActivityLogIn.class));
+            finish();
+            //onBackPressed();
         });
         binding.contactBtn.setOnClickListener(v->{
             sendReport();

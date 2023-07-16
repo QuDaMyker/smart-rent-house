@@ -36,8 +36,11 @@ import java.util.List;
 public class RoomLatestAdapter extends RecyclerView.Adapter<RoomLatestAdapter.RoomLatestViewHolder> {
     List<Room> listRoomLatest;
     Context mContext;
+    public void setContext(Context mContext){
+        this.mContext = mContext;
+    }
 
-    public RoomLatestAdapter(Context mContextm) {
+    public RoomLatestAdapter(Context mContext) {
         this.mContext = mContext;
     }
     public void setDuLieu(List<Room> roomArrayList){
@@ -97,7 +100,7 @@ public class RoomLatestAdapter extends RecyclerView.Adapter<RoomLatestAdapter.Ro
 
             }
         });
-        holder.textViewAddress.setText(room.getLocation().getWard().getPath());
+        holder.textViewAddress.setText(room.getLocation().getWard().getPath_with_type());
         holder.textViewNameRoom.setText(room.getTitle());
         long price = (long)listRoomLatest.get(position).getPrice();
         DecimalFormat decimalFormat = new DecimalFormat("#,###");
@@ -114,7 +117,7 @@ public class RoomLatestAdapter extends RecyclerView.Adapter<RoomLatestAdapter.Ro
         holder.itemRoom.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //nClickGoDetail(room);
+                onClickGoDetail(room);
             }
         });
 
@@ -180,6 +183,7 @@ public class RoomLatestAdapter extends RecyclerView.Adapter<RoomLatestAdapter.Ro
     }
 
     private void onClickGoDetail(Room room) {
+        Log.d("Sao z", "Hehhe");
         if (mContext == null) {
             return;
         }

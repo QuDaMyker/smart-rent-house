@@ -5,23 +5,34 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import android.app.ProgressDialog;
+import android.content.IntentFilter;
+import android.net.ConnectivityManager;
 import android.os.Bundle;
 
+import com.example.renthouse.Activity.ActivityMain;
 import com.example.renthouse.Admin.Fragment.Admin_FragmentHome;
 import com.example.renthouse.Admin.Fragment.Admin_FragmentNguoiDung;
 import com.example.renthouse.Admin.Fragment.Admin_FragmentPhongTro;
+import com.example.renthouse.BroadcastReceiver.InternetBroadcastReceiver;
 import com.example.renthouse.Fragment.FragmentHome;
+import com.example.renthouse.Interface.DialogListener;
 import com.example.renthouse.R;
 import com.example.renthouse.databinding.ActivityAdminMainBinding;
 
-public class Admin_ActivityMain extends AppCompatActivity {
+public class Admin_ActivityMain extends AppCompatActivity implements DialogListener {
     private ActivityAdminMainBinding binding;
+    private ProgressDialog progressDialog;
+    private ProgressDialog progressDialogInternetChange;
+    private InternetBroadcastReceiver receiver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = ActivityAdminMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+
+
 
         setDefaultFragment();
 
@@ -43,6 +54,20 @@ public class Admin_ActivityMain extends AppCompatActivity {
             }
             return true;
         });
+        progressDialogInternetChange = new ProgressDialog(this);
+        progressDialogInternetChange.setCancelable(false);
+        progressDialogInternetChange.setMessage("Disconnected Internet");
+
+
+        progressDialog = new ProgressDialog(Admin_ActivityMain.this);
+        progressDialog.setCancelable(false);
+        progressDialog.setMessage("Loading...");
+
+        receiver = new InternetBroadcastReceiver(progressDialogInternetChange);
+        IntentFilter intentFilter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
+
+
+        registerReceiver(receiver, intentFilter);
     }
 
     private void setDefaultFragment() {
@@ -59,5 +84,21 @@ public class Admin_ActivityMain extends AppCompatActivity {
         fragmentTransaction.setReorderingAllowed(true);
         fragmentTransaction.replace(R.id.frame_layout, fragment);
         fragmentTransaction.commit();
+    }
+
+    @Override
+    public void showDialog() {
+        progressDialog.show();
+    }
+
+    @Override
+    public void dismissDialog() {
+        progressDialog.dismiss();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unregisterReceiver(receiver);
     }
 }

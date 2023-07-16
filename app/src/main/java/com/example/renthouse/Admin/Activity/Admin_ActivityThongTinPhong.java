@@ -34,6 +34,7 @@ import com.example.renthouse.Adapter.UtilitiesAdapter;
 import com.example.renthouse.Chat.Dashboard.ActivityChat;
 import com.example.renthouse.Chat.OOP.Conversation;
 import com.example.renthouse.FCM.SendNotificationTask;
+import com.example.renthouse.FCM.SendToOwnerTask;
 import com.example.renthouse.OOP.AccountClass;
 import com.example.renthouse.OOP.Notification;
 import com.example.renthouse.OOP.Room;
@@ -386,11 +387,30 @@ public class Admin_ActivityThongTinPhong extends AppCompatActivity {
 
                 Toast.makeText(Admin_ActivityThongTinPhong.this, "Bạn đã duyệt phòng thành công", Toast.LENGTH_SHORT).show();
 
-                Notification notification = new Notification("Có phòng trọ mới vừa được đăng trên Rent House", "Hãy kiểm tra ngay để không bỏ lỡ cơ hội tuyệt vời này!", "room");
-                notification.setAttachedRoomKey(room.getId());
-                SendNotificationTask task = new SendNotificationTask(Admin_ActivityThongTinPhong.this, notification);
+                FirebaseDatabase database = FirebaseDatabase.getInstance();
+                database.getReference("Accounts").orderByChild("email").equalTo(room.getCreatedBy().getEmail()).addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        if (dataSnapshot.exists()) {
+                            for (DataSnapshot childSnapshot : dataSnapshot.getChildren()) {
+                                String userId = childSnapshot.getKey();
+                                Notification notification = new Notification("Có phòng trọ mới vừa được đăng trên Rent House", "Hãy kiểm tra ngay để không bỏ lỡ cơ hội tuyệt vời này!", "room");
+                                notification.setAttachedRoomKey(room.getId());
+                                SendNotificationTask task = new SendNotificationTask(Admin_ActivityThongTinPhong.this, notification, userId);
+                                task.execute();
 
-                task.execute();
+                                SendToOwnerTask ownerTask = new SendToOwnerTask(Admin_ActivityThongTinPhong.this, room, userId);
+                                ownerTask.execute();
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
+
                 LoadLinearLayoutOption();
             }
         });
@@ -406,6 +426,25 @@ public class Admin_ActivityThongTinPhong extends AppCompatActivity {
                 Toast.makeText(Admin_ActivityThongTinPhong.this, "Bạn đã hủy yêu cầu duyệt của phòng này", Toast.LENGTH_SHORT).show();
                 btnAcp.setEnabled(false);
                 btnCancel.setEnabled(false);
+
+                FirebaseDatabase database = FirebaseDatabase.getInstance();
+                database.getReference("Accounts").orderByChild("email").equalTo(room.getCreatedBy().getEmail()).addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        if (dataSnapshot.exists()) {
+                            for (DataSnapshot childSnapshot : dataSnapshot.getChildren()) {
+                                String userId = childSnapshot.getKey();
+                                SendToOwnerTask ownerTask = new SendToOwnerTask(Admin_ActivityThongTinPhong.this, room, userId);
+                                ownerTask.execute();
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
 
             }
         });
@@ -506,6 +545,7 @@ public class Admin_ActivityThongTinPhong extends AppCompatActivity {
                 }
                 tvSoP.setText(String.valueOf(count) + " phòng");
             }
+
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
 

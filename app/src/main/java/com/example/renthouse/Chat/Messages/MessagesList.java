@@ -3,13 +3,13 @@ package com.example.renthouse.Chat.Messages;
 public class MessagesList {
     private String currentKey;
     private String name, email, lastMessages, profilePic, otherKey;
-    private int unseenMessages;
+    private boolean unseenMessages;
     private String sendTime;
 
     public MessagesList() {
     }
 
-    public MessagesList(String currentKey, String name, String email, String lastMessages, String profilePic, String otherKey, int unseenMessages, String sendTime) {
+    public MessagesList(String currentKey, String name, String email, String lastMessages, String profilePic, String otherKey, boolean unseenMessages, String sendTime) {
         this.currentKey = currentKey;
         this.name = name;
         this.email = email;
@@ -68,11 +68,11 @@ public class MessagesList {
         this.otherKey = otherKey;
     }
 
-    public int getUnseenMessages() {
+    public boolean isUnseenMessages() {
         return unseenMessages;
     }
 
-    public void setUnseenMessages(int unseenMessages) {
+    public void setUnseenMessages(boolean unseenMessages) {
         this.unseenMessages = unseenMessages;
     }
 

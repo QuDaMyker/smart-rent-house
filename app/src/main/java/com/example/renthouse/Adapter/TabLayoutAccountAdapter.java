@@ -8,6 +8,7 @@ import androidx.viewpager2.adapter.FragmentStateAdapter;
 
 import com.example.renthouse.Fragment.FragmentAccountPosted;
 import com.example.renthouse.Fragment.FragmentAccountTabAccount;
+import com.example.renthouse.Fragment.FragmentAccountTabPending;
 import com.example.renthouse.Fragment.FragmentLiked;
 
 public class TabLayoutAccountAdapter extends FragmentStateAdapter {
@@ -22,6 +23,9 @@ public class TabLayoutAccountAdapter extends FragmentStateAdapter {
                 return new FragmentAccountTabAccount();
             }
             case 1: {
+                return new FragmentAccountTabPending();
+            }
+            case 2: {
                 return new FragmentAccountPosted();
             }
         }
@@ -30,6 +34,6 @@ public class TabLayoutAccountAdapter extends FragmentStateAdapter {
 
     @Override
     public int getItemCount() {
-        return 2;
+        return 3;
     }
 }

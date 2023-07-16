@@ -36,6 +36,7 @@ import com.example.renthouse.Chat.OOP.Conversation;
 import com.example.renthouse.OOP.AccountClass;
 import com.example.renthouse.OOP.Room;
 import com.example.renthouse.R;
+import com.example.renthouse.databinding.ActivityDetailsBinding;
 import com.example.renthouse.utilities.Constants;
 import com.example.renthouse.utilities.PreferenceManager;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -58,7 +59,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class ActivityDetails extends AppCompatActivity {
+public class ActivityDetails extends BaseActivity {
+    private ActivityDetailsBinding binding;
     private static final int REQUEST_CALL = 1;
     private FirebaseDatabase db;
     private DatabaseReference ref;
@@ -102,6 +104,8 @@ public class ActivityDetails extends AppCompatActivity {
     TextView tvSoP;
     ImageButton btnThemTTtg;
     RecyclerView rcvDeXuatP;
+    int visibleRowCount = 2;
+    int totalRowCount;
     List<Room> rcmRooms;
     TextView tvThemDX;
     TextView tvGiaP;
@@ -125,7 +129,8 @@ public class ActivityDetails extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_details);
+        binding = ActivityDetailsBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
 
         db = FirebaseDatabase.getInstance();
         ref = db.getReference("Rooms");
@@ -180,11 +185,13 @@ public class ActivityDetails extends AppCompatActivity {
             return;
         }
         room = (Room) intent.getSerializableExtra("selectedRoom");
+        if (room != null) {
+            addSeenRoom(room);
+        }
         if (room.getCreatedBy().getEmail().equals(preferenceManager.getString(Constants.KEY_EMAIL))) {
             OwnerLayout.setVisibility(View.VISIBLE);
             NormalUserLayout.setVisibility(View.GONE);
-        }
-        else{
+        } else {
             OwnerLayout.setVisibility(View.GONE);
             NormalUserLayout.setVisibility(View.VISIBLE);
         }
@@ -417,7 +424,9 @@ public class ActivityDetails extends AppCompatActivity {
             }
         });//chua làm
         tvXemThemMT.setOnClickListener(new View.OnClickListener() {
+
             boolean isExpand = false;
+
             @Override
             public void onClick(View v) {
                 isExpand = !isExpand;
@@ -428,6 +437,7 @@ public class ActivityDetails extends AppCompatActivity {
                     tvMota.setMaxLines(3);
                     tvXemThemMT.setText("Xem thêm");
                 }
+
             }
         });
 
@@ -468,7 +478,7 @@ public class ActivityDetails extends AppCompatActivity {
                 DatabaseReference reference = database.getReference();
 
 
-                Query query = reference.child("Accounts").orderByChild("email").equalTo("quocdanhmyker@gmail.com");
+                Query query = reference.child("Accounts").orderByChild("email").equalTo(room.getCreatedBy().getEmail());
                 query.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -491,7 +501,7 @@ public class ActivityDetails extends AppCompatActivity {
                                         reference.child("Chat").child(preferenceManager.getString(Constants.KEY_USER_KEY)).child(otherKey).child("1").child("send-date").setValue(simpleDateFormat.format(data));
                                         reference.child("Chat").child(preferenceManager.getString(Constants.KEY_USER_KEY)).child(otherKey).child("1").child("send-time").setValue(simpleTimeFormatConversaton.format(data));
 
-                                        Conversation conversation = new Conversation(preferenceManager.getString(Constants.KEY_USER_KEY), otherKey, "Xin Chào", simpleDateFormat.format(data).toString(), simpleTimeFormatConversaton.format(data).toString());
+                                        Conversation conversation = new Conversation(preferenceManager.getString(Constants.KEY_USER_KEY), otherKey, "Xin Chào", simpleDateFormat.format(data).toString(), simpleTimeFormatConversaton.format(data).toString(), false);
 
                                         reference.child("Conversations").child(preferenceManager.getString(Constants.KEY_USER_KEY)).child(otherKey).setValue(conversation);
 
@@ -528,7 +538,7 @@ public class ActivityDetails extends AppCompatActivity {
         btnToEdit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent =new Intent(ActivityDetails.this, ActivityPost.class);
+                Intent intent = new Intent(ActivityDetails.this, ActivityPost.class);
                 Bundle bundle = new Bundle();
                 bundle.putSerializable("roomToEdit", room);
                 intent.putExtras(bundle);
@@ -563,6 +573,78 @@ public class ActivityDetails extends AppCompatActivity {
                         })
                         .create();
                 confirmDialog.show();
+            }
+        });
+
+        binding.lnTacGia.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Toast.makeText(ActivityDetails.this, "bam vao day", Toast.LENGTH_SHORT).show();
+                Intent roomToOwner = new Intent(ActivityDetails.this, ActivityOwnerInformation.class);
+                roomToOwner.putExtra("roomToOwer", room);
+                startActivity(roomToOwner);
+            }
+        });
+
+
+        // nếu là phòng do user hiện tại đăng thì không cho hiện nút liên hệ
+        if (room.getCreatedBy().getEmail().equals(preferenceManager.getString(Constants.KEY_EMAIL))) {
+            binding.lnTacGia.setVisibility(View.GONE);
+        }
+
+
+    }
+
+    private void addSeenRoom(Room room) {
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference accRef = database.getReference("Accounts");
+        FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
+        FirebaseUser user = firebaseAuth.getCurrentUser();
+        //DatabaseReference roomRef = database.getReference("Rooms");
+        Query query = accRef.orderByChild("email").equalTo(user.getEmail());
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+
+                for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                    // Lấy được id của user
+                    String idUser = dataSnapshot.getKey();
+
+                    // Tạo node SeenRoom và add node idUser vô
+                    DatabaseReference refSeen = database.getReference("SeenRoom").child(idUser);
+                    refSeen.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                            List<String> listRoom = new ArrayList<>();
+                            if (snapshot.getChildrenCount() == 0) {
+                                listRoom.add(room.getId());
+                            } else {
+                                for (DataSnapshot snapshot1 : snapshot.getChildren()) {
+                                    listRoom.add(snapshot1.getValue(String.class));
+                                }
+                                if (listRoom.contains(room.getId())) {
+                                    listRoom.remove(room.getId());
+                                }
+                                listRoom.add(0, room.getId());
+                                if (listRoom.size() > 10) {
+                                    listRoom.remove(listRoom.size() - 1);
+                                }
+                            }
+                            refSeen.setValue(listRoom);
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
+
+                        }
+                    });
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
             }
         });
     }
@@ -613,7 +695,23 @@ public class ActivityDetails extends AppCompatActivity {
     }
 
     private void tinhSoP(AccountClass tg) {
-        final AtomicInteger count = new AtomicInteger(0); // Sử dụng AtomicInteger để đảm bảo tính đồng bộ
+        // Danh edited:  t sửa vầy cho chạy nhanh hơn, đỡ phải vòng lặp ha
+        Query query = ref.orderByChild("createdBy/email").equalTo(tg.getEmail());
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()) {
+                    tvSoP.setText(snapshot.getChildrenCount() + " phòng");
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
+        /*final AtomicInteger count = new AtomicInteger(0); // Sử dụng AtomicInteger để đảm bảo tính đồng bộ
 
         ref.addValueEventListener(new ValueEventListener() {
             @Override
@@ -631,7 +729,9 @@ public class ActivityDetails extends AppCompatActivity {
             public void onCancelled(@NonNull DatabaseError error) {
 
             }
-        });
+        });*/
+
+
     }
     public String getAfterSpace(String input) {
         int spaceIndex = input.indexOf(" ");

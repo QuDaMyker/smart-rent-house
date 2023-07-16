@@ -29,6 +29,7 @@ public class FragmentAccount extends Fragment {
         fragHome_viewPager2 = view.findViewById(R.id.fragHome_viewPager2);
 
         fragHome_tab_layout.addTab(fragHome_tab_layout.newTab().setText("Cá nhân"));
+        fragHome_tab_layout.addTab(fragHome_tab_layout.newTab().setText("Bài chờ duyệt"));
         fragHome_tab_layout.addTab(fragHome_tab_layout.newTab().setText("Bài đã đăng"));
 
         FragmentManager fragmentManager = getChildFragmentManager();

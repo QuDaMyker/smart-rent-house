@@ -95,12 +95,7 @@ public class FragmentResult extends Fragment {
         recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.hasFixedSize();
         recyclerView.setAdapter(resultRoomAdapter);
-
-
-
         loadData();
-
-
 
         return view;
     }
@@ -118,6 +113,7 @@ public class FragmentResult extends Fragment {
         }, 4000);
     }
     public void loadData() {
+        list.clear();
         DatabaseReference myRef = FirebaseDatabase.getInstance().getReference("Rooms");
 
         // Lắng nghe sự thay đổi dữ liệu trên đường dẫn "Rooms"
@@ -130,8 +126,8 @@ public class FragmentResult extends Fragment {
 
                     // Kiểm tra điều kiện nè
                     if (isContainsAddress(room)){
-                        if (isPriceValid(room) || isContainAmount(room) || isContainsUtilities(room)
-                                || isContainTypeRoom(room)) {
+                        if (isPriceValid(room) && isContainAmount(room) && isContainsUtilities(room)
+                                && isContainTypeRoom(room)) {
                             list.add(room);
                         }
                     }
@@ -175,6 +171,7 @@ public class FragmentResult extends Fragment {
             return true;
         } else {
             if (room.getPrice() <= objectSearch.getPrice().get(1) && room.getPrice() >= objectSearch.getPrice().get(0)) {
+                Log.d("True", "True hả");
                 return true;
             }
             return false;
@@ -207,7 +204,8 @@ public class FragmentResult extends Fragment {
         if(objectSearch.getAmount() == -1) {
             return true;
         } else {
-            if (objectSearch.getGender().equals(room.getGender()) && objectSearch.getAmount() <= room.getCapacity()){
+            if ((objectSearch.getGender().equals(room.getGender()) || room.getGender() == "Tất cả")
+                && objectSearch.getAmount() <= room.getCapacity()){
                 return true;
             }
             return false;

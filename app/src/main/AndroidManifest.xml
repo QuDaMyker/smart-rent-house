@@ -13,7 +13,9 @@
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-    <uses-permission android:name="android.permission.SET_ALARM"/>
+    <uses-permission android:name="android.permission.SET_ALARM" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.CALL_PHONE" />
 
     <application
@@ -28,17 +30,24 @@
         android:theme="@style/Theme.RentHouse"
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
-        <activity android:name=".Admin.Activity.Admin_ActivityStatistics"
-            android:exported="false"/>
-        <receiver android:name=".BroadcastReceiver.MyAlarmReceiver"/>
+        <activity
+            android:name=".Activity.ActivityOwnerInformation"
+            android:exported="false" />
+        <activity
+            android:name=".Admin.Activity.Admin_ActivityStatistics"
+            android:exported="false" />
+
+        <receiver android:name=".BroadcastReceiver.MyAlarmReceiver" />
+
         <activity
             android:name=".Admin.Activity.Admin_ActivityBaoCaoNguoiDung"
             android:exported="false" />
         <activity
             android:name=".Admin.Activity.Admin_ActivityThongTinNguoiDung"
             android:exported="false" />
-        <activity android:name=".Admin.Activity.Admin_ActivityThongTinPhong"
-            android:exported="false"/>
+        <activity
+            android:name=".Admin.Activity.Admin_ActivityThongTinPhong"
+            android:exported="false" />
         <activity
             android:name=".Activity.ActivityContactAdmin"
             android:exported="false" />
@@ -56,7 +65,12 @@
             android:exported="false" />
         <activity
             android:name=".Admin.Activity.Admin_ActivityMain"
+            android:exported="false"
+            android:windowSoftInputMode="adjustPan" />
+        <activity
+            android:name=".Activity.ActivityMain"
             android:exported="false" />
+
         <service
             android:name=".FCM.MyFirebaseMessagingService"
             android:exported="false">
@@ -91,8 +105,10 @@
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="${MAPS_API_KEY}" />
-        <meta-data android:name="firebase_analytics_collection_enabled"
-            android:value="true"/>
+        <meta-data
+            android:name="firebase_analytics_collection_enabled"
+            android:value="true" />
+
         <activity
             android:name=".Activity.ActivityAccountNotification"
             android:exported="false" />
@@ -129,11 +145,6 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".Activity.ActivityMain"
-            android:exported="true">
-
-        </activity>
-        <activity
             android:name=".Activity.ActivitySignUp"
             android:exported="false" />
         <activity
@@ -159,6 +170,19 @@
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
+
+        <receiver
+            android:name=".BroadcastReceiver.InternetBroadcastReceiver"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter>
+
+                <!-- Intent filters for broadcast receiver -->
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
+                <action android:name="android.net.wifi.WIFI_STATE_CHANGED" />
+                <action android:name="android.net.wifi.STATE_CHANGE" />
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>

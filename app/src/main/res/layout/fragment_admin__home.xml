@@ -217,6 +217,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
+                android:layout_marginStart="15dp"
+                android:layout_marginEnd="15dp"
                 android:gravity="center_horizontal"
                 android:orientation="horizontal"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -320,9 +322,11 @@
             </androidx.appcompat.widget.LinearLayoutCompat>
 
             <androidx.appcompat.widget.LinearLayoutCompat
+                android:layout_marginStart="15dp"
                 android:id="@+id/linearLayout3"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginEnd="15dp"
                 android:layout_marginTop="10dp"
                 android:gravity="center_horizontal"
                 android:orientation="horizontal"
@@ -429,9 +433,9 @@
                 android:id="@+id/linearLayout4"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
+                android:layout_marginStart="20dp"
                 android:layout_marginTop="10dp"
-                android:layout_marginEnd="10dp"
+                android:layout_marginEnd="20dp"
                 android:background="@drawable/bg_primary_20"
                 android:orientation="vertical"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -442,6 +446,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:ellipsize="end"
+                    android:padding="10dp"
                     android:gravity="left"
                     android:maxLines="1"
                     android:text="Số lượt truy cập"
@@ -473,7 +478,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="10dp"
+                    android:layout_marginLeft="15dp"
                     android:ellipsize="end"
                     android:maxLines="1"
                     android:text="Top khu vực hot"
@@ -498,10 +503,12 @@
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recycleView"
                 android:layout_width="match_parent"
-                android:layout_height="1000dp"
-                android:paddingStart="10dp"
-                android:paddingEnd="10dp"
+                android:layout_height="wrap_content"
+                android:paddingStart="15dp"
+                android:paddingEnd="15dp"
                 app:layout_constraintEnd_toEndOf="parent"
+                android:layout_marginEnd="20dp"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/linearLayout5" />
 
