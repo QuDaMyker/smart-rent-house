@@ -132,6 +132,26 @@ public class NoficationActivity extends AppCompatActivity {
                                             }
                                         });
                                     }
+                                    else if(notification.getType().equals("system") && notification.getAttachedRoomKey() != null){
+                                        database.getReference("Rooms").child(roomKey).addListenerForSingleValueEvent(new ValueEventListener() {
+                                            @Override
+                                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                                if(snapshot.exists()){
+                                                    Room room = snapshot.getValue(Room.class);
+                                                    Intent intent = new Intent(NoficationActivity.this, ActivityDetails.class);
+                                                    Bundle bundle = new Bundle();
+                                                    bundle.putSerializable("selectedRoom", room);
+                                                    intent.putExtras(bundle);
+                                                    startActivity(intent);
+                                                }
+                                            }
+
+                                            @Override
+                                            public void onCancelled(@NonNull DatabaseError error) {
+
+                                            }
+                                        });
+                                    }
                                 }
                             });
                             recyclerView.setAdapter(notificationAdapter);
