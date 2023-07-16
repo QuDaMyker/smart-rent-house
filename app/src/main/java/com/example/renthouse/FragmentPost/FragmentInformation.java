@@ -25,6 +25,10 @@ import com.google.android.material.switchmaterial.SwitchMaterial;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
+import java.text.NumberFormat;
+
 public class FragmentInformation extends Fragment {
 
     RadioGroup radioBtnType;
@@ -129,7 +133,15 @@ public class FragmentInformation extends Fragment {
 
             @Override
             public void afterTextChanged(Editable editable) {
+                String processed = currencyFormatter(editable);
+                edtPrice.removeTextChangedListener(this);
+                edtPrice.setText(processed);
+                try {
+                    edtPrice.setSelection(processed.length());
+                } catch (Exception e) {
 
+                }
+                edtPrice.addTextChangedListener(this);
             }
         });
         edtDeposit.addTextChangedListener(new TextWatcher() {
@@ -145,7 +157,15 @@ public class FragmentInformation extends Fragment {
 
             @Override
             public void afterTextChanged(Editable editable) {
+                String processed = currencyFormatter(editable);
+                edtDeposit.removeTextChangedListener(this);
+                edtDeposit.setText(processed);
+                try {
+                    edtDeposit.setSelection(processed.length());
+                } catch (Exception e) {
 
+                }
+                edtDeposit.addTextChangedListener(this);
             }
         });
         edtElectricityCost.addTextChangedListener(new TextWatcher() {
@@ -161,7 +181,15 @@ public class FragmentInformation extends Fragment {
 
             @Override
             public void afterTextChanged(Editable editable) {
+                String processed = currencyFormatter(editable);
+                edtElectricityCost.removeTextChangedListener(this);
+                edtElectricityCost.setText(processed);
+                try {
+                    edtElectricityCost.setSelection(processed.length());
+                } catch (Exception e) {
 
+                }
+                edtElectricityCost.addTextChangedListener(this);
             }
         });
         edtWaterCost.addTextChangedListener(new TextWatcher() {
@@ -177,7 +205,15 @@ public class FragmentInformation extends Fragment {
 
             @Override
             public void afterTextChanged(Editable editable) {
+                String processed = currencyFormatter(editable);
+                edtWaterCost.removeTextChangedListener(this);
+                edtWaterCost.setText(processed);
+                try {
+                    edtWaterCost.setSelection(processed.length());
+                } catch (Exception e) {
 
+                }
+                edtWaterCost.addTextChangedListener(this);
             }
         });
         edtInternetCost.addTextChangedListener(new TextWatcher() {
@@ -193,7 +229,15 @@ public class FragmentInformation extends Fragment {
 
             @Override
             public void afterTextChanged(Editable editable) {
+                String processed = currencyFormatter(editable);
+                edtInternetCost.removeTextChangedListener(this);
+                edtInternetCost.setText(processed);
+                try {
+                    edtInternetCost.setSelection(processed.length());
+                } catch (Exception e) {
 
+                }
+                edtInternetCost.addTextChangedListener(this);
             }
         });
         edtParkingFee.addTextChangedListener(new TextWatcher() {
@@ -209,7 +253,15 @@ public class FragmentInformation extends Fragment {
 
             @Override
             public void afterTextChanged(Editable editable) {
+                String processed = currencyFormatter(editable);
+                edtParkingFee.removeTextChangedListener(this);
+                edtParkingFee.setText(processed);
+                try {
+                    edtParkingFee.setSelection(processed.length());
+                } catch (Exception e) {
 
+                }
+                edtParkingFee.addTextChangedListener(this);
             }
         });
 
@@ -285,6 +337,14 @@ public class FragmentInformation extends Fragment {
         }
         return v;
     }
+    public String currencyFormatter(Editable editable) {
+        String initial = editable.toString();
+        if (initial.isEmpty()) return "";
+        String cleanString = initial.replace(",", "");
+        NumberFormat formatter = new DecimalFormat("#,###");
+        double myNumber = new Double(cleanString);
+        return formatter.format(myNumber);
+    }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -306,31 +366,31 @@ public class FragmentInformation extends Fragment {
     }
 
     public int getArea(){
-        return Integer.parseInt(edtArea.getText().toString());
+        return Integer.parseInt(edtArea.getText().toString().replaceAll("[^\\d]", ""));
     }
 
     public int getPrice(){
-        return Integer.parseInt(edtPrice.getText().toString());
+        return Integer.parseInt(edtPrice.getText().toString().replaceAll("[^\\d]", ""));
     }
 
     public int getDeposit(){
-        return Integer.parseInt(edtDeposit.getText().toString());
+        return Integer.parseInt(edtDeposit.getText().toString().replaceAll("[^\\d]", ""));
     }
 
     public int getElectricityCost(){
-        return Integer.parseInt(edtElectricityCost.getText().toString());
+        return Integer.parseInt(edtElectricityCost.getText().toString().replaceAll("[^\\d]", ""));
     }
 
     public int getWaterCost(){
-        return Integer.parseInt(edtWaterCost.getText().toString());
+        return Integer.parseInt(edtWaterCost.getText().toString().replaceAll("[^\\d]", ""));
     }
 
     public int getInternetCost(){
-        return Integer.parseInt(edtInternetCost.getText().toString());
+        return Integer.parseInt(edtInternetCost.getText().toString().replaceAll("[^\\d]", ""));
     }
 
     public int getParkingFee(){
-        return Integer.parseInt(edtParkingFee.getText().toString());
+        return Integer.parseInt(edtParkingFee.getText().toString().replaceAll("[^\\d]", ""));
     }
 
     public boolean isFreeElectricity(){
