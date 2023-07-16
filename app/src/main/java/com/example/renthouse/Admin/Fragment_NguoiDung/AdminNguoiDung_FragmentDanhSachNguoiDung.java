@@ -2,6 +2,7 @@ package com.example.renthouse.Admin.Fragment_NguoiDung;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -12,11 +13,13 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.SearchView;
 import android.widget.Toast;
 
@@ -25,6 +28,7 @@ import com.example.renthouse.Admin.Adapter.NguoiDungAdapter;
 import com.example.renthouse.Admin.OOP.NguoiDung;
 import com.example.renthouse.Admin.listeners.ItemNguoiDungListener;
 import com.example.renthouse.Admin.listeners.LoadDataFragment;
+import com.example.renthouse.Interface.DialogListener;
 import com.example.renthouse.OOP.AccountClass;
 import com.example.renthouse.R;
 import com.example.renthouse.databinding.FragmentAdminNguoiDungDanhSachNguoiDungBinding;
@@ -37,6 +41,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
+import java.text.Normalizer;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -45,49 +50,73 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.regex.Pattern;
 
 public class AdminNguoiDung_FragmentDanhSachNguoiDung extends Fragment implements ItemNguoiDungListener, LoadDataFragment {
     private FragmentAdminNguoiDungDanhSachNguoiDungBinding binding;
     private List<NguoiDung> nguoiDungs;
+    private List<NguoiDung> tempNguoiDung;
     private List<NguoiDung> filterSearch;
     private PreferenceManager preferenceManager;
     private NguoiDungAdapter nguoiDungAdapter;
     private FirebaseDatabase database;
     private Boolean filtersoPhongTang = true;
     private Boolean filterNgayThamgia = false;
-    private ProgressDialog progressDialog;
+    private DialogListener dialogListener;
+    private DatabaseReference reference;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        try {
+            dialogListener = (DialogListener) context;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(context.toString() + " must implement DialogListener");
+        }
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         binding = FragmentAdminNguoiDungDanhSachNguoiDungBinding.inflate(inflater, container, false);
         View view = binding.getRoot();
 
-
-        progressDialog = new ProgressDialog(getContext());
-        progressDialog.setCancelable(false);
-        progressDialog.setMessage("Loading...");
-
         init();
-        preferenceManager = new PreferenceManager(getContext());
-        setListeners();
         loadData();
-
+        setListeners();
 
         return view;
     }
 
+
+    private void init() {
+        nguoiDungs = new ArrayList<>();
+        tempNguoiDung = new ArrayList<>();
+        filterSearch = new ArrayList<>();
+
+        preferenceManager = new PreferenceManager(getContext());
+
+        nguoiDungAdapter = new NguoiDungAdapter(getContext(), filterSearch, this);
+        binding.recycleView.setAdapter(nguoiDungAdapter);
+        database = FirebaseDatabase.getInstance();
+        reference = database.getReference();
+    }
+
     private void loadData() {
-        progressDialog.show();
+        binding.searchView.setQuery("", false);
+        dialogListener.showDialog();
+
+        nguoiDungs.clear();
+        tempNguoiDung.clear();
+        filterSearch.clear();
+
         DatabaseReference reference = database.getReference();
         Query query = reference.child("Accounts").orderByChild("blocked").equalTo(false);
         query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                List<NguoiDung> tempNguoiDungs = new ArrayList<>(); // Danh sách tạm thời để lưu trữ các NguoiDung
-                int dataSnapshotCount = (int) dataSnapshot.getChildrenCount(); // Số lượng dữ liệu trong DataSnapshot
-                AtomicInteger count = new AtomicInteger(0); // Biến đếm để kiểm tra khi nào dữ liệu đã được tải xong
+                List<NguoiDung> tempNguoiDungs = new ArrayList<>();
+                int dataSnapshotCount = (int) dataSnapshot.getChildrenCount();
+                AtomicInteger count = new AtomicInteger(0);
 
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     String key = snapshot.getKey();
@@ -98,41 +127,35 @@ public class AdminNguoiDung_FragmentDanhSachNguoiDung extends Fragment implement
                         public void onDataChange(@NonNull DataSnapshot snapshot) {
                             int countRoom = (int) snapshot.getChildrenCount();
                             tempNguoiDungs.add(new NguoiDung(key, account, countRoom));
-                            Log.d("count danh sach", "Count = " + count);
-                            // Kiểm tra khi nào dữ liệu đã được tải xong
+
                             if (count.incrementAndGet() == dataSnapshotCount) {
                                 nguoiDungs.addAll(tempNguoiDungs);
-                                // them data tu nguoi dung vao filter
-                                loadObjects();
-                                progressDialog.dismiss();
-                                Toast.makeText(getContext(), "Load Du Lieu Thanh Cong", Toast.LENGTH_SHORT).show();
+                                filterSearch.addAll(tempNguoiDungs);
+                                getActivity().runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        nguoiDungAdapter.notifyDataSetChanged();
+                                        dialogListener.dismissDialog();
+                                    }
+                                });
+                                dialogListener.dismissDialog();
                             }
                         }
 
                         @Override
                         public void onCancelled(@NonNull DatabaseError error) {
-                            // Xử lý khi có lỗi xảy ra
+                            dialogListener.dismissDialog();
                         }
                     });
                 }
-                progressDialog.dismiss();
+                dialogListener.dismissDialog();
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-                // Xử lý khi có lỗi xảy ra
-                progressDialog.dismiss();
+                dialogListener.dismissDialog();
             }
         });
-    }
-
-
-    private void init() {
-        nguoiDungs = new ArrayList<>();
-        filterSearch = new ArrayList<>();
-        nguoiDungAdapter = new NguoiDungAdapter(getContext(), filterSearch, this);
-        binding.recycleView.setAdapter(nguoiDungAdapter);
-        database = FirebaseDatabase.getInstance();
     }
 
     private void setListeners() {
@@ -209,8 +232,31 @@ public class AdminNguoiDung_FragmentDanhSachNguoiDung extends Fragment implement
                 return true;
             }
         });
+
+        binding.searchView.setOnQueryTextFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (hasFocus) {
+                    hideKeyboard();
+                }
+            }
+        });
+
+        /*binding.swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                loadData();
+                binding.swipeRefreshLayout.setRefreshing(false);
+            }
+        });*/
     }
 
+    private void hideKeyboard() {
+        InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(getContext().INPUT_METHOD_SERVICE);
+        if (imm != null) {
+            imm.hideSoftInputFromWindow(binding.searchView.getWindowToken(), 0);
+        }
+    }
 
     private void loadObjects() {
         filterSearch.clear();
@@ -218,18 +264,42 @@ public class AdminNguoiDung_FragmentDanhSachNguoiDung extends Fragment implement
         nguoiDungAdapter.notifyDataSetChanged();
     }
 
+    public boolean searchWithAccent(String query, String data) {
+        // Bỏ dấu từ chuỗi tìm kiếm
+        String queryNoAccent = removeAccent(query.toLowerCase());
+        // Bỏ dấu từ dữ liệu
+        String dataNoAccent = removeAccent(data.toLowerCase());
+
+        // Kiểm tra xem chuỗi tìm kiếm có tồn tại trong dữ liệu bỏ dấu hay không
+        return dataNoAccent.contains(queryNoAccent);
+    }
+
+    public String removeAccent(String str) {
+        String normalizedStr = Normalizer.normalize(str, Normalizer.Form.NFD);
+        Pattern pattern = Pattern.compile("\\p{InCombiningDiacriticalMarks}+");
+        return pattern.matcher(normalizedStr).replaceAll("").toLowerCase();
+    }
+
     private void filterObjects(String query) {
         filterSearch.clear();
         for (NguoiDung obj : nguoiDungs) {
-            if (obj.getAccountClass().getFullname().toLowerCase().contains(query.toLowerCase())) {
+            if (searchWithAccent(query, obj.getAccountClass().getFullname())) {
                 filterSearch.add(obj);
             }
         }
-        nguoiDungAdapter.notifyDataSetChanged();
+
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                nguoiDungAdapter.notifyDataSetChanged();
+
+            }
+        });
     }
 
     @Override
     public void onItemNguoiDungClick(NguoiDung nguoiDung) {
+        Toast.makeText(getContext(), "Click", Toast.LENGTH_SHORT).show();
         Intent intent = new Intent(getActivity(), Admin_ActivityThongTinNguoiDung.class);
         intent.putExtra(Constants.KEY_NGUOIDUNG, nguoiDung);
         mStartForResult.launch(intent);

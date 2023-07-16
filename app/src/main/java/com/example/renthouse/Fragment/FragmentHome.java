@@ -1,5 +1,9 @@
 package com.example.renthouse.Fragment;
 
+import static androidx.core.location.LocationManagerCompat.getCurrentLocation;
+
+import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.app.ProgressDialog;
@@ -10,6 +14,7 @@ import android.location.Location;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -49,6 +54,9 @@ import com.example.renthouse.OOP.Ward;
 import com.example.renthouse.databinding.FragmentHomeBinding;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.badge.BadgeDrawable;
 import com.google.android.material.badge.BadgeUtils;
@@ -70,15 +78,21 @@ import java.util.Locale;
 
 
 public class FragmentHome extends Fragment {
-    FragmentHomeBinding binding;
+    // gg map
+    private static final int LOCATION_REQUEST_CODE = 200;
+    private FusedLocationProviderClient fusedLocationProviderClient;
+    private LatLng currentLocation;
+
+
+    private FragmentHomeBinding binding;
     private FirebaseAuth firebaseAuth;
     private FirebaseUser currentUser;
     private List<itemPhoBien_HomeFragment> listItemPhoBien_HomeFragment;
 
-    private FusedLocationProviderClient fusedLocationProviderClient;
+    //private FusedLocationProviderClient fusedLocationProviderClient;
     double latitude;
     double longitude;
-    private String currentLocation = null;
+    //private String currentLocation = null;
     private final static int REQUEST_CODE = 100;
     ;
     private List<City> cityList;
@@ -93,11 +107,14 @@ public class FragmentHome extends Fragment {
     private PhoBienAdapter phoBienAdapter;
     private RecyclerView phobien_recyclerView;
     private PreferenceManager preferenceManager;
+
     @Override
     @ExperimentalBadgeUtils
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         binding = FragmentHomeBinding.inflate(inflater, container, false);
         View view = binding.getRoot();
+
+
 
         firebaseAuth = FirebaseAuth.getInstance();
         currentUser = firebaseAuth.getCurrentUser();
@@ -106,11 +123,13 @@ public class FragmentHome extends Fragment {
         preferenceManager = new PreferenceManager(getContext());
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(getContext());
 
+        Log.d("showkey", preferenceManager.getString(Constants.KEY_USER_KEY));
+
         progressDialog = new ProgressDialog(getContext());
         progressDialog.setCancelable(false);
         progressDialog.setMessage("Loading...");
 
-        //updateNotSeenNumber(view);
+        updateNotSeenNumber(view);
 
         updateUI();
         //getLastLocation();
@@ -161,33 +180,39 @@ public class FragmentHome extends Fragment {
 //        updateNotSeenNumber(binding.getRoot());
 //    }
 
-    /*@ExperimentalBadgeUtils
+    @ExperimentalBadgeUtils
     private void updateNotSeenNumber(View view) {
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference notiRef = database.getReference("Notifications");
 
         String currentUserID = preferenceManager.getString(Constants.KEY_USER_KEY);
 
-        Query query = notiRef.child(currentUserID).orderByChild("read").equalTo(false);
-        query.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                int notSeenCount = 0;
-                for (DataSnapshot childSnapshot : snapshot.getChildren()) {
-                    Notification notification = childSnapshot.getValue(Notification.class);
-                    if (notification != null) {
-                        notSeenCount++;
+        try{
+            Query query = notiRef.child(currentUserID).orderByChild("read").equalTo(false);
+            query.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    int notSeenCount = 0;
+                    for (DataSnapshot childSnapshot : snapshot.getChildren()) {
+                        Notification notification = childSnapshot.getValue(Notification.class);
+                        if (notification != null) {
+                            notSeenCount++;
+                        }
                     }
+                    handleNotSeenNumber(notSeenCount, view);
                 }
-                handleNotSeenNumber(notSeenCount, view);
-            }
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
 
-            }
-        });
-    }*/
+                }
+            });
+        }
+        catch (Exception e){
+            Log.e("catch", "catch");
+            handleNotSeenNumber(0, view);
+        }
+    }
 
     @ExperimentalBadgeUtils
     private void handleNotSeenNumber(int notSeenCount, View view) {
@@ -218,7 +243,7 @@ public class FragmentHome extends Fragment {
             }
         });
 
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext(), RecyclerView.HORIZONTAL,false);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext(), RecyclerView.HORIZONTAL, false);
         phobien_recyclerView.setLayoutManager(linearLayoutManager);
         phobien_recyclerView.setAdapter(phoBienAdapter);
 
@@ -229,11 +254,11 @@ public class FragmentHome extends Fragment {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 List<PhoBien> temPhoBien = new ArrayList<>();
 
-                for (DataSnapshot Snapshot: snapshot.getChildren()){
+                for (DataSnapshot Snapshot : snapshot.getChildren()) {
                     String idphobien = Snapshot.getKey();
                     String image = Snapshot.child("Image").getValue(String.class);
                     String name = Snapshot.child("Name").getValue(String.class);
-                    PhoBien phobien = new PhoBien(image, idphobien,name);
+                    PhoBien phobien = new PhoBien(image, idphobien, name);
 
                     temPhoBien.add(phobien);
                 }
@@ -257,145 +282,14 @@ public class FragmentHome extends Fragment {
         fragmentTransaction.replace(R.id.phong_noi_bat, new FragmentPhongNoiBat());
         fragmentTransaction.commit();
 
-//        outstandingList = new ArrayList<>();
-//        outstandingRoomAdapter = new OutstandingRoomAdapter(getContext(), outstandingList, new ItemClick() {
-//            @Override
-//            public void onItemClick(Room room) {
-//                Intent intent = new Intent(getContext(), ActivityDetails.class);
-//                intent.putExtra("selectedRoom", room);
-//                startActivity(intent);
-//            }
-//        });
-//        GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), 2);
-//        outstanding_recyclerView.setLayoutManager(gridLayoutManager);
-//        outstanding_recyclerView.setAdapter(outstandingRoomAdapter);
-//
-//        FirebaseDatabase database = FirebaseDatabase.getInstance();
-//        DatabaseReference reference = database.getReference();
-//        Query query = reference.child("Rooms");
-//        query.addListenerForSingleValueEvent(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(@NonNull DataSnapshot snapshot) {
-//                List<Room> temroom = new ArrayList<>();
-//                for (DataSnapshot Snapshot : snapshot.getChildren()){
-//                    Room room = Snapshot.getValue((Room.class));
-//                    if (room.getStatus().equals("approved")) {
-//                        temroom.add(room);
-//                    }
-//                }
-//                outstandingList.addAll(temroom);
-//                outstandingRoomAdapter.notifyDataSetChanged();
-//                progressDialog.dismiss();
-//
-//            }
-//
-//            @Override
-//            public void onCancelled(@NonNull DatabaseError error) {
-//                progressDialog.dismiss();
-//            }
-//        });
-    }
-
 
     private void updateUI() {
         progressDialog.show();
-        if (currentUser != null) {
-            binding.tvXinchao.setText("Hi, " + currentUser.getDisplayName());
-        }
-
+        binding.tvXinchao.setText("Hi, " + preferenceManager.getString(Constants.KEY_FULLNAME));
+        getCurrentLocation();
         setDataOutstandingRoom();
         setDataPhoBien();
-    }
-
-
-    private void getLastLocation() {
-        Context context = getContext();
-        if(context == null) {
-            return;
-        }
-        if (ContextCompat.checkSelfPermission(context, android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-            fusedLocationProviderClient.getLastLocation().addOnSuccessListener(new OnSuccessListener<Location>() {
-                @Override
-                public void onSuccess(Location location) {
-                    if (location != null) {
-                        try {
-                            Geocoder geocoder = new Geocoder(context, Locale.getDefault());
-                            List<Address> addresses = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
-
-                            latitude = addresses.get(0).getLatitude();
-                            longitude = addresses.get(0).getLongitude();
-
-                            String address = getCompleteAddressString(latitude, longitude);
-                            //Toast.makeText(getContext(), address, Toast.LENGTH_SHORT).show();
-
-                            binding.tvCurrentLocation.setText(address);
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                }
-            });
-        } else {
-            fusedLocationProviderClient.getLastLocation().addOnSuccessListener(new OnSuccessListener<Location>() {
-                @Override
-                public void onSuccess(Location location) {
-                    if (location != null) {
-                        try {
-                            Geocoder geocoder = new Geocoder(context, Locale.getDefault());
-                            List<Address> addresses = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
-
-                            latitude = addresses.get(0).getLatitude();
-                            longitude = addresses.get(0).getLongitude();
-
-                            String address = getCompleteAddressString(latitude, longitude);
-
-                            binding.tvCurrentLocation.setText(address);
-                            currentLocation = address;
-                            Log.d("Current Location", address);
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                }
-            });
-            //askPermission();
-        }
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        if (requestCode == REQUEST_CODE) {
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                getLastLocation();
-            } else {
-                Toast.makeText(getContext(), "Please provide the required permission", Toast.LENGTH_SHORT).show();
-            }
-        }
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-    }
-
-    private String getCompleteAddressString(double LATITUDE, double LONGITUDE) {
-        String strAdd = "";
-        Geocoder geocoder = new Geocoder(getContext(), Locale.getDefault());
-        try {
-            List<Address> addresses = geocoder.getFromLocation(LATITUDE, LONGITUDE, 1);
-            if (addresses != null && addresses.size() > 0) {
-                Address returnedAddress = addresses.get(0);
-                StringBuilder strReturnedAddress = new StringBuilder();
-
-                for (int i = 0; i <= returnedAddress.getMaxAddressLineIndex(); i++) {
-                    strReturnedAddress.append(returnedAddress.getAddressLine(i)).append("\n");
-                }
-                strAdd = strReturnedAddress.toString().trim();
-                Log.d("My Current Location", strReturnedAddress.toString());
-            } else {
-                Log.d("My Current Location", "No Address returned!");
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            Log.d("My Current Location", "Cannot get Address!");
-        }
-        return strAdd;
+        progressDialog.dismiss();
     }
 
     public String loadJSONFromAsset(String filename) {
@@ -413,6 +307,57 @@ public class FragmentHome extends Fragment {
         }
         return json;
     }
+
+    boolean isPermissionGranted() {
+        if (ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, LOCATION_REQUEST_CODE);
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if (requestCode == LOCATION_REQUEST_CODE) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                getCurrentLocation();
+            }
+        }
+    }
+
+    @SuppressLint("MissingPermission")
+    private void getCurrentLocation() {
+        if (isPermissionGranted()) {
+            fusedLocationProviderClient.getLastLocation().addOnSuccessListener(requireActivity(), new OnSuccessListener<Location>() {
+                @Override
+                public void onSuccess(Location location) {
+                    if (location != null) {
+                        currentLocation = new LatLng(location.getLatitude(), location.getLongitude());
+                        Context context = requireContext();
+                        if (context != null) {
+                            Geocoder geocoder = new Geocoder(context);
+                            try {
+                                List<Address> addresses = geocoder.getFromLocation(currentLocation.latitude, currentLocation.longitude, 1);
+                                if (!addresses.isEmpty()) {
+                                    Address address = addresses.get(0);
+                                    String addressLine = address.getAddressLine(0);
+                                    binding.tvCurrentLocation.setText(addressLine);
+                                } else {
+                                    Toast.makeText(context, "Không xác định được vị trí", Toast.LENGTH_SHORT).show();
+                                }
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                        } else {
+                            // Xử lý khi getContext() trả về giá trị null
+                            Toast.makeText(requireContext(), "Lỗi: Context null", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                }
+            });
+        }
+    }
+
 
 
 }

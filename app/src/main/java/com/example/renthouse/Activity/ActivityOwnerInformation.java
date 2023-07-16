@@ -1,96 +1,81 @@
-package com.example.renthouse.Fragment;
-
-import android.app.ProgressDialog;
-import android.content.Context;
-import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.os.Bundle;
+package com.example.renthouse.Activity;
 
 import androidx.annotation.NonNull;
-import androidx.fragment.app.Fragment;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import android.util.Base64;
-import android.view.LayoutInflater;
+import android.app.AlertDialog;
+import android.app.ProgressDialog;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.net.Uri;
+import android.os.Bundle;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ProgressBar;
-import android.widget.Toast;
 
-import com.airbnb.lottie.LottieAnimationView;
-import com.example.renthouse.Activity.ActivityDetails;
 import com.example.renthouse.Adapter.PostedAdapter;
-import com.example.renthouse.Interface.DialogListener;
 import com.example.renthouse.Interface.ItemClick;
-import com.example.renthouse.OOP.LocationTemp;
 import com.example.renthouse.OOP.Room;
 import com.example.renthouse.R;
-import com.example.renthouse.databinding.FragmentAccountPostedBinding;
+import com.example.renthouse.databinding.ActivityOwnerInformationBinding;
 import com.example.renthouse.utilities.Constants;
 import com.example.renthouse.utilities.PreferenceManager;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.GenericTypeIndicator;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
-public class FragmentAccountPosted extends Fragment {
-    private FragmentAccountPostedBinding binding;
+public class ActivityOwnerInformation extends AppCompatActivity {
+    private ActivityOwnerInformationBinding binding;
+    private Intent intent;
+    private PreferenceManager preferenceManager;
+    private FirebaseDatabase database;
+    private DatabaseReference reference;
     private List<Room> listRoomPosted;
     private List<Room> tempRoom;
     private PostedAdapter postedAdapter;
-    private PreferenceManager preferenceManager;
-    private DialogListener dialogListener;
+    private ProgressDialog progressDialog;
+    private Room roomIntent;
 
 
     @Override
-    public void onAttach(@NonNull Context context) {
-        super.onAttach(context);
-        try {
-            dialogListener = (DialogListener) context;
-        } catch (ClassCastException e) {
-            throw new ClassCastException(context.toString() + " must implement DialogListener");
-        }
-    }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        binding = FragmentAccountPostedBinding.inflate(getLayoutInflater());
-        View view = binding.getRoot();
-
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        binding = ActivityOwnerInformationBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
 
         init();
+        updateUI();
+        setListener();
         loadData();
-        setListeners();
-
-
-        return view;
     }
 
-
     private void init() {
-        preferenceManager = new PreferenceManager(getContext());
+        intent = getIntent();
+
+        preferenceManager = new PreferenceManager(ActivityOwnerInformation.this);
+
+        database = FirebaseDatabase.getInstance();
+        reference = database.getReference();
+
+        progressDialog = new ProgressDialog(ActivityOwnerInformation.this);
+        progressDialog.setCancelable(false);
+        progressDialog.setMessage("Loading...");
 
         listRoomPosted = new ArrayList<>();
         tempRoom = new ArrayList<>();
-        GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), 2);
 
-        postedAdapter = new PostedAdapter(getContext(), listRoomPosted, new ItemClick() {
+        GridLayoutManager gridLayoutManager = new GridLayoutManager(ActivityOwnerInformation.this, 2);
+
+        postedAdapter = new PostedAdapter(ActivityOwnerInformation.this, listRoomPosted, new ItemClick() {
             @Override
             public void onItemClick(Room room) {
-                Intent intent = new Intent(getContext(), ActivityDetails.class);
+                Intent intent = new Intent(ActivityOwnerInformation.this, ActivityDetails.class);
                 intent.putExtra("selectedRoom", room);
                 startActivity(intent);
             }
@@ -99,15 +84,33 @@ public class FragmentAccountPosted extends Fragment {
         binding.recycleView.setLayoutManager(gridLayoutManager);
         binding.recycleView.setAdapter(postedAdapter);
 
+        roomIntent = (Room) intent.getSerializableExtra("roomToOwer");
+    }
+
+    private void updateUI() {
+        binding.txtName.setText(roomIntent.getCreatedBy().getFullname());
+        binding.txtPhoneNumber.setText(roomIntent.getPhoneNumber());
+        Picasso.get().load(roomIntent.getCreatedBy().getImage()).into(binding.imageUser);
+    }
+
+    private void setListener() {
+        binding.btnBack.setOnClickListener(v -> {
+            onBackPressed();
+        });
+
+        binding.contactOwer.setOnClickListener(v -> {
+            showCallConfirmationDialog(binding.txtPhoneNumber.getText().toString().trim());
+        });
+
     }
 
     private void loadData() {
-        dialogListener.showDialog();
+        progressDialog.show();
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference reference = database.getReference();
 
         listRoomPosted.clear();
-        Query query = reference.child("Rooms").orderByChild("createdBy/email").equalTo(preferenceManager.getString(Constants.KEY_EMAIL));
+        Query query = reference.child("Rooms").orderByChild("createdBy/email").equalTo(roomIntent.getCreatedBy().getEmail());
         query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -119,7 +122,7 @@ public class FragmentAccountPosted extends Fragment {
                             tempRoom.add(room);
                         }
                     }
-                    getActivity().runOnUiThread(new Runnable() {
+                    runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
                             listRoomPosted.addAll(tempRoom);
@@ -133,10 +136,10 @@ public class FragmentAccountPosted extends Fragment {
                         binding.recycleView.setVisibility(View.VISIBLE);
                         binding.animationView.setVisibility(View.INVISIBLE);
                     }
-                    dialogListener.dismissDialog();
+                    progressDialog.dismiss();
                 } else {
                     listRoomPosted.clear();
-                    getActivity().runOnUiThread(new Runnable() {
+                    runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
                             postedAdapter.notifyDataSetChanged();
@@ -149,30 +152,35 @@ public class FragmentAccountPosted extends Fragment {
                         binding.recycleView.setVisibility(View.VISIBLE);
                         binding.animationView.setVisibility(View.INVISIBLE);
                     }
-                    dialogListener.dismissDialog();
+                    progressDialog.dismiss();
                 }
-
-
 
 
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-                dialogListener.dismissDialog();
+                progressDialog.dismiss();
             }
         });
     }
 
-    private void setListeners() {
-        binding.swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+    private void showCallConfirmationDialog(String number) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Xác nhận gọi số " + number);
+                builder.setMessage("Bạn có chắc chắn muốn gọi số " + number + " không?");
+        builder.setPositiveButton("Gọi", new DialogInterface.OnClickListener() {
             @Override
-            public void onRefresh() {
-                // Thực hiện cập nhật dữ liệu ở đây
-                loadData();
-                // Sau khi hoàn thành cập nhật, gọi phương thức setRefreshing(false) để kết thúc hiệu ứng làm mới
-                binding.swipeRefreshLayout.setRefreshing(false);
+            public void onClick(DialogInterface dialog, int which) {
+                // Xử lý khi người dùng chọn gọi số 000
+                // Sử dụng Intent để gọi số điện thoại
+                String phoneNumber = number;
+                Intent intent = new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + phoneNumber));
+                startActivity(intent);
             }
         });
+        builder.setNegativeButton("Hủy", null);
+        builder.show();
     }
+
 }

@@ -95,7 +95,8 @@
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/edtCapacity"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:inputType="number"/>
         </com.google.android.material.textfield.TextInputLayout>
 
         <TextView
@@ -162,7 +163,8 @@
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/edtArea"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:inputType="number"/>
         </com.google.android.material.textfield.TextInputLayout>
 
         <TextView
@@ -195,7 +197,8 @@
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/edtPrice"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:inputType="number"/>
         </com.google.android.material.textfield.TextInputLayout>
 
         <TextView
@@ -218,7 +221,8 @@
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/edtDeposit"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:inputType="number"/>
         </com.google.android.material.textfield.TextInputLayout>
 
         <LinearLayout
@@ -261,7 +265,8 @@
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/edtElectricityCost"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:inputType="number"/>
         </com.google.android.material.textfield.TextInputLayout>
 
         <LinearLayout
@@ -304,7 +309,8 @@
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/edtWaterCost"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:inputType="number"/>
         </com.google.android.material.textfield.TextInputLayout>
 
         <LinearLayout
@@ -347,7 +353,8 @@
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/edtInternetCost"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:inputType="number"/>
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.checkbox.MaterialCheckBox
@@ -406,7 +413,8 @@
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/edtParkingFee"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:inputType="number"/>
             </com.google.android.material.textfield.TextInputLayout>
         </LinearLayout>
 

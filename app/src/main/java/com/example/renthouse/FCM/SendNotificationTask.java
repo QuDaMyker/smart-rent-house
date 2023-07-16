@@ -25,10 +25,16 @@ import java.util.Locale;
 public class SendNotificationTask extends AsyncTask<Void, Void, Void> {
     private Context context;
     private Notification notification;
+    private String ownerId;
 
     public SendNotificationTask(Context context, Notification notification) {
         this.context = context;
         this.notification = notification;
+    }
+    public SendNotificationTask(Context context, Notification notification, String ownerId) {
+        this.context = context;
+        this.notification = notification;
+        this.ownerId = ownerId;
     }
 
     @Override
@@ -43,7 +49,13 @@ public class SendNotificationTask extends AsyncTask<Void, Void, Void> {
                     Device device = deviceSnapshot.getValue(Device.class);
                     boolean flag = false;
                     if(device.isRoomNoti() && notification.getType().equals("room")){
-                        flag = true;
+                        if(ownerId.equals(device.getUserId())){
+                            Log.e("id", ownerId);
+                            flag = false;
+                        }
+                        else {
+                            flag = true;
+                        }
                     }
                     if(device.isChatNoti() && notification.getType().equals("chat")){
                         String[] parts = notification.getAttachedMessageKey().split("/");

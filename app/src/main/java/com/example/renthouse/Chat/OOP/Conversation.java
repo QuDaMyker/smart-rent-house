@@ -6,13 +6,15 @@ public class Conversation {
     private String lastMessage;
     private String sendDate;
     private String sendTime;
+    private Boolean seenMsg;
 
-    public Conversation(String sendId, String receiveId, String lastMessage, String sendDate, String sendTime) {
+    public Conversation(String sendId, String receiveId, String lastMessage, String sendDate, String sendTime, Boolean seenMsg) {
         this.sendId = sendId;
         this.receiveId = receiveId;
         this.lastMessage = lastMessage;
         this.sendDate = sendDate;
         this.sendTime = sendTime;
+        this.seenMsg = seenMsg;
     }
 
     public String getSendId() {
@@ -53,5 +55,13 @@ public class Conversation {
 
     public void setSendTime(String sendTime) {
         this.sendTime = sendTime;
+    }
+
+    public Boolean getSeenMsg() {
+        return seenMsg;
+    }
+
+    public void setSeenMsg(Boolean seenMsg) {
+        this.seenMsg = seenMsg;
     }
 }

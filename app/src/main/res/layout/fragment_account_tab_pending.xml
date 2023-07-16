@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:paddingBottom="80dp"
-    tools:context=".Fragment.FragmentAccountPosted">
+    tools:context=".Fragment.FragmentAccountTabPending">
 
     <com.airbnb.lottie.LottieAnimationView
         android:id="@+id/animationView"
@@ -36,4 +36,6 @@
             android:paddingEnd="5dp"
             tools:listitem="@layout/item_latest_room" />
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+
 </androidx.constraintlayout.widget.ConstraintLayout>

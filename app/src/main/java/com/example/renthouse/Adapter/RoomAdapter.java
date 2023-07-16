@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -37,6 +38,7 @@ public class RoomAdapter extends RecyclerView.Adapter<RoomAdapter.RoomViewHolder
     FirebaseDatabase firebaseDatabase;
     DatabaseReference reference;
     private int enableLikeButton = View.VISIBLE;
+    private int minItemShowed = 0;
 
     public RoomAdapter(Context context, List<Room> rooms) {
         this.context = context;
@@ -46,8 +48,7 @@ public class RoomAdapter extends RecyclerView.Adapter<RoomAdapter.RoomViewHolder
     @NonNull
     @Override
     public RoomViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_room, parent, false);
-
+        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_latest_room, parent, false);
         return  new RoomViewHolder(v);
     }
 
@@ -58,46 +59,50 @@ public class RoomAdapter extends RecyclerView.Adapter<RoomAdapter.RoomViewHolder
         {
             return;
         }
-
         FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
         FirebaseUser currentUser = firebaseAuth.getCurrentUser();
-        String emaiCur = currentUser.getEmail();
-        firebaseDatabase = FirebaseDatabase.getInstance();
-        DatabaseReference refAc = firebaseDatabase.getReference("Accounts");
-        //xem p có phải là p đã thích k
-        refAc.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot){
-                String emailAc = null;
-                for (DataSnapshot snapAc: snapshot.getChildren())
-                {
-                    emailAc = snapAc.child("email").getValue(String.class);
-                    if (emaiCur.equals(emailAc)){
-                        String idAc = snapAc.getKey();
-                        DatabaseReference refLiked = firebaseDatabase.getReference("LikedRooms").child(idAc);
-                        refLiked.addListenerForSingleValueEvent(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                if (snapshot.hasChild(room.getId()))
-                                {
-                                    holder.cbLike.setChecked(true);
+
+        //không là admin
+        if (currentUser!= null)
+        {
+            String emaiCur = currentUser.getEmail();
+            firebaseDatabase = FirebaseDatabase.getInstance();
+            DatabaseReference refAc = firebaseDatabase.getReference("Accounts");
+            //xem p có phải là p đã thích k
+            refAc.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot){
+                    String emailAc = null;
+                    for (DataSnapshot snapAc: snapshot.getChildren())
+                    {
+                        emailAc = snapAc.child("email").getValue(String.class);
+                        if (emaiCur.equals(emailAc)){
+                            String idAc = snapAc.getKey();
+                            DatabaseReference refLiked = firebaseDatabase.getReference("LikedRooms").child(idAc);
+                            refLiked.addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                    if (snapshot.hasChild(room.getId()))
+                                    {
+                                        holder.cbLike.setChecked(true);
+                                    }
                                 }
-                            }
 
-                            @Override
-                            public void onCancelled(@NonNull DatabaseError error) {
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError error) {
 
-                            }
-                        });
+                                }
+                            });
+                        }
                     }
                 }
-            }
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
+                }
+            });
+        }
 
-            }
-        });
         holder.cbLike.setVisibility(enableLikeButton);
         holder.tvName.setText(room.getTitle());
         holder.tvAddress.setText(room.getLocation().LocationToString());
@@ -165,6 +170,7 @@ public class RoomAdapter extends RecyclerView.Adapter<RoomAdapter.RoomViewHolder
                                     likedRef.child(idRoom).removeValue();
                                     //xóa khỏi ds hiện bên liked room
                                     rooms.remove(room);
+                                    setLimit(rooms.size());
                                     notifyDataSetChanged();
                                 }
                             }
@@ -196,21 +202,25 @@ public class RoomAdapter extends RecyclerView.Adapter<RoomAdapter.RoomViewHolder
 
     @Override
     public int getItemCount() {
-        if (rooms != null)
+        if (minItemShowed > 0)
         {
-            return rooms.size();
+            return minItemShowed;
         }
         return 0;
     }
-    public void setEnableLikeButton(int enable) {
+    public void setLimit (int limit)
+    {
+        minItemShowed = limit;
+        notifyDataSetChanged();
+    }
 
+    public void setEnableLikeButton(int enable) {
         enableLikeButton = enable;
         notifyDataSetChanged();
     }
 
-
     public class RoomViewHolder extends RecyclerView.ViewHolder{
-        private CardView itemRooom;
+        private LinearLayout itemRooom;
         private ImageView ivRoom;
         private TextView tvName;
         private TextView tvAddress;
@@ -220,13 +230,12 @@ public class RoomAdapter extends RecyclerView.Adapter<RoomAdapter.RoomViewHolder
 
         public RoomViewHolder(@NonNull View itemView) {
             super(itemView);
-
-            itemRooom = itemView.findViewById(R.id.itemRoom);
-            ivRoom = itemView.findViewById(R.id.ivRoomImage);
-            tvName = itemView.findViewById(R.id.tvName);
-            tvAddress = itemView.findViewById(R.id.tvAddress);
-            tvPrice = itemView.findViewById(R.id.tvPrice);
-            cbLike = itemView.findViewById(R.id.cbLike);
+            itemRooom = itemView.findViewById(R.id.item_latest_room);
+            ivRoom = itemView.findViewById(R.id.imageViewImageRoomLatest);
+            tvName = itemView.findViewById(R.id.textViewRoomNameLatest);
+            tvAddress = itemView.findViewById(R.id.textViewAddressLatestRoom);
+            tvPrice = itemView.findViewById(R.id.textViewPriceLatesRoom);
+            cbLike = itemView.findViewById(R.id.likedCheckBoxLatestRoom);
         }
     }
 }
