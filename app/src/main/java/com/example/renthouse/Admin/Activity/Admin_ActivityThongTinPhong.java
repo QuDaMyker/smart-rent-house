@@ -416,15 +416,12 @@ public class Admin_ActivityThongTinPhong extends AppCompatActivity {
                         .setMessage("Bạn có chắc chắn muốn xóa phòng trọ này?")
                         .setPositiveButton("Xóa", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int whichButton) {
-                                FirebaseDatabase database = FirebaseDatabase.getInstance();
-                                DatabaseReference notiSchedulesRef = database.getReference("Rooms");
-                                notiSchedulesRef.child(room.getId()).removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
-                                    @Override
-                                    public void onSuccess(Void unused) {
-                                        Toast.makeText(Admin_ActivityThongTinPhong.this, "Xóa phòng trọ thành công", Toast.LENGTH_SHORT).show();
-                                        finish();
-                                    }
-                                });
+                                room.setStatus(Constants.STATUS_DELETED);
+                                DatabaseReference refRoom =  ref.child(room.getId());
+                                refRoom.child("status").setValue(Constants.STATUS_DELETED);
+
+                                Toast.makeText(Admin_ActivityThongTinPhong.this, "Xóa phòng trọ thành công", Toast.LENGTH_SHORT).show();
+                                finish();
                             }
                         })
                         .setNegativeButton("Hủy", new DialogInterface.OnClickListener() {
