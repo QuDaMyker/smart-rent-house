@@ -34,6 +34,7 @@ import com.example.renthouse.Adapter.UtilitiesAdapter;
 import com.example.renthouse.Chat.Dashboard.ActivityChat;
 import com.example.renthouse.Chat.OOP.Conversation;
 import com.example.renthouse.FCM.SendNotificationTask;
+import com.example.renthouse.FCM.SendToOwnerTask;
 import com.example.renthouse.OOP.AccountClass;
 import com.example.renthouse.OOP.Notification;
 import com.example.renthouse.OOP.Room;
@@ -345,11 +346,30 @@ public class Admin_ActivityThongTinPhong extends AppCompatActivity {
 
                 Toast.makeText(Admin_ActivityThongTinPhong.this, "Bạn đã duyệt phòng thành công", Toast.LENGTH_SHORT).show();
 
-                Notification notification = new Notification("Có phòng trọ mới vừa được đăng trên Rent House", "Hãy kiểm tra ngay để không bỏ lỡ cơ hội tuyệt vời này!", "room");
-                notification.setAttachedRoomKey(room.getId());
-                SendNotificationTask task = new SendNotificationTask(Admin_ActivityThongTinPhong.this, notification);
+                FirebaseDatabase database = FirebaseDatabase.getInstance();
+                database.getReference("Accounts").orderByChild("email").equalTo(room.getCreatedBy().getEmail()).addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        if (dataSnapshot.exists()) {
+                            for (DataSnapshot childSnapshot : dataSnapshot.getChildren()) {
+                                String userId = childSnapshot.getKey();
+                                Notification notification = new Notification("Có phòng trọ mới vừa được đăng trên Rent House", "Hãy kiểm tra ngay để không bỏ lỡ cơ hội tuyệt vời này!", "room");
+                                notification.setAttachedRoomKey(room.getId());
+                                SendNotificationTask task = new SendNotificationTask(Admin_ActivityThongTinPhong.this, notification, userId);
+                                task.execute();
 
-                task.execute();
+                                SendToOwnerTask ownerTask = new SendToOwnerTask(Admin_ActivityThongTinPhong.this, room, userId);
+                                ownerTask.execute();
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
+
                 LoadLinearLayoutOption();
             }
         });
@@ -366,6 +386,25 @@ public class Admin_ActivityThongTinPhong extends AppCompatActivity {
                 btnAcp.setEnabled(false);
                 btnCancel.setEnabled(false);
 
+                FirebaseDatabase database = FirebaseDatabase.getInstance();
+                database.getReference("Accounts").orderByChild("email").equalTo(room.getCreatedBy().getEmail()).addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        if (dataSnapshot.exists()) {
+                            for (DataSnapshot childSnapshot : dataSnapshot.getChildren()) {
+                                String userId = childSnapshot.getKey();
+                                SendToOwnerTask ownerTask = new SendToOwnerTask(Admin_ActivityThongTinPhong.this, room, userId);
+                                ownerTask.execute();
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
+
             }
         });
         //nhấn nút xáo thì xóa phòng khỏi danh sách
@@ -377,15 +416,12 @@ public class Admin_ActivityThongTinPhong extends AppCompatActivity {
                         .setMessage("Bạn có chắc chắn muốn xóa phòng trọ này?")
                         .setPositiveButton("Xóa", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int whichButton) {
-                                FirebaseDatabase database = FirebaseDatabase.getInstance();
-                                DatabaseReference notiSchedulesRef = database.getReference("Rooms");
-                                notiSchedulesRef.child(room.getId()).removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
-                                    @Override
-                                    public void onSuccess(Void unused) {
-                                        Toast.makeText(Admin_ActivityThongTinPhong.this, "Xóa phòng trọ thành công", Toast.LENGTH_SHORT).show();
-                                        finish();
-                                    }
-                                });
+                                room.setStatus(Constants.STATUS_DELETED);
+                                DatabaseReference refRoom =  ref.child(room.getId());
+                                refRoom.child("status").setValue(Constants.STATUS_DELETED);
+
+                                Toast.makeText(Admin_ActivityThongTinPhong.this, "Xóa phòng trọ thành công", Toast.LENGTH_SHORT).show();
+                                finish();
                             }
                         })
                         .setNegativeButton("Hủy", new DialogInterface.OnClickListener() {

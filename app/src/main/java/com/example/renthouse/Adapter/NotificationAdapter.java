@@ -84,6 +84,9 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
             else if(item.getType().equals("schedule")){
                 holder.notiImg.setImageResource(R.drawable.noti_schedule);
             }
+            else{
+                holder.notiImg.setImageResource(R.drawable.noti_system);
+            }
         }
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
