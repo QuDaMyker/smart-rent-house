@@ -14,7 +14,7 @@
 
         <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/image"
-            android:layout_width="112dp"
+            android:layout_width="118dp"
             android:layout_height="145dp"
             android:scaleType="centerCrop"
             android:src="@drawable/ic_phobien_1"
