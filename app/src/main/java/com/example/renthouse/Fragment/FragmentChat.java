@@ -1,5 +1,6 @@
 package com.example.renthouse.Fragment;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.Bundle;
@@ -121,7 +122,6 @@ public class FragmentChat extends Fragment {
                     messagesLists.clear();
                     tempMessagesLists.clear();
 
-                    Toast.makeText(getContext(), "Update", Toast.LENGTH_SHORT).show();
                     Log.d("count", snapshot.getChildrenCount() + "");
 
                     for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
@@ -136,55 +136,66 @@ public class FragmentChat extends Fragment {
 
                                     String sendId = dataSnapshot.child("sendId").getValue(String.class);
                                     String lastMessage;
-                                    if (sendId.equals(preferenceManager.getString(Constants.KEY_USER_KEY))) {
-                                        lastMessage = "Tôi: " + dataSnapshot.child("lastMessage").getValue(String.class);
-                                    } else {
-                                        lastMessage = dataSnapshot.child("lastMessage").getValue(String.class);
-                                    }
+                                    if (sendId != null) {
+                                        if (sendId.equals(preferenceManager.getString(Constants.KEY_USER_KEY))) {
+                                            lastMessage = "Tôi: " + dataSnapshot.child("lastMessage").getValue(String.class);
+                                        } else {
+                                            lastMessage = dataSnapshot.child("lastMessage").getValue(String.class);
+                                        }
+                                        String time = dataSnapshot.child("sendDate").getValue(String.class) + " " + dataSnapshot.child("sendTime").getValue(String.class);
 
-                                    String time = dataSnapshot.child("sendDate").getValue(String.class) + " " + dataSnapshot.child("sendTime").getValue(String.class);
+                                        Boolean seen = dataSnapshot.child("seenMsg").getValue(Boolean.class);
+                                        Log.d("seen", seen + "");
 
-                                    Boolean seen = dataSnapshot.child("seenMsg").getValue(Boolean.class);
-                                    Log.d("seen", seen + "");
+                                        Log.d("thoigian", time);
+                                        MessagesList messagesList = new MessagesList(
+                                                preferenceManager.getString(Constants.KEY_USER_KEY),
+                                                accountClass.getFullname(),
+                                                accountClass.getEmail(),
+                                                lastMessage,
+                                                accountClass.getImage(),
+                                                otherKey,
+                                                seen,
+                                                time
+                                        );
+                                        tempMessagesLists.add(messagesList);
+                                        if (tempMessagesLists.size() == snapshot.getChildrenCount()) {
+                                            messagesLists.addAll(tempMessagesLists);
 
-                                    Log.d("thoigian", time);
-                                    MessagesList messagesList = new MessagesList(
-                                            preferenceManager.getString(Constants.KEY_USER_KEY),
-                                            accountClass.getFullname(),
-                                            accountClass.getEmail(),
-                                            lastMessage,
-                                            accountClass.getImage(),
-                                            otherKey,
-                                            seen,
-                                            time
-                                    );
-                                    tempMessagesLists.add(messagesList);
-                                    if (tempMessagesLists.size() == snapshot.getChildrenCount()) {
-                                        messagesLists.addAll(tempMessagesLists);
+                                            Collections.sort(messagesLists, new Comparator<MessagesList>() {
+                                                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
-                                        Collections.sort(messagesLists, new Comparator<MessagesList>() {
-                                            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                                                @Override
+                                                public int compare(MessagesList obj1, MessagesList obj2) {
 
-                                            @Override
-                                            public int compare(MessagesList obj1, MessagesList obj2) {
-
-                                                try {
-                                                    Date date1 = dateFormat.parse(obj2.getSendTime());
-                                                    Date date2 = dateFormat.parse(obj1.getSendTime());
-                                                    return date1.compareTo(date2);
-                                                } catch (ParseException e) {
-                                                    e.printStackTrace();
+                                                    try {
+                                                        Date date1 = dateFormat.parse(obj2.getSendTime());
+                                                        Date date2 = dateFormat.parse(obj1.getSendTime());
+                                                        return date1.compareTo(date2);
+                                                    } catch (ParseException e) {
+                                                        e.printStackTrace();
+                                                    }
+                                                    return 0;
                                                 }
-                                                return 0;
+                                            });
+
+                                            Activity activity = getActivity();
+                                            if (activity != null) {
+                                                activity.runOnUiThread(new Runnable() {
+                                                    @Override
+                                                    public void run() {
+                                                        messagesAdapter.notifyDataSetChanged();
+                                                        dialogListener.dismissDialog();
+                                                    }
+                                                });
                                             }
-                                        });
-                                        getActivity().runOnUiThread(new Runnable() {
-                                            @Override
-                                            public void run() {
-                                                messagesAdapter.notifyDataSetChanged();
-                                                dialogListener.dismissDialog();
-                                            }
-                                        });
+
+
+
+                                        }
+
+                                    } else {
+                                        // Xử lý khi sendId là null
 
                                     }
                                 }
@@ -196,9 +207,12 @@ public class FragmentChat extends Fragment {
                             }
                         });
                     }
+
+                    binding.animationView.setVisibility(View.INVISIBLE);
+                    binding.messagesRecyclerView.setVisibility(View.VISIBLE);
                 } else {
                     binding.animationView.setVisibility(View.VISIBLE);
-                    binding.messagesRecyclerView.setVisibility(View.VISIBLE);
+                    binding.messagesRecyclerView.setVisibility(View.INVISIBLE);
                 }
 
                 dialogListener.dismissDialog();

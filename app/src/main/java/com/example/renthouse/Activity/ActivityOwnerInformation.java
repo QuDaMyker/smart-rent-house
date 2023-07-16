@@ -167,8 +167,8 @@ public class ActivityOwnerInformation extends AppCompatActivity {
 
     private void showCallConfirmationDialog(String number) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Xác nhận gọi số 000");
-        builder.setMessage("Bạn có chắc chắn muốn gọi số " + number + " không?");
+        builder.setTitle("Xác nhận gọi số " + number);
+                builder.setMessage("Bạn có chắc chắn muốn gọi số " + number + " không?");
         builder.setPositiveButton("Gọi", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {

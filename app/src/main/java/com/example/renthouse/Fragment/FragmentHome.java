@@ -109,12 +109,16 @@ public class FragmentHome extends Fragment {
         binding = FragmentHomeBinding.inflate(inflater, container, false);
         View view = binding.getRoot();
 
+
+
         firebaseAuth = FirebaseAuth.getInstance();
         currentUser = firebaseAuth.getCurrentUser();
         outstanding_recyclerView = view.findViewById(R.id.recycleView_phongnoibat);
         phobien_recyclerView = view.findViewById(R.id.recycleView_phobien);
         preferenceManager = new PreferenceManager(getContext());
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(getContext());
+
+        Log.d("showkey", preferenceManager.getString(Constants.KEY_USER_KEY));
 
         progressDialog = new ProgressDialog(getContext());
         progressDialog.setCancelable(false);
@@ -351,24 +355,32 @@ public class FragmentHome extends Fragment {
                 @Override
                 public void onSuccess(Location location) {
                     if (location != null) {
-                        // init lat lng
                         currentLocation = new LatLng(location.getLatitude(), location.getLongitude());
-                        Geocoder geocoder = new Geocoder(getContext());
-                        try {
-                            ArrayList<Address> addresses = (ArrayList<Address>) geocoder.getFromLocation(currentLocation.latitude, currentLocation.longitude, 1);
-                            binding.tvCurrentLocation.setText(addresses.get(0).getAddressLine(0));
-
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        } catch (Exception e) {
-                            Toast.makeText(getContext(), "Không xác định được vị trí", Toast.LENGTH_SHORT).show();
-                            e.printStackTrace();
+                        Context context = requireContext();
+                        if (context != null) {
+                            Geocoder geocoder = new Geocoder(context);
+                            try {
+                                List<Address> addresses = geocoder.getFromLocation(currentLocation.latitude, currentLocation.longitude, 1);
+                                if (!addresses.isEmpty()) {
+                                    Address address = addresses.get(0);
+                                    String addressLine = address.getAddressLine(0);
+                                    binding.tvCurrentLocation.setText(addressLine);
+                                } else {
+                                    Toast.makeText(context, "Không xác định được vị trí", Toast.LENGTH_SHORT).show();
+                                }
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                        } else {
+                            // Xử lý khi getContext() trả về giá trị null
+                            Toast.makeText(requireContext(), "Lỗi: Context null", Toast.LENGTH_SHORT).show();
                         }
-
                     }
                 }
             });
         }
     }
+
+
 
 }

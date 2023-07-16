@@ -18,6 +18,8 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Toast;
 
 import com.example.renthouse.FCM.FCMSend;
@@ -56,17 +58,26 @@ public class ActivityMain extends BaseActivity implements DialogListener {
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
+
+        Window window = getWindow();
+
+        window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+
+        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+
+        window.setStatusBarColor(ContextCompat.getColor(ActivityMain.this, R.color.purple_500));
+
         setDefaultFragment();
 
         binding.bottomNavigationView.setBackground(null);
         binding.bottomNavigationView.setOnItemSelectedListener(item -> {
-            if(item.getItemId() == R.id.btnHome) {
+            if (item.getItemId() == R.id.btnHome) {
                 replaceFragment(new FragmentHome());
-            }else if(item.getItemId() == R.id.btnLiked) {
+            } else if (item.getItemId() == R.id.btnLiked) {
                 replaceFragment(new FragmentLiked());
-            }else if(item.getItemId() == R.id.btnChat) {
+            } else if (item.getItemId() == R.id.btnChat) {
                 replaceFragment(new FragmentChat());
-            }else if(item.getItemId() == R.id.btnAccount) {
+            } else if (item.getItemId() == R.id.btnAccount) {
                 replaceFragment(new FragmentAccount());
             }
             return true;
@@ -83,13 +94,13 @@ public class ActivityMain extends BaseActivity implements DialogListener {
     }
 
 
-
     private void setDefaultFragment() {
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.replace(R.id.frame_layout, new FragmentHome());
         fragmentTransaction.commit();
     }
+
     private void replaceFragment(Fragment fragment) {
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();

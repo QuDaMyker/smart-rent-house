@@ -59,7 +59,7 @@ public class ActivityDetails extends BaseActivity {
     private static final int REQUEST_CALL = 1;
     private FirebaseDatabase db;
     private DatabaseReference ref;
-    private  String idAC = null;
+    private String idAC = null;
     Room room;
     ImageButton btnPreScreen;
     CheckBox cbLiked;
@@ -99,7 +99,7 @@ public class ActivityDetails extends BaseActivity {
     List<Room> rcmRooms;
     TextView tvThemDX;
     TextView tvGiaP;
-//    ImageButton ibChat;
+    //    ImageButton ibChat;
 //    ImageButton ibCall;
     MaterialButton ibChat;
     MaterialButton ibCall;
@@ -177,8 +177,7 @@ public class ActivityDetails extends BaseActivity {
         if (room.getCreatedBy().getEmail().equals(preferenceManager.getString(Constants.KEY_EMAIL))) {
             OwnerLayout.setVisibility(View.VISIBLE);
             NormalUserLayout.setVisibility(View.GONE);
-        }
-        else{
+        } else {
             OwnerLayout.setVisibility(View.GONE);
             NormalUserLayout.setVisibility(View.VISIBLE);
         }
@@ -459,7 +458,7 @@ public class ActivityDetails extends BaseActivity {
         btnToEdit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent =new Intent(ActivityDetails.this, ActivityPost.class);
+                Intent intent = new Intent(ActivityDetails.this, ActivityPost.class);
                 Bundle bundle = new Bundle();
                 bundle.putSerializable("roomToEdit", room);
                 intent.putExtras(bundle);
@@ -508,10 +507,14 @@ public class ActivityDetails extends BaseActivity {
         });
 
 
-
+        // nếu là phòng do user hiện tại đăng thì không cho hiện nút liên hệ
+        if (room.getCreatedBy().getEmail().equals(preferenceManager.getString(Constants.KEY_EMAIL))) {
+            binding.lnTacGia.setVisibility(View.GONE);
+        }
 
 
     }
+
     private void addSeenRoom(Room room) {
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference accRef = database.getReference("Accounts");
@@ -549,6 +552,7 @@ public class ActivityDetails extends BaseActivity {
                             }
                             refSeen.setValue(listRoom);
                         }
+
                         @Override
                         public void onCancelled(@NonNull DatabaseError error) {
 
@@ -556,14 +560,32 @@ public class ActivityDetails extends BaseActivity {
                     });
                 }
             }
+
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
 
             }
         });
     }
+
     private void tinhSoP(AccountClass tg) {
-        final AtomicInteger count = new AtomicInteger(0); // Sử dụng AtomicInteger để đảm bảo tính đồng bộ
+        // Danh edited:  t sửa vầy cho chạy nhanh hơn, đỡ phải vòng lặp ha
+        Query query = ref.orderByChild("createdBy/email").equalTo(tg.getEmail());
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()) {
+                    tvSoP.setText(snapshot.getChildrenCount() + " phòng");
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
+        /*final AtomicInteger count = new AtomicInteger(0); // Sử dụng AtomicInteger để đảm bảo tính đồng bộ
 
         ref.addValueEventListener(new ValueEventListener() {
             @Override
@@ -581,7 +603,9 @@ public class ActivityDetails extends BaseActivity {
             public void onCancelled(@NonNull DatabaseError error) {
 
             }
-        });
+        });*/
+
+
     }
 
     //cùng quận thì cho vô rcm
