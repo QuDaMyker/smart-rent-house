@@ -17,6 +17,7 @@ import java.util.List;
 public class UtilitiesAdapter extends  RecyclerView.Adapter<UtilitiesAdapter.UtilitiesViewHolder>{
     private List<String> listUti;
     private Context context;
+    private int itemToShow = 2;
 
     public UtilitiesAdapter (List<String> item, Context context)
     {
@@ -32,6 +33,10 @@ public class UtilitiesAdapter extends  RecyclerView.Adapter<UtilitiesAdapter.Uti
         return  new UtilitiesViewHolder(v);
     }
 
+    public void setLimit(int limit) {
+        this.itemToShow = limit;
+        notifyDataSetChanged();
+    }
     @Override
     public void onBindViewHolder(@NonNull UtilitiesViewHolder holder, int position) {
 
@@ -105,13 +110,28 @@ public class UtilitiesAdapter extends  RecyclerView.Adapter<UtilitiesAdapter.Uti
     }
 
     @Override
+//    public int getItemCount() {
+//        if (listUti != null) {
+//            return listUti.size();
+//        } else {
+//            return 0;
+//        }
+//    }
+//    public int getItemCount() {
+//        if (itemToShow > 0 && itemToShow < listUti.size()) {
+//            return itemToShow;
+//        } else {
+//            return listUti.size();
+//        }
+//    }
     public int getItemCount() {
-        if (listUti != null) {
-            return listUti.size();
-        } else {
-            return 0;
+        if (itemToShow > 0)
+        {
+            return itemToShow;
         }
+        return 0;
     }
+
 
     public class UtilitiesViewHolder extends RecyclerView.ViewHolder{
         public ImageView iconImageView;
@@ -123,4 +143,6 @@ public class UtilitiesAdapter extends  RecyclerView.Adapter<UtilitiesAdapter.Uti
             nameTextView = itemView.findViewById(R.id.nameTextView);
         }
     }
+
+
 }

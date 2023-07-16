@@ -14,6 +14,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Paint;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -55,6 +56,7 @@ import com.squareup.picasso.Picasso;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -65,6 +67,11 @@ public class Admin_ActivityThongTinPhong extends AppCompatActivity {
 
     private FirebaseDatabase db;
     private DatabaseReference ref;
+
+    private String moTaP = null;
+    private int itemsTI = 6;
+
+    private int minItemRomRcm = 4;
     private Room room;
     private ImageButton btnPreScreen;
     private ImageButton btnNextImage;
@@ -92,6 +99,7 @@ public class Admin_ActivityThongTinPhong extends AppCompatActivity {
     private TextView tvXemThemMT;
     private List<String> listTI;
     private RecyclerView rcvTienIch;
+    private TextView tvThemTI;
     private AccountClass Tg;
     private ImageView ivTacGia;
     private TextView tvTenTG;
@@ -146,12 +154,13 @@ public class Admin_ActivityThongTinPhong extends AppCompatActivity {
         tvXemThemMT = findViewById(R.id.tvShowMoreMT);
         tvNgayDang = findViewById(R.id.tvNgay);
         rcvTienIch = findViewById(R.id.rcvTienIch);
+        tvThemTI = findViewById(R.id.tvMoreTI);
         ivTacGia = findViewById(R.id.imageTacGia);
         tvTenTG = findViewById(R.id.tvTenTg);
         tvSoP = findViewById(R.id.tvSoPhong);
         btnThemTTtg = findViewById(R.id.btnMoreTg);
         rcvDeXuatP = findViewById(R.id.rcvDeXuatPhong);
-        //tvThemDX = findViewById(R.id.tvMoreRoom);
+        tvThemDX = findViewById(R.id.tvMoreRoom);
         tvGiaP = findViewById(R.id.tvGia);
 
         lnDuyet = findViewById(R.id.lnDuyet);
@@ -191,7 +200,17 @@ public class Admin_ActivityThongTinPhong extends AppCompatActivity {
 
         tvLoaiP.setText(room.getRoomType());
         tvSoNg.setText(String.valueOf(room.getCapacity()) + " Nam/Nữ");
-        tvTinhTrang.setText("Chưa fix");
+        if (room.isRented())
+        {
+            tvTinhTrang.setText("Đã cho thuê");
+        }
+        else
+        {
+            if (room.getStatus().equals(Constants.STATUS_DELETED))
+            {
+                tvTinhTrang.setText("Phòng đã bị xóa");
+            }
+        }
         tvDienTich.setText(String.valueOf(room.getArea()) + " m2");
         tvCoc.setText(String.valueOf(room.getDeposit()) + " tr");
         tvTenP.setText(room.getTitle());
@@ -202,17 +221,69 @@ public class Admin_ActivityThongTinPhong extends AppCompatActivity {
 
         tvGiaDien.setText(String.valueOf(room.getElectricityCost() / 1000) + "K");
         tvGiaNuoc.setText(String.valueOf(room.getWaterCost() / 1000) + "K");
-        tvGiaXe.setText(String.valueOf(room.getParkingFee() / 1000) + "K");
+        if (room.isParking())
+        {
+            tvGiaXe.setText(String.valueOf(room.getParkingFee() / 1000) + "K");
+        }
+        else {
+            tvGiaXe.setText("Không có");
+        }
         tvGiaWifi.setText(String.valueOf(room.getInternetCost() / 1000) + "K");
-        tvMota.setText(room.getDescription());
-        //tvNgayDang.setText(R.id.tvNgayDang);
+        //Xử lý ô mô tả
+        moTaP = room.getDescription();
+        int widthTv = fromDptoInt(360);
+        int temp = getTextWidth(moTaP);
+        if (getTextWidth(moTaP) >  3*widthTv)
+        {
+            tvXemThemMT.setVisibility(View.VISIBLE);
+            tvMota.setText(moTaP);
+        }
+        else
+        {
+            tvXemThemMT.setVisibility(View.GONE);
+            tvMota.setText(moTaP);
+        }
+
+        String ngayDang = room.getDateTime();
+
+        tvNgayDang.setText(getAfterSpace(ngayDang));
 
         listTI = room.getUtilities();
-        UtilitiesAdapter utilitiesAdapter = new UtilitiesAdapter(listTI, this);
+        if (listTI != null)
+        {
+            UtilitiesAdapter utilitiesAdapter = new UtilitiesAdapter(listTI, this);
+            utilitiesAdapter.setLimit(Math.min(itemsTI, listTI.size()));
 
-        GridLayoutManager grid1 = new GridLayoutManager(this, 3);
-        rcvTienIch.setLayoutManager(grid1);
-        rcvTienIch.setAdapter(utilitiesAdapter);
+            GridLayoutManager grid1 = new GridLayoutManager(this, 3);
+            rcvTienIch.setLayoutManager(grid1);
+            rcvTienIch.setAdapter(utilitiesAdapter);
+            if (itemsTI >= listTI.size())
+            {
+                tvThemTI.setVisibility(View.GONE);
+            }
+            tvThemTI.setOnClickListener(new View.OnClickListener() {
+                boolean isExpand = false;
+                @Override
+                public void onClick(View v) {
+                    isExpand = !isExpand;
+                    if (isExpand) {
+                        utilitiesAdapter.setLimit(listTI.size());
+                        tvThemTI.setText("Thu gọn");
+                    } else {
+                        utilitiesAdapter.setLimit(Math.min(itemsTI, listTI.size()));
+                        utilitiesAdapter.notifyDataSetChanged();
+                        tvThemTI.setText("Xem thêm");
+                    }
+                }
+            });
+        }
+        else
+        {
+            rcvTienIch.setVisibility(View.GONE);
+            tvThemTI.setText("Phòng chưa được cập nhập các tiện ích");
+            int color = ContextCompat.getColor(this, R.color.Secondary_40);
+            tvThemTI.setTextColor(color);
+        }
 
 
         Tg = room.getCreatedBy();
@@ -230,11 +301,54 @@ public class Admin_ActivityThongTinPhong extends AppCompatActivity {
         rcvDeXuatP.setLayoutManager(grid);
 
         rcmRooms = new ArrayList<>();
-        RoomAdapter roomAdapter = new RoomAdapter(this, rcmRooms);
+        getListRcmRoomFromFB(new ActivityDetails.RoomListListener() {
+            @Override
+            public void onRoomListCreated(List<Room> rcmRooms) {
+                if (rcmRooms.size() != 0) {
+                    RoomAdapter roomAdapter = new RoomAdapter(Admin_ActivityThongTinPhong.this, rcmRooms);
+                    roomAdapter.setEnableLikeButton(View.GONE);
+                    minItemRomRcm = Math.min(minItemRomRcm, rcmRooms.size());
+                    roomAdapter.setLimit(minItemRomRcm);
+                    rcvDeXuatP.setAdapter(roomAdapter);
+                    if (rcmRooms.size() <=minItemRomRcm)
+                    {
+                        tvThemDX.setVisibility(View.GONE);
+                    }
+                    else
+                    {
+                        tvThemDX.setVisibility(View.VISIBLE);
+                    }
+                    tvThemDX.setOnClickListener(new View.OnClickListener() {
+                        boolean isTheLast = false;
+                        int itemShowed = minItemRomRcm;
 
-        rcvDeXuatP.setAdapter(roomAdapter);
-
-        getListRoomFromFB();
+                        @Override
+                        public void onClick(View v) {
+                            if (!isTheLast) {
+                                itemShowed += minItemRomRcm;
+                                itemShowed = (itemShowed <= rcmRooms.size()) ? itemShowed : rcmRooms.size();
+                                roomAdapter.setLimit(itemShowed);
+                                if (itemShowed == rcmRooms.size()) {
+                                    isTheLast = true;
+                                    tvThemDX.setText("Thu gọn");
+                                }
+                            }
+                            else {
+                                roomAdapter.setLimit(minItemRomRcm);
+                                itemShowed = minItemRomRcm;
+                                tvThemDX.setText("Xem thêm");
+                                isTheLast = false;
+                            }
+                        }
+                    });
+                } else {
+                    rcvDeXuatP.setVisibility(View.GONE);
+                    tvThemDX.setText("Chưa tìm thấy phòng phù hợp");
+                    int color = ContextCompat.getColor(Admin_ActivityThongTinPhong.this, R.color.Secondary_40);
+                    tvThemDX.setTextColor(color);
+                }
+            }
+        });
         visibleRowCount = 2;
         totalRowCount = rcmRooms.size();
 
@@ -416,12 +530,16 @@ public class Admin_ActivityThongTinPhong extends AppCompatActivity {
                         .setMessage("Bạn có chắc chắn muốn xóa phòng trọ này?")
                         .setPositiveButton("Xóa", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int whichButton) {
-                                room.setStatus(Constants.STATUS_DELETED);
-                                DatabaseReference refRoom =  ref.child(room.getId());
-                                refRoom.child("status").setValue(Constants.STATUS_DELETED);
-
-                                Toast.makeText(Admin_ActivityThongTinPhong.this, "Xóa phòng trọ thành công", Toast.LENGTH_SHORT).show();
-                                finish();
+                                FirebaseDatabase database = FirebaseDatabase.getInstance();
+                                DatabaseReference notiSchedulesRef = database.getReference("Rooms").child(room.getId());
+                                notiSchedulesRef.updateChildren(Collections.singletonMap("status", Constants.STATUS_DELETED)).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                    @Override
+                                    public void onSuccess(Void unused) {
+                                        room.setStatus(Constants.STATUS_DELETED);
+                                        Toast.makeText(Admin_ActivityThongTinPhong.this, "Xóa phòng trọ thành công", Toast.LENGTH_SHORT).show();
+                                        finish();
+                                    }
+                                });
                             }
                         })
                         .setNegativeButton("Hủy", new DialogInterface.OnClickListener() {
@@ -477,6 +595,15 @@ public class Admin_ActivityThongTinPhong extends AppCompatActivity {
         }
     }
 
+    public String getAfterSpace(String input) {
+        int spaceIndex = input.indexOf(" ");
+        if (spaceIndex != -1 && spaceIndex < input.length() - 1) {
+            return input.substring(spaceIndex + 1);
+        } else {
+            return "";
+        }
+    }
+
     private void tinhSoP(AccountClass tg) {
         final AtomicInteger count = new AtomicInteger(0); // Sử dụng AtomicInteger để đảm bảo tính đồng bộ
 
@@ -500,7 +627,8 @@ public class Admin_ActivityThongTinPhong extends AppCompatActivity {
     }
 
     //cùng quận thì cho vô rcm
-    private void getListRoomFromFB() {
+    private void getListRcmRoomFromFB(ActivityDetails.RoomListListener listener) {
+        List<Room> rcmRooms = new ArrayList<>();
 
         FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
         DatabaseReference databaseReference = firebaseDatabase.getReference("Rooms");
@@ -510,17 +638,33 @@ public class Admin_ActivityThongTinPhong extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
                     Room r = dataSnapshot.getValue(Room.class);
-                    if (!r.getId().equals(room.getId()) && (r.getLocation().getDistrict().getCode().equals(room.getLocation().getDistrict().getCode()))) {
+                    boolean check = !r.getId().equals(room.getId());
+                    boolean checkLo = r.getLocation().getDistrict().getCode().equals(room.getLocation().getDistrict().getCode());
+                    if (r.getStatus().equals(Constants.STATUS_APPROVED) && !r.getId().equals(room.getId()) && r.getLocation().getDistrict().getCode().equals(room.getLocation().getDistrict().getCode())) {
                         rcmRooms.add(r);
                     }
                 }
 
+                // Gọi phương thức onRoomListCreated() để trả về danh sách phòng đã tạo
+                listener.onRoomListCreated(rcmRooms);
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-
+                // Xử lý lỗi nếu cần thiết
             }
         });
+    }
+    private int getTextWidth(String text) {
+        // Đo chiều rộng của chuỗi được hiển thị trên TextView
+        Paint paint = new Paint();
+        paint.setTextSize(tvMota.getTextSize());
+        return (int) paint.measureText(text);
+    }
+    public int fromDptoInt ( float dpValue)
+    {
+        float density = getResources().getDisplayMetrics().density; // Lấy tỷ lệ mật độ của màn hình
+        int dpToPx = (int) (dpValue * density + 0.5f);
+        return dpToPx;
     }
 }

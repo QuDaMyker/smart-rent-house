@@ -430,7 +430,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp"
-                    android:maxLines="2"
+                    android:maxLines="3"
                     android:text="Chỉ là CHDV mà có hồ bơi - sảnh ăn uống. Bạn Tin Không?
                     Nguyễn Văn Linh, Bình Thuận, Quận 7 . . . "
                     android:textColor="@color/Secondary_40"
@@ -532,12 +532,21 @@
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/rcvTienIch"
                     android:layout_width="match_parent"
-                    android:layout_height="100dp"
+                    android:layout_height="wrap_content"
                     android:layout_marginStart="10dp"
                     android:layout_marginBottom="10dp"
                     android:columnCount="3"
                     android:rowCount="5"
                     android:useDefaultMargins="true" />
+                <TextView
+                    android:id="@+id/tvMoreTI"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:clickable="true"
+                    android:text="Xem thêm"
+                    android:textColor="@color/Primary_40"
+                    android:textStyle="bold" />
 
 
             </LinearLayout>
@@ -553,7 +562,6 @@
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/lnTienIch"
-
                 >
 
                 <androidx.cardview.widget.CardView
@@ -617,6 +625,7 @@
                 android:layout_width="370dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
+                android:layout_marginBottom="20dp"
                 android:orientation="vertical"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -639,19 +648,18 @@
 
                 </androidx.recyclerview.widget.RecyclerView>
 
-                <!--                <TextView-->
-                <!--                    android:id="@+id/tvMoreRoom"-->
-                <!--                    android:layout_width="wrap_content"-->
-                <!--                    android:layout_height="wrap_content"-->
-                <!--                    android:layout_gravity="center"-->
-                <!--                    android:clickable="true"-->
-                <!--                    android:text="Xem thêm"-->
-                <!--                    android:textColor="@color/Primary_40"-->
-                <!--                    android:textStyle="bold" />-->
+                <TextView
+                    android:id="@+id/tvMoreRoom"
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="10dp"
+                    android:clickable="true"
+                    android:text="Xem thêm"
+                    android:textColor="@color/Primary_40"
+                    android:textStyle="bold" />
 
             </LinearLayout>
-
-
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
 

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="30dp"
+    android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="horizontal"
     app:cardCornerRadius="10dp"
@@ -11,10 +11,11 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="30dp"
         android:orientation="horizontal"
         android:gravity="center_vertical"
-        android:background="@color/Secondary_80">
+        android:background="@color/Secondary_80"
+        >
         <ImageView
             android:id="@+id/iconImageView"
             android:layout_width="20dp"

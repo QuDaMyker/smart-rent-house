@@ -1,5 +1,6 @@
 package com.example.renthouse.FragmentFilter;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,6 +14,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.renthouse.Adapter.RoomAdapter;
+import com.example.renthouse.Interface.DialogListener;
 import com.example.renthouse.OOP.Room;
 import com.example.renthouse.R;
 import com.example.renthouse.utilities.Constants;
@@ -51,8 +53,20 @@ public class FragmentLikedRooms extends Fragment {
     private String idAC;
     private PreferenceManager preferenceManager;
     private FirebaseDatabase db;
-    private ProgressBar prgLoading;
 
+    private DialogListener dialogListener;
+
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        try {
+            dialogListener = (DialogListener) context;
+
+        } catch ( ClassCastException e)
+        {
+            throw new ClassCastException(context.toString() +" must implement DialogListener");
+        }
+    }
     public FragmentLikedRooms() {
 
 
@@ -94,29 +108,21 @@ public class FragmentLikedRooms extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_liked_rooms, container, false);
         recyclerView = (RecyclerView) view.findViewById(R.id.rcv_LikedRooms);
-        prgLoading =  view.findViewById(R.id.loading);
         GridLayoutManager grid = new GridLayoutManager(getActivity(), 2);
-
         recyclerView.setLayoutManager(grid);
-
-
         idRoomsLiked = new ArrayList<String>();
         rooms = new ArrayList<>();
         roomAdapter = new RoomAdapter(this.getContext(), rooms);
-
         recyclerView.setAdapter(roomAdapter);
 
-        //getListLikedRoomFromFB();
-        //getListRoomFromFB();
 
         return view;
     }
 
     private void getListLikedRoomFromFB() {
-        prgLoading.setVisibility(View.VISIBLE);
+        dialogListener.showDialog();
         rooms.clear();
         idRoomsLiked.clear();
-        roomAdapter.notifyDataSetChanged();
         FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
         FirebaseUser currentUser = firebaseAuth.getCurrentUser();
         db = FirebaseDatabase.getInstance();
@@ -158,13 +164,16 @@ public class FragmentLikedRooms extends Fragment {
                                                         rooms.add(room);
                                                     }
                                                 }
+                                                roomAdapter.setLimit(rooms.size());
                                                 roomAdapter.notifyDataSetChanged();
-                                                prgLoading.setVisibility(View.GONE);
+                                                dialogListener.dismissDialog();
 
                                             }
 
                                             @Override
                                             public void onCancelled(@NonNull DatabaseError error) {
+
+                                                dialogListener.dismissDialog();
 
                                             }
                                         });
@@ -176,6 +185,8 @@ public class FragmentLikedRooms extends Fragment {
                             @Override
                             public void onCancelled(@NonNull DatabaseError error) {
 
+                                dialogListener.dismissDialog();
+
                             }
                         });
                     }
@@ -184,6 +195,8 @@ public class FragmentLikedRooms extends Fragment {
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
+
+                dialogListener.dismissDialog();
 
             }
         });
@@ -207,7 +220,7 @@ public class FragmentLikedRooms extends Fragment {
 
             }
         });
-    }
+    }//hàm này để test thôi
 
     @Override
     public void onDestroy() {
@@ -219,8 +232,6 @@ public class FragmentLikedRooms extends Fragment {
     public void onResume() {
         super.onResume();
         getListLikedRoomFromFB();
-        roomAdapter.notifyDataSetChanged();
-
     }
 }
 
