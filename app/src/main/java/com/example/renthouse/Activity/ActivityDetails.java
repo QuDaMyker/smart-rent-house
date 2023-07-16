@@ -4,6 +4,7 @@ import static com.gun0912.tedpermission.provider.TedPermissionProvider.context;
 
 import android.Manifest;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -33,6 +34,7 @@ import com.example.renthouse.Adapter.UtilitiesAdapter;
 import com.example.renthouse.Admin.Activity.Admin_ActivityThongTinPhong;
 import com.example.renthouse.Chat.Dashboard.ActivityChat;
 import com.example.renthouse.Chat.OOP.Conversation;
+import com.example.renthouse.Interface.DialogListener;
 import com.example.renthouse.OOP.AccountClass;
 import com.example.renthouse.OOP.Room;
 import com.example.renthouse.R;
@@ -118,7 +120,9 @@ public class ActivityDetails extends BaseActivity {
     LinearLayout NormalUserLayout;
     LinearLayout OwnerLayout;
 
-
+    public interface RoomListListener {
+        void onRoomListCreated(List<Room> rooms);
+    }
     @Override
     protected void onStart() {
         super.onStart();
@@ -128,6 +132,7 @@ public class ActivityDetails extends BaseActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         binding = ActivityDetailsBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
@@ -211,7 +216,18 @@ public class ActivityDetails extends BaseActivity {
 
         tvLoaiP.setText(room.getRoomType());
         tvSoNg.setText(String.valueOf(room.getCapacity()) + " Nam/Nữ");
-        tvTinhTrang.setText("Chưa fix");
+
+        if (room.isRented())
+        {
+            tvTinhTrang.setText("Đã cho thuê");
+        }
+        else
+        {
+            if (room.getStatus().equals(Constants.STATUS_DELETED))
+            {
+                tvTinhTrang.setText("Phòng đã bị xóa");
+            }
+        }
         tvDienTich.setText(String.valueOf(room.getArea()) + " m2");
         tvCoc.setText(String.valueOf(room.getDeposit()) + " tr");
         tvTenP.setText(room.getTitle());
@@ -222,7 +238,14 @@ public class ActivityDetails extends BaseActivity {
 
         tvGiaDien.setText(String.valueOf(room.getElectricityCost() / 1000) + "K");
         tvGiaNuoc.setText(String.valueOf(room.getWaterCost() / 1000) + "K");
-        tvGiaXe.setText(String.valueOf(room.getParkingFee() / 1000) + "K");
+        if (room.isParking())
+        {
+            tvGiaXe.setText(String.valueOf(room.getParkingFee() / 1000) + "K");
+        }
+        else {
+            tvGiaXe.setText("Không có");
+        }
+
         tvGiaWifi.setText(String.valueOf(room.getInternetCost() / 1000) + "K");
 
         //Xử lý ô mô tả
@@ -295,44 +318,55 @@ public class ActivityDetails extends BaseActivity {
         rcvDeXuatP.setLayoutManager(grid);
 
         rcmRooms = new ArrayList<>();
-        rcmRooms = getListRcmRoomFromFB();
-        if (rcmRooms.size() != 0)
-        {
-            RoomAdapter roomAdapter = new RoomAdapter(this, rcmRooms);
-            minItemRomRcm = Math.min(minItemRomRcm, rcmRooms.size());
-            roomAdapter.setLimit(minItemRomRcm);
-            rcvDeXuatP.setAdapter(roomAdapter);
-            tvThemDX.setOnClickListener(new View.OnClickListener() {
-                boolean isTheLast = false;
-                int itemShowed = minItemRomRcm;
-                @Override
-                public void onClick(View v) {
-                    while (!isTheLast)
-                    {
-                        itemShowed +=4;
-                        itemShowed = (itemShowed <= rcmRooms.size())? itemShowed : rcmRooms.size();
-                        roomAdapter.setLimit(itemShowed);
-                        if (itemShowed == rcmRooms.size())
-                        {
-                            isTheLast = true;
-                            tvThemDX.setText("Thu gọn");
-                        }
-                    }
-
+        //rcmRooms = getListRcmRoomFromFB();
+        getListRcmRoomFromFB(new RoomListListener() {
+            @Override
+            public void onRoomListCreated(List<Room> rcmRooms) {
+                if (rcmRooms.size() != 0) {
+                    RoomAdapter roomAdapter = new RoomAdapter(ActivityDetails.this, rcmRooms);
+                    roomAdapter.setEnableLikeButton(View.GONE);
+                    minItemRomRcm = Math.min(minItemRomRcm, rcmRooms.size());
                     roomAdapter.setLimit(minItemRomRcm);
-                    itemShowed = minItemRomRcm;
-                    tvThemDX.setText("Xem thêm");
+                    rcvDeXuatP.setAdapter(roomAdapter);
+                    if (rcmRooms.size() <=minItemRomRcm)
+                    {
+                        tvThemDX.setVisibility(View.GONE);
+                    }
+                    else
+                    {
+                        tvThemDX.setVisibility(View.VISIBLE);
+                    }
+                    tvThemDX.setOnClickListener(new View.OnClickListener() {
+                        boolean isTheLast = false;
+                        int itemShowed = minItemRomRcm;
 
+                        @Override
+                        public void onClick(View v) {
+                            if (!isTheLast) {
+                                itemShowed += minItemRomRcm;
+                                itemShowed = (itemShowed <= rcmRooms.size()) ? itemShowed : rcmRooms.size();
+                                roomAdapter.setLimit(itemShowed);
+                                if (itemShowed == rcmRooms.size()) {
+                                    isTheLast = true;
+                                    tvThemDX.setText("Thu gọn");
+                                }
+                            }
+                            else {
+                                roomAdapter.setLimit(minItemRomRcm);
+                                itemShowed = minItemRomRcm;
+                                tvThemDX.setText("Xem thêm");
+                                isTheLast = false;
+                            }
+                        }
+                    });
+                } else {
+                    rcvDeXuatP.setVisibility(View.GONE);
+                    tvThemDX.setText("Chưa tìm thấy phòng phù hợp");
+                    int color = ContextCompat.getColor(ActivityDetails.this, R.color.Secondary_40);
+                    tvThemDX.setTextColor(color);
                 }
-            });
-        }
-        else
-        {
-            rcvDeXuatP.setVisibility(View.GONE);
-            tvThemDX.setText("Chưa tìm thấy phòng phù hợp");
-            int color = ContextCompat.getColor(this, R.color.Secondary_40);
-            tvThemDX.setTextColor(color);
-        }
+            }
+        });
 
         //sự kiện các nút
         cbLiked.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -593,7 +627,6 @@ public class ActivityDetails extends BaseActivity {
             binding.lnTacGia.setVisibility(View.GONE);
         }
 
-
     }
 
     private void addSeenRoom(Room room) {
@@ -744,8 +777,35 @@ public class ActivityDetails extends BaseActivity {
 
     //cùng quận thì cho vô rcm
     @NonNull
-    private List<Room> getListRcmRoomFromFB() {
-        List<Room> rcmRooms = new ArrayList<Room>();
+//    private List<Room> getListRcmRoomFromFB() {
+//        List<Room> rcmRooms = new ArrayList<Room>();
+//
+//        FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+//        DatabaseReference databaseReference = firebaseDatabase.getReference("Rooms");
+//
+//        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(@NonNull DataSnapshot snapshot) {
+//                for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+//                    Room r = dataSnapshot.getValue(Room.class);
+//                    boolean check = !r.getId().equals(room.getId());
+//                    boolean checkLo = r.getLocation().getDistrict().getCode().equals(room.getLocation().getDistrict().getCode());
+//                    if (!r.getId().equals(room.getId()) && (r.getLocation().getDistrict().getCode().equals(room.getLocation().getDistrict().getCode()))) {
+//                        rcmRooms.add(r);
+//                    }
+//                }
+//                listener.onRoomListCreated(rcmRooms);
+//            }
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError error) {
+//
+//            }
+//        });
+//
+//        return rcmRooms;
+//    }
+    private void getListRcmRoomFromFB(RoomListListener listener) {
+        List<Room> rcmRooms = new ArrayList<>();
 
         FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
         DatabaseReference databaseReference = firebaseDatabase.getReference("Rooms");
@@ -755,19 +815,22 @@ public class ActivityDetails extends BaseActivity {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
                     Room r = dataSnapshot.getValue(Room.class);
-                    if (!r.getId().equals(room.getId()) && (r.getLocation().getDistrict().getCode().equals(room.getLocation().getDistrict().getCode()))) {
+                    boolean check = !r.getId().equals(room.getId());
+                    boolean checkLo = r.getLocation().getDistrict().getCode().equals(room.getLocation().getDistrict().getCode());
+                    if (r.getStatus().equals(Constants.STATUS_APPROVED) && !r.getId().equals(room.getId()) && r.getLocation().getDistrict().getCode().equals(room.getLocation().getDistrict().getCode())) {
                         rcmRooms.add(r);
                     }
                 }
 
+                // Gọi phương thức onRoomListCreated() để trả về danh sách phòng đã tạo
+                listener.onRoomListCreated(rcmRooms);
             }
+
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-
+                // Xử lý lỗi nếu cần thiết
             }
         });
-
-        return rcmRooms;
     }
     private int getTextWidth(String text) {
         // Đo chiều rộng của chuỗi được hiển thị trên TextView

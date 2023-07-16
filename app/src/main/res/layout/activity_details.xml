@@ -147,7 +147,7 @@
             <LinearLayout
                 android:id="@+id/lnTinhTrang"
                 android:layout_width="360dp"
-                android:layout_height="60dp"
+                android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
                 android:background="@drawable/bg_details_thongtin"
                 android:orientation="horizontal"
@@ -171,9 +171,10 @@
 
                     <TextView
                         android:id="@+id/tvTT"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="Còn"
+                        android:textAlignment="center"
                         android:textColor="@color/Primary_40"
                         android:textSize="16sp"
                         android:textStyle="bold" />
@@ -441,7 +442,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp"
-                    android:maxLines="2"
+                    android:maxLines="3"
                     android:text="Chỉ là CHDV mà có hồ bơi - sảnh ăn uống. Bạn Tin Không?
                     Nguyễn Văn Linh, Bình Thuận, Quận 7 . . . "
                     android:textColor="@color/Secondary_40"
@@ -636,6 +637,7 @@
                 android:layout_width="370dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
+                android:layout_marginBottom="20dp"
                 android:orientation="vertical"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -654,7 +656,8 @@
                     android:id="@+id/rcvDeXuatPhong"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp">
+                    android:layout_marginTop="10dp"
+                    >
 
                 </androidx.recyclerview.widget.RecyclerView>
 
@@ -663,10 +666,13 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:clickable="true"
+                    android:textAlignment="center"
                     android:text="Xem thêm"
                     android:textColor="@color/Primary_40"
-                    android:textStyle="bold" />
+                    android:textStyle="bold"
+                    android:layout_marginBottom="10dp"
+                    android:layout_marginTop="10dp"
+                    />
 
             </LinearLayout>
 

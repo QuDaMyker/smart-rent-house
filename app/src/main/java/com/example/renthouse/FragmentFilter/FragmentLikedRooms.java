@@ -1,5 +1,6 @@
 package com.example.renthouse.FragmentFilter;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,6 +14,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.renthouse.Adapter.RoomAdapter;
+import com.example.renthouse.Interface.DialogListener;
 import com.example.renthouse.OOP.Room;
 import com.example.renthouse.R;
 import com.example.renthouse.utilities.Constants;
@@ -52,6 +54,19 @@ public class FragmentLikedRooms extends Fragment {
     private PreferenceManager preferenceManager;
     private FirebaseDatabase db;
 
+    private DialogListener dialogListener;
+
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        try {
+            dialogListener = (DialogListener) context;
+
+        } catch ( ClassCastException e)
+        {
+            throw new ClassCastException(context.toString() +" must implement DialogListener");
+        }
+    }
     public FragmentLikedRooms() {
 
 
@@ -105,6 +120,7 @@ public class FragmentLikedRooms extends Fragment {
     }
 
     private void getListLikedRoomFromFB() {
+        dialogListener.showDialog();
         rooms.clear();
         idRoomsLiked.clear();
         FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
@@ -150,11 +166,14 @@ public class FragmentLikedRooms extends Fragment {
                                                 }
                                                 roomAdapter.setLimit(rooms.size());
                                                 roomAdapter.notifyDataSetChanged();
+                                                dialogListener.dismissDialog();
 
                                             }
 
                                             @Override
                                             public void onCancelled(@NonNull DatabaseError error) {
+
+                                                dialogListener.dismissDialog();
 
                                             }
                                         });
@@ -166,6 +185,8 @@ public class FragmentLikedRooms extends Fragment {
                             @Override
                             public void onCancelled(@NonNull DatabaseError error) {
 
+                                dialogListener.dismissDialog();
+
                             }
                         });
                     }
@@ -174,6 +195,8 @@ public class FragmentLikedRooms extends Fragment {
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
+
+                dialogListener.dismissDialog();
 
             }
         });
@@ -197,7 +220,7 @@ public class FragmentLikedRooms extends Fragment {
 
             }
         });
-    }
+    }//hàm này để test thôi
 
     @Override
     public void onDestroy() {

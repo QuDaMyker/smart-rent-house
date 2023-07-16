@@ -1,5 +1,6 @@
 package com.example.renthouse.Fragment;
 
+import android.content.Context;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -14,6 +15,7 @@ import android.view.ViewGroup;
 
 import com.example.renthouse.FragmentFilter.FragmentLikedRooms;
 import com.example.renthouse.FragmentFilter.LikedEmptyFragment;
+import com.example.renthouse.Interface.DialogListener;
 import com.example.renthouse.R;
 import com.example.renthouse.databinding.FragmentLikedBinding;
 import com.google.firebase.auth.FirebaseAuth;
@@ -30,7 +32,6 @@ public class FragmentLiked extends Fragment {
     boolean isEmpty = true;
 
     private FragmentLikedBinding binding;
-    //private DialogListener dialogListener;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -78,7 +79,6 @@ public class FragmentLiked extends Fragment {
 
                             @Override
                             public void onCancelled(@NonNull DatabaseError error) {
-                                // Xử lý lỗi nếu cần thiết
                             }
                         });
                         break; // Thoát khỏi vòng lặp sau khi tìm thấy email tương ứng
