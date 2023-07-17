@@ -440,12 +440,6 @@ public class Admin_ActivityThongTinPhong extends AppCompatActivity {
 
             }
         });
-       /* tvThemDX.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-            }
-        });//chưa làm*/
 
         //nhấn nút ACP thì đổi trạng thái phobgf thành Approved
         btnAcp.setOnClickListener(new View.OnClickListener() {
