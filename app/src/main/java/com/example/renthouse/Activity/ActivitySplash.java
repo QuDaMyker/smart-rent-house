@@ -14,6 +14,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
 import com.example.renthouse.Admin.Activity.Admin_ActivityMain;
+import com.example.renthouse.OnBoard.ActivityOnBoard;
 import com.example.renthouse.R;
 import com.example.renthouse.utilities.Constants;
 import com.example.renthouse.utilities.PreferenceManager;
@@ -73,83 +74,29 @@ public class ActivitySplash extends AppCompatActivity {
 
 
                 preferenceManager = new PreferenceManager(getApplicationContext());
-                if(preferenceManager.getBoolean(Constants.KEY_IS_SIGNED_IN)) {
-                    if(preferenceManager.getString(Constants.KEY_EMAIL).equals("admin")) {
-                        startActivity(new Intent(ActivitySplash.this, Admin_ActivityMain.class));
-                    } else{
-                        putDataAccess();
-                        startActivity(new Intent(ActivitySplash.this, ActivityMain.class));
-                    }
+                if (!preferenceManager.getBoolean(Constants.KEY_FIRST_INSTALL)) {
+                    startActivity(new Intent(ActivitySplash.this, ActivityOnBoard.class));
+                    finish();
                 } else {
-                    putDataAccess();
-                    startActivity(new Intent(ActivitySplash.this, ActivityLogIn.class));
-                }
-                finish();
-
-                /*// After the progress is complete, check the user authentication status
-                FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
-                FirebaseUser currentUser = firebaseAuth.getCurrentUser();
-
-                // Start the appropriate activity based on the user's authentication status
-                runOnUiThread(new Runnable() {
-                    public void run() {
-                        *//*if (currentUser != null) {
-                            // User is already logged in, navigate to MainActivity
-                            startActivity(new Intent(ActivitySplash.this, ActivityMain.class));
+                    if (preferenceManager.getBoolean(Constants.KEY_IS_SIGNED_IN)) {
+                        if (preferenceManager.getString(Constants.KEY_EMAIL).equals("admin")) {
+                            startActivity(new Intent(ActivitySplash.this, Admin_ActivityMain.class));
                         } else {
-                            // User is not logged in, navigate to LoginActivity
-                            startActivity(new Intent(ActivitySplash.this, ActivityLogIn.class));
+                            putDataAccess();
+                            startActivity(new Intent(ActivitySplash.this, ActivityMain.class));
                         }
-
-                        finish(); // Optional: Close the current activity*//*
-
+                    } else {
+                        putDataAccess();
+                        startActivity(new Intent(ActivitySplash.this, ActivityLogIn.class));
                     }
-                });*/
+                    finish();
+                }
+
+
             }
         }).start();
 
-//        // Tạo node PopularRegion
-//        FirebaseDatabase database = FirebaseDatabase.getInstance();
-//        DatabaseReference myRef = database.getReference("Rooms");
-//        DatabaseReference databaseReference = database.getReference("PopularRegion");
-//        myRef.addListenerForSingleValueEvent(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(@NonNull DataSnapshot snapshot) {
-//                for (DataSnapshot snapshot1 : snapshot.getChildren()) {
-//                    Room room = snapshot1.getValue(Room.class);
-//                    String path_with_type = snapshot1.getValue(Room.class).getLocation().getDistrict().getPath_with_type();
-//                    databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
-//                        @Override
-//                        public void onDataChange(@NonNull DataSnapshot snapshot) {
-//                            Log.d("Số lượng", String.valueOf(snapshot.getChildrenCount()));
-//                            if (snapshot.hasChild(path_with_type)) {
-//                                Region region = snapshot.child(path_with_type).getValue(Region.class);
-//                                region.setSoLuong(region.getSoLuong() + 1);
-//                                databaseReference.child(path_with_type).setValue(region);
-//                                Log.d("Trùng thông tin", String.valueOf(region));
-//                            } else {
-//                                Region region = new Region(
-//                                        room.getLocation().getDistrict().getName_with_type(),
-//                                        room.getLocation().getCity().getName_with_type(),
-//                                        1
-//                                );
-//                                databaseReference.child(path_with_type).setValue(region);
-//                            }
-//                        }
 //
-//                        @Override
-//                        public void onCancelled(@NonNull DatabaseError error) {
-//
-//                        }
-//                    });
-//                }
-//            }
-//
-//            @Override
-//            public void onCancelled(@NonNull DatabaseError error) {
-//
-//            }
-//        });
     }
 
     private void putDataAccess() {
@@ -187,9 +134,9 @@ public class ActivitySplash extends AppCompatActivity {
 
 
     private void getPermission() {
-        if(ContextCompat.checkSelfPermission(ActivitySplash.this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+        if (ContextCompat.checkSelfPermission(ActivitySplash.this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             runningSplash();
-        }else {
+        } else {
             String[] permissons = {Manifest.permission.ACCESS_FINE_LOCATION};
             requestPermissions(permissons, REQUEST_CODE);
         }

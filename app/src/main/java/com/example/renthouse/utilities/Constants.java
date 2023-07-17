@@ -1,6 +1,7 @@
 package com.example.renthouse.utilities;
 
 public class Constants {
+    public static final String KEY_FIRST_INSTALL = "firstinstall";
     public static final String KEY_PREFERENCE_NAME = "rentHousePreference";
     public static final String KEY_USER_KEY = "user_key";
     public static final String KEY_EMAIL = "email";

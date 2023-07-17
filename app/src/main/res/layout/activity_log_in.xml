@@ -24,14 +24,14 @@
 
             <ImageView
                 android:id="@+id/imageView2"
-                android:layout_width="48dp"
-                android:layout_height="27.83dp"
+                android:layout_width="45dp"
+                android:layout_height="52dp"
                 android:layout_marginTop="120dp"
                 android:gravity="center"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/signinlogo" />
+                app:srcCompat="@drawable/ic_logo_login" />
 
             <TextView
                 android:id="@+id/textView2"

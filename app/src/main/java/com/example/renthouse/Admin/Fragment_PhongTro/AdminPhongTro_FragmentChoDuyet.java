@@ -1,6 +1,7 @@
 package com.example.renthouse.Admin.Fragment_PhongTro;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -20,6 +21,7 @@ import android.widget.TextView;
 import com.example.renthouse.Admin.Activity.Admin_ActivityThongTinPhong;
 import com.example.renthouse.Admin.Adapter.PhongTroAdapter;
 import com.example.renthouse.Admin.Adapter.PhongTroChoDuyetAdapter;
+import com.example.renthouse.Interface.DialogListener;
 import com.example.renthouse.Interface.ItemClick;
 import com.example.renthouse.OOP.Room;
 import com.example.renthouse.R;
@@ -40,16 +42,24 @@ public class AdminPhongTro_FragmentChoDuyet extends Fragment {
     private TextView empty_tv;
     private List<Room> phongchoduyetlist;
     private PhongTroChoDuyetAdapter phongTroChoDuyetAdapter;
-    private ProgressDialog progressDialog;
+    private DialogListener dialogListener;
+
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        try {
+            dialogListener = (DialogListener) context;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(context.toString() + " must implement DialogListener");
+        }
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         binding = FragmentAdminPhongTroChoDuyetBinding.inflate(inflater, container, false);
         View view = binding.getRoot();
 
-        progressDialog = new ProgressDialog(getContext());
-        progressDialog.setCancelable(false);
-        progressDialog.setMessage("Loading...");
 
         recyclerView = view.findViewById(R.id.recycleView);
         empty_tv = view.findViewById(R.id.textView_empty);
@@ -68,16 +78,16 @@ public class AdminPhongTro_FragmentChoDuyet extends Fragment {
         super.onResume();
     }
 
-    private void loadData(){
-        progressDialog.show();
+    private void loadData() {
+        dialogListener.showDialog();
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Rooms");
         reference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 List<Room> temphongtro = new ArrayList<>();
-                for (DataSnapshot Snapshot: snapshot.getChildren()){
+                for (DataSnapshot Snapshot : snapshot.getChildren()) {
                     String status = Snapshot.child("status").getValue(String.class);
-                    if (status.equals("pending")){
+                    if (status.equals("pending")) {
                         Room phongtro = Snapshot.getValue(Room.class);
                         temphongtro.add(phongtro);
                     }
@@ -85,11 +95,10 @@ public class AdminPhongTro_FragmentChoDuyet extends Fragment {
                 phongchoduyetlist.addAll(temphongtro);
 
                 if (phongchoduyetlist.isEmpty()) {
-                    empty_tv.setVisibility(View.VISIBLE);
+                    binding.animationView.setVisibility(View.VISIBLE);
                     recyclerView.setVisibility(View.INVISIBLE);
-                }
-                else {
-                    empty_tv.setVisibility(View.INVISIBLE);
+                } else {
+                    binding.animationView.setVisibility(View.INVISIBLE);
                     recyclerView.setVisibility(View.VISIBLE);
                     phongTroChoDuyetAdapter = new PhongTroChoDuyetAdapter(getContext(), phongchoduyetlist, new ItemClick() {
                         @Override
@@ -101,12 +110,13 @@ public class AdminPhongTro_FragmentChoDuyet extends Fragment {
                     });
                     recyclerView.setAdapter(phongTroChoDuyetAdapter);
                 }
-                progressDialog.dismiss();
+                dialogListener.dismissDialog();
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-                progressDialog.dismiss();
+                dialogListener.dismissDialog();
             }
         });
-    }}
+    }
+}

@@ -70,15 +70,18 @@ public class FragmentAccountPosted extends Fragment {
         binding = FragmentAccountPostedBinding.inflate(getLayoutInflater());
         View view = binding.getRoot();
 
-
         init();
         loadData();
         setListeners();
 
-
         return view;
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        loadData();
+    }
 
     private void init() {
         preferenceManager = new PreferenceManager(getContext());
@@ -151,8 +154,6 @@ public class FragmentAccountPosted extends Fragment {
                     }
                     dialogListener.dismissDialog();
                 }
-
-
 
 
             }

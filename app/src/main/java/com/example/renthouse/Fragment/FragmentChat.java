@@ -90,6 +90,12 @@ public class FragmentChat extends Fragment {
         return view;
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        loadData();
+    }
+
     private void init() {
         messagesLists = new ArrayList<>();
         tempMessagesLists = new ArrayList<>();
@@ -199,9 +205,7 @@ public class FragmentChat extends Fragment {
 
                                     }
                                 }
-                            }
-
-                            @Override
+                            }                            @Override
                             public void onCancelled(@NonNull DatabaseError error) {
                                 dialogListener.dismissDialog();
                             }

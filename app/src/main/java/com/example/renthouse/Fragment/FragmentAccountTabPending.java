@@ -67,6 +67,12 @@ public class FragmentAccountTabPending extends Fragment {
         return view;
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        loadData();
+    }
+
     private void init() {
         preferenceManager = new PreferenceManager(getContext());
 

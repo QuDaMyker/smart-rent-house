@@ -78,6 +78,11 @@ public class FragmentAccountTabAccount extends Fragment {
         return view;
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        updateUI();
+    }
 
     private void init() {
         preferenceManager = new PreferenceManager(getActivity());
@@ -148,6 +153,8 @@ public class FragmentAccountTabAccount extends Fragment {
 
     private void logOut() {
         preferenceManager.clear();
+
+        preferenceManager.putBoolean(Constants.KEY_FIRST_INSTALL, true);
 
         Intent intent = new Intent(getContext(), ActivitySplash.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
