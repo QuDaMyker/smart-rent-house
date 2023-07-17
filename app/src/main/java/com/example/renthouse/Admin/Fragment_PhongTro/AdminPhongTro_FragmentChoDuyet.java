@@ -15,6 +15,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.SearchView;
+import android.widget.TextView;
 
 import com.example.renthouse.Admin.Activity.Admin_ActivityThongTinPhong;
 import com.example.renthouse.Admin.Adapter.PhongTroAdapter;
@@ -36,6 +37,7 @@ import java.util.List;
 public class AdminPhongTro_FragmentChoDuyet extends Fragment {
     FragmentAdminPhongTroChoDuyetBinding binding;
     private RecyclerView recyclerView;
+    private TextView empty_tv;
     private List<Room> phongchoduyetlist;
     private PhongTroChoDuyetAdapter phongTroChoDuyetAdapter;
     private ProgressDialog progressDialog;
@@ -50,13 +52,20 @@ public class AdminPhongTro_FragmentChoDuyet extends Fragment {
         progressDialog.setMessage("Loading...");
 
         recyclerView = view.findViewById(R.id.recycleView);
+        empty_tv = view.findViewById(R.id.textView_empty);
 
         phongchoduyetlist = new ArrayList<>();
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext(), recyclerView.VERTICAL, false);
         recyclerView.setLayoutManager(linearLayoutManager);
 
-        loadData();
         return view;
+    }
+
+    @Override
+    public void onResume() {
+        phongchoduyetlist.clear();
+        loadData();
+        super.onResume();
     }
 
     private void loadData(){
@@ -76,9 +85,12 @@ public class AdminPhongTro_FragmentChoDuyet extends Fragment {
                 phongchoduyetlist.addAll(temphongtro);
 
                 if (phongchoduyetlist.isEmpty()) {
-                    replaceFragment(new AdminPhongTro_FragmentEmpty());
+                    empty_tv.setVisibility(View.VISIBLE);
+                    recyclerView.setVisibility(View.INVISIBLE);
                 }
                 else {
+                    empty_tv.setVisibility(View.INVISIBLE);
+                    recyclerView.setVisibility(View.VISIBLE);
                     phongTroChoDuyetAdapter = new PhongTroChoDuyetAdapter(getContext(), phongchoduyetlist, new ItemClick() {
                         @Override
                         public void onItemClick(Room room) {
@@ -97,13 +109,4 @@ public class AdminPhongTro_FragmentChoDuyet extends Fragment {
                 progressDialog.dismiss();
             }
         });
-    }
-
-    private void replaceFragment(Fragment fragment)
-    {
-        FragmentManager fragmentManager = getChildFragmentManager();
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.replace(R.id.frameLayoutPhongTro, fragment);
-        fragmentTransaction.commit();
-    }
-}
+    }}

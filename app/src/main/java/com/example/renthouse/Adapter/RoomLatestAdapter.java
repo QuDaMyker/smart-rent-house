@@ -16,6 +16,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.renthouse.Activity.ActivityDetails;
+import com.example.renthouse.Interface.ItemClick;
 import com.example.renthouse.OOP.Room;
 import com.example.renthouse.R;
 import com.google.android.material.checkbox.MaterialCheckBox;
@@ -43,6 +44,10 @@ public class RoomLatestAdapter extends RecyclerView.Adapter<RoomLatestAdapter.Ro
     public RoomLatestAdapter(Context mContext) {
         this.mContext = mContext;
     }
+
+    public RoomLatestAdapter(Context context, List<Room> outstandingList, ItemClick selectedRoom) {
+    }
+
     public void setDuLieu(List<Room> roomArrayList){
         this.listRoomLatest = roomArrayList;
         notifyDataSetChanged();

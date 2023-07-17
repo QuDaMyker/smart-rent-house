@@ -13,6 +13,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
+import android.widget.TextView;
 
 import com.example.renthouse.Admin.Adapter.PhongQuaHanAdapter;
 import com.example.renthouse.Admin.Adapter.PhongTroChoDuyetAdapter;
@@ -38,6 +40,7 @@ import java.util.List;
 public class AdminPhongTro_FragmentQuaHan extends Fragment {
     FragmentAdminPhongTroQuaHanBinding binding;
     private RecyclerView recyclerView;
+    private TextView empty_tv;
     private List<Room> phongquahanlist;
     private PhongQuaHanAdapter phongQuaHanAdapter;
     private ProgressDialog progressDialog;
@@ -52,13 +55,20 @@ public class AdminPhongTro_FragmentQuaHan extends Fragment {
         progressDialog.setMessage("Loading...");
 
         recyclerView = view.findViewById(R.id.recycleView);
+        empty_tv = view.findViewById(R.id.textView_empty);
 
         phongquahanlist = new ArrayList<>();
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext(), recyclerView.VERTICAL, false);
         recyclerView.setLayoutManager(linearLayoutManager);
 
-        loadData();
         return view;
+    }
+
+    @Override
+    public void onResume() {
+        phongquahanlist.clear();
+        loadData();
+        super.onResume();
     }
 
     private void loadData(){
@@ -87,9 +97,12 @@ public class AdminPhongTro_FragmentQuaHan extends Fragment {
                 phongquahanlist.addAll(temphongtro);
 
                 if (phongquahanlist.isEmpty()) {
-                    replaceFragment(new AdminPhongTro_FragmentEmpty());
+                    empty_tv.setVisibility(View.VISIBLE);
+                    recyclerView.setVisibility(View.INVISIBLE);
                 }
                 else {
+                    empty_tv.setVisibility(View.INVISIBLE);
+                    recyclerView.setVisibility(View.VISIBLE);
                     phongQuaHanAdapter = new PhongQuaHanAdapter(getContext(), phongquahanlist);
                     recyclerView.setAdapter(phongQuaHanAdapter);
                 }
@@ -101,14 +114,6 @@ public class AdminPhongTro_FragmentQuaHan extends Fragment {
                 progressDialog.dismiss();
             }
         });
-    }
-
-    private void replaceFragment(Fragment fragment)
-    {
-        FragmentManager fragmentManager = getChildFragmentManager();
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.replace(R.id.frameLayoutPhongTro, fragment);
-        fragmentTransaction.commit();
     }
 
     private int checkRoomStatus(Room room) throws ParseException {
