@@ -36,6 +36,7 @@ import com.example.renthouse.Interface.OnActivityResultListener;
 import com.example.renthouse.OOP.AccountClass;
 import com.example.renthouse.R;
 import com.example.renthouse.databinding.FragmentAccountTabAccountBinding;
+import com.example.renthouse.utilities.CacheUtils;
 import com.example.renthouse.utilities.Constants;
 import com.example.renthouse.utilities.PreferenceManager;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
@@ -151,7 +152,6 @@ public class FragmentAccountTabAccount extends Fragment {
         Intent intent = new Intent(getContext(), ActivitySplash.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
 
-
         FirebaseAuth.getInstance().signOut();
         GoogleSignInOptions gso = new GoogleSignInOptions.
                 Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).
@@ -160,6 +160,7 @@ public class FragmentAccountTabAccount extends Fragment {
         GoogleSignInClient googleSignInClient = GoogleSignIn.getClient(getActivity(), gso);
         googleSignInClient.signOut();
 
+        CacheUtils.clearCache(getContext());
 
         if (preferenceManager.getBoolean(Constants.KEY_IS_SIGNED_IN)) {
             Log.d("status", "sign");
@@ -168,7 +169,8 @@ public class FragmentAccountTabAccount extends Fragment {
         }
         startActivity(intent);
         getActivity().finish();
-        getActivity().finishAffinity();
+        /*getActivity().finish();
+        getActivity().finishAffinity();*/
     }
 
 

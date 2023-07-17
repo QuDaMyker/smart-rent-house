@@ -41,7 +41,7 @@ public class BaseActivity extends AppCompatActivity {
         database = FirebaseDatabase.getInstance();
         reference = database.getReference();
 
-        preferenceManager = new PreferenceManager(getApplicationContext());
+        preferenceManager = new PreferenceManager(BaseActivity.this);
         loadDataUser();
 
         progressDialogInternetChange = new ProgressDialog(this);
@@ -58,7 +58,7 @@ public class BaseActivity extends AppCompatActivity {
     }
 
     private void loadDataUser() {
-        if (preferenceManager.getBoolean(Constants.KEY_IS_SIGNED_IN)) {
+        if (preferenceManager.getBoolean(Constants.KEY_IS_SIGNED_IN))  {
             DatabaseReference blockedRef = reference.child("Accounts").child(preferenceManager.getString(Constants.KEY_USER_KEY)).child("blocked");
             blockedRef.addValueEventListener(new ValueEventListener() {
                 @Override

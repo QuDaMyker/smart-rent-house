@@ -95,7 +95,15 @@ public class ActivityLogIn extends AppCompatActivity {
     }
 
     private void init() {
-        preferenceManager = new PreferenceManager(getApplicationContext());
+        preferenceManager = new PreferenceManager(ActivityLogIn.this);
+
+        if(preferenceManager.getBoolean(Constants.KEY_IS_SIGNED_IN)) {
+            Log.d("checkstatus", "key, true");
+        }else if(preferenceManager.getBoolean(Constants.KEY_IS_SIGNED_IN) == false || preferenceManager.getBoolean(Constants.KEY_IS_SIGNED_IN) == null){
+            Log.d("checkstatus", "key, false");
+        }
+
+
 
         progressDialog = new ProgressDialog(ActivityLogIn.this);
         progressDialog.setCancelable(false);
@@ -158,12 +166,13 @@ public class ActivityLogIn extends AppCompatActivity {
 
                 if (binding.inputEmail.getText().toString().trim().equals("admin") && binding.inputPassword.getText().toString().trim().equals("admin")) {
                     progressDialog.show();
-                    Query query = reference.child("DashboardAdmin").child("Account").child("1").orderByChild("available").equalTo("1");
+                    Query query = reference.child("DashboardAdmin").child("Account").orderByChild("available").equalTo("0");
 
-                    query.addListenerForSingleValueEvent(new ValueEventListener() {
+
+                    query.addValueEventListener(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot snapshot) {
-                            if (!snapshot.exists()) {
+                            if (snapshot.exists()) {
                                 reference.child("DashboardAdmin").child("Account").child("1").child("available").setValue("1");
                                 preferenceManager.putBoolean(Constants.KEY_IS_SIGNED_IN, true);
                                 preferenceManager.putString(Constants.KEY_EMAIL, binding.inputEmail.getText().toString().trim());
@@ -172,7 +181,7 @@ public class ActivityLogIn extends AppCompatActivity {
                                 progressDialog.dismiss();
                                 startActivity(new Intent(ActivityLogIn.this, Admin_ActivityMain.class));
                                 finish();
-                                return;
+
                             } else {
                                 Toast.makeText(ActivityLogIn.this, "tk dang dang nhap", Toast.LENGTH_SHORT).show();
                             }
@@ -183,7 +192,7 @@ public class ActivityLogIn extends AppCompatActivity {
                             progressDialog.dismiss();
                         }
                     });
-
+                    progressDialog.dismiss();
                 } else if (checkCondition()) {
                     logInWithEmailPassword();
                 }
@@ -388,7 +397,7 @@ public class ActivityLogIn extends AppCompatActivity {
                     } catch (ApiException e) {
                         throw new RuntimeException(e);
                     }
-                }else {
+                } else {
                     progressDialog.dismiss();
                     Toast.makeText(ActivityLogIn.this, "Error", Toast.LENGTH_SHORT).show();
                 }

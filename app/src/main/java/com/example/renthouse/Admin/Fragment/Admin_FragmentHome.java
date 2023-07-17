@@ -218,7 +218,7 @@ public class Admin_FragmentHome extends Fragment {
         GoogleSignInClient googleSignInClient = GoogleSignIn.getClient(getActivity(), gso);
         googleSignInClient.signOut();
         getActivity().finish();
-        startActivity(new Intent(requireContext(), ActivitySplash.class));
+        startActivity(new Intent(getContext(), ActivitySplash.class));
     }
     private void loadData() {
         mProgressDialog.show();
