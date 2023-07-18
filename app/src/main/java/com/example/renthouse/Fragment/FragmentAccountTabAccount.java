@@ -27,6 +27,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.example.renthouse.Activity.ActivityAccountNotification;
+import com.example.renthouse.Activity.ActivityAccountPolicy;
 import com.example.renthouse.Activity.ActivityDetailAccount;
 import com.example.renthouse.Activity.ActivityMain;
 import com.example.renthouse.Activity.ActivityReportError;
@@ -110,7 +111,7 @@ public class FragmentAccountTabAccount extends Fragment {
         });
 
         binding.accountPersonalPolicyButtonProfile.setOnClickListener(v -> {
-
+            startActivity(new Intent(getActivity(), ActivityAccountPolicy.class));
         });
         binding.accountPersonalNotificationButtonProfile.setOnClickListener(v -> {
             startActivity(new Intent(getActivity(), ActivityAccountNotification.class));
