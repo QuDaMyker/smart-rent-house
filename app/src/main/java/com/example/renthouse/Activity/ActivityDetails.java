@@ -630,7 +630,7 @@ public class ActivityDetails extends BaseActivity {
                         .setPositiveButton("Xóa", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int whichButton) {
                                 FirebaseDatabase database = FirebaseDatabase.getInstance();
-                                DatabaseReference notiSchedulesRef = database.getReference("Rooms");
+                                DatabaseReference notiSchedulesRef = database.getReference("Rooms").child(room.getId());
                                 notiSchedulesRef.updateChildren(Collections.singletonMap("status", Constants.STATUS_DELETED)).addOnSuccessListener(new OnSuccessListener<Void>() {
                                     @Override
                                     public void onSuccess(Void unused) {
