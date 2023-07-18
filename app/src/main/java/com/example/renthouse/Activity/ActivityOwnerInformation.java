@@ -5,18 +5,29 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
 
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.renthouse.Adapter.PostedAdapter;
 import com.example.renthouse.Interface.ItemClick;
 import com.example.renthouse.OOP.Room;
 import com.example.renthouse.R;
 import com.example.renthouse.databinding.ActivityOwnerInformationBinding;
+import com.example.renthouse.databinding.LayoutDialogCallBinding;
 import com.example.renthouse.utilities.Constants;
 import com.example.renthouse.utilities.PreferenceManager;
 import com.google.firebase.database.DataSnapshot;
@@ -99,7 +110,8 @@ public class ActivityOwnerInformation extends AppCompatActivity {
         });
 
         binding.contactOwer.setOnClickListener(v -> {
-            showCallConfirmationDialog(binding.txtPhoneNumber.getText().toString().trim());
+            openFeedbackDialog(Gravity.CENTER, binding.txtPhoneNumber.getText().toString().trim());
+            //showCallConfirmationDialog(binding.txtPhoneNumber.getText().toString().trim());
         });
 
     }
@@ -172,8 +184,6 @@ public class ActivityOwnerInformation extends AppCompatActivity {
         builder.setPositiveButton("Gọi", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                // Xử lý khi người dùng chọn gọi số 000
-                // Sử dụng Intent để gọi số điện thoại
                 String phoneNumber = number;
                 Intent intent = new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + phoneNumber));
                 startActivity(intent);
@@ -181,6 +191,49 @@ public class ActivityOwnerInformation extends AppCompatActivity {
         });
         builder.setNegativeButton("Hủy", null);
         builder.show();
+    }
+
+    private void openFeedbackDialog(int gravity, String number) {
+        final Dialog dialog = new Dialog(this);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.layout_dialog_call);
+
+        Window window = dialog.getWindow();
+        if (window == null) {
+            return;
+        }
+        window.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
+        window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+
+        WindowManager.LayoutParams windowAttributes = window.getAttributes();
+        windowAttributes.gravity = gravity;
+        window.setAttributes(windowAttributes);
+
+        dialog.setCancelable(true);
+
+        TextView txtNumber = dialog.findViewById(R.id.txtNumber);
+        Button btnVerify = dialog.findViewById(R.id.btn_verify);
+        Button btnCancel = dialog.findViewById(R.id.btn_cancel);
+
+        txtNumber.setText("Xác nhận gọi cho số\n" + number);
+
+        btnCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+
+        btnVerify.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String phoneNumber = number;
+                Intent intent = new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + phoneNumber));
+                startActivity(intent);
+                dialog.dismiss();
+            }
+        });
+        dialog.show();
     }
 
 }

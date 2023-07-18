@@ -55,16 +55,6 @@ public class Admin_FragmentNguoiDung extends Fragment {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
                 fragNguoiDung_viewPager2.setCurrentItem(tab.getPosition());
-                if(fragmentManager.getFragments().size() == 2) {
-                    selectedFragment = fragmentManager.getFragments().get(tab.getPosition());
-
-                    if (selectedFragment instanceof AdminNguoiDung_FragmentDanhSachNguoiDung) {
-                        ((AdminNguoiDung_FragmentDanhSachNguoiDung) selectedFragment).loadDataFragment();
-                    } else if (selectedFragment instanceof  AdminNguoiDung_Fragment_NguoiDungBiChan){
-                        ((AdminNguoiDung_Fragment_NguoiDungBiChan) selectedFragment).loadDataFragment();
-                    }
-                }
-
 
             }
 

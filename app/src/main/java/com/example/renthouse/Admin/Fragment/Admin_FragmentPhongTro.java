@@ -33,7 +33,7 @@ public class Admin_FragmentPhongTro extends Fragment {
 
         fragPhongtro_tab_layout.addTab(fragPhongtro_tab_layout.newTab().setText("Danh sách"));
         fragPhongtro_tab_layout.addTab(fragPhongtro_tab_layout.newTab().setText("Chờ duyệt"));
-        fragPhongtro_tab_layout.addTab(fragPhongtro_tab_layout.newTab().setText("Quá hạn"));
+        fragPhongtro_tab_layout.addTab(fragPhongtro_tab_layout.newTab().setText("Quá hạn/ Đã xóa"));
 
         FragmentManager fragmentManager = getChildFragmentManager();
 

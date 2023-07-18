@@ -148,6 +148,15 @@
             android:background="@color/white"
             android:paddingStart="20dp"
             android:paddingEnd="20dp" />
+
+        <com.airbnb.lottie.LottieAnimationView
+            android:id="@+id/animationView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="invisible"
+            app:lottie_autoPlay="true"
+            app:lottie_loop="true"
+            app:lottie_rawRes="@raw/empty_search" />
     </FrameLayout>
 
     </FrameLayout>

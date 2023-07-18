@@ -1,6 +1,7 @@
 package com.example.renthouse.Admin.Fragment_PhongTro;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -23,6 +24,7 @@ import com.example.renthouse.Activity.ActivityDetails;
 import com.example.renthouse.Admin.Activity.Admin_ActivityThongTinPhong;
 import com.example.renthouse.Admin.Adapter.PhongTroAdapter;
 import com.example.renthouse.Admin.OOP.NguoiDung;
+import com.example.renthouse.Interface.DialogListener;
 import com.example.renthouse.Interface.ItemClick;
 import com.example.renthouse.OOP.Room;
 import com.example.renthouse.R;
@@ -56,16 +58,24 @@ public class AdminPhongTro_FragmentDanhSach extends Fragment {
     private boolean giaTang = false;
     private boolean ngayDangTang = false;
     private int tinhTrang = 0;
-    private ProgressDialog progressDialog;
+
+
+    private DialogListener dialogListener;
+
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        try {
+            dialogListener = (DialogListener) context;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(context.toString() + " must implement DialogListener");
+        }
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         binding = FragmentAdminPhongTroDanhSachBinding.inflate(inflater, container, false);
         View view = binding.getRoot();
-
-        progressDialog = new ProgressDialog(getContext());
-        progressDialog.setCancelable(false);
-        progressDialog.setMessage("Loading...");
 
         recyclerView = view.findViewById(R.id.recycleView);
         searchView = view.findViewById(R.id.search_view);
@@ -116,10 +126,12 @@ public class AdminPhongTro_FragmentDanhSach extends Fragment {
                 binding.filterNgayDang.setBackgroundResource(R.drawable.bg_radius_solid_primary_60);
                 binding.filterGia.setBackgroundResource(R.drawable.bg_radius_primary_40);
                 binding.filterTinhTrang.setBackgroundResource(R.drawable.bg_radius_primary_40);
-                if (ngayDangTang){
+                if (ngayDangTang) {
                     binding.imageNgayDang.setImageResource(R.drawable.ic_arrow_downward);
                     Collections.sort(phongTroSearchList, new Comparator<Room>() {
-                        SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm dd/MM/yyyy");                        @Override
+                        SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm dd/MM/yyyy");
+
+                        @Override
                         public int compare(Room obj1, Room obj2) {
                             try {
                                 Date date1 = dateFormat.parse(obj1.getDateTime());
@@ -132,11 +144,12 @@ public class AdminPhongTro_FragmentDanhSach extends Fragment {
                         }
                     });
                     phongTroAdapter.notifyDataSetChanged();
-                }
-                else {
+                } else {
                     binding.imageNgayDang.setImageResource(R.drawable.ic_arrow_upward);
                     Collections.sort(phongTroSearchList, new Comparator<Room>() {
-                        SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm dd/MM/yyyy");                        @Override
+                        SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm dd/MM/yyyy");
+
+                        @Override
                         public int compare(Room obj1, Room obj2) {
                             try {
                                 Date date1 = dateFormat.parse(obj1.getDateTime());
@@ -164,8 +177,8 @@ public class AdminPhongTro_FragmentDanhSach extends Fragment {
                 binding.filterNgayDang.setBackgroundResource(R.drawable.bg_radius_primary_40);
                 binding.filterGia.setBackgroundResource(R.drawable.bg_radius_primary_40);
                 phongTroSearchList.clear();
-                switch (tinhTrang){
-                    case 0:{
+                switch (tinhTrang) {
+                    case 0: {
                         binding.textViewTinhtrang.setText("Tất cả");
                         phongTroSearchList.addAll(phongtrolist);
                         phongTroAdapter.notifyDataSetChanged();
@@ -173,8 +186,8 @@ public class AdminPhongTro_FragmentDanhSach extends Fragment {
                     }
                     case 1: {
                         binding.textViewTinhtrang.setText("Còn phòng");
-                        for (Room obj : phongtrolist){
-                            if (!obj.isRented()){
+                        for (Room obj : phongtrolist) {
+                            if (!obj.isRented()) {
                                 phongTroSearchList.add(obj);
                             }
                         }
@@ -183,8 +196,8 @@ public class AdminPhongTro_FragmentDanhSach extends Fragment {
                     }
                     case 2: {
                         binding.textViewTinhtrang.setText("Đã thuê");
-                        for (Room obj : phongtrolist){
-                            if (obj.isRented()){
+                        for (Room obj : phongtrolist) {
+                            if (obj.isRented()) {
                                 phongTroSearchList.add(obj);
                             }
                         }
@@ -233,39 +246,47 @@ public class AdminPhongTro_FragmentDanhSach extends Fragment {
         return Pattern.compile(regex).matcher(temp).replaceAll("");
     }
 
-    private void loadData(){
-        progressDialog.show();
+    private void loadData() {
+        dialogListener.showDialog();
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Rooms");
         reference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                List<Room> temphongtro = new ArrayList<>();
-                for (DataSnapshot Snapshot: snapshot.getChildren()){
-                    String status = Snapshot.child("status").getValue(String.class);
-                    if (status.equals("approved")){
-                        Room phongtro = Snapshot.getValue(Room.class);
-                        temphongtro.add(phongtro);
+                if(snapshot.exists()) {
+                    List<Room> temphongtro = new ArrayList<>();
+                    for (DataSnapshot Snapshot : snapshot.getChildren()) {
+                        String status = Snapshot.child("status").getValue(String.class);
+                        if (status.equals("approved")) {
+                            Room phongtro = Snapshot.getValue(Room.class);
+                            temphongtro.add(phongtro);
+                        }
                     }
-                }
-                phongtrolist.addAll(temphongtro);
+                    phongtrolist.addAll(temphongtro);
 
-                if (phongtrolist.isEmpty()) {
-                    empty_tv.setVisibility(View.VISIBLE);
-                    frameLayout.setVisibility(View.INVISIBLE);
+                    if (phongtrolist.isEmpty()) {
+                        empty_tv.setVisibility(View.VISIBLE);
+                        frameLayout.setVisibility(View.INVISIBLE);
+                    } else {
+                        empty_tv.setVisibility(View.INVISIBLE);
+                        frameLayout.setVisibility(View.VISIBLE);
+                        phongTroSearchList.clear();
+                        phongTroSearchList.addAll(phongtrolist);
+                        phongTroAdapter.notifyDataSetChanged();
+                    }
+
+                    binding.animationView.setVisibility(View.INVISIBLE);
+                    binding.recycleView.setVisibility(View.VISIBLE);
+                } else {
+                    binding.animationView.setVisibility(View.VISIBLE);
+                    binding.recycleView.setVisibility(View.INVISIBLE);
                 }
-                else {
-                    empty_tv.setVisibility(View.INVISIBLE);
-                    frameLayout.setVisibility(View.VISIBLE);
-                    phongTroSearchList.clear();
-                    phongTroSearchList.addAll(phongtrolist);
-                    phongTroAdapter.notifyDataSetChanged();
-                }
-                progressDialog.dismiss();
+                dialogListener.dismissDialog();
+
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-                progressDialog.dismiss();
+                dialogListener.dismissDialog();
             }
         });
     }

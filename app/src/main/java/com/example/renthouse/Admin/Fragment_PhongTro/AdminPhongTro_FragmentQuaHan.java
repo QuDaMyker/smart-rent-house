@@ -1,6 +1,7 @@
 package com.example.renthouse.Admin.Fragment_PhongTro;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -18,6 +19,7 @@ import android.widget.TextView;
 
 import com.example.renthouse.Admin.Adapter.PhongQuaHanAdapter;
 import com.example.renthouse.Admin.Adapter.PhongTroChoDuyetAdapter;
+import com.example.renthouse.Interface.DialogListener;
 import com.example.renthouse.Interface.ItemClick;
 import com.example.renthouse.OOP.Room;
 import com.example.renthouse.R;
@@ -43,16 +45,23 @@ public class AdminPhongTro_FragmentQuaHan extends Fragment {
     private TextView empty_tv;
     private List<Room> phongquahanlist;
     private PhongQuaHanAdapter phongQuaHanAdapter;
-    private ProgressDialog progressDialog;
+    private DialogListener dialogListener;
+
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        try {
+            dialogListener = (DialogListener) context;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(context.toString() + " must implement DialogListener");
+        }
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         binding = FragmentAdminPhongTroQuaHanBinding.inflate(inflater, container, false);
         View view = binding.getRoot();
-
-        progressDialog = new ProgressDialog(getContext());
-        progressDialog.setCancelable(false);
-        progressDialog.setMessage("Loading...");
 
         recyclerView = view.findViewById(R.id.recycleView);
         empty_tv = view.findViewById(R.id.textView_empty);
@@ -71,21 +80,21 @@ public class AdminPhongTro_FragmentQuaHan extends Fragment {
         super.onResume();
     }
 
-    private void loadData(){
-        progressDialog.show();
+    private void loadData() {
+        dialogListener.showDialog();
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Rooms");
         reference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 List<Room> temphongtro = new ArrayList<>();
-                for (DataSnapshot Snapshot: snapshot.getChildren()){
+                for (DataSnapshot Snapshot : snapshot.getChildren()) {
                     Room phongtro = Snapshot.getValue(Room.class);
                     int typeroom = 5;
                     try {
                         typeroom = checkRoomStatus(phongtro);
+                    } catch (Exception e) {
                     }
-                    catch (Exception e) { }
-                    if (typeroom > 1){
+                    if (typeroom > 1) {
                         if (typeroom == 2) {
                             String idPhongtro = String.valueOf(phongtro.getId());
                             reference.child(idPhongtro).child("status").setValue("deleted");
@@ -97,27 +106,26 @@ public class AdminPhongTro_FragmentQuaHan extends Fragment {
                 phongquahanlist.addAll(temphongtro);
 
                 if (phongquahanlist.isEmpty()) {
-                    empty_tv.setVisibility(View.VISIBLE);
+                    binding.animationView.setVisibility(View.VISIBLE);
                     recyclerView.setVisibility(View.INVISIBLE);
-                }
-                else {
-                    empty_tv.setVisibility(View.INVISIBLE);
+                } else {
+                    binding.animationView.setVisibility(View.INVISIBLE);
                     recyclerView.setVisibility(View.VISIBLE);
                     phongQuaHanAdapter = new PhongQuaHanAdapter(getContext(), phongquahanlist);
                     recyclerView.setAdapter(phongQuaHanAdapter);
                 }
-                progressDialog.dismiss();
+                dialogListener.dismissDialog();
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-                progressDialog.dismiss();
+                dialogListener.dismissDialog();
             }
         });
     }
 
     private int checkRoomStatus(Room room) throws ParseException {
-        if (room.getStatus().equals("deleted")){
+        if (room.getStatus().equals("deleted")) {
             return 3;
         }
         if (room.getStatus().equals("approved")) {
@@ -130,10 +138,10 @@ public class AdminPhongTro_FragmentQuaHan extends Fragment {
                 Date currentTime = new Date();
                 long diffInMilliseconds = currentTime.getTime() - time.getTime();
                 diffInHours = diffInMilliseconds / (24 * 60 * 60 * 1000);
+            } catch (Exception e) {
             }
-            catch (Exception e) { }
 
-            if (diffInHours >= 30){
+            if (diffInHours >= 30) {
                 return 2;
             }
         }

@@ -52,7 +52,7 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Pattern;
 
-public class AdminNguoiDung_FragmentDanhSachNguoiDung extends Fragment implements ItemNguoiDungListener, LoadDataFragment {
+public class AdminNguoiDung_FragmentDanhSachNguoiDung extends Fragment implements ItemNguoiDungListener {
     private FragmentAdminNguoiDungDanhSachNguoiDungBinding binding;
     private List<NguoiDung> nguoiDungs;
     private List<NguoiDung> tempNguoiDung;
@@ -62,8 +62,9 @@ public class AdminNguoiDung_FragmentDanhSachNguoiDung extends Fragment implement
     private FirebaseDatabase database;
     private Boolean filtersoPhongTang = true;
     private Boolean filterNgayThamgia = false;
-    private DialogListener dialogListener;
+
     private DatabaseReference reference;
+    private DialogListener dialogListener;
 
     @Override
     public void onAttach(@NonNull Context context) {
@@ -87,6 +88,11 @@ public class AdminNguoiDung_FragmentDanhSachNguoiDung extends Fragment implement
         return view;
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        loadData();
+    }
 
     private void init() {
         nguoiDungs = new ArrayList<>();
@@ -114,41 +120,50 @@ public class AdminNguoiDung_FragmentDanhSachNguoiDung extends Fragment implement
         query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                List<NguoiDung> tempNguoiDungs = new ArrayList<>();
-                int dataSnapshotCount = (int) dataSnapshot.getChildrenCount();
-                AtomicInteger count = new AtomicInteger(0);
+                if(dataSnapshot.exists()) {
+                    List<NguoiDung> tempNguoiDungs = new ArrayList<>();
+                    int dataSnapshotCount = (int) dataSnapshot.getChildrenCount();
+                    AtomicInteger count = new AtomicInteger(0);
 
-                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                    String key = snapshot.getKey();
-                    AccountClass account = snapshot.getValue(AccountClass.class);
-                    Query query1 = reference.child("Rooms").orderByChild("createdBy/email").equalTo(account.getEmail());
-                    query1.addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@NonNull DataSnapshot snapshot) {
-                            int countRoom = (int) snapshot.getChildrenCount();
-                            tempNguoiDungs.add(new NguoiDung(key, account, countRoom));
+                    for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                        String key = snapshot.getKey();
+                        AccountClass account = snapshot.getValue(AccountClass.class);
+                        Query query1 = reference.child("Rooms").orderByChild("createdBy/email").equalTo(account.getEmail());
+                        query1.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                int countRoom = (int) snapshot.getChildrenCount();
+                                tempNguoiDungs.add(new NguoiDung(key, account, countRoom));
 
-                            if (count.incrementAndGet() == dataSnapshotCount) {
-                                nguoiDungs.addAll(tempNguoiDungs);
-                                filterSearch.addAll(tempNguoiDungs);
-                                getActivity().runOnUiThread(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        nguoiDungAdapter.notifyDataSetChanged();
-                                        dialogListener.dismissDialog();
-                                    }
-                                });
+                                if (count.incrementAndGet() == dataSnapshotCount) {
+                                    nguoiDungs.addAll(tempNguoiDungs);
+                                    filterSearch.addAll(tempNguoiDungs);
+                                    getActivity().runOnUiThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            nguoiDungAdapter.notifyDataSetChanged();
+                                            dialogListener.dismissDialog();
+                                        }
+                                    });
+                                    dialogListener.dismissDialog();
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError error) {
                                 dialogListener.dismissDialog();
                             }
-                        }
-
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError error) {
-                            dialogListener.dismissDialog();
-                        }
-                    });
+                        });
+                    }
+                    dialogListener.dismissDialog();
+                    binding.animationView.setVisibility(View.INVISIBLE);
+                    binding.recycleView.setVisibility(View.VISIBLE);
+                } else {
+                    binding.animationView.setVisibility(View.VISIBLE);
+                    binding.recycleView.setVisibility(View.INVISIBLE);
                 }
                 dialogListener.dismissDialog();
+
             }
 
             @Override
@@ -318,11 +333,4 @@ public class AdminNguoiDung_FragmentDanhSachNguoiDung extends Fragment implement
         }
     });
 
-    @Override
-    public void loadDataFragment() {
-        nguoiDungs.clear();
-        filterSearch.clear();
-        nguoiDungAdapter.notifyDataSetChanged();
-        loadData();
-    }
 }

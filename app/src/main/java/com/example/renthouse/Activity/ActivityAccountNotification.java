@@ -5,7 +5,9 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.Button;
 import android.widget.CompoundButton;
+import android.widget.ImageButton;
 
 import com.example.renthouse.FCM.TokenUpdateTask;
 import com.example.renthouse.OOP.AccountClass;
@@ -28,6 +30,7 @@ public class ActivityAccountNotification extends AppCompatActivity {
     MaterialSwitch chatNoti;
     MaterialSwitch likeNoti;
     MaterialSwitch scheduleNoti;
+    ImageButton btnBack;
 
     String deviceKey;
 
@@ -42,6 +45,7 @@ public class ActivityAccountNotification extends AppCompatActivity {
         chatNoti = findViewById(R.id.chatNoti);
         likeNoti = findViewById(R.id.likeNoti);
         scheduleNoti = findViewById(R.id.scheduleNoti);
+        btnBack = findViewById(R.id.btn_Back);
         preferenceManager = new PreferenceManager(ActivityAccountNotification.this);
 
 
@@ -99,6 +103,10 @@ public class ActivityAccountNotification extends AppCompatActivity {
                 DatabaseReference devicesRef = FirebaseDatabase.getInstance().getReference().child("Devices").child(deviceKey);
                 devicesRef.child("scheduleNoti").setValue(b);
             }
+        });
+
+        btnBack.setOnClickListener(v->{
+            onBackPressed();
         });
     }
 }
