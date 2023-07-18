@@ -60,7 +60,6 @@ public class ActivityDetails extends BaseActivity {
     private static final int REQUEST_CALL = 1;
     private FirebaseDatabase db;
     private DatabaseReference ref;
-    private  String idAC = null;
     private String moTaP = null;
     private int itemsTI = 6;
 
@@ -114,6 +113,7 @@ public class ActivityDetails extends BaseActivity {
     LinearLayout NormalUserLayout;
     LinearLayout OwnerLayout;
 
+    CheckBox cbIsRented ;
     public interface RoomListListener {
         void onRoomListCreated(List<Room> rooms);
     }
@@ -121,7 +121,6 @@ public class ActivityDetails extends BaseActivity {
     protected void onStart() {
         super.onStart();
 
-        IsLikedRoom();
     }
 
     @Override
@@ -177,7 +176,9 @@ public class ActivityDetails extends BaseActivity {
         ibChat = findViewById(R.id.btnToChat);
         btnToDelete = findViewById(R.id.btnToDelete);
         btnToEdit = findViewById(R.id.btnToEdit);
+        cbIsRented = findViewById(R.id.cbIsRented);
         preferenceManager = new PreferenceManager(ActivityDetails.this);
+
 
         Intent intent = getIntent();
         if (intent == null) {
@@ -189,10 +190,17 @@ public class ActivityDetails extends BaseActivity {
         }
         if (room.getCreatedBy().getEmail().equals(preferenceManager.getString(Constants.KEY_EMAIL))) {
             OwnerLayout.setVisibility(View.VISIBLE);
+            cbIsRented.setVisibility(View.VISIBLE);
             NormalUserLayout.setVisibility(View.GONE);
+            cbLiked.setVisibility(View.GONE);
+            isRented();
+
         } else {
             OwnerLayout.setVisibility(View.GONE);
+            cbIsRented.setVisibility(View.GONE);
             NormalUserLayout.setVisibility(View.VISIBLE);
+            cbLiked.setVisibility(View.VISIBLE);
+            IsLikedRoom();
         }
 
 
@@ -209,11 +217,25 @@ public class ActivityDetails extends BaseActivity {
         }
 
         tvLoaiP.setText(room.getRoomType());
-        tvSoNg.setText(String.valueOf(room.getCapacity()) + " Nam/Nữ");
+        if (room.getGender().equals("Nam"))
+        {
+            tvSoNg.setText(String.valueOf(room.getCapacity()) + " Nam");
+
+        }
+        else {
+            if (room.getGender().equals("Nữ"))
+            {
+                tvSoNg.setText(String.valueOf(room.getCapacity()) + " Nữ");
+            }
+            else {
+                tvSoNg.setText(String.valueOf(room.getCapacity()) + " Nam/Nữ");
+            }
+
+        }
 
         if (room.isRented())
         {
-            tvTinhTrang.setText("Đã cho thuê");
+            tvTinhTrang.setText("Hết");
         }
         else
         {
@@ -368,15 +390,34 @@ public class ActivityDetails extends BaseActivity {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
                     // Nếu checkbox được chọn, them id phòng dzo ds Likedroom
-                    DatabaseReference likedRef = db.getReference("LikedRooms").child(idAC);
+                    DatabaseReference likedRef = db.getReference("LikedRooms").child(preferenceManager.getString(Constants.KEY_USER_KEY));
                     String idRoom = room.getId();
                     likedRef.child(idRoom).setValue(idRoom);
 
                 }
                 else {
-                    DatabaseReference likedRef = db.getReference("LikedRooms").child(idAC);
+                    DatabaseReference likedRef = db.getReference("LikedRooms").child(preferenceManager.getString(Constants.KEY_USER_KEY));
                     String idRoom = room.getId();
                     likedRef.child(idRoom).removeValue();
+                }
+            }
+        });
+        cbIsRented.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                FirebaseDatabase database = FirebaseDatabase.getInstance();
+                DatabaseReference refRooms = database.getReference("Rooms").child(room.getId());
+                if (isChecked)
+                {
+                    refRooms.child("rented").setValue(true);
+                    room.setRented(true);
+                    tvTinhTrang.setText("Hết");
+                }
+                else
+                {
+                    refRooms.child("rented").setValue(false);
+                    room.setRented(false);
+                    tvTinhTrang.setText("Còn");
                 }
             }
         });
@@ -583,7 +624,7 @@ public class ActivityDetails extends BaseActivity {
                         .setPositiveButton("Xóa", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int whichButton) {
                                 FirebaseDatabase database = FirebaseDatabase.getInstance();
-                                DatabaseReference notiSchedulesRef = database.getReference("Rooms");
+                                DatabaseReference notiSchedulesRef = database.getReference("Rooms").child(room.getId());
                                 notiSchedulesRef.updateChildren(Collections.singletonMap("status", Constants.STATUS_DELETED)).addOnSuccessListener(new OnSuccessListener<Void>() {
                                     @Override
                                     public void onSuccess(Void unused) {
@@ -686,30 +727,20 @@ public class ActivityDetails extends BaseActivity {
         refAc.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                String emailAc = null;
-                for (DataSnapshot snapAc : snapshot.getChildren()) {
-                    emailAc = snapAc.child("email").getValue(String.class);
-                    if (emaiCur.equals(emailAc)) {
-                        idAC = snapAc.getKey();
-                        DatabaseReference refLiked = db.getReference("LikedRooms").child(idAC);
-                        refLiked.addListenerForSingleValueEvent(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                //check lại khúc này
-                                boolean temp = false;
-                                if (snapshot.hasChild(room.getId())) {
-                                    temp = true;
-                                    cbLiked.setChecked(true);
-                                }
-                            }
-
-                            @Override
-                            public void onCancelled(@NonNull DatabaseError error) {
-
-                            }
-                        });
+                DatabaseReference refLiked = db.getReference("LikedRooms").child(preferenceManager.getString(Constants.KEY_USER_KEY));
+                refLiked.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        if (snapshot.hasChild(room.getId())) {
+                            cbLiked.setChecked(true);
+                        }
                     }
-                }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+
+                    }
+                });
             }
 
             @Override
@@ -717,6 +748,16 @@ public class ActivityDetails extends BaseActivity {
 
             }
         });
+    }
+    public void isRented () {
+        if (room.isRented())
+        {
+            cbIsRented.setChecked(true);
+        }
+        else
+        {
+            cbIsRented.setChecked(false);
+        }
     }
 
     private void tinhSoP(AccountClass tg) {

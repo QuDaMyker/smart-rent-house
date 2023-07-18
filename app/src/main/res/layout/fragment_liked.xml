@@ -5,9 +5,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/background_chat_history"
+    tools:context=".Fragment.FragmentLiked"
     android:orientation="vertical"
-    tools:context=".Fragment.FragmentLiked">
+    android:background="@drawable/background_chat_history"
+    >
 
     <TextView
         android:id="@+id/textLiked"
@@ -28,9 +29,43 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginTop="80dp"
-        android:background="@drawable/layout_bg"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textLiked"></FrameLayout>
+        app:layout_constraintTop_toBottomOf="@+id/textLiked"
+        android:background="@drawable/layout_bg">
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rcv_LikedRooms"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="10dp"
+            android:layout_marginTop="10dp"
+            android:layout_gravity="center"
+            android:layout_marginRight="5dp"
+            android:visibility="gone"
+
+            />
+        <ImageView
+            android:id="@+id/face_nothing"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:src="@mipmap/ic_face_foreground"
+            android:layout_gravity="center"
+            android:visibility="gone"
+
+            />
+        <TextView
+            android:id="@+id/textNothing"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Bạn chưa có phòng nào thích"
+            android:layout_gravity="center"
+            android:layout_marginTop="100dp"
+            android:textSize="15sp"
+            android:visibility="gone"
+
+            />
+
+
+    </FrameLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

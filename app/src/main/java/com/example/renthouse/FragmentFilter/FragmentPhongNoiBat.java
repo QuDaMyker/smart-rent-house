@@ -34,7 +34,7 @@ import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link FragmentLikedRooms#newInstance} factory method to
+ * Use the {@link FragmentPhongNoiBat#newInstance} factory method to
  * create an instance of this fragment.
  */
 public class FragmentPhongNoiBat extends Fragment {
@@ -70,14 +70,22 @@ public class FragmentPhongNoiBat extends Fragment {
      * @return A new instance of fragment FragmentLikedRooms.
      */
     // TODO: Rename and change types and number of parameters
-    public static FragmentLikedRooms newInstance(String param1, String param2) {
-        FragmentLikedRooms fragment = new FragmentLikedRooms();
+    public static FragmentPhongNoiBat newInstance(String param1, String param2) {
+        FragmentPhongNoiBat fragment = new FragmentPhongNoiBat();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
         fragment.setArguments(args);
         return fragment;
     }
+//    public static FragmentLikedRooms newInstance(String param1, String param2) {
+//        FragmentLikedRooms fragment = new FragmentLikedRooms();
+//        Bundle args = new Bundle();
+//        args.putString(ARG_PARAM1, param1);
+//        args.putString(ARG_PARAM2, param2);
+//        fragment.setArguments(args);
+//        return fragment;
+//    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
