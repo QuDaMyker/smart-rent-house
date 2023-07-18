@@ -1,31 +1,27 @@
 package com.example.renthouse.Activity;
 
-import androidx.activity.result.ActivityResult;
-import androidx.activity.result.ActivityResultCallback;
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.ContentResolver;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.CpuUsageInfo;
-import android.util.Log;
 import android.view.View;
 import android.webkit.MimeTypeMap;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
+
 import com.example.renthouse.OOP.AccountClass;
-import com.example.renthouse.Other.CommonUtils;
 import com.example.renthouse.R;
 import com.example.renthouse.utilities.Constants;
 import com.example.renthouse.utilities.PreferenceManager;
@@ -37,25 +33,17 @@ import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.ChildEventListener;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
-import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
 
-import java.util.List;
-
 public class ActivityDetailAccount extends BaseActivity {
     private TextInputLayout TILfullname, TILemail, TILsodienthoai, TILmatkhau;
     private TextInputEditText TIETfullname, TIETemail, TIETsodienthoai, TIETMatKhau;
-
     private ImageView imageProfile;
     private ImageButton btnBack;
     private Button btnUpdate;
@@ -180,7 +168,7 @@ public class ActivityDetailAccount extends BaseActivity {
                     imageProfile.setImageURI(imageUri);
                     preferenceManager.putString(Constants.KEY_IMAGE, imageUri.toString());
                 } else {
-                    Toast.makeText(getApplicationContext(), "No image selected", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), "Chưa chọn ảnh", Toast.LENGTH_SHORT).show();
                 }
 
                 if (imageUri != null) {
@@ -211,9 +199,10 @@ public class ActivityDetailAccount extends BaseActivity {
                     @Override
                     public void onSuccess(Uri uri) {
                         preferenceManager.putString(Constants.KEY_IMAGE, uri.toString());
-                        Toast.makeText(ActivityDetailAccount.this, key, Toast.LENGTH_SHORT).show();
+
                         databaseReference.child(key).child("image").setValue(preferenceManager.getString(Constants.KEY_IMAGE));
                         progressDialog.dismiss();
+                        showCallConfirmationDialog("");
                     }
                 });
             }
@@ -226,7 +215,6 @@ public class ActivityDetailAccount extends BaseActivity {
             @Override
             public void onFailure(@NonNull Exception e) {
                 progressDialog.dismiss();
-                Toast.makeText(ActivityDetailAccount.this, "Failed", Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -293,5 +281,18 @@ public class ActivityDetailAccount extends BaseActivity {
 
         // Mật khẩu hợp lệ
         return true;
+    }
+    private void showCallConfirmationDialog(String number) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Thông báo");
+        builder.setMessage("Cập nhật ảnh thành công");
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+            }
+        });
+        //builder.setNegativeButton("Hủy", null);
+        builder.show();
     }
 }

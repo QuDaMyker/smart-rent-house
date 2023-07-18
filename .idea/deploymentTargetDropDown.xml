@@ -7,12 +7,23 @@
         <deviceKey>
           <Key>
             <type value="SERIAL_NUMBER" />
-            <value value="2e2b69b4" />
+            <value value="adb-2e2b69b4-bHKQwF._adb-tls-connect._tcp" />
           </Key>
         </deviceKey>
       </Target>
     </runningDeviceTargetSelectedWithDropDown>
-    <timeTargetWasSelectedWithDropDown value="2023-07-17T18:07:25.454209300Z" />
+    <timeTargetWasSelectedWithDropDown value="2023-07-18T03:33:01.662232Z" />
+    <runningDeviceTargetsSelectedWithDialog>
+      <Target>
+        <type value="RUNNING_DEVICE_TARGET" />
+        <deviceKey>
+          <Key>
+            <type value="SERIAL_NUMBER" />
+            <value value="adb-2e2b69b4-bHKQwF._adb-tls-connect._tcp" />
+          </Key>
+        </deviceKey>
+      </Target>
+    </runningDeviceTargetsSelectedWithDialog>
     <targetsSelectedWithDialog>
       <Target>
         <type value="QUICK_BOOT_TARGET" />
@@ -28,7 +39,7 @@
         <deviceKey>
           <Key>
             <type value="VIRTUAL_DEVICE_PATH" />
-            <value value="C:\Users\quocd\.android\avd\Pixel_6_Pro_API_33.avd" />
+            <value value="C:\Users\quocd\.android\avd\Pixel_6_Pro_API_33_1st.avd" />
           </Key>
         </deviceKey>
       </Target>

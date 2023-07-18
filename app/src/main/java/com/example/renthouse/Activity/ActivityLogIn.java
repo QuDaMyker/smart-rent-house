@@ -2,6 +2,7 @@ package com.example.renthouse.Activity;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.Dialog;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.ProgressDialog;
@@ -9,6 +10,8 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -19,10 +22,14 @@ import android.text.TextWatcher;
 import android.text.method.HideReturnsTransformationMethod;
 import android.text.method.PasswordTransformationMethod;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -66,6 +73,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
+
+import org.w3c.dom.Text;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -169,7 +178,7 @@ public class ActivityLogIn extends AppCompatActivity {
                     Query query = reference.child("DashboardAdmin").child("Account").orderByChild("available").equalTo("0");
 
 
-                    query.addValueEventListener(new ValueEventListener() {
+                    query.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot snapshot) {
                             if (snapshot.exists()) {
@@ -177,13 +186,14 @@ public class ActivityLogIn extends AppCompatActivity {
                                 preferenceManager.putBoolean(Constants.KEY_IS_SIGNED_IN, true);
                                 preferenceManager.putString(Constants.KEY_EMAIL, binding.inputEmail.getText().toString().trim());
                                 preferenceManager.putString(Constants.KEY_PASSWORD, binding.inputPassword.getText().toString().trim());
+                                preferenceManager.putBoolean(Constants.KEY_FIRST_INSTALL, true);
                                 CommonUtils.showNotification(ActivityLogIn.this, "Thông Báo", "Chào mừng Admin trở lại", R.drawable.ic_phobien_1);
                                 progressDialog.dismiss();
                                 startActivity(new Intent(ActivityLogIn.this, Admin_ActivityMain.class));
                                 finish();
 
                             } else {
-                                Toast.makeText(ActivityLogIn.this, "tk dang dang nhap", Toast.LENGTH_SHORT).show();
+                                openAdminNotifyDialog(Gravity.CENTER);
                             }
                         }
 
@@ -259,6 +269,8 @@ public class ActivityLogIn extends AppCompatActivity {
 
 
                             CommonUtils.showNotification(getApplicationContext(), "Thông báo", "Chào mừng bạn trở lại, hãy lựa chọn căn phòng ưng ý mình nhé", R.drawable.ic_phobien_1);
+                            preferenceManager.putBoolean(Constants.KEY_FIRST_INSTALL, true);
+
                             Intent intent = new Intent(getApplicationContext(), ActivityMain.class);
                             startActivity(intent);
                             finish();
@@ -273,8 +285,9 @@ public class ActivityLogIn extends AppCompatActivity {
 
 
                 } else {
+                    openWrongLoginDialog(Gravity.CENTER);
                     Toast.makeText(ActivityLogIn.this, "Authentication failed.", Toast.LENGTH_SHORT).show();
-                    Toast.makeText(ActivityLogIn.this, "Sai tài khoản hoặc mật khẩu vui lòng thử lại", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(ActivityLogIn.this, "Sai tài khoản hoặc mật khẩu vui lòng thử lại", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -348,6 +361,8 @@ public class ActivityLogIn extends AppCompatActivity {
                                                                             CommonUtils.showNotification(getApplicationContext(), "Thông báo", "Chào mừng bạn đến với chúng tôi, hãy lựa chọn căn phòng ưng ý mình nhé", R.drawable.ic_phobien_1);
                                                                             progressDialog.dismiss();
                                                                             preferenceManager.putBoolean(Constants.KEY_IS_SIGNED_IN, true);
+                                                                            preferenceManager.putBoolean(Constants.KEY_FIRST_INSTALL, true);
+
                                                                             startActivity(new Intent(ActivityLogIn.this, ActivityMain.class));
                                                                         } else {
                                                                             // Handle the error here
@@ -369,6 +384,8 @@ public class ActivityLogIn extends AppCompatActivity {
                                                                 CommonUtils.showNotification(getApplicationContext(), "Thông báo", "Chào mừng bạn trở lại, hãy lựa chọn căn phòng ưng ý mình nhé", R.drawable.ic_phobien_1);
                                                                 progressDialog.dismiss();
                                                                 preferenceManager.putBoolean(Constants.KEY_IS_SIGNED_IN, true);
+                                                                preferenceManager.putBoolean(Constants.KEY_FIRST_INSTALL, true);
+
                                                                 startActivity(new Intent(ActivityLogIn.this, ActivityMain.class));
                                                             }
                                                         }
@@ -465,5 +482,77 @@ public class ActivityLogIn extends AppCompatActivity {
             return false;
         }
         return true;
+    }
+
+    private void openAdminNotifyDialog(int gravity) {
+        final Dialog dialog = new Dialog(this);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.layout_dialog_feedback);
+
+        Window window = dialog.getWindow();
+        if (window == null) {
+            return;
+        }
+        window.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
+        window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+
+        WindowManager.LayoutParams windowAttributes = window.getAttributes();
+        windowAttributes.gravity = gravity;
+        window.setAttributes(windowAttributes);
+
+        if(Gravity.BOTTOM == gravity) {
+            dialog.setCancelable(true);
+        } else {
+            dialog.setCancelable(false);
+        }
+
+        Button btnNoThanks = dialog.findViewById(R.id.btn_verify);
+        btnNoThanks.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+
+        dialog.show();
+    }
+
+    private void openWrongLoginDialog(int gravity) {
+        final Dialog dialog = new Dialog(this);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.layout_dialog_feedback);
+
+        Window window = dialog.getWindow();
+        if (window == null) {
+            return;
+        }
+        window.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
+        window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+
+        WindowManager.LayoutParams windowAttributes = window.getAttributes();
+        windowAttributes.gravity = gravity;
+        window.setAttributes(windowAttributes);
+
+        if(Gravity.BOTTOM == gravity) {
+            dialog.setCancelable(true);
+        } else {
+            dialog.setCancelable(false);
+        }
+        TextView txtTop = dialog.findViewById(R.id.txtTop);
+        TextView txtContent = dialog.findViewById(R.id.txtContent);
+        Button btnNoThanks = dialog.findViewById(R.id.btn_verify);
+
+        txtTop.setText("Thông báo");
+        txtContent.setText("Email hoặc mật khẩu không đúng\nvui lòng thử lại");
+
+
+        btnNoThanks.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+
+        dialog.show();
     }
 }

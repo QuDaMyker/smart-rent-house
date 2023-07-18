@@ -18,10 +18,13 @@ import android.view.ViewGroup;
 import com.example.renthouse.Activity.ActivityLogIn;
 import com.example.renthouse.Adapter.HotRegionAdapter;
 import com.example.renthouse.Admin.Activity.Admin_ActivityBaoCaoNguoiDung;
+import com.example.renthouse.Admin.Activity.Admin_ActivityMain;
 import com.example.renthouse.Admin.Activity.Admin_ActivityStatistics;
 import com.example.renthouse.OOP.Region;
 import com.example.renthouse.OOP.Room;
 import com.example.renthouse.databinding.FragmentAdminHomeBinding;
+import com.example.renthouse.utilities.CacheUtils;
+import com.example.renthouse.utilities.Constants;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.BarData;
@@ -50,6 +53,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 //import com.github.mikephil.charting.charts.BarChart;
 //import com.github.mikephil.charting.data.BarData;
@@ -94,7 +98,7 @@ public class Admin_FragmentHome extends Fragment {
         mProgressDialog.setCancelable(false);
         mProgressDialog.setMessage("Loading...");
 
-        LinearLayoutManager linearLayoutManager  = new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false);
         binding.recycleView.setLayoutManager(linearLayoutManager);
         adapter = new HotRegionAdapter(regionListTop3);
         binding.recycleView.hasFixedSize();
@@ -111,7 +115,6 @@ public class Admin_FragmentHome extends Fragment {
 
 
     private void barEntriesAccess() {
-        Log.d("Trước", "trước");
         ArrayList<BarEntry> barEntries = new ArrayList<>();
         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("Access");
         databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -119,7 +122,6 @@ public class Admin_FragmentHome extends Fragment {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 for (DataSnapshot snapshot1 : snapshot.getChildren()) {
                     String date = snapshot1.getKey();
-                    Log.d("Contains", date);
                     Integer amount = 0;
                     if (dateInWeek.contains(date)) {
                         amount = snapshot1.getValue(Integer.class);
@@ -128,14 +130,16 @@ public class Admin_FragmentHome extends Fragment {
                 }
                 setBarEntries(barEntries);
             }
+
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
 
             }
         });
     }
+
     private void setBarEntries(ArrayList<BarEntry> barEntries) {
-        for (int i = 0; i < dateInWeek.size();i ++) {
+        for (int i = 0; i < dateInWeek.size(); i++) {
             float value = (float) (mapAcess.get(dateInWeek.get(i)));
             float position = (float) i;
             barEntries.add(new BarEntry(position, value));
@@ -143,7 +147,6 @@ public class Admin_FragmentHome extends Fragment {
         BarDataSet dataSet = new BarDataSet(barEntries, "Số lần truy cập");
         dataSet.setColor(Color.parseColor("#FFD601"));
 
-        Log.d("Số lượng", String.valueOf(barEntries.size()));
 
         BarData barData = new BarData(dataSet);
         barData.setBarWidth(0.3f); // Độ rộng của cột
@@ -155,7 +158,7 @@ public class Admin_FragmentHome extends Fragment {
         // Định dạng trục x
         XAxis xAxis = binding.barChart.getXAxis();
         String[] days = new String[7];
-        for (int i = 0; i < 7; i++){
+        for (int i = 0; i < 7; i++) {
             days[i] = dateInWeek.get(i).substring(0, 5);
             days[i].replace("-", "/");
         }
@@ -173,6 +176,7 @@ public class Admin_FragmentHome extends Fragment {
         binding.barChart.invalidate();
         mProgressDialog.dismiss();
     }
+
     private void init() {
         preferenceManager = new PreferenceManager(getContext());
     }
@@ -202,14 +206,18 @@ public class Admin_FragmentHome extends Fragment {
             }
         });
 
-        binding.imageLogout.setOnClickListener(v-> logOut());
+        binding.imageLogout.setOnClickListener(v -> logOut());
 
     }
 
-    private void logOut() {
+    /*private void logOut() {
         preferenceManager.clear();
+        preferenceManager.putBoolean(Constants.KEY_FIRST_INSTALL, true);
+
+
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
         reference.child("DashboardAdmin").child("Account").child("1").child("available").setValue("0");
+
         FirebaseAuth.getInstance().signOut();
         GoogleSignInOptions gso = new GoogleSignInOptions.
                 Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).
@@ -217,9 +225,34 @@ public class Admin_FragmentHome extends Fragment {
 
         GoogleSignInClient googleSignInClient = GoogleSignIn.getClient(getActivity(), gso);
         googleSignInClient.signOut();
+
         getActivity().finish();
         startActivity(new Intent(getContext(), ActivitySplash.class));
+    }*/
+    private void logOut() {
+        preferenceManager.clear();
+
+        preferenceManager.putBoolean(Constants.KEY_FIRST_INSTALL, true);
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
+        reference.child("DashboardAdmin").child("Account").child("1").child("available").setValue("0");
+
+        /*Log.d("checklog", preferenceManager.getString(Constants.KEY_IS_SIGNED_IN) + " null");
+        Log.d("checklog", preferenceManager.getString(Constants.KEY_EMAIL) + " null");
+        Log.d("checklog", preferenceManager.getString(Constants.KEY_USER_KEY) + " null");
+        Log.d("checklog", preferenceManager.getBoolean(Constants.KEY_FIRST_INSTALL).toString() + " null");
+        Log.d("checklog", preferenceManager.getString(Constants.KEY_IS_BLOCKED) + " null");*/
+
+        Intent intent = new Intent(getContext(), ActivitySplash.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+
+        CacheUtils.clearCache(getContext());
+
+        startActivity(intent);
+        requireActivity().finish();
+        //getActivity().finish();
+
     }
+
     private void loadData() {
         mProgressDialog.show();
         DatabaseReference firebaseDatabase = FirebaseDatabase.getInstance().getReference("Accounts");
@@ -265,6 +298,7 @@ public class Admin_FragmentHome extends Fragment {
         getRegion();
         barEntriesAccess();
     }
+
     public void getRegion() {
         DatabaseReference reference1 = FirebaseDatabase.getInstance().getReference("PopularRegion");
         reference1.addListenerForSingleValueEvent((new ValueEventListener() {
@@ -283,20 +317,21 @@ public class Admin_FragmentHome extends Fragment {
             }
         }));
     }
+
     private void filterTop() {
-        for (int i = 0; i < regionList.size() - 1;i++) {
-            for (int j = i + 1; j< regionList.size(); j++) {
+        for (int i = 0; i < regionList.size() - 1; i++) {
+            for (int j = i + 1; j < regionList.size(); j++) {
                 if (regionList.get(i).getSoLuong() < regionList.get(j).getSoLuong()) {
                     Collections.swap(regionList, i, j);
                 }
             }
         }
-        for (int i = 0; i < 3;i++) {
-            Log.d("Top", String.valueOf(regionList.get(i).getDistrictNameWithType()));
+        for (int i = 0; i < 3; i++) {
             regionListTop3.add(regionList.get(i));
         }
         adapter.notifyDataSetChanged();
     }
+
     private void addDateInSameWeek() {
         LocalDate ngayHienTai = null;
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {

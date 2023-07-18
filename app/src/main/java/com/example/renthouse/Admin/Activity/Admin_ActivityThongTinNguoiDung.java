@@ -3,8 +3,11 @@ package com.example.renthouse.Admin.Activity;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Toast;
@@ -43,7 +46,6 @@ public class Admin_ActivityThongTinNguoiDung extends AppCompatActivity {
         binding.btnKhoaTaiKhoan.setOnClickListener(v -> {
             AccountClass account = nguoiDung.getAccountClass();
             if (nguoiDung.getAccountClass().getBlocked()) {
-
                 account.setBlocked(false);
                 account.setThoiGianKhoa("Khong khoa");
             } else {

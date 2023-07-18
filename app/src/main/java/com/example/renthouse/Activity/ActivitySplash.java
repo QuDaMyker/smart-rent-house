@@ -5,7 +5,9 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
@@ -74,11 +76,13 @@ public class ActivitySplash extends AppCompatActivity {
 
 
                 preferenceManager = new PreferenceManager(getApplicationContext());
+
                 if (!preferenceManager.getBoolean(Constants.KEY_FIRST_INSTALL)) {
                     startActivity(new Intent(ActivitySplash.this, ActivityOnBoard.class));
                     finish();
                 } else {
                     if (preferenceManager.getBoolean(Constants.KEY_IS_SIGNED_IN)) {
+                        Log.d("admin", preferenceManager.getString(Constants.KEY_EMAIL) + "");
                         if (preferenceManager.getString(Constants.KEY_EMAIL).equals("admin")) {
                             startActivity(new Intent(ActivitySplash.this, Admin_ActivityMain.class));
                         } else {
@@ -86,9 +90,11 @@ public class ActivitySplash extends AppCompatActivity {
                             startActivity(new Intent(ActivitySplash.this, ActivityMain.class));
                         }
                     } else {
+                        Log.d("admin", "khong dang nhap");
                         putDataAccess();
                         startActivity(new Intent(ActivitySplash.this, ActivityLogIn.class));
                     }
+
                     finish();
                 }
 

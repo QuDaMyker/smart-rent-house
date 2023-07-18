@@ -4,7 +4,6 @@ import static com.gun0912.tedpermission.provider.TedPermissionProvider.context;
 
 import android.Manifest;
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -13,7 +12,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ImageButton;
@@ -23,7 +21,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -31,10 +28,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.renthouse.Adapter.RoomAdapter;
 import com.example.renthouse.Adapter.UtilitiesAdapter;
-import com.example.renthouse.Admin.Activity.Admin_ActivityThongTinPhong;
 import com.example.renthouse.Chat.Dashboard.ActivityChat;
 import com.example.renthouse.Chat.OOP.Conversation;
-import com.example.renthouse.Interface.DialogListener;
 import com.example.renthouse.OOP.AccountClass;
 import com.example.renthouse.OOP.Room;
 import com.example.renthouse.R;
@@ -59,7 +54,6 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
-import java.util.concurrent.atomic.AtomicInteger;
 
 public class ActivityDetails extends BaseActivity {
     private ActivityDetailsBinding binding;
@@ -613,8 +607,6 @@ public class ActivityDetails extends BaseActivity {
         binding.lnTacGia.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                Toast.makeText(ActivityDetails.this, "bam vao day", Toast.LENGTH_SHORT).show();
                 Intent roomToOwner = new Intent(ActivityDetails.this, ActivityOwnerInformation.class);
                 roomToOwner.putExtra("roomToOwer", room);
                 startActivity(roomToOwner);
