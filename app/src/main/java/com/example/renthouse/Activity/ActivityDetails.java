@@ -241,7 +241,7 @@ public class ActivityDetails extends BaseActivity {
 
         if (room.isRented())
         {
-            tvTinhTrang.setText("Đã cho thuê");
+            tvTinhTrang.setText("Hết");
         }
         else
         {
