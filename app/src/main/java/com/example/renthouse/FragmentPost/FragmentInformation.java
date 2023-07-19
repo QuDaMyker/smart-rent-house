@@ -340,7 +340,13 @@ public class FragmentInformation extends Fragment {
     public String currencyFormatter(Editable editable) {
         String initial = editable.toString();
         if (initial.isEmpty()) return "";
-        String cleanString = initial.replace(",", "");
+        String cleanString;
+        if (initial.contains(".")){
+            cleanString = initial.replace(".", "");
+        }
+        else{
+            cleanString = initial.replace(",", "");
+        }
         NumberFormat formatter = new DecimalFormat("#,###");
         double myNumber = new Double(cleanString);
         return formatter.format(myNumber);
