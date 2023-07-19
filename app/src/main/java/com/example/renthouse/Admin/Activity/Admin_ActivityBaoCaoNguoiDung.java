@@ -8,6 +8,9 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 
 import com.example.renthouse.Admin.Adapter.BaoCaoNguoiDungAdapter;
 import com.example.renthouse.Admin.OOP.NguoiDung;
@@ -40,6 +43,16 @@ public class Admin_ActivityBaoCaoNguoiDung extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         binding = ActivityAdminBaoCaoNguoiDungBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+
+        Window window = getWindow();
+
+        window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+
+        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+
+        window.setStatusBarColor(getColor(R.color.white));
+
+        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
 
         init();
         loadData();

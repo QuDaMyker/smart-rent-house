@@ -34,6 +34,7 @@ public class Admin_ActivityThongTinNguoiDung extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         binding = ActivityAdminThongTinNguoiDungBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
 
 
         init();

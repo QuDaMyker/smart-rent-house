@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Toast;
 
 import com.example.renthouse.OOP.AccountClass;
@@ -38,6 +39,7 @@ public class ActivityContactAdmin extends AppCompatActivity {
         binding = ActivityContactAdminBinding.inflate(getLayoutInflater());
         //setContentView(R.layout.activity_contact_admin);
         setContentView(binding.getRoot());
+        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
 
         loadIntent();
         setListeners();

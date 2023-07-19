@@ -123,6 +123,8 @@ public class Admin_ActivityThongTinPhong extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_admin_thong_tin_phong);
+        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
+
 
         db = FirebaseDatabase.getInstance();
         ref = db.getReference("Rooms");

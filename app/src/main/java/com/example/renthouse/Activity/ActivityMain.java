@@ -65,7 +65,7 @@ public class ActivityMain extends BaseActivity implements DialogListener {
 
         window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
 
-        window.setStatusBarColor(ContextCompat.getColor(ActivityMain.this, R.color.purple_500));
+        window.setStatusBarColor(getColor(R.color.Primary_40));
 
         setDefaultFragment();
 

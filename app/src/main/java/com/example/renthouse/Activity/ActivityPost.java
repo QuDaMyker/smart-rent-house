@@ -89,6 +89,9 @@ public class ActivityPost extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_post);
+
+        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
+
         btnBack = findViewById(R.id.btn_Back);
         btnBack.setOnClickListener(new View.OnClickListener() {
             @Override

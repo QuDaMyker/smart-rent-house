@@ -21,14 +21,15 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/Primary_98"
-        app:itemRippleColor="@color/black"
-        app:itemTextColor="@color/black"
-        app:itemIconTint="@color/black"
-        app:labelVisibilityMode="selected"
+        app:itemRippleColor="@color/Primary_95"
+        app:itemTextColor="@color/navbar_icon_color_selector"
+        app:itemIconTint="@color/navbar_icon_color_selector"
+        app:labelVisibilityMode="labeled"
+        app:itemActiveIndicatorStyle="@style/App.Custom.Indicator"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:menu="@menu/menu_nav_button" />
+        app:menu="@menu/menu_nav_button"/>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

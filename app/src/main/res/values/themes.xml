@@ -11,7 +11,7 @@
         <item name="colorOnSecondary">@color/Primary_60</item>
         <!-- Status bar color. -->
        <!-- <item name="android:statusBarColor">?attr/colorPrimaryVariant</item>-->
-        <item name="android:statusBarColor">@color/Primary_80</item>
+        <item name="android:statusBarColor">@color/Primary_98</item>
 
 
         <!-- Customize your theme here. -->
