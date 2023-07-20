@@ -70,20 +70,18 @@
 - Xác thực tài khoản: Authentication Firebase
 - Công cụ quản lí: Github, Git
 ## Hướng dẫn cài đặt
-<details>
-  <summary>Đối với nhà phát triển</summary>
-  - Download phần mềm tại [https://github.com/QuDaMyker/smart-rent-house](https://github.com/QuDaMyker/smart-rent-house]
-  - Clone về với git.
-  - Hoặc Download ZIP và giải nén.
-- Tài khoản mặc định:
-  - Tên đăng nhập: admin
-  - Mật khẩu: admin
-  </details>
-  <details>
-  <summary>Đối với người dùng</summary>
+- Đối với nhà phát triển
+    - Download phần mềm tại [https://github.com/QuDaMyker/smart-rent-house](https://github.com/QuDaMyker/smart-rent-house)
+      - Clone về với git.
+      - Hoặc Download ZIP và giải nén.
+    - Thêm vào file local.properties dòng "MAPS_API_KEY=AIzaSyAgsQYMfzZ7UlCUjlbw0orxxbiLfTsD9NI"
+    - Ấn Run để chạy ứng dụng
+    - Tài khoản quản trị viên mặc định:
+      - Tên đăng nhập: admin
+      - Mật khẩu: admin
+- Đối với người dùng
   - [Cài đặt thông qua của hàng ứng dụng Google]()
   - [Cài đặt thông qua file APK](https://drive.google.com/drive/folders/1sqYQaI4tuwSryxaeNmVJDI5hGH190OTQ?usp=sharing) 
-  </details>
 
 ## Demo
 
