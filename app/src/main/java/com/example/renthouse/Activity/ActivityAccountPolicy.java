@@ -18,6 +18,9 @@ public class ActivityAccountPolicy extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_account_policy);
 
+        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
+
+
         pdfView = findViewById(R.id.pdfView);
         pdfView.fromAsset("policy.pdf").load();
 

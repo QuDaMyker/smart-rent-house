@@ -3,18 +3,18 @@
 
     <item android:title="Trang chủ"
         android:id="@+id/btnHome"
-        android:icon="@drawable/ic_home_foreground"
+        android:icon="@drawable/navbar_icon_home_selector"
         />
     <item android:title="Yêu thích"
         android:id="@+id/btnLiked"
-        android:icon="@drawable/ic_favorite_foreground"
+        android:icon="@drawable/navbar_icon_like_selector"
         />
     <item android:title="Trò chuyện"
         android:id="@+id/btnChat"
-        android:icon="@drawable/ic_chat_foreground"
+        android:icon="@drawable/navbar_icon_chat_selector"
         />
     <item android:title="Tài khoản"
         android:id="@+id/btnAccount"
-        android:icon="@drawable/ic_account_foreground"
+        android:icon="@drawable/navbar_icon_user_selector"
         />
 </menu>

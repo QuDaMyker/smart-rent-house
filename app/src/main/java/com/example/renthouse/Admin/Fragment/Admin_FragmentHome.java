@@ -319,17 +319,25 @@ public class Admin_FragmentHome extends Fragment {
     }
 
     private void filterTop() {
-        for (int i = 0; i < regionList.size() - 1; i++) {
-            for (int j = i + 1; j < regionList.size(); j++) {
-                if (regionList.get(i).getSoLuong() < regionList.get(j).getSoLuong()) {
-                    Collections.swap(regionList, i, j);
+        if(regionList.size() < 3) {
+            binding.linearLayout5.setVisibility(View.INVISIBLE);
+            binding.recycleView.setVisibility(View.INVISIBLE);
+        }else {
+            binding.linearLayout5.setVisibility(View.VISIBLE);
+            binding.recycleView.setVisibility(View.VISIBLE);
+            for (int i = 0; i < regionList.size() - 1; i++) {
+                for (int j = i + 1; j < regionList.size(); j++) {
+                    if (regionList.get(i).getSoLuong() < regionList.get(j).getSoLuong()) {
+                        Collections.swap(regionList, i, j);
+                    }
                 }
             }
+            for (int i = 0; i < 3; i++) {
+                regionListTop3.add(regionList.get(i));
+            }
+            adapter.notifyDataSetChanged();
         }
-        for (int i = 0; i < 3; i++) {
-            regionListTop3.add(regionList.get(i));
-        }
-        adapter.notifyDataSetChanged();
+
     }
 
     private void addDateInSameWeek() {

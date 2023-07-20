@@ -44,12 +44,15 @@ public class ActivityReportError extends AppCompatActivity{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_report_error);
+        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
+
 
         txtInTieuDe = findViewById(R.id.txtInTieuDe);
         txtInMoTa = findViewById(R.id.txtInMoTaSuCo);
 
         txtEdtTieuDe = findViewById(R.id.txtEdtTieuDe);
         txtEdtMoTa = findViewById(R.id.txtEdtMoTaSuCo);
+
 
         btnBack = findViewById(R.id.btn_Back);
         btnBack.setOnClickListener(new View.OnClickListener() {

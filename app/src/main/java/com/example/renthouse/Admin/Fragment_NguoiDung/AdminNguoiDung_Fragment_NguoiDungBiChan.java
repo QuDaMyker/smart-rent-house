@@ -72,19 +72,19 @@ public class AdminNguoiDung_Fragment_NguoiDungBiChan extends Fragment implements
         View view = binding.getRoot();
 
 
-
-
-
         init();
-        loadData();
+        //loadData();
         setListeners();
         return view;
     }
 
     @Override
     public void onResume() {
-        super.onResume();
+        nguoiDungs.clear();
+        tempNguoiDung.clear();
         loadData();
+        super.onResume();
+
     }
 
     private void setListeners() {
@@ -121,7 +121,7 @@ public class AdminNguoiDung_Fragment_NguoiDungBiChan extends Fragment implements
         query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                if(dataSnapshot.exists()) {
+                if (dataSnapshot.exists()) {
                     List<NguoiDung> tempNguoiDungs = new ArrayList<>();
                     int dataSnapshotCount = (int) dataSnapshot.getChildrenCount();
                     AtomicInteger count = new AtomicInteger(0);
@@ -161,6 +161,7 @@ public class AdminNguoiDung_Fragment_NguoiDungBiChan extends Fragment implements
                 } else {
                     binding.animationView.setVisibility(View.VISIBLE);
                     binding.recycleView.setVisibility(View.INVISIBLE);
+                    dialogListener.dismissDialog();
                 }
 
             }

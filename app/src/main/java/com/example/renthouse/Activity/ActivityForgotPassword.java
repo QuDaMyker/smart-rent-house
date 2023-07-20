@@ -7,6 +7,8 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -21,7 +23,7 @@ import com.google.firebase.auth.FirebaseAuth;
 public class ActivityForgotPassword extends AppCompatActivity {
     private static final int REQUEST_CODE = 1;
     private ImageButton backToLoginBtn;
-    private TextView tv_backToLoginBtn;
+    private TextView tv_backToLoginBtn, btnBack;
     private Button sentBtn;
     private TextInputEditText forgotPassword_email;
     private ProgressDialog progressDialog;
@@ -31,16 +33,33 @@ public class ActivityForgotPassword extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_forgot_password);
 
+        Window window = getWindow();
+
+        window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+
+        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+
+        window.setStatusBarColor(getColor(R.color.white));
+
+        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
+
+
         progressDialog = new ProgressDialog(ActivityForgotPassword.this);
         progressDialog.setCancelable(false);
         progressDialog.setMessage("Loading...");
 
-
+        btnBack = findViewById(R.id.btnBack);
         backToLoginBtn = findViewById(R.id.backToLoginBtn);
         forgotPassword_email = findViewById(R.id.forgotPassword_email);
         tv_backToLoginBtn = findViewById(R.id.tv_backToLoginBtn);
         sentBtn = findViewById(R.id.sentBtn);
 
+        btnBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
 
         backToLoginBtn.setOnClickListener(new View.OnClickListener() {
             @Override
