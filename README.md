@@ -73,7 +73,7 @@
 
 [Cài đặt thông qua của hàng ứng dụng Google]()
 
-[Cài đặt thông qua file APK](https://www.figma.com/proto/j72g4d8wd3Lpg1OHMvnLRa/SE114-Project-UI?node-id=3-3456&scaling=scale-down&page-id=3%3A3456&starting-point-node-id=6%3A63&prev-org-id=external-teams) 
+[Cài đặt thông qua file APK](https://drive.google.com/drive/folders/1sqYQaI4tuwSryxaeNmVJDI5hGH190OTQ?usp=sharing) 
 ## Demo
 
 [Demo người dùng](https://www.figma.com/proto/j72g4d8wd3Lpg1OHMvnLRa/SE114-Project-UI?node-id=3-3456&scaling=scale-down&page-id=3%3A3456&starting-point-node-id=6%3A63&prev-org-id=external-teams) 
