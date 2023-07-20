@@ -82,7 +82,7 @@ public class AdminNguoiDung_FragmentDanhSachNguoiDung extends Fragment implement
         View view = binding.getRoot();
 
         init();
-        loadData();
+        //loadData();
         setListeners();
 
         return view;
@@ -90,8 +90,12 @@ public class AdminNguoiDung_FragmentDanhSachNguoiDung extends Fragment implement
 
     @Override
     public void onResume() {
-        super.onResume();
+        nguoiDungs.clear();
+        tempNguoiDung.clear();
+        filterSearch.clear();
         loadData();
+        super.onResume();
+
     }
 
     private void init() {
@@ -161,6 +165,7 @@ public class AdminNguoiDung_FragmentDanhSachNguoiDung extends Fragment implement
                 } else {
                     binding.animationView.setVisibility(View.VISIBLE);
                     binding.recycleView.setVisibility(View.INVISIBLE);
+                    dialogListener.dismissDialog();
                 }
                 dialogListener.dismissDialog();
 

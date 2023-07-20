@@ -23,7 +23,7 @@ import com.google.firebase.auth.FirebaseAuth;
 public class ActivityForgotPassword extends AppCompatActivity {
     private static final int REQUEST_CODE = 1;
     private ImageButton backToLoginBtn;
-    private TextView tv_backToLoginBtn;
+    private TextView tv_backToLoginBtn, btnBack;
     private Button sentBtn;
     private TextInputEditText forgotPassword_email;
     private ProgressDialog progressDialog;
@@ -48,12 +48,18 @@ public class ActivityForgotPassword extends AppCompatActivity {
         progressDialog.setCancelable(false);
         progressDialog.setMessage("Loading...");
 
-
+        btnBack = findViewById(R.id.btnBack);
         backToLoginBtn = findViewById(R.id.backToLoginBtn);
         forgotPassword_email = findViewById(R.id.forgotPassword_email);
         tv_backToLoginBtn = findViewById(R.id.tv_backToLoginBtn);
         sentBtn = findViewById(R.id.sentBtn);
 
+        btnBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
 
         backToLoginBtn.setOnClickListener(new View.OnClickListener() {
             @Override

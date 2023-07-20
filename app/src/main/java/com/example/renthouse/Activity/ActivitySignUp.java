@@ -198,7 +198,6 @@ public class ActivitySignUp extends AppCompatActivity {
     private void signUpWithEmailPassword() {
         String email = binding.inputEmail.getText().toString().trim();
         String password = binding.inputPassword.getText().toString().trim();
-        Toast.makeText(this, email, Toast.LENGTH_SHORT).show();
         mAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {

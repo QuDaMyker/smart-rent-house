@@ -82,8 +82,6 @@ public class FragmentHome extends Fragment {
     private static final int LOCATION_REQUEST_CODE = 200;
     private FusedLocationProviderClient fusedLocationProviderClient;
     private LatLng currentLocation;
-
-
     private FragmentHomeBinding binding;
     private FirebaseAuth firebaseAuth;
     private FirebaseUser currentUser;
