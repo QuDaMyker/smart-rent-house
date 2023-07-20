@@ -3,6 +3,7 @@ package com.example.renthouse.Activity;
 import static com.gun0912.tedpermission.provider.TedPermissionProvider.context;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -115,7 +116,7 @@ public class ActivityDetails extends BaseActivity {
     LinearLayout NormalUserLayout;
     LinearLayout OwnerLayout;
 
-    CheckBox cbIsRented ;
+    MaterialButton cbIsRented ;
     public interface RoomListListener {
         void onRoomListCreated(List<Room> rooms);
     }
@@ -412,22 +413,24 @@ public class ActivityDetails extends BaseActivity {
                 }
             }
         });
-        cbIsRented.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        cbIsRented.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+            public void onClick(View view) {
                 FirebaseDatabase database = FirebaseDatabase.getInstance();
                 DatabaseReference refRooms = database.getReference("Rooms").child(room.getId());
-                if (isChecked)
+                if (cbIsRented.isChecked())
                 {
                     refRooms.child("rented").setValue(true);
                     room.setRented(true);
                     tvTinhTrang.setText("Hết");
+                    cbIsRented.setText("Đã cho thuê");
                 }
                 else
                 {
                     refRooms.child("rented").setValue(false);
                     room.setRented(false);
                     tvTinhTrang.setText("Còn");
+                    cbIsRented.setText("Chưa cho thuê");
                 }
             }
         });
@@ -759,14 +762,17 @@ public class ActivityDetails extends BaseActivity {
             }
         });
     }
+    @SuppressLint("SetTextI18n")
     public void isRented () {
         if (room.isRented())
         {
             cbIsRented.setChecked(true);
+            cbIsRented.setText("Đã cho thuê");
         }
         else
         {
             cbIsRented.setChecked(false);
+            cbIsRented.setText("Chưa cho thuê");
         }
     }
 
