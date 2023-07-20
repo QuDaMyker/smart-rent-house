@@ -14,6 +14,9 @@ import com.example.renthouse.Activity.BaseActivity;
 public class InternetBroadcastReceiver extends BroadcastReceiver {
     private ProgressDialog progressDialog;
 
+    public InternetBroadcastReceiver() {
+    }
+
     public InternetBroadcastReceiver(ProgressDialog progressDialog) {
         this.progressDialog = progressDialog;
     }
