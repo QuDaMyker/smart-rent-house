@@ -139,9 +139,6 @@
             android:name=".Activity.ActivityDetails"
             android:exported="false" />
         <activity
-            android:name=".Activity.ActivityAccountInformation"
-            android:exported="false" />
-        <activity
             android:name=".Activity.FullScreenActivity"
             android:exported="false" />
         <activity
@@ -171,14 +168,6 @@
         <activity
             android:name=".Activity.ActivityRecentSeen"
             android:exported="false" />
-
-        <service
-            android:name=".Chat.Firebase.MessingService"
-            android:exported="false">
-            <intent-filter>
-                <action android:name="com.google.firebase.MESSAGING_EVENT" />
-            </intent-filter>
-        </service>
 
         <receiver
             android:name=".BroadcastReceiver.InternetBroadcastReceiver"

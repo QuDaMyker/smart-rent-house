@@ -16,6 +16,7 @@ import androidx.annotation.Nullable;
 import com.example.renthouse.Admin.Activity.Admin_ActivityCreateSchedule;
 import com.example.renthouse.Admin.OOP.NotiSchedule;
 import com.example.renthouse.BroadcastReceiver.MyAlarmReceiver;
+import com.google.firebase.FirebaseApp;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -36,6 +37,8 @@ public class MyApplication extends Application {
         super.onCreate();
 
         createChannelNotification();
+        FirebaseApp.initializeApp(getApplicationContext());
+
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference notiSchedulesRef = database.getReference("NotiSchedules");
         notiSchedulesRef.addChildEventListener(new ChildEventListener() {
@@ -66,7 +69,7 @@ public class MyApplication extends Application {
                     int requestCode = Integer.parseInt(requestCodeString);
 
                     Intent intent = new Intent(MyApplication.this, MyAlarmReceiver.class);
-                    PendingIntent pendingIntent = PendingIntent.getBroadcast(MyApplication.this, requestCode, intent, PendingIntent.FLAG_NO_CREATE);
+                    PendingIntent pendingIntent = PendingIntent.getBroadcast(MyApplication.this, requestCode, intent, PendingIntent.FLAG_NO_CREATE | PendingIntent.FLAG_IMMUTABLE);
 
                     if (pendingIntent != null) {
                         AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);

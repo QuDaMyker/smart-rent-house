@@ -1,5 +1,6 @@
 package com.example.renthouse.FragmentPost;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.text.Editable;
@@ -36,20 +37,20 @@ import java.util.List;
 
 public class FragmentLocation extends Fragment {
 
-    TextInputEditText cityEdt;
-    TextInputEditText districtEdt;
-    TextInputEditText wardEdt;
-    TextInputEditText edtStreet;
-    TextInputEditText edtAddress;
+    public TextInputEditText cityEdt;
+    public TextInputEditText districtEdt;
+    public TextInputEditText wardEdt;
+    public TextInputEditText edtStreet;
+    public TextInputEditText edtAddress;
 
-    TextInputLayout cityLayoutEdt;
-    TextInputLayout districtLayoutEdt;
-    TextInputLayout wardLayoutEdt;
-    TextInputLayout edtLayoutStreet;
-    TextInputLayout edtLayoutAddress;
-    City selectedCity;
-    District selectedDistrict;
-    Ward selectedWard;
+    public TextInputLayout cityLayoutEdt;
+    public TextInputLayout districtLayoutEdt;
+    public TextInputLayout wardLayoutEdt;
+    public TextInputLayout edtLayoutStreet;
+    public TextInputLayout edtLayoutAddress;
+    public City selectedCity;
+    public District selectedDistrict;
+    public Ward selectedWard;
     private boolean isDataSet = false;
     List<City> cityList;
     List<District> districtList;
@@ -64,25 +65,21 @@ public class FragmentLocation extends Fragment {
         wardEdt = (TextInputEditText) v.findViewById(R.id.wardEdt);
         edtStreet = (TextInputEditText) v.findViewById(R.id.edtStreet);
         edtAddress = (TextInputEditText) v.findViewById(R.id.edtAddress);
-
         cityLayoutEdt = v.findViewById(R.id.cityLayoutEdt);
         districtLayoutEdt =  v.findViewById(R.id.districtLayoutEdt);
         wardLayoutEdt = v.findViewById(R.id.wardLayoutEdt);
         edtLayoutStreet = v.findViewById(R.id.edtLayoutStreet);
         edtLayoutAddress =  v.findViewById(R.id.edtLayoutAddress);
-
-        String cityJson = loadJSONFromAsset("cities.json");
-        String districtJson = loadJSONFromAsset("districts.json");
-        String wardJson = loadJSONFromAsset("wards.json");
+        String cityJson = loadJSONFromAsset("cities.json", inflater.getContext());
+        String districtJson = loadJSONFromAsset("districts.json", inflater.getContext());
+        String wardJson = loadJSONFromAsset("wards.json", inflater.getContext());
         Gson gson = new Gson();
         Type listCityType = new TypeToken<List<City>>(){}.getType();
         Type listDistrictType = new TypeToken<List<District>>(){}.getType();
         Type listWardType = new TypeToken<List<Ward>>(){}.getType();
-
         cityList = gson.fromJson(cityJson, listCityType);
         districtList = gson.fromJson(districtJson, listDistrictType);
         wardList = gson.fromJson(wardJson, listWardType);
-
         cityEdt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -250,10 +247,10 @@ public class FragmentLocation extends Fragment {
         return v;
     }
 
-    public String loadJSONFromAsset(String filename) {
+    public String loadJSONFromAsset(String filename, Context context) {
         String json = null;
         try {
-            InputStream is = getActivity().getAssets().open(filename);
+            InputStream is = context.getAssets().open(filename);
             int size = is.available();
             byte[] buffer = new byte[size];
             is.read(buffer);
@@ -265,7 +262,6 @@ public class FragmentLocation extends Fragment {
         }
         return json;
     }
-
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
