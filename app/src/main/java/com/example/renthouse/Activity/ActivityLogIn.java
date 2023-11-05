@@ -116,12 +116,11 @@ public class ActivityLogIn extends AppCompatActivity {
     private void init() {
         preferenceManager = new PreferenceManager(ActivityLogIn.this);
 
-        if(preferenceManager.getBoolean(Constants.KEY_IS_SIGNED_IN)) {
+        if (preferenceManager.getBoolean(Constants.KEY_IS_SIGNED_IN)) {
             Log.d("checkstatus", "key, true");
-        }else if(preferenceManager.getBoolean(Constants.KEY_IS_SIGNED_IN) == false || preferenceManager.getBoolean(Constants.KEY_IS_SIGNED_IN) == null){
+        } else if (preferenceManager.getBoolean(Constants.KEY_IS_SIGNED_IN) == false || preferenceManager.getBoolean(Constants.KEY_IS_SIGNED_IN) == null) {
             Log.d("checkstatus", "key, false");
         }
-
 
 
         progressDialog = new ProgressDialog(ActivityLogIn.this);
@@ -476,6 +475,9 @@ public class ActivityLogIn extends AppCompatActivity {
     }
 
     public static boolean isValidPassword(String password) {
+        if (password == null) {
+            return false;
+        }
         if (password.length() < 8 || password.length() > 15) {
             return false;
         }
@@ -510,7 +512,7 @@ public class ActivityLogIn extends AppCompatActivity {
         windowAttributes.gravity = gravity;
         window.setAttributes(windowAttributes);
 
-        if(Gravity.BOTTOM == gravity) {
+        if (Gravity.BOTTOM == gravity) {
             dialog.setCancelable(true);
         } else {
             dialog.setCancelable(false);
@@ -543,7 +545,7 @@ public class ActivityLogIn extends AppCompatActivity {
         windowAttributes.gravity = gravity;
         window.setAttributes(windowAttributes);
 
-        if(Gravity.BOTTOM == gravity) {
+        if (Gravity.BOTTOM == gravity) {
             dialog.setCancelable(true);
         } else {
             dialog.setCancelable(false);

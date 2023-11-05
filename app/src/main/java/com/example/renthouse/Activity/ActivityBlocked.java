@@ -63,7 +63,7 @@ public class ActivityBlocked extends AppCompatActivity {
         });
     }
 
-    private void sendReport() {
+    public void sendReport() {
         Intent intent = new Intent(ActivityBlocked.this, ActivityContactAdmin.class);
         FirebaseAuth mAuth = FirebaseAuth.getInstance();
         FirebaseUser currentUser = mAuth.getCurrentUser();
