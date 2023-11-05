@@ -50,10 +50,13 @@ import io.reactivex.annotations.NonNull;
 
 public class ActivityMain extends BaseActivity implements DialogListener {
     private ActivityMainBinding binding;
-    private ProgressDialog progressDialog;
+    public ProgressDialog progressDialog;
+    public FragmentManager fragmentManager;
+    public FragmentTransaction fragmentTransaction;
+
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
@@ -86,24 +89,20 @@ public class ActivityMain extends BaseActivity implements DialogListener {
         TokenUpdateTask task = new TokenUpdateTask();
         task.execute();
 
-
         progressDialog = new ProgressDialog(ActivityMain.this);
         progressDialog.setCancelable(false);
         progressDialog.setMessage("Loading...");
-
+        fragmentManager = getSupportFragmentManager();
+        fragmentTransaction = fragmentManager.beginTransaction();
     }
 
 
-    private void setDefaultFragment() {
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+    public void setDefaultFragment() {
         fragmentTransaction.replace(R.id.frame_layout, new FragmentHome());
         fragmentTransaction.commit();
     }
 
-    private void replaceFragment(Fragment fragment) {
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+    public void replaceFragment(Fragment fragment) {
         fragmentTransaction.replace(R.id.frame_layout, fragment);
         fragmentTransaction.commit();
     }

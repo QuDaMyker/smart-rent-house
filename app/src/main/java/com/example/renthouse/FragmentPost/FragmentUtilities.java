@@ -36,11 +36,11 @@ import gun0912.tedbottompicker.TedBottomSheetDialogFragment;
 
 public class FragmentUtilities  extends Fragment {
 
-    private LinearLayout addImg;
-    private LinearLayout imgLayout;
-    private MaterialButton addImgBtn;
-    private RecyclerView rcvPhoto;
-    private PhotoAdapter photoAdapter;
+    public LinearLayout addImg;
+    public LinearLayout imgLayout;
+    public MaterialButton addImgBtn;
+    public RecyclerView rcvPhoto;
+    public PhotoAdapter photoAdapter;
     private boolean isDataSet = false;
 
     public List<Uri> uriListImg = new ArrayList<>();
@@ -196,8 +196,7 @@ public class FragmentUtilities  extends Fragment {
 
 
 
-    private void createButtons(View v) {
-
+    public void createButtons(View v) {
         for (int i = 0; i < buttonTitles.length; i++) {
             MaterialButton button = new MaterialButton(v.getContext());
             button.setPadding(15,0,15,0);

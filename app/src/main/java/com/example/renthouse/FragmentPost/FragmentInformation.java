@@ -31,27 +31,27 @@ import java.text.NumberFormat;
 
 public class FragmentInformation extends Fragment {
 
-    RadioGroup radioBtnType;
-    TextInputEditText edtCapacity;
+    public RadioGroup radioBtnType;
+    public TextInputEditText edtCapacity;
     RadioGroup radioBtnGender;
-    TextInputEditText edtArea;
-    TextInputEditText edtPrice;
-    TextInputEditText edtDeposit;
-    MaterialSwitch switchFreeElectricity;
-    TextInputEditText edtElectricityCost;
-    MaterialSwitch switchFreeWater;
-    TextInputEditText edtWaterCost;
-    MaterialSwitch switchFreeInternet;
-    TextInputEditText edtInternetCost;
-    CheckBox cbParking;
+    public TextInputEditText edtArea;
+    public TextInputEditText edtPrice;
+    public TextInputEditText edtDeposit;
+    public MaterialSwitch switchFreeElectricity;
+    public TextInputEditText edtElectricityCost;
+    public MaterialSwitch switchFreeWater;
+    public TextInputEditText edtWaterCost;
+    public MaterialSwitch switchFreeInternet;
+    public TextInputEditText edtInternetCost;
+    public CheckBox cbParking;
     LinearLayout parkingInfo;
-    MaterialSwitch switchFreeParking;
-    TextInputEditText edtParkingFee;
+    public MaterialSwitch switchFreeParking;
+    public TextInputEditText edtParkingFee;
 
-    TextInputLayout edtLayoutCapacity;
-    TextInputLayout edtLayoutArea;
-    TextInputLayout edtLayoutPrice;
-    TextInputLayout edtLayoutDeposit;
+    public TextInputLayout edtLayoutCapacity;
+    public TextInputLayout edtLayoutArea;
+    public TextInputLayout edtLayoutPrice;
+    public TextInputLayout edtLayoutDeposit;
     TextInputLayout edtLayoutElectricityCost;
     TextInputLayout edtLayoutWaterCost;
     TextInputLayout edtLayoutInternetCost;

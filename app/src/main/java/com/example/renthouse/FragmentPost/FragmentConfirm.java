@@ -20,13 +20,13 @@ import com.google.android.material.textfield.TextInputLayout;
 
 public class FragmentConfirm extends Fragment {
 
-    TextInputEditText edtPhoneNumber;
-    TextInputEditText edtTitle;
-    TextInputEditText edtDescription;
+    public TextInputEditText edtPhoneNumber;
+    public TextInputEditText edtTitle;
+    public TextInputEditText edtDescription;
 
-    TextInputLayout edtLayoutPhoneNumber;
-    TextInputLayout edtLayoutTitle;
-    TextInputLayout edtLayoutDescription;
+    public TextInputLayout edtLayoutPhoneNumber;
+    public TextInputLayout edtLayoutTitle;
+    public TextInputLayout edtLayoutDescription;
     private boolean isDataSet = false;
 
     @Nullable

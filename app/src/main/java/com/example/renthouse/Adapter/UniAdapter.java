@@ -17,9 +17,9 @@ import java.util.List;
 
 public class UniAdapter extends RecyclerView.Adapter<UniAdapter.ViewHolder> {
     private List<University> itemList;
-    private List<University> filteredList;
-    private LinearLayout introView;
-    private TextView helpTv;
+    public List<University> filteredList;
+    public LinearLayout introView;
+    public TextView helpTv;
     public interface OnItemClickListener {
         void onItemClick(int position, University data);
     }
@@ -91,7 +91,6 @@ public class UniAdapter extends RecyclerView.Adapter<UniAdapter.ViewHolder> {
                 }
             }
         }
-        notifyDataSetChanged();
 
         if (introView != null) {
             if (filteredList.isEmpty()) {
