@@ -13,8 +13,8 @@ import com.example.renthouse.Activity.ActivityLogIn;
 import com.example.renthouse.databinding.ActivityOnBoardBinding;
 
 public class ActivityOnBoard extends AppCompatActivity {
-    private ActivityOnBoardBinding binding;
-    private OnboardAdapter adapter;
+    public ActivityOnBoardBinding binding;
+    public OnboardAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,14 +26,14 @@ public class ActivityOnBoard extends AppCompatActivity {
         setListeners();
     }
 
-    private void init() {
+    public void init() {
         adapter = new OnboardAdapter(getSupportFragmentManager(), FragmentStatePagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
         binding.viewPager.setAdapter(adapter);
         binding.dotsIndicator.setViewPager(binding.viewPager);
 
     }
 
-    private void setListeners() {
+    public void setListeners() {
         binding.btnBoQua.setOnClickListener(v -> {
             binding.viewPager.setCurrentItem(2);
             binding.btnNext.setText("Bắt đầu");

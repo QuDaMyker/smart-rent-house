@@ -42,22 +42,22 @@ import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
 
 public class ActivityDetailAccount extends BaseActivity {
-    private TextInputLayout TILfullname, TILemail, TILsodienthoai, TILmatkhau;
-    private TextInputEditText TIETfullname, TIETemail, TIETsodienthoai, TIETMatKhau;
-    private ImageView imageProfile;
-    private ImageButton btnBack;
-    private Button btnUpdate;
+    public TextInputLayout TILfullname, TILemail, TILsodienthoai, TILmatkhau;
+    public TextInputEditText TIETfullname, TIETemail, TIETsodienthoai, TIETMatKhau;
+    public ImageView imageProfile;
+    public ImageButton btnBack;
+    public Button btnUpdate;
 
-    private FirebaseAuth mAuth;
-    private FirebaseUser currentUser;
-    private boolean isDataLoaded = false;
-    private AccountClass account;
-    private String key;
-    private Uri imageUri;
-    final private DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("Accounts");
-    final private StorageReference storageReference = FirebaseStorage.getInstance().getReference();
-    private PreferenceManager preferenceManager;
-    private ProgressDialog progressDialog;
+    public FirebaseAuth mAuth;
+    public FirebaseUser currentUser;
+    public boolean isDataLoaded = false;
+    public AccountClass account;
+    public String key;
+    public Uri imageUri;
+    final public DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("Accounts");
+    final public StorageReference storageReference = FirebaseStorage.getInstance().getReference();
+    public PreferenceManager preferenceManager;
+    public ProgressDialog progressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -227,7 +227,7 @@ public class ActivityDetailAccount extends BaseActivity {
         return mime.getExtensionFromMimeType(contentResolver.getType(fileUri));
     }
 
-    private boolean checkTrueCondition() {
+    public boolean checkTrueCondition() {
         if (TIETfullname.getText().toString().matches("[0-9\\p{Punct}]+")) {
             TILfullname.setError("Không đúng định dạng");
             return false;
@@ -253,6 +253,22 @@ public class ActivityDetailAccount extends BaseActivity {
                 }
             }
         }
+    }
+
+    public String getFullName() {
+        return TIETfullname.getText().toString();
+    }
+
+    public String getEmail() {
+        return TIETemail.getText().toString();
+    }
+
+    public String getPhoneNumber() {
+        return TIETsodienthoai.getText().toString();
+    }
+
+    public String getPassword() {
+        return TIETMatKhau.getText().toString();
     }
 
     public static boolean isValidPassword(String password) {
@@ -284,7 +300,8 @@ public class ActivityDetailAccount extends BaseActivity {
         // Mật khẩu hợp lệ
         return true;
     }
-    private void showCallConfirmationDialog(String number) {
+
+    public void showCallConfirmationDialog(String number) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Thông báo");
         builder.setMessage("Cập nhật ảnh thành công");

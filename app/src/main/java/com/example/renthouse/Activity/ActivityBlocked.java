@@ -27,8 +27,8 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 public class ActivityBlocked extends AppCompatActivity {
-    private ActivityBlockedBinding binding;
-    private PreferenceManager preferenceManager;
+    public ActivityBlockedBinding binding;
+    public PreferenceManager preferenceManager;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,7 +50,7 @@ public class ActivityBlocked extends AppCompatActivity {
         
     }
 
-    private void setListeners() {
+    public void setListeners() {
         binding.backToLoginBtn.setOnClickListener(v-> {
             // go bo thong tin dang nhap va clear SharedPrefence
             clearCacheAccount();
@@ -63,7 +63,7 @@ public class ActivityBlocked extends AppCompatActivity {
         });
     }
 
-    public void sendReport() {
+    public Object sendReport() {
         Intent intent = new Intent(ActivityBlocked.this, ActivityContactAdmin.class);
         FirebaseAuth mAuth = FirebaseAuth.getInstance();
         FirebaseUser currentUser = mAuth.getCurrentUser();
@@ -96,9 +96,10 @@ public class ActivityBlocked extends AppCompatActivity {
 
         // go bo thong tin dang nhap va clear SharedPrefence
         clearCacheAccount();
+        return null;
     }
 
-    private void clearCacheAccount(){
+    public void clearCacheAccount(){
         preferenceManager = new PreferenceManager(ActivityBlocked.this);
 
         preferenceManager.clear();
