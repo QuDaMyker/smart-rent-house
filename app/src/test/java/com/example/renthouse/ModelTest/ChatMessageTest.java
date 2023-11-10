@@ -1,9 +1,11 @@
-package com.example.renthouse.OOP;
+package com.example.renthouse.ModelTest;
 
 import org.junit.Before;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
+
+import com.example.renthouse.OOP.ChatMessage;
 
 public class ChatMessageTest {
 

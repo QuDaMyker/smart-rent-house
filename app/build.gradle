@@ -39,8 +39,9 @@ android {
 }
 
 pitest {
-    targetClasses = ['com.example.renthouse.OOP.*','com.example.renthouse.FragmentPost.*']
-    targetTests = ['com.example.renthouse.*']
+    targetClasses = ['com.example.renthouse.OOP.*']
+    targetTests = ['com.example.renthouse.ModelTest.*']
+    /*Currently can't achieve coverage for mock tests using Mockito during mutation testing with PItest*/
     excludeMockableAndroidJar = true
     threads = 4
     outputFormats = ['XML', 'HTML']
