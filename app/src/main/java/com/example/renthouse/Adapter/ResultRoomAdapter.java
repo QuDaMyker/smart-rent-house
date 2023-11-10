@@ -3,14 +3,11 @@ package com.example.renthouse.Adapter;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
-import android.content.res.ColorStateList;
-import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -24,24 +21,19 @@ import com.example.renthouse.OOP.AccountClass;
 import com.example.renthouse.OOP.Room;
 import com.example.renthouse.R;
 import com.facebook.shimmer.ShimmerFrameLayout;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.checkbox.MaterialCheckBox;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.auth.UserInfo;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.firestore.auth.User;
 import com.squareup.picasso.Picasso;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class ResultRoomAdapter extends RecyclerView.Adapter<ResultRoomAdapter.RoomViewHolder>{
@@ -180,7 +172,7 @@ public class ResultRoomAdapter extends RecyclerView.Adapter<ResultRoomAdapter.Ro
 
     }
 
-    private void addSeenRoom(Room room) {
+    public void addSeenRoom(Room room) {
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference accRef = database.getReference("Accounts");
         firebaseAuth = FirebaseAuth.getInstance();
@@ -231,14 +223,14 @@ public class ResultRoomAdapter extends RecyclerView.Adapter<ResultRoomAdapter.Ro
         });
     }
 
-    private void onClickGoDetail(Room room) {
+    public void onClickGoDetail(Room room) {
         Intent intent = new Intent(mcContext, ActivityDetails.class);
         Bundle bundle  = new Bundle();
         bundle.putSerializable("selectedRoom", room);
         intent.putExtras(bundle);
         mcContext.startActivity(intent);
     }
-    private void updateDataFirebase(Room room) {
+    public void updateDataFirebase(Room room) {
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference accRef = database.getReference("Accounts");
         firebaseAuth = FirebaseAuth.getInstance();

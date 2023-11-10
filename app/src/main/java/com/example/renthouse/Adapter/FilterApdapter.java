@@ -19,7 +19,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Objects;
 
 public class FilterApdapter extends RecyclerView.Adapter<FilterApdapter.FilterViewHolder> {
 
@@ -50,7 +49,7 @@ public class FilterApdapter extends RecyclerView.Adapter<FilterApdapter.FilterVi
     }
 
     @SuppressLint("NotifyDataSetChanged")
-    private void updateValueUtilities(String content) {
+    public void updateValueUtilities(String content) {
         if (this.flag[1]) {
             hashMapFilter.get("Utilities").add(content);
             filters.add(content);
@@ -76,7 +75,7 @@ public class FilterApdapter extends RecyclerView.Adapter<FilterApdapter.FilterVi
         notifyItemRemoved(position);
         notifyItemRangeChanged(position, filters.size());
     }
-    private void updateValueWhenExists(String key, int index, String content) {
+    public void updateValueWhenExists(String key, int index, String content) {
         if (content == null) {
             return;
         }
@@ -121,24 +120,28 @@ public class FilterApdapter extends RecyclerView.Adapter<FilterApdapter.FilterVi
             }
         });
     }
-    private void handleData(String content) {
+    public int handleData(String content) {
         if (hashMapFilter.get("Price") != null && hashMapFilter.get("Price").contains(content)) {
             hashMapFilter.get("Price").remove(content);
             this.flag[0] = false;
             mListener.onItemDeletePriceListener();
+            return 0;
         } else if (hashMapFilter.get("Type") != null && hashMapFilter.get("Type").contains(content)) {
             hashMapFilter.get("Type").remove(content);
             Log.d("Delete", "1");
             this.flag[2] = false;
             mListener.onItemDeleteTypeListener();
+            return 1;
         } else if (hashMapFilter.get("Amount") != null && hashMapFilter.get("Amount").contains(content)) {
             hashMapFilter.get("Amount").remove(content);
             this.flag[3] = false;
             mListener.onItemDeleteAmountListener();
+            return 2;
         } else if (hashMapFilter.get("Sort") != null && hashMapFilter.get("Sort").contains(content)) {
             hashMapFilter.get("Sort").remove(content);
             this.flag[4] = false;
             mListener.onItemDeleteSortListener();
+            return 3;
         } else {
             List<String> utilities = hashMapFilter.get("Utilities");
             if (utilities != null && utilities.contains(content)) {
@@ -148,7 +151,7 @@ public class FilterApdapter extends RecyclerView.Adapter<FilterApdapter.FilterVi
             if (utilities == null || utilities.isEmpty()) {
                 this.flag[1] = false;
             }
-
+            return 4;
         }
     }
 
@@ -160,10 +163,11 @@ public class FilterApdapter extends RecyclerView.Adapter<FilterApdapter.FilterVi
         return 0;
     }
 
-    public void clearData() {
+    public int clearData() {
         filters.clear();
         hashMapFilter.clear();
         Arrays.fill(flag, false);
+        return 0;
     }
 
     public class FilterViewHolder extends RecyclerView.ViewHolder {

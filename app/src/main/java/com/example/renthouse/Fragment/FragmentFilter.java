@@ -5,6 +5,11 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.AppCompatButton;
@@ -14,17 +19,11 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.LinearLayout;
-
 import com.example.renthouse.Adapter.FilterApdapter;
 import com.example.renthouse.FragmentFilter.FragmentAmount;
+import com.example.renthouse.FragmentFilter.FragmentPrice;
 import com.example.renthouse.FragmentFilter.FragmentResult;
 import com.example.renthouse.FragmentFilter.FragmentSort;
-import com.example.renthouse.FragmentFilter.FragmentPrice;
 import com.example.renthouse.FragmentFilter.FragmentType;
 import com.example.renthouse.FragmentFilter.FragmentUtilities;
 import com.example.renthouse.Interface.IAmountValueChangeListener;
@@ -464,4 +463,6 @@ public class FragmentFilter extends Fragment {
         fragmentTransaction.replace(R.id.linearLayoutFragment, fragment);
         fragmentTransaction.commit();
     }
+
+
 }

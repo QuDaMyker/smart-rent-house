@@ -16,7 +16,6 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.renthouse.Activity.ActivityDetails;
-import com.example.renthouse.Interface.ItemClick;
 import com.example.renthouse.OOP.Room;
 import com.example.renthouse.R;
 import com.google.android.material.checkbox.MaterialCheckBox;
@@ -26,12 +25,10 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
 import java.text.DecimalFormat;
-import java.util.ArrayList;
 import java.util.List;
 
 public class RoomLatestAdapter extends RecyclerView.Adapter<RoomLatestAdapter.RoomLatestViewHolder> {
@@ -45,8 +42,6 @@ public class RoomLatestAdapter extends RecyclerView.Adapter<RoomLatestAdapter.Ro
         this.mContext = mContext;
     }
 
-    public RoomLatestAdapter(Context context, List<Room> outstandingList, ItemClick selectedRoom) {
-    }
 
     public void setDuLieu(List<Room> roomArrayList){
         this.listRoomLatest = roomArrayList;
@@ -187,7 +182,7 @@ public class RoomLatestAdapter extends RecyclerView.Adapter<RoomLatestAdapter.Ro
         });
     }
 
-    private void onClickGoDetail(Room room) {
+    public void onClickGoDetail(Room room) {
         Log.d("Sao z", "Hehhe");
         if (mContext == null) {
             return;

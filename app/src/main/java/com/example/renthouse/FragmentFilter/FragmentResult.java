@@ -1,17 +1,16 @@
 package com.example.renthouse.FragmentFilter;
 
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.renthouse.Adapter.ResultRoomAdapter;
 import com.example.renthouse.OOP.ObjectSearch;
@@ -41,17 +40,17 @@ public class FragmentResult extends Fragment {
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+    protected static final String ARG_PARAM1 = "param1";
+    protected static final String ARG_PARAM2 = "param2";
 
     // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-    private RecyclerView recyclerView;
-    private TextView textViewAmountResult;
-    private ResultRoomAdapter resultRoomAdapter;
-    private ObjectSearch objectSearch;
-    private ArrayList<Room> list = new ArrayList<>();
+    protected String mParam1;
+    protected String mParam2;
+    protected RecyclerView recyclerView;
+    protected TextView textViewAmountResult;
+    protected ResultRoomAdapter resultRoomAdapter;
+    protected ObjectSearch objectSearch;
+    protected ArrayList<Room> list = new ArrayList<>();
     public FragmentResult() {
         // Required empty public constructor
     }
@@ -99,7 +98,7 @@ public class FragmentResult extends Fragment {
 
         return view;
     }
-    private void shimmerRun() {
+    public void shimmerRun() {
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -146,7 +145,7 @@ public class FragmentResult extends Fragment {
             }
         });
     }
-    private boolean isContainsAddress(Room room) {
+    public boolean isContainsAddress(Room room) {
         if (room.getLocation().getWard().getPath().equals(objectSearch.getPath())){
             return true;
         }
@@ -166,7 +165,7 @@ public class FragmentResult extends Fragment {
         str = str.replaceAll("\\p{M}", "");
         return str;
     }
-    private boolean isPriceValid(Room room) {
+    public boolean isPriceValid(Room room) {
         if (objectSearch.getPrice() == null || objectSearch.getPrice().isEmpty()) {
             return true;
         } else {
@@ -177,7 +176,7 @@ public class FragmentResult extends Fragment {
             return false;
         }
     }
-    private boolean isContainsUtilities(Room room) {
+    public boolean isContainsUtilities(Room room) {
         if (objectSearch.getUtilities() == null || objectSearch.getUtilities().isEmpty()) {
             return true;
         } else {
@@ -190,7 +189,7 @@ public class FragmentResult extends Fragment {
             return false;
         }
     }
-    private boolean isContainTypeRoom(Room room) {
+    public boolean isContainTypeRoom(Room room) {
         if (objectSearch.getType() == null || objectSearch.getType().isEmpty()) {
             return true;
         } else {
@@ -200,7 +199,7 @@ public class FragmentResult extends Fragment {
             return false;
         }
     }
-    private boolean isContainAmount(Room room) {
+    public boolean isContainAmount(Room room) {
         if(objectSearch.getAmount() == -1) {
             return true;
         } else {
@@ -211,7 +210,7 @@ public class FragmentResult extends Fragment {
             return false;
         }
     }
-    private void sortItem(List<Room> roomList) throws ParseException {
+    public void sortItem(List<Room> roomList) throws ParseException {
         switch (objectSearch.getSort()) {
             case "Liên quan nhất":
                 break;
@@ -229,7 +228,7 @@ public class FragmentResult extends Fragment {
         }
     }
 
-    private void sortMaxtoMin(List<Room> roomList) {
+    public void sortMaxtoMin(List<Room> roomList) {
         for (int i = 0; i < roomList.size() - 1; i++) {
             for (int j = i; j < roomList.size(); j++) {
                 if (roomList.get(i).getPrice() < roomList.get(i).getPrice()) {
@@ -239,7 +238,7 @@ public class FragmentResult extends Fragment {
         }
     }
 
-    private void sortMintoMax(List<Room> roomList) {
+    public void sortMintoMax(List<Room> roomList) {
         for (int i = 0; i < roomList.size() - 1; i++) {
             for (int j = i; j < roomList.size(); j++) {
                 if (roomList.get(i).getPrice() > roomList.get(i).getPrice()) {
@@ -248,7 +247,7 @@ public class FragmentResult extends Fragment {
             }
         }
     }
-    private void sortDate(List<Room> roomList) throws ParseException {
+    public void sortDate(List<Room> roomList) throws ParseException {
         for (int i = 0; i < roomList.size() - 1; i++) {
             for (int j = i; j < roomList.size(); j++) {
                 String dateTime1 = roomList.get(i).getDateTime();
