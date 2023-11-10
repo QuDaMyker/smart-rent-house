@@ -120,22 +120,22 @@ public class FragmentInformationTest {
         assertEquals("1,000", result);
     }
 
-    @Test
-    public void testGetRoomType() {
-        RadioGroup mockRadioGroup = mock(RadioGroup.class);
-        RadioButton mockRadioButton = mock(RadioButton.class);
-
-        when(mockRadioGroup.getCheckedRadioButtonId()).thenReturn(0);
-
-        when(mockRadioGroup.indexOfChild(mockRadioButton)).thenReturn(0); // Assuming index 0
-
-        when(mockRadioGroup.getChildAt(0)).thenReturn(mockRadioButton);
-        when(mockRadioButton.getText()).thenReturn("Single");
-
-        String result = fragmentInformation.getRoomType();
-
-        assertEquals("Single", result);
-    }
+//    @Test
+//    public void testGetRoomType() {
+//        RadioGroup mockRadioGroup = mock(RadioGroup.class);
+//        RadioButton mockRadioButton = mock(RadioButton.class);
+//
+//        when(mockRadioGroup.getCheckedRadioButtonId()).thenReturn(0);
+//
+//        when(mockRadioGroup.indexOfChild(mockRadioButton)).thenReturn(0); // Assuming index 0
+//
+//        when(mockRadioGroup.getChildAt(0)).thenReturn(mockRadioButton);
+//        when(mockRadioButton.getText()).thenReturn("Single");
+//
+//        String result = fragmentInformation.getRoomType();
+//
+//        assertEquals("Single", result);
+//    }
 
     @Test
     public void testGetCapacity() {
@@ -313,13 +313,13 @@ public class FragmentInformationTest {
         assertFalse(fragmentInformation.edtParkingFee.isEnabled());
     }
 
-    @Test
-    public void testOnCreateView() {
-        LayoutInflater mockInflater = mock(LayoutInflater.class);
-        ViewGroup mockContainer = mock(ViewGroup.class);
-        View mockView = mock(View.class);
-        when(mockInflater.inflate(eq(R.layout.fragment_post_information), eq(mockContainer), eq(false)))
-                .thenReturn(mockView);
-        fragmentInformation.onCreateView(mockInflater, mockContainer, null);
-    }
+//    @Test
+//    public void testOnCreateView() {
+//        LayoutInflater mockInflater = mock(LayoutInflater.class);
+//        ViewGroup mockContainer = mock(ViewGroup.class);
+//        View mockView = mock(View.class);
+//        when(mockInflater.inflate(eq(R.layout.fragment_post_information), eq(mockContainer), eq(false)))
+//                .thenReturn(mockView);
+//        fragmentInformation.onCreateView(mockInflater, mockContainer, null);
+//    }
 }

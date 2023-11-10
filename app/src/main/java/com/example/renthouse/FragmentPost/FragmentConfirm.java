@@ -97,10 +97,10 @@ public class FragmentConfirm extends Fragment {
         return v;
     }
 
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-    }
+//    @Override
+//    public void onCreate(@Nullable Bundle savedInstanceState) {
+//        super.onCreate(savedInstanceState);
+//    }
 
     public String getPhoneNumber(){
         return edtPhoneNumber.getText().toString();

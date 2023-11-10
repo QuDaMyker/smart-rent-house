@@ -2,6 +2,7 @@ plugins {
     id 'com.android.application'
     id 'com.google.gms.google-services'
     id 'com.google.android.libraries.mapsplatform.secrets-gradle-plugin'
+    id 'pl.droidsonroids.pitest' version '0.2.14'
 }
 
 android {
@@ -35,6 +36,18 @@ android {
     testOptions {
         unitTests.returnDefaultValues = true
     }
+}
+
+pitest {
+    targetClasses = ['com.example.renthouse.OOP.*','com.example.renthouse.FragmentPost.*']
+    targetTests = ['com.example.renthouse.*']
+    excludeMockableAndroidJar = true
+    threads = 4
+    outputFormats = ['XML', 'HTML']
+    timestampedReports = false
+    jvmArgs = ['-Xmx1024m']
+    useClasspathFile = true     //useful with bigger projects on Windows
+    fileExtensionsToFilter.addAll('xml', 'orbit')
 }
 
 dependencies {
