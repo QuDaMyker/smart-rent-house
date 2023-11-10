@@ -1,5 +1,9 @@
 package com.example.renthouse.JSONReader;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
 import android.content.Context;
 
 import com.example.renthouse.Test.Location;
@@ -14,7 +18,7 @@ import org.mockito.MockitoAnnotations;
 import java.util.ArrayList;
 import java.util.List;
 
-public class JSONReaderLocationTest extends TestCase {
+public class JSONReaderLocationTest {
     private JSONReaderLocation jsonReaderLocation;
     @Mock
     private Context mockContext;
@@ -59,5 +63,22 @@ public class JSONReaderLocationTest extends TestCase {
         jsonReaderLocation.readDatabaseLocation(address);
         int size = jsonReaderLocation.getLocationList().size();
         assertTrue(size > 0);
+    }
+
+    @Test
+    public void testConstructorAndGettersSetters() {
+        // Create test data
+        String testAddress = "Test Address";
+
+        // Create an instance of Location
+        Location location = new Location(testAddress);
+
+        // Test getters
+        assertEquals(testAddress, location.getAddress());
+
+        // Test setters
+        String newAddress = "New Test Address";
+        location.setAddress(newAddress);
+        assertEquals(newAddress, location.getAddress());
     }
 }

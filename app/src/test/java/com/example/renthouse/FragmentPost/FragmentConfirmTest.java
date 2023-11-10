@@ -96,14 +96,14 @@ public class FragmentConfirmTest {
         assertTrue(fragmentConfirm.validateData());
     }
 
-//    @Test
-//    public void testValidateDataEmptyTitle() {
-//        when(fragmentConfirm.edtTitle.getText()).thenReturn(new MockEditable(""));
-//        when(fragmentConfirm.edtDescription.getText()).thenReturn(new MockEditable(""));
-//        when(fragmentConfirm.edtPhoneNumber.getText()).thenReturn(new MockEditable(""));
-//
-//        assertFalse(fragmentConfirm.validateData());
-//    }
+    @Test
+    public void testValidateDataEmptyTitle() {
+        when(fragmentConfirm.edtTitle.getText()).thenReturn(new MockEditable(""));
+        when(fragmentConfirm.edtDescription.getText()).thenReturn(new MockEditable(""));
+        when(fragmentConfirm.edtPhoneNumber.getText()).thenReturn(new MockEditable(""));
+
+        assertFalse(fragmentConfirm.validateData());
+    }
 
     @Test
     public void testSetData() {
@@ -119,46 +119,39 @@ public class FragmentConfirmTest {
         verify(mockDescriptionEditText).setText("Sample Description");
     }
 
-//    @Test
-//    public void testOnCreate() {
-//        fragmentConfirm.onCreate(null);
+    @Test
+    public void testOnCreate() {
+        fragmentConfirm.onCreate(null);
+
+        // Add assertions to check if any initialization logic in onCreateView is working as expected
+        // For example, check if certain views are initialized, data is loaded, etc.
+        assertNotNull(fragmentConfirm.getView());  // Assuming onCreateView initializes the view
+    }
+
+    @Test
+    public void testOnCreateView() {
+        when(mockInflater.inflate(eq(R.layout.fragment_post_confirm), eq(mockContainer), eq(false)))
+                .thenReturn(mockView);
+
+
+        fragmentConfirm.onCreateView(mockInflater, mockContainer, null);
+
+//        // Add assertions or verifications as needed
+//        // For example, check if the views are correctly initialized and listeners are set up
+//        assertNotNull(fragmentConfirm.edtPhoneNumber);
+//        assertNotNull(fragmentConfirm.edtTitle);
+//        assertNotNull(fragmentConfirm.edtDescription);
 //
-//        // Add assertions to check if any initialization logic in onCreateView is working as expected
-//        // For example, check if certain views are initialized, data is loaded, etc.
-//        assertNotNull(fragmentConfirm.getView());  // Assuming onCreateView initializes the view
-//    }
-
-//    @Test
-//    public void testOnCreateView() {
-//        when(mockInflater.inflate(eq(R.layout.fragment_post_confirm), eq(mockContainer), eq(false)))
-//                .thenReturn(mockView);
+//        assertNotNull(fragmentConfirm.edtLayoutPhoneNumber);
+//        assertNotNull(fragmentConfirm.edtLayoutTitle);
+//        assertNotNull(fragmentConfirm.edtLayoutDescription);
 //
-//
-//        fragmentConfirm.onCreateView(mockInflater, mockContainer, null);
-//
-////        // Add assertions or verifications as needed
-////        // For example, check if the views are correctly initialized and listeners are set up
-////        assertNotNull(fragmentConfirm.edtPhoneNumber);
-////        assertNotNull(fragmentConfirm.edtTitle);
-////        assertNotNull(fragmentConfirm.edtDescription);
-////
-////        assertNotNull(fragmentConfirm.edtLayoutPhoneNumber);
-////        assertNotNull(fragmentConfirm.edtLayoutTitle);
-////        assertNotNull(fragmentConfirm.edtLayoutDescription);
-////
-////        verify(fragmentConfirm.edtTitle).addTextChangedListener(any(TextWatcher.class));
-////        verify(fragmentConfirm.edtDescription).addTextChangedListener(any(TextWatcher.class));
-////        verify(fragmentConfirm.edtPhoneNumber).addTextChangedListener(any(TextWatcher.class));
-//
-//        // You can also mock ActivityPost and test the isDataSet and setData parts if needed
-//    }
+//        verify(fragmentConfirm.edtTitle).addTextChangedListener(any(TextWatcher.class));
+//        verify(fragmentConfirm.edtDescription).addTextChangedListener(any(TextWatcher.class));
+//        verify(fragmentConfirm.edtPhoneNumber).addTextChangedListener(any(TextWatcher.class));
+
+        // You can also mock ActivityPost and test the isDataSet and setData parts if needed
+    }
 
 
-
-
-
-
-    // Add similar tests for other validation scenarios
-
-    // Add tests for setData() if needed
 }

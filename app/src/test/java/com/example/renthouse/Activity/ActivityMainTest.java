@@ -1,4 +1,4 @@
-package com.example.renthouse;
+package com.example.renthouse.Activity;
 
 import android.app.ProgressDialog;
 import android.os.Bundle;
@@ -8,6 +8,7 @@ import android.view.WindowManager;
 
 import com.example.renthouse.Activity.ActivityMain;
 import com.example.renthouse.Fragment.FragmentHome;
+import com.example.renthouse.R;
 import com.example.renthouse.databinding.ActivityMainBinding;
 
 import org.junit.Before;
@@ -28,20 +29,20 @@ import androidx.fragment.app.FragmentTransaction;
 public class ActivityMainTest {
 
 
-//    @Test
-//    public void testOnCreate() {
-//        ActivityMain activity = mock(ActivityMain.class);
-//
-//        doCallRealMethod().when(activity).onCreate(null);
-//        doNothing().when(activity).setDefaultFragment();
-//
-//        Bundle savedInstanceState = mock(Bundle.class);
-//        activity.onCreate(savedInstanceState);
-//        verify(activity, times(1)).setDefaultFragment();
-//
-//
-//        // Add more verifications as needed...
-//    }
+    @Test
+    public void testOnCreate() {
+        ActivityMain activity = mock(ActivityMain.class);
+
+        doCallRealMethod().when(activity).onCreate(null);
+        doNothing().when(activity).setDefaultFragment();
+
+        Bundle savedInstanceState = mock(Bundle.class);
+        activity.onCreate(savedInstanceState);
+        verify(activity, times(1)).setDefaultFragment();
+
+
+        // Add more verifications as needed...
+    }
 
     @Test
     public void testSetDefaultFragment() {

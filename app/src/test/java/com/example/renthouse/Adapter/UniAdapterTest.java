@@ -1,4 +1,4 @@
-package com.example.renthouse;
+package com.example.renthouse.Adapter;
 
 import org.junit.Before;
 import org.junit.Test;

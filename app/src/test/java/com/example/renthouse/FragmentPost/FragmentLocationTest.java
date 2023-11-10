@@ -87,67 +87,6 @@ public class FragmentLocationTest {
         fragmentLocation.edtLayoutAddress = mockEdtLayoutAddress;
     }
 
-//    @Test
-//    public void testCityEdtOnClick() {
-//        // Mock city list and adapter
-//        // ...
-//
-//        // Simulate a click on cityEdt
-//        when(mockCityEdt.getContext()).thenReturn(mock(View.class));
-//        fragmentLocation.cityEdt.performClick();
-//
-//        // Verify that the AlertDialog is shown
-//        verify(mockCityEdt.getContext(), times(1)).startActivity(any());
-//    }
-//
-//    @Test
-//    public void testDistrictEdtOnClick() {
-//        // Mock district list and adapter
-//        // ...
-//
-//        // Set selectedCity for testing
-//        fragmentLocation.selectedCity = new City();
-//
-//        // Simulate a click on districtEdt
-//        when(mockDistrictEdt.getContext()).thenReturn(mock(View.class));
-//        fragmentLocation.districtEdt.performClick();
-//
-//        // Verify that the AlertDialog is shown and selectedDistrict is updated
-//        verify(mockDistrictEdt.getContext(), times(1)).startActivity(any());
-//    }
-//
-//    @Test
-//    public void testWardEdtOnClick() {
-//        // Mock ward list and adapter
-//        // ...
-//
-//        // Set selectedCity and selectedDistrict for testing
-//        fragmentLocation.selectedCity = new City();
-//        fragmentLocation.selectedDistrict = new District();
-//
-//        // Simulate a click on wardEdt
-//        when(mockWardEdt.getContext()).thenReturn(mock(View.class));
-//        fragmentLocation.wardEdt.performClick();
-//
-//        // Verify that the AlertDialog is shown and selectedWard is updated
-//        verify(mockWardEdt.getContext(), times(1)).startActivity(any());
-//    }
-
-//    @Test
-//    public void testCityEdtTextChanged() {
-//        // Set error message to be cleared
-//        fragmentLocation.cityLayoutEdt.setError("Error");
-//
-//        // Simulate text change in cityEdt
-//        fragmentLocation.cityEdt.addTextChangedListener(mock(TextWatcher.class));
-//        fragmentLocation.cityEdt.setText("New City");
-//
-//        // Verify that the error message is cleared
-//        verify(mockCityLayoutEdt, times(1)).setError(null);
-//    }
-
-    // Similar tests can be written for other EditText fields and TextWatcher events
-
     @Test
     public void testLoadJSONFromAsset() throws IOException {
         Context context = mock(Context.class);
@@ -180,28 +119,28 @@ public class FragmentLocationTest {
         assertTrue(result);
     }
 
-//    @Test
-//    public void testOnCreateView() throws IOException {
-//        LayoutInflater inflater = mock(LayoutInflater.class);
-//        ViewGroup container = mock(ViewGroup.class);
-//        Bundle savedInstanceState = mock(Bundle.class);
-//
-//        View mockView = mock(View.class);
-//        when(inflater.inflate(anyInt(), any(ViewGroup.class), anyBoolean())).thenReturn(mockView);
-//        Context context = mock(Context.class);
-//        AssetManager  assetManager = mock(AssetManager.class);
-//        InputStream is = mock(InputStream.class);
-//        when(inflater.getContext()).thenReturn(context);
-//        when(context.getAssets()).thenReturn(assetManager);
-//        when(assetManager.open(anyString())).thenReturn(is);
-//
-//        View resultView = fragmentLocation.onCreateView(inflater, container, savedInstanceState);
-//
-//        verify(inflater).inflate(ArgumentMatchers.eq(R.layout.fragment_post_location), eq(container), eq(false));
-//
-//
-//        assertNotNull(resultView);
-//    }
+    @Test
+    public void testOnCreateView() throws IOException {
+        LayoutInflater inflater = mock(LayoutInflater.class);
+        ViewGroup container = mock(ViewGroup.class);
+        Bundle savedInstanceState = mock(Bundle.class);
+
+        View mockView = mock(View.class);
+        when(inflater.inflate(anyInt(), any(ViewGroup.class), anyBoolean())).thenReturn(mockView);
+        Context context = mock(Context.class);
+        AssetManager  assetManager = mock(AssetManager.class);
+        InputStream is = mock(InputStream.class);
+        when(inflater.getContext()).thenReturn(context);
+        when(context.getAssets()).thenReturn(assetManager);
+        when(assetManager.open(anyString())).thenReturn(is);
+
+        View resultView = fragmentLocation.onCreateView(inflater, container, savedInstanceState);
+
+        verify(inflater).inflate(ArgumentMatchers.eq(R.layout.fragment_post_location), eq(container), eq(false));
+
+
+        assertNotNull(resultView);
+    }
 
     @Test
     public void testGetLocation() {
@@ -243,13 +182,13 @@ public class FragmentLocationTest {
         fragmentLocation.setData(room);
     }
 
-//    @Test
-//    public void testOnCreate() {
-//        fragmentLocation.onCreate(null);
-//
-//        // Add assertions to check if any initialization logic in onCreateView is working as expected
-//        // For example, check if certain views are initialized, data is loaded, etc.
-//        assertNotNull(fragmentLocation.getView());  // Assuming onCreateView initializes the view
-//    }
+    @Test
+    public void testOnCreate() {
+        fragmentLocation.onCreate(null);
+
+        // Add assertions to check if any initialization logic in onCreateView is working as expected
+        // For example, check if certain views are initialized, data is loaded, etc.
+        assertNotNull(fragmentLocation.getView());  // Assuming onCreateView initializes the view
+    }
 
 }

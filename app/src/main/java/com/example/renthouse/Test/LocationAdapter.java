@@ -27,9 +27,9 @@ import java.util.LinkedHashSet;
 import java.util.List;
 
 public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.LocationViewHolder> implements Filterable {
-    private List<Location> listLocation;
-    private List<Location> listHistoryLocation;
-    private List<Location> listLocationDatabase;
+    public List<Location> listLocation;
+    public List<Location> listHistoryLocation;
+    public List<Location> listLocationDatabase;
     public boolean searchViewIsEmpty;
     private Context context;
     private IClickItemAddressListener mListener;
@@ -174,13 +174,13 @@ public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.Locati
                     listHistoryLocation.remove(location);
                     listHistoryLocation.add(0, location);
                     flag = true;
-                    notifyDataSetChanged();
+                    //notifyDataSetChanged();
                     break;
                 }
             }
             if (!flag) {
                 listHistoryLocation.add(0, new Location(address));
-                notifyDataSetChanged();
+                //notifyDataSetChanged();
             }
             LinkedHashSet<String> listHistory = castListStringLocation();
             String jsonString = new Gson().toJson(listHistory);
@@ -189,8 +189,8 @@ public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.Locati
     }
 
     public class LocationViewHolder extends RecyclerView.ViewHolder {
-        private TextView diachi;
-        private TextView xoa;
+        public TextView diachi;
+        public TextView xoa;
         public LocationViewHolder(@NonNull View itemView) {
             super(itemView);
             diachi = itemView.findViewById(R.id.diachi);
