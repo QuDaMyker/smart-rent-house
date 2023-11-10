@@ -1,16 +1,15 @@
 package com.example.renthouse.Activity;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.recyclerview.widget.StaggeredGridLayoutManager;
-
-import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
 import com.example.renthouse.Adapter.RoomLatestAdapter;
 import com.example.renthouse.OOP.Room;
@@ -32,7 +31,6 @@ public class ActivityRecentSeen extends AppCompatActivity {
     private RoomLatestAdapter roomLatestAdapter;
     private List<Room> roomLatestList;
     private ImageButton btnBack;
-    private ProgressDialog mProgressDialog;
     private TextView textViewEmptyRoom;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,17 +39,9 @@ public class ActivityRecentSeen extends AppCompatActivity {
 
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
 
+
         textViewEmptyRoom = findViewById(R.id.textViewEmptyRoom);
         roomLatestList = new ArrayList<>();
-
-//        mProgressDialog = new ProgressDialog(getApplicationContext());
-//        mProgressDialog.setCancelable(false);
-//        mProgressDialog.setMessage("Loading...");
-
-
-
-
-        //mCheckInforInServer();
         btnBack = findViewById(R.id.btn_Back);
         recyclerView = findViewById(R.id.recycleViewRecentSeen);
         btnBack.setOnClickListener(new View.OnClickListener() {
@@ -67,38 +57,13 @@ public class ActivityRecentSeen extends AppCompatActivity {
         roomLatestAdapter.setDuLieu(roomLatestList);
         recyclerView.setAdapter(roomLatestAdapter);
 
-
         setDuLieu();
     }
-//    @Override
-//    public void onWindowFocusChanged(boolean hasFocus) {
-//        super.onWindowFocusChanged(hasFocus);
-//        if (hasFocus) {
-//            if (mProgressDialog == null) {
-//                mProgressDialog = new ProgressDialog(ActivityRecentSeen.this);
-//                mProgressDialog.setMessage(getString(R.string.loading));
-//                mProgressDialog.setIndeterminate(true);
-//                mProgressDialog.show();
-//            }
-//            else {
-//                if(roomLatestList.isEmpty()) {
-//                    textViewEmptyRoom.setVisibility(View.VISIBLE);
-//                }
-//                StaggeredGridLayoutManager staggeredGridLayoutManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
-//                recyclerView.setLayoutManager(staggeredGridLayoutManager);
-//                roomLatestAdapter = new RoomLatestAdapter(this);
-//                roomLatestAdapter.setDuLieu(roomLatestList);
-//                recyclerView.setAdapter(roomLatestAdapter);
-//            }
-//        }
-//    }
     public void setDuLieu(){
-        //mProgressDialog.show();
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference accRef = database.getReference("Accounts");
         FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
         FirebaseUser user = firebaseAuth.getCurrentUser();
-        //DatabaseReference roomRef = database.getReference("Rooms");
         Query query = accRef.orderByChild("email").equalTo(user.getEmail());
         List<String> keyRoomList = new ArrayList<>();
         query.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -115,9 +80,7 @@ public class ActivityRecentSeen extends AppCompatActivity {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot snapshot) {
                             if (snapshot.getChildrenCount() == 0) {
-                                mProgressDialog.dismiss();
                                 textViewEmptyRoom.setVisibility(View.VISIBLE);
-                                return;
                             } else {
                                 for (DataSnapshot snapshot1 : snapshot.getChildren()) {
                                     keyRoomList.add(snapshot1.getValue(String.class));
@@ -141,9 +104,8 @@ public class ActivityRecentSeen extends AppCompatActivity {
 
     }
 
-    private void addLatestRoom(List<String> keyRoomList) {
+    public void addLatestRoom(List<String> keyRoomList) {
         DatabaseReference myRef = FirebaseDatabase.getInstance().getReference("Rooms");
-        // Lắng nghe sự thay đổi dữ liệu trên đường dẫn "Rooms"
         myRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {

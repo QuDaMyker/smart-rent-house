@@ -3,7 +3,6 @@ package com.example.renthouse.Activity;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
-import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
@@ -76,6 +75,7 @@ public class ActivitySearch extends AppCompatActivity {
         textViewNoneResult.setVisibility(View.GONE);
         preferenceManager = new PreferenceManager(getApplicationContext());
 
+
         Intent intent = getIntent();
         PhoBien phoBien = (PhoBien) intent.getSerializableExtra("selectedPhoBien");
         if (phoBien!=null) {
@@ -117,6 +117,8 @@ public class ActivitySearch extends AppCompatActivity {
         // Truyền dòng kẻ giữa các item trong recycleview
         RecyclerView.ItemDecoration itemDecoration = new DividerItemDecoration(this, DividerItemDecoration.VERTICAL);
         recyclerView.addItemDecoration(itemDecoration);
+
+
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
@@ -163,7 +165,7 @@ public class ActivitySearch extends AppCompatActivity {
         });
 
     }
-    private void showFragmentFilter(String address) {
+    public void showFragmentFilter(String address) {
         Log.d("Show", "Show is running");
         textViewHistorySearch.setVisibility(View.GONE);
         recyclerView.setVisibility(View.GONE);
@@ -181,7 +183,7 @@ public class ActivitySearch extends AppCompatActivity {
         fragmentTransaction.commit();
     }
 
-    private void showFragmentFilterPhoBien(String address) {
+    public void showFragmentFilterPhoBien(String address) {
         textViewHistorySearch.setVisibility(View.GONE);
         recyclerView.setVisibility(View.GONE);
 
@@ -198,8 +200,8 @@ public class ActivitySearch extends AppCompatActivity {
         fragmentTransaction.commit();
     }
 
-    private void hideFragmentFilter() {
-        Log.d("Hide", "Hide is running");
+    public void hideFragmentFilter() {
+
 
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentFilter fragment = (FragmentFilter) fragmentManager.findFragmentById(R.id.linearLayoutHistory);

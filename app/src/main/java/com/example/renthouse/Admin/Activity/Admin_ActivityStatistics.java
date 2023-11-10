@@ -1,9 +1,5 @@
 package com.example.renthouse.Admin.Activity;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.StaggeredGridLayoutManager;
-
 import android.app.ProgressDialog;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -13,19 +9,13 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageButton;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.anychart.AnyChart;
-import com.anychart.AnyChartView;
-import com.anychart.chart.common.dataentry.DataEntry;
-import com.anychart.chart.common.dataentry.ValueDataEntry;
-import com.anychart.charts.Pie;
-import com.example.renthouse.Activity.ActivityRecentSeen;
-import com.example.renthouse.Adapter.RoomLatestAdapter;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.example.renthouse.OOP.Region;
 import com.example.renthouse.OOP.Room;
 import com.example.renthouse.R;
-
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.charts.PieChart;
 import com.github.mikephil.charting.components.XAxis;
@@ -33,40 +23,23 @@ import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
-import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
-import com.github.mikephil.charting.highlight.Highlight;
-import com.github.mikephil.charting.interfaces.datasets.IBarDataSet;
-import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
-import com.github.mikephil.charting.utils.ColorTemplate;
-import com.google.android.material.datepicker.CalendarConstraints;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import org.checkerframework.checker.units.qual.A;
-
 import java.text.DecimalFormat;
-import java.text.SimpleDateFormat;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
 
 @SuppressWarnings("IntegerDivisionInFloatingPointContext")
 public class Admin_ActivityStatistics extends AppCompatActivity {
@@ -186,11 +159,11 @@ public class Admin_ActivityStatistics extends AppCompatActivity {
         }
     }
 
-    private void setUpBarChart() {
-        BarDataSet barDataSet1 = new BarDataSet(barEntriesRent(), "Số phòng được thuê");
+    public void setUpBarChart() {
+        BarDataSet barDataSet1 = new BarDataSet(barEntriesRent((ArrayList<String>) dateInWeek), "Số phòng được thuê");
         barDataSet1.setColor(Color.parseColor("#FFD601"));
 
-        BarDataSet barDataSet2 = new BarDataSet(barEntriesAmount(), "Số phòng được đăng");
+        BarDataSet barDataSet2 = new BarDataSet(barEntriesAmount((ArrayList<String>) dateInWeek), "Số phòng được đăng");
         barDataSet2.setColor(Color.parseColor("#0077B6"));
 
         BarData data = new BarData(barDataSet1, barDataSet2);
@@ -232,7 +205,7 @@ public class Admin_ActivityStatistics extends AppCompatActivity {
         barChart.getDescription().setEnabled(false);
         barChart.invalidate();
     }
-    private ArrayList<BarEntry> barEntriesRent() {
+    public ArrayList<BarEntry> barEntriesRent(ArrayList<String> dateInWeek) {
         ArrayList<BarEntry> barEntries = new ArrayList<>();
         for (int i = 0; i < dateInWeek.size(); i++){
             Log.d("Số lượng", String.valueOf(amountRentInDateList.get(i)));
@@ -240,7 +213,7 @@ public class Admin_ActivityStatistics extends AppCompatActivity {
         }
         return barEntries;
     }
-    private ArrayList<BarEntry> barEntriesAmount() {
+    public ArrayList<BarEntry> barEntriesAmount(ArrayList<String> dateInWeek) {
         ArrayList<BarEntry> barEntries = new ArrayList<>();
         for (int i = 0; i < dateInWeek.size(); i++){
             Log.d("Số lượng đã thuê", String.valueOf(amountInDateList.get(i)));
@@ -348,7 +321,7 @@ public class Admin_ActivityStatistics extends AppCompatActivity {
 
 
     }
-    private void addDateInSameWeek() {
+    public void addDateInSameWeek() {
         LocalDate ngayHienTai = null;
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
             ngayHienTai = LocalDate.now();
