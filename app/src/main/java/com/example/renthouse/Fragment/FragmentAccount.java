@@ -15,9 +15,9 @@ import com.example.renthouse.R;
 import com.google.android.material.tabs.TabLayout;
 
 public class FragmentAccount extends Fragment {
-    private TabLayout fragHome_tab_layout;
-    private ViewPager2 fragHome_viewPager2;
-    private TabLayoutAccountAdapter tabLayoutAccountAdapter;
+    public TabLayout fragHome_tab_layout;
+    public ViewPager2 fragHome_viewPager2;
+    public TabLayoutAccountAdapter tabLayoutAccountAdapter;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
