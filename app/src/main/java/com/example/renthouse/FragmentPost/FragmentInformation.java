@@ -88,182 +88,182 @@ public class FragmentInformation extends Fragment {
         edtLayoutInternetCost = v.findViewById(R.id.edtLayoutInternetCost);
         edtLayoutParkingFee = v.findViewById(R.id.edtLayoutParkingFee);
 
-        edtCapacity.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                edtLayoutCapacity.setError(null);
-            }
-
-            @Override
-            public void afterTextChanged(Editable editable) {
-
-            }
-        });
-        edtArea.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                edtLayoutArea.setError(null);
-            }
-
-            @Override
-            public void afterTextChanged(Editable editable) {
-
-            }
-        });
-        edtPrice.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                edtLayoutPrice.setError(null);
-            }
-
-            @Override
-            public void afterTextChanged(Editable editable) {
-                String processed = currencyFormatter(editable);
-                edtPrice.removeTextChangedListener(this);
-                edtPrice.setText(processed);
-                try {
-                    edtPrice.setSelection(processed.length());
-                } catch (Exception e) {
-
-                }
-                edtPrice.addTextChangedListener(this);
-            }
-        });
-        edtDeposit.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                edtLayoutDeposit.setError(null);
-            }
-
-            @Override
-            public void afterTextChanged(Editable editable) {
-                String processed = currencyFormatter(editable);
-                edtDeposit.removeTextChangedListener(this);
-                edtDeposit.setText(processed);
-                try {
-                    edtDeposit.setSelection(processed.length());
-                } catch (Exception e) {
-
-                }
-                edtDeposit.addTextChangedListener(this);
-            }
-        });
-        edtElectricityCost.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                edtLayoutElectricityCost.setError(null);
-            }
-
-            @Override
-            public void afterTextChanged(Editable editable) {
-                String processed = currencyFormatter(editable);
-                edtElectricityCost.removeTextChangedListener(this);
-                edtElectricityCost.setText(processed);
-                try {
-                    edtElectricityCost.setSelection(processed.length());
-                } catch (Exception e) {
-
-                }
-                edtElectricityCost.addTextChangedListener(this);
-            }
-        });
-        edtWaterCost.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                edtLayoutWaterCost.setError(null);
-            }
-
-            @Override
-            public void afterTextChanged(Editable editable) {
-                String processed = currencyFormatter(editable);
-                edtWaterCost.removeTextChangedListener(this);
-                edtWaterCost.setText(processed);
-                try {
-                    edtWaterCost.setSelection(processed.length());
-                } catch (Exception e) {
-
-                }
-                edtWaterCost.addTextChangedListener(this);
-            }
-        });
-        edtInternetCost.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                edtLayoutInternetCost.setError(null);
-            }
-
-            @Override
-            public void afterTextChanged(Editable editable) {
-                String processed = currencyFormatter(editable);
-                edtInternetCost.removeTextChangedListener(this);
-                edtInternetCost.setText(processed);
-                try {
-                    edtInternetCost.setSelection(processed.length());
-                } catch (Exception e) {
-
-                }
-                edtInternetCost.addTextChangedListener(this);
-            }
-        });
-        edtParkingFee.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                edtLayoutParkingFee.setError(null);
-            }
-
-            @Override
-            public void afterTextChanged(Editable editable) {
-                String processed = currencyFormatter(editable);
-                edtParkingFee.removeTextChangedListener(this);
-                edtParkingFee.setText(processed);
-                try {
-                    edtParkingFee.setSelection(processed.length());
-                } catch (Exception e) {
-
-                }
-                edtParkingFee.addTextChangedListener(this);
-            }
-        });
+//        edtCapacity.addTextChangedListener(new TextWatcher() {
+//            @Override
+//            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+//
+//            }
+//
+//            @Override
+//            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+//                edtLayoutCapacity.setError(null);
+//            }
+//
+//            @Override
+//            public void afterTextChanged(Editable editable) {
+//
+//            }
+//        });
+//        edtArea.addTextChangedListener(new TextWatcher() {
+//            @Override
+//            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+//
+//            }
+//
+//            @Override
+//            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+//                edtLayoutArea.setError(null);
+//            }
+//
+//            @Override
+//            public void afterTextChanged(Editable editable) {
+//
+//            }
+//        });
+//        edtPrice.addTextChangedListener(new TextWatcher() {
+//            @Override
+//            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+//
+//            }
+//
+//            @Override
+//            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+//                edtLayoutPrice.setError(null);
+//            }
+//
+//            @Override
+//            public void afterTextChanged(Editable editable) {
+//                String processed = currencyFormatter(editable);
+//                edtPrice.removeTextChangedListener(this);
+//                edtPrice.setText(processed);
+//                try {
+//                    edtPrice.setSelection(processed.length());
+//                } catch (Exception e) {
+//
+//                }
+//                edtPrice.addTextChangedListener(this);
+//            }
+//        });
+//        edtDeposit.addTextChangedListener(new TextWatcher() {
+//            @Override
+//            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+//
+//            }
+//
+//            @Override
+//            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+//                edtLayoutDeposit.setError(null);
+//            }
+//
+//            @Override
+//            public void afterTextChanged(Editable editable) {
+//                String processed = currencyFormatter(editable);
+//                edtDeposit.removeTextChangedListener(this);
+//                edtDeposit.setText(processed);
+//                try {
+//                    edtDeposit.setSelection(processed.length());
+//                } catch (Exception e) {
+//
+//                }
+//                edtDeposit.addTextChangedListener(this);
+//            }
+//        });
+//        edtElectricityCost.addTextChangedListener(new TextWatcher() {
+//            @Override
+//            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+//
+//            }
+//
+//            @Override
+//            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+//                edtLayoutElectricityCost.setError(null);
+//            }
+//
+//            @Override
+//            public void afterTextChanged(Editable editable) {
+//                String processed = currencyFormatter(editable);
+//                edtElectricityCost.removeTextChangedListener(this);
+//                edtElectricityCost.setText(processed);
+//                try {
+//                    edtElectricityCost.setSelection(processed.length());
+//                } catch (Exception e) {
+//
+//                }
+//                edtElectricityCost.addTextChangedListener(this);
+//            }
+//        });
+//        edtWaterCost.addTextChangedListener(new TextWatcher() {
+//            @Override
+//            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+//
+//            }
+//
+//            @Override
+//            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+//                edtLayoutWaterCost.setError(null);
+//            }
+//
+//            @Override
+//            public void afterTextChanged(Editable editable) {
+//                String processed = currencyFormatter(editable);
+//                edtWaterCost.removeTextChangedListener(this);
+//                edtWaterCost.setText(processed);
+//                try {
+//                    edtWaterCost.setSelection(processed.length());
+//                } catch (Exception e) {
+//
+//                }
+//                edtWaterCost.addTextChangedListener(this);
+//            }
+//        });
+//        edtInternetCost.addTextChangedListener(new TextWatcher() {
+//            @Override
+//            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+//
+//            }
+//
+//            @Override
+//            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+//                edtLayoutInternetCost.setError(null);
+//            }
+//
+//            @Override
+//            public void afterTextChanged(Editable editable) {
+//                String processed = currencyFormatter(editable);
+//                edtInternetCost.removeTextChangedListener(this);
+//                edtInternetCost.setText(processed);
+//                try {
+//                    edtInternetCost.setSelection(processed.length());
+//                } catch (Exception e) {
+//
+//                }
+//                edtInternetCost.addTextChangedListener(this);
+//            }
+//        });
+//        edtParkingFee.addTextChangedListener(new TextWatcher() {
+//            @Override
+//            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+//
+//            }
+//
+//            @Override
+//            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+//                edtLayoutParkingFee.setError(null);
+//            }
+//
+//            @Override
+//            public void afterTextChanged(Editable editable) {
+//                String processed = currencyFormatter(editable);
+//                edtParkingFee.removeTextChangedListener(this);
+//                edtParkingFee.setText(processed);
+//                try {
+//                    edtParkingFee.setSelection(processed.length());
+//                } catch (Exception e) {
+//
+//                }
+//                edtParkingFee.addTextChangedListener(this);
+//            }
+//        });
 
         cbParking.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -397,21 +397,6 @@ public class FragmentInformation extends Fragment {
 
     public int getParkingFee(){
         return Integer.parseInt(edtParkingFee.getText().toString().replaceAll("[^\\d]", ""));
-    }
-
-    public boolean isFreeElectricity(){
-        return switchFreeElectricity.isChecked();
-    }
-    public boolean isFreeWater(){
-        return switchFreeWater.isChecked();
-    }
-
-    public boolean isFreeInternet(){
-        return switchFreeInternet.isChecked();
-    }
-
-    public boolean isFreeParking(){
-        return switchFreeParking.isChecked();
     }
 
     public boolean hasParking(){

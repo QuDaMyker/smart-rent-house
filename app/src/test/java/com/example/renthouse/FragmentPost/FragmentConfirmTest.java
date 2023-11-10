@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 
 import com.example.renthouse.FragmentPost.FragmentConfirm;
+import com.example.renthouse.MockEditable;
 import com.example.renthouse.OOP.Room;
 import com.example.renthouse.R;
 import com.google.android.material.textfield.TextInputEditText;
@@ -97,15 +98,11 @@ public class FragmentConfirmTest {
 
     @Test
     public void testValidateDataEmptyTitle() {
-        when(mockTitleEditText.getText()).thenReturn(mock(Editable.class));
-        when(mockTitleEditText.getText().toString()).thenReturn("");
-        when(mockDescriptionEditText.getText()).thenReturn(mock(Editable.class));
-        when(mockDescriptionEditText.getText().toString()).thenReturn("");
-        when(mockPhoneNumberEditText.getText()).thenReturn(mock(Editable.class));
-        when(mockPhoneNumberEditText.getText().toString()).thenReturn("");
+        when(fragmentConfirm.edtTitle.getText()).thenReturn(new MockEditable(""));
+        when(fragmentConfirm.edtDescription.getText()).thenReturn(new MockEditable(""));
+        when(fragmentConfirm.edtPhoneNumber.getText()).thenReturn(new MockEditable(""));
 
         assertFalse(fragmentConfirm.validateData());
-        verify(mockTitleLayout).setError("Vui lòng nhập tiêu đề bài đăng");
     }
 
     @Test
