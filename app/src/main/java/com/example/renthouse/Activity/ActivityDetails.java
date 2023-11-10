@@ -815,7 +815,7 @@ public class ActivityDetails extends BaseActivity {
 
 
     }
-    public String getAfterSpace(String input) {
+    public static String getAfterSpace(String input) {
         int spaceIndex = input.indexOf(" ");
         if (spaceIndex != -1 && spaceIndex < input.length() - 1) {
             return input.substring(spaceIndex + 1);
@@ -881,7 +881,7 @@ public class ActivityDetails extends BaseActivity {
             }
         });
     }
-    private int getTextWidth(String text) {
+    public int getTextWidth(String text) {
         // Đo chiều rộng của chuỗi được hiển thị trên TextView
         Paint paint = new Paint();
         paint.setTextSize(tvMota.getTextSize());

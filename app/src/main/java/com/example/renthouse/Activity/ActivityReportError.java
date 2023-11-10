@@ -33,12 +33,12 @@ import com.google.firebase.ktx.Firebase;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class ActivityReportError extends AppCompatActivity{
-    private static final int EMAIL_SEND_REQUEST_CODE = 100;
-    private TextInputLayout txtInTieuDe, txtInMoTa;
-    private TextInputEditText txtEdtTieuDe, txtEdtMoTa;
-    private ImageButton btnBack;
-    private Button btnSend;
+public class ActivityReportError extends AppCompatActivity {
+    public static final int EMAIL_SEND_REQUEST_CODE = 100;
+    public TextInputLayout txtInTieuDe, txtInMoTa;
+    public TextInputEditText txtEdtTieuDe, txtEdtMoTa;
+    public ImageButton btnBack;
+    public Button btnSend;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,7 +72,15 @@ public class ActivityReportError extends AppCompatActivity{
         });
     }
 
-    private void sendMail() {
+    public String getTieuDe() {
+        return txtEdtTieuDe.getText().toString();
+    }
+
+    public String getMoTa() {
+        return txtEdtMoTa.getText().toString();
+    }
+
+    public void sendMail() {
         if (txtEdtTieuDe.getText().toString().isEmpty()) {
             txtInTieuDe.setError("Vui Lòng Điền Thông Tin");
         } else if (txtEdtMoTa.getText().toString().isEmpty()) {
@@ -92,12 +100,12 @@ public class ActivityReportError extends AppCompatActivity{
             String formattedDate = dateFormat.format(now);
 
             reports.setNgayBaoCao(formattedDate);
-            Query query  =  reference.child("Accounts").orderByChild("email").equalTo(currentUser.getEmail());
+            Query query = reference.child("Accounts").orderByChild("email").equalTo(currentUser.getEmail());
 
             query.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    for(DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                    for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
                         AccountClass account = dataSnapshot.getValue(AccountClass.class);
                         reports.setIdUser(dataSnapshot.getKey());
                         reports.setAccount(account);
@@ -121,17 +129,6 @@ public class ActivityReportError extends AppCompatActivity{
             });
 
 
-
-
-
-
-
-
-
-
-
-
-
             String recipientList = "nthienphu163@gmail.com";
             String[] recipients = recipientList.split(",");
 
@@ -147,6 +144,7 @@ public class ActivityReportError extends AppCompatActivity{
             startActivityForResult(Intent.createChooser(intent, "Choose an email client"), EMAIL_SEND_REQUEST_CODE);
         }
     }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);

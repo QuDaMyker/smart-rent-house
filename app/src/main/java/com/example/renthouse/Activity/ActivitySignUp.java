@@ -373,6 +373,9 @@ public class ActivitySignUp extends AppCompatActivity {
     }
 
     public static boolean isValidPassword(String password) {
+        if(password == null) {
+            return false;
+        }
         if (password.length() < 8 || password.length() > 15) {
             return false;
         }
@@ -392,6 +395,9 @@ public class ActivitySignUp extends AppCompatActivity {
     }
 
     public static boolean isVietnameseString(String input) {
+        if(input == null) {
+            return false;
+        }
         // Biểu thức chính quy để kiểm tra các ký tự tiếng Việt
         String vietnameseRegex = "^[\\p{L}\\p{M} ]+$";
 
