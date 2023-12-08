@@ -32,9 +32,6 @@ jobs:
       - name: Install dependencies😎🎶
         run: ./gradlew dependencies
 
-      - name: Build
-        run: ./gradlew build
-
       - name: Run tests🔥
         run: ./gradlew test
 
