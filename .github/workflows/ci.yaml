@@ -1,0 +1,41 @@
+name: AndroidCI
+
+on:
+  push:
+    branches: [ $default-branch ]
+  pull_request:
+    branches: [ $default-branch ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository😊
+        uses: actions/checkout@v3
+
+      - name: set up JDK 11
+        uses: actions/septup-java@v3
+        with:
+          java-version: '11'
+          distribution: 'adopt'
+          cache: gradle
+
+      - name: Grant execute permission for gradlew
+        run: chmod +x ./gradlew
+
+      - name: Clean Gradle
+        run: ./gradlew clean
+
+      - name: Install dependencies😎🎶
+        run: ./gradlew dependencies
+
+      - name: Build
+        run: ./gradlew build
+
+      - name: Run tests🔥
+        run: ./gradlew test
+
+      - name: Mutation testing🚀
+        run: ./gradlew pitest
