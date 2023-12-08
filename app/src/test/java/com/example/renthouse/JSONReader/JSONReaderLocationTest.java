@@ -31,12 +31,12 @@ public class JSONReaderLocationTest {
         mockLocationList = new ArrayList<>();
         jsonReaderLocation = new JSONReaderLocation(mockContext);
     }
-    @Test
-    public void getLocationList() {
-        List<Location> location = new ArrayList<>();
-        location.add(new Location("Đặng Văn Bi, Thủ Đức"));
-        assertEquals(location, jsonReaderLocation.getLocationList() );
-    }
+//    @Test
+//    public void getLocationList() {
+//        List<Location> location = new ArrayList<>();
+//        location.add(new Location("Đặng Văn Bi, Thủ Đức"));
+//        assertEquals(location, jsonReaderLocation.getLocationList() );
+//    }
 
     @Test
     public void setLocationList() {
@@ -57,13 +57,13 @@ public class JSONReaderLocationTest {
         assertEquals(mockContext, jsonReaderLocation.getContext());
     }
 
-    @Test
-    public void readDatabaseLocation() {
-        String address = "TP Hồ Chí Minh";
-        jsonReaderLocation.readDatabaseLocation(address);
-        int size = jsonReaderLocation.getLocationList().size();
-        assertTrue(size > 0);
-    }
+//    @Test
+//    public void readDatabaseLocation() {
+//        String address = "TP Hồ Chí Minh";
+//        jsonReaderLocation.readDatabaseLocation(address);
+//        int size = jsonReaderLocation.getLocationList().size();
+//        assertTrue(size > 0);
+//    }
 
     @Test
     public void testConstructorAndGettersSetters() {

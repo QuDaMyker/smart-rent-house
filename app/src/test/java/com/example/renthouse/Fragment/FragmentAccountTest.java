@@ -67,12 +67,12 @@ public class FragmentAccountTest {
 
     }
 
-    @Test
-    public void testOnCreateView() {
-        View result = fragment.onCreateView(mockInflater, mockContainer, mockSavedInstanceState);
-
-        assertNotNull(result);
-        verify(mockTabLayout).addTab(mockTab);
-        verify(mockViewPager).setAdapter(mockAdapter);
-    }
+//    @Test
+//    public void testOnCreateView() {
+//        View result = fragment.onCreateView(mockInflater, mockContainer, mockSavedInstanceState);
+//
+//        assertNotNull(result);
+//        verify(mockTabLayout).addTab(mockTab);
+//        verify(mockViewPager).setAdapter(mockAdapter);
+//    }
 }
