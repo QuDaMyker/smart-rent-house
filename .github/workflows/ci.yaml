@@ -41,7 +41,7 @@ jobs:
         run: ./gradlew assembleDebug
 
       - name: Run tests🔥🎉
-        run: ./gradlew test
+        run: ./gradlew test --warning-mode all
 
       - name: Mutation testing🚀
-        run: ./gradlew pitest
+        run: ./gradlew pitest --warning-mode all
