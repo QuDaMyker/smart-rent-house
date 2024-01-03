@@ -35,6 +35,9 @@ jobs:
 
       - name: Run tests🔥🎉
         run: ./gradlew test
+
+      - name: Mutation testing🚀
+        run: ./gradlew pitest
         
       - name: Build APK📱
         run: ./gradlew assembleDebug
