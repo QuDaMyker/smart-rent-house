@@ -39,7 +39,7 @@ jobs:
         run: ./gradlew dependencies
 
       - name: Build app 📱
-        run: ./gradlew assembleDebug
+        run: ./gradlew assembleDebug --warning-mode all
 
       - name: Run tests🔥🎉
         run: ./gradlew test --warning-mode all
