@@ -16,13 +16,17 @@ jobs:
     steps:
       - name: Checkout repository😊
         uses: actions/checkout@v2
-
+        
       - name: Set up JDK 17🖥️
         uses: actions/setup-java@v2
         with:
           java-version: '17'
           distribution: 'adopt'
           cache: gradle
+
+      - name: Accept Android SDK licenses
+        run: echo yes | $RUNNER_TOOL_CACHE/Android/sdk/tools/bin/sdkmanager --licenses
+
 
       - name: Grant execute permission for gradlew🐧
         run: chmod +x ./gradlew
@@ -36,5 +40,4 @@ jobs:
       - name: Run tests🔥🎉
         run: ./gradlew test
         
-      - name: Build APK📱
-        run: ./gradlew assembleDebug
+      
