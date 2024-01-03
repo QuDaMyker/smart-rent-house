@@ -11,16 +11,20 @@ on:
 jobs:
   build:
 
-    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+        java: [ 17 ]
+    runs-on: ${{ matrix.os }}
 
     steps:
       - name: Checkout repository😊
         uses: actions/checkout@v2
 
-      - name: Set up JDK 17🖥️
+      - name: Set up JDK 🖥️
         uses: actions/setup-java@v2
         with:
-          java-version: '17'
+          java-version: ${{ matrix.java }}
           distribution: 'adopt'
           cache: gradle
 
@@ -33,11 +37,11 @@ jobs:
       - name: Install dependencies😎🎶
         run: ./gradlew dependencies
 
+      - name: Build app 📱
+        run: ./gradlew assembleDebug
+
       - name: Run tests🔥🎉
         run: ./gradlew test
 
       - name: Mutation testing🚀
         run: ./gradlew pitest
-        
-      - name: Build APK📱
-        run: ./gradlew assembleDebug
